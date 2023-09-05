@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Шульте Плюс</string>
+	<string name="title_home">Что нового</string>
+	<string name="title_dashboard">Стата</string>
+	<string name="title_notifications">События</string>
+	<string name="title_schulte">Шульте</string>
+	<string name="title_basics">База</string>
+	<string name="lbl_quick_launch">Быстрый старт</string>
+	<string name="title_profile">Профиль</string>
+</resources>

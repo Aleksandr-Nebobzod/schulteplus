@@ -1,0 +1,10 @@
+<resources>
+	<string name="app_name">Schulte Plus</string>
+	<string name="title_home">What\'s up</string>
+	<string name="title_dashboard">Dashboard</string>
+	<string name="title_notifications">Notifications</string>
+	<string name="title_schulte">Schulte</string>
+	<string name="title_basics">Basics</string>
+	<string name="lbl_quick_launch">Quick Launch</string>
+	<string name="title_profile">Profile</string>
+</resources>

@@ -7,4 +7,6 @@
 	<string name="title_basics">Basics</string>
 	<string name="lbl_quick_launch">Quick Launch</string>
 	<string name="title_profile">Profile</string>
+	<string name="str_empty" translatable="false"></string>
+	
 </resources>

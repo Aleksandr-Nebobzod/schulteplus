@@ -3,12 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	>
 	
-	<item
-		android:id="@+id/navigation_notifications"
-		android:enabled="false"
-		android:icon="@drawable/ic_notifications_black_24dp"
-		android:title="@string/title_notifications"
-		android:visible="false" />
+
 	
 	<item
 		android:id="@+id/navigation_dashboard"
@@ -19,7 +14,14 @@
 		android:id="@+id/navigation_basics"
 		android:icon="@drawable/ic_basics2_black_24dp"
 		android:title="@string/title_basics" />
-
+	
+	<item
+		android:id="@+id/navigation_notifications"
+		android:enabled="false"
+		android:title="@string/str_empty"
+		/>
+<!--		android:icon="@drawable/ic_notifications_black_24dp"-->
+	
 	<item
 		android:id="@+id/navigation_schulte"
 		android:icon="@drawable/ic_schulte_black_24dp"

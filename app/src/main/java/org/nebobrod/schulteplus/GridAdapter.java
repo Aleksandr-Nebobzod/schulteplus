@@ -1,6 +1,12 @@
 package org.nebobrod.schulteplus;
 
+
+
+
+
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -8,19 +14,19 @@ import android.widget.TextView;
 
 
 public class GridAdapter extends BaseAdapter {
+	 private static final String TAG = "GridAdapter";
 	 private Context mContext;
-	 private Integer mCols, mRows;
+	 private STable mExercise;
 
-	 public GridAdapter(Context context, int cols, int rows)
-	 {
+	 public GridAdapter(Context context, STable exercise) {
+		 mExercise = exercise;
 		 mContext = context;
-		 mCols = cols;
-		 mRows = rows;
+
 	 }
 
 	 @Override
 	 public int getCount() {
-		 return mCols * mRows;
+		 return mExercise.getX() * mExercise.getY();
 	 }
 
 	 @Override
@@ -43,8 +49,16 @@ public class GridAdapter extends BaseAdapter {
 		 else
 			 view = (TextView) convertView;
 
-		 view.setText("25");
+		 view.setText("" + mExercise.getArea().get(position).getValue());
+//		 Log.d(TAG, "getView: width " + view.getWidth());
+//		 https://stackoverflow.com/questions/51719485/adding-border-to-textview-programmatically
+		 Drawable img = mContext.getDrawable(R.drawable.ic_border);
+		 view.setBackground(img);
+		 view.setTextSize(22);
+		 view.setTextAlignment(view.TEXT_ALIGNMENT_CENTER);
+		 view.setPadding(0, 15, 0, 15);
 
 		 return view;
 	 }
+
  }

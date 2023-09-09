@@ -4,6 +4,8 @@ package org.nebobrod.schulteplus;
 import android.text.format.Time;
 
 public final class Utils {
+	private static final String TAG = "Utils";
+
 	/**
 	 * Private constructor to prevent instantiation
 	 */

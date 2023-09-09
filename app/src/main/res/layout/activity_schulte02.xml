@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-android:orientation="vertical" >
-
-<!--	tools:context=".ui.SchulteActivity02"-->
-
-<GridView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/field"
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	android:gravity="center"
-	/>
+	android:orientation="vertical"
+	android:layout_weight="3" >
+	
+	<!--	tools:context=".ui.SchulteActivity02"-->
+	
+	<GridView
+		android:id="@+id/gvArea"
+		android:layout_width="fill_parent"
+		android:layout_height="462dp"
+		android:layout_marginBottom="40dp"
+		android:gravity="center">
+	
+	</GridView>
+	
+	<TextView
+		android:id="@+id/txtLabel"
+		android:layout_width="262dp"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="20dp"
+		android:background="#FFF0F0F0"
+		android:gravity="center"
+		android:text="@string/app_name"
+		android:textSize="28sp" />
+	
 </LinearLayout>

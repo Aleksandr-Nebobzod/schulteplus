@@ -8,5 +8,9 @@
 	<string name="lbl_quick_launch">Quick Launch</string>
 	<string name="title_profile">Profile</string>
 	<string name="str_empty" translatable="false"></string>
-	
+	<string name="lbl_time">Time</string>
+	<string name="lbl_turns">Turns</string>
+	<string name="lbl_pace">Pace</string>
+	<string name="lbl_mu_second">sec.</string>
+
 </resources>

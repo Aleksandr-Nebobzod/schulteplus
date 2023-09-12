@@ -56,7 +56,7 @@ public class GridAdapter extends BaseAdapter {
 		 view.setBackground(img);
 		 view.setTextSize(22);
 		 view.setTextAlignment(view.TEXT_ALIGNMENT_CENTER);
-		 view.setPadding(0, 15, 0, 15);
+		 view.setPadding(0, 25, 0, 25);
 
 		 return view;
 	 }

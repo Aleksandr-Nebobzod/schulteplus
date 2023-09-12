@@ -1,6 +1,8 @@
 package org.nebobrod.schulteplus;
 
 
+
+
 import android.text.format.Time;
 
 public final class Utils {
@@ -38,6 +40,7 @@ public final class Utils {
 		time.setToNow();
 		return time.format3339(false);
 	}
+
 
 
 }

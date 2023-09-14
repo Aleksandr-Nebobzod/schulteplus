@@ -12,4 +12,7 @@
 	<string name="lbl_turns">Ходы</string>
 	<string name="lbl_pace">Стат</string>
 	<string name="lbl_mu_second">сек</string>
+	<string name="err_no_data">Нехватка данных</string>
+	<string name="hnt_input_width">Ввести ширину (2 -- 10)</string>
+	<string name="hnt_input_height">Ввести высоту (2--10)</string>
 </resources>

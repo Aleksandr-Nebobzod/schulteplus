@@ -2,7 +2,7 @@
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
+	android:layout_height="fill_parent"
 	android:orientation="vertical"
 	android:layout_weight="3" >
 	
@@ -10,14 +10,14 @@
 	
 	<GridView
 		android:id="@+id/gvArea"
-		android:layout_width="fill_parent"
-		android:layout_height="462dp"
-		android:layout_marginBottom="40dp"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
 		android:gravity="center">
-	
 	</GridView>
 	
 	<TextView
+		android:visibility="gone"
+		android:enabled="false"
 		android:id="@+id/txtLabel"
 		android:layout_width="262dp"
 		android:layout_height="wrap_content"

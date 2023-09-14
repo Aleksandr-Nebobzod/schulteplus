@@ -1,5 +1,7 @@
 package org.nebobrod.schulteplus;
 
+import static org.nebobrod.schulteplus.ExerciseRunner.KEY_RUNNER;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -48,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 			@Override
 			public void onClick(View view) {
 				Intent intent = new Intent(MainActivity.this, SchulteActivity02.class);
-				intent.putExtra("bookId", ExerciseRunner.getTypeOfExercise()); // 0 means new book, so Edit will create new book
+				intent.putExtra(KEY_RUNNER, ExerciseRunner.getTypeOfExercise()); // 0 means new book, so Edit will create new book
 				startActivity(intent);
 			}
 		});

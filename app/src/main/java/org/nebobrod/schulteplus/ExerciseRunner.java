@@ -6,15 +6,21 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import org.nebobrod.schulteplus.ui.schultesettings.SchulteSettingsFragment;
+
 public class ExerciseRunner {
 	private static final String TAG = "ExerciseRunner";
+	public static final String KEY_RUNNER = "runner";
 	public static final String KEY_TYPE_OF_EXERCISE = "type_of_ex";
 	public static final String KEY_APP_STATE = "schulte_app_state";
 
-
+	private Context context;
 	private static ExerciseRunner instance;
 	private SharedPreferences sharedPreferences;
 
+	// TODO: 13.09.2023   make get this fields from SchulteSettingsFragment & BaseSettingsFragment
+	private static byte xSize = 5, ySize = 5;
+	private static String exType = "";
 
 	private ExerciseRunner(Context context) {
 		sharedPreferences = context.getSharedPreferences(KEY_APP_STATE, Context.MODE_PRIVATE);
@@ -47,13 +53,30 @@ public class ExerciseRunner {
 		}
 	}
 
+	public void setX(byte xSize) {
+		this.xSize = xSize;
+	}
+
+	public void setY(byte ySize) {
+		this.ySize = ySize;
+	}
+
+	public void setExType(String s) {
+		exType = s;
+	}
+
 	public int getX (){
-		return 5;
+		return xSize;
 	}
 
 	public int getY (){
-		return 5;
+		return ySize;
 	}
+
+	public static String getExType() {
+		return exType;
+	}
+
 }
 
 

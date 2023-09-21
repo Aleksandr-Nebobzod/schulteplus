@@ -19,7 +19,7 @@ public class ExerciseRunner {
 	private SharedPreferences sharedPreferences;
 
 	// TODO: 13.09.2023   make get this fields from SchulteSettingsFragment & BaseSettingsFragment
-	private static byte xSize = 5, ySize = 5;
+	private static byte xSize = 2, ySize = 2;
 	private static String exType = "";
 
 	private ExerciseRunner(Context context) {

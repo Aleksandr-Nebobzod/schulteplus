@@ -13,6 +13,12 @@
 	<string name="lbl_pace">Стат</string>
 	<string name="lbl_mu_second">сек</string>
 	<string name="err_no_data">Нехватка данных</string>
-	<string name="hnt_input_width">Ввести ширину (2 -- 10)</string>
-	<string name="hnt_input_height">Ввести высоту (2--10)</string>
+	<string name="hnt_input_width">Ввести ширину (1 -- 10)</string>
+	<string name="hnt_input_height">Ввести высоту (1 -- 10)</string>
+	<string name="title_result">Итоги</string>
+	<string name="lbl_ok">ОК</string>
+	<string name="lbl_cancel">Нет</string>
+	<string name="alert_dialog_ok">ОК</string>
+	<string name="alert_dialog_cancel">Нет</string>
+	<string name="txt_continue">Продолжить тренировку?</string>
 </resources>

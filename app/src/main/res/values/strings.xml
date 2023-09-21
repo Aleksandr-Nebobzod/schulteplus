@@ -27,7 +27,13 @@
 	<string name="attachment_summary_on" translatable="false">Automatically download attachments for incoming emails
 	</string>
 	<string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
-	<string name="hnt_input_width">input the width (2 -- 10)</string>
-	<string name="hnt_input_height">input the height (2 -- 10)</string>
+	<string name="hnt_input_width">input the width (1 -- 10)</string>
+	<string name="hnt_input_height">input the height (1 -- 10)</string>
+	<string name="title_result">Result</string>
+	<string name="lbl_ok">OK</string>
+	<string name="lbl_cancel">Cancel</string>
+	<string name="alert_dialog_ok">OK</string>
+	<string name="alert_dialog_cancel">Cancel</string>
+	<string name="txt_continue">Would you like to continue?</string>
 
 </resources>

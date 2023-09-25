@@ -27,12 +27,7 @@ public class SchulteSettingsFragment extends Fragment {
 	private View view;
 	private EditText etWidth, etHeight;
 	private ExerciseRunner runner = ExerciseRunner.getInstance(getContext());
-	String[] exTypes;
-
-/*	Resources res = getResources();
-	TypedArray exTypes = res.obtainTypedArray(R.array.ex_type);
-	@StyleableRes  int index = 0;
-	String exType = exTypes.getString(index) ;*/
+	private String[] exTypes;
 
 	public static SchulteSettingsFragment newInstance() {
 		return new SchulteSettingsFragment();
@@ -44,10 +39,8 @@ public class SchulteSettingsFragment extends Fragment {
 		// here we call overridden methods to complete settings
 		etWidth.getOnFocusChangeListener().onFocusChange(etWidth, true);
 		etHeight.getOnFocusChangeListener().onFocusChange(etHeight, true);
-		runner.setExType(exTypes[0]);
 		super.onPause();
 	}
-
 
 	/*@Override
 	public void onStop() {
@@ -55,12 +48,19 @@ public class SchulteSettingsFragment extends Fragment {
 		super.onStop();
 	}*/
 
-
 	/*@Override
 	public void onSaveInstanceState(@NonNull Bundle outState) {
 		Toast.makeText(getContext(), "onSaveInstanceState", Toast.LENGTH_SHORT).show();
 		super.onSaveInstanceState(outState);
 	}*/
+
+	@Override
+	public void onResume() {
+		runner.setPreference(getContext());
+		runner.setExType(exTypes[0]); //should be "schulte_1_sequence"
+
+		super.onResume();
+	}
 
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -80,11 +80,12 @@ public class SchulteSettingsFragment extends Fragment {
 			@Override
 			public void onFocusChange(View view, boolean b) {
 				byte value = (byte) intFromString("" + etWidth.getText());
-				if (value < 2 || value > 10){
+				if (value < 1 || value > 10){
 					Toast.makeText(getContext(), R.string.hnt_input_height, Toast.LENGTH_SHORT).show();
 					value = 5;
 					etWidth.setText("" + value);
 				}
+
 				runner.setX(value);
 			}
 		});
@@ -92,7 +93,7 @@ public class SchulteSettingsFragment extends Fragment {
 			@Override
 			public void onFocusChange(View view, boolean b) {
 				byte value = (byte) intFromString("" + etHeight.getText());
-				if (value < 2 || value > 10){
+				if (value < 1 || value > 10){
 					Toast.makeText(getContext(), R.string.hnt_input_height, Toast.LENGTH_SHORT).show();
 					value = 5;
 					etHeight.setText("" + value);

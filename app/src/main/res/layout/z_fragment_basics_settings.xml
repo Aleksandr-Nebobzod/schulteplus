@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	
+	
+	<RadioGroup
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="16dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" >
+		
+		<Switch
+			android:id="@+id/sw_dot"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAlignment="textEnd"
+			android:padding="10dp"
+			android:textSize="20sp"
+			android:textStyle="bold"
+			android:text="@string/lbl_bas_dot" />
+		
+		<Switch
+			android:id="@+id/sw_double_dot"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAlignment="textEnd"
+			android:padding="10dp"
+			android:textSize="20sp"
+			android:text="@string/lbl_bas_dbl_dot" />
+		
+		<Switch
+			android:id="@+id/sw_pyramidot"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAlignment="textEnd"
+			android:padding="10dp"
+			android:textSize="20sp"
+			android:text="@string/lbl_bas_pyramidot" />
+		
+		<Switch
+			android:id="@+id/sw_circles_rb"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAlignment="textEnd"
+			android:padding="10dp"
+			android:textSize="20sp"
+			android:textStyle="bold"
+			android:text="@string/lbl_bas_circles_rb" />
+		
+		<Switch
+			android:id="@+id/sw_circles_rb_lined"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAlignment="textEnd"
+			android:padding="10dp"
+			android:textSize="20sp"
+			android:text="@string/lbl_bas_circles_rb_lined" />
+		
+		<Switch
+			android:id="@+id/sw_circles_rb_crossed"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAlignment="textEnd"
+			android:padding="10dp"
+			android:textSize="20sp"
+			android:text="@string/lbl_bas_circles_rb_crossed" />
+		
+		<Switch
+			android:id="@+id/sw_necker_cube"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAlignment="textEnd"
+			android:padding="10dp"
+			android:textSize="20sp"
+			android:textStyle="bold"
+			android:text="@string/lbl_bas_necker_cube" />
+		
+		<Switch
+			android:id="@+id/sw_necker_cube_double"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAlignment="textEnd"
+			android:padding="10dp"
+			android:textSize="20sp"
+			android:text="@string/lbl_bas_necker_cube_double" />
+		
+		<Switch
+			android:id="@+id/sw_necker_cylinder"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAlignment="textEnd"
+			android:padding="10dp"
+			android:textSize="20sp"
+			android:text="@string/lbl_bas_necker_cylinder" />
+		
+		<Switch
+			android:id="@+id/sw_necker_ball"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAlignment="textEnd"
+			android:padding="10dp"
+			android:textSize="20sp"
+			android:text="@string/lbl_bas_necker_ball" />
+		
+		
+		<Switch
+			android:id="@+id/sw_dancing_girl"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAlignment="textEnd"
+			android:padding="10dp"
+			android:textSize="20sp"
+			android:textStyle="bold"
+			android:text="@string/lbl_bas_dancing_girl" />
+		
+		
+		<Switch
+			android:id="@+id/sw_dancing_cat"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textAlignment="textEnd"
+			android:padding="10dp"
+			android:textSize="20sp"
+			android:text="@string/lbl_bas_dancing_cat" />
+	</RadioGroup>
+</androidx.constraintlayout.widget.ConstraintLayout>

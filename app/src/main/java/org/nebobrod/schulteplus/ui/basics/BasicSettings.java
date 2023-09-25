@@ -1,16 +1,93 @@
 package org.nebobrod.schulteplus.ui.basics;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceGroup;
+import androidx.preference.PreferenceScreen;
 
+import org.nebobrod.schulteplus.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
+
+import java.util.ArrayList;
 
 
 public class BasicSettings extends PreferenceFragmentCompat {
+	ArrayList<Preference> baseExTypes = new ArrayList<>();
+	androidx.preference.CheckBoxPreference chosen;
+	private ExerciseRunner runner = ExerciseRunner.getInstance(getContext());
+	private String[] exTypes;
+
+	@Override
+	public void onResume() {
+		runner.setPreference(getContext());
+		EditTextPreference exType = findPreference("prf_ex_type");
+		runner.setExType(exType.getText().toString()); // set to runner from invisible pref et
+
+		super.onResume();
+	}
+
+	@Override
+	public boolean onPreferenceTreeClick(@NonNull Preference preference) {
+		// only for Group Check Boxes:
+		if (baseExTypes.contains(preference)) {
+			chosen = (androidx.preference.CheckBoxPreference) preference;
+			for (Preference p : baseExTypes) {
+				((androidx.preference.CheckBoxPreference) p).setChecked(false);
+			}
+			chosen.setChecked(true);
+			EditTextPreference exType = findPreference("prf_ex_type");
+			exType.setText(chosen.getKey().toString());
+			runner.setExType(chosen.getKey().toString());
+		}
+		return super.onPreferenceTreeClick(preference);
+	}
 
 	@Override
 	public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-		setPreferencesFromResource(R.xml.root_preferences, rootKey);
+		setPreferencesFromResource(R.xml.base_preferences, rootKey);
+		PreferenceScreen screen = this.getPreferenceScreen();
+		Resources res = getResources();
+		exTypes = res.getStringArray(R.array.ex_type);
+
+		initiateBaseExTypes();
+	}
+
+	/**
+	 * method provides fnc Group of Checkboxes directly in _preferences.xml -- layout
+	 */
+	private void initiateBaseExTypes(){
+		ArrayList<Preference> list = getPreferenceList(getPreferenceScreen(), new ArrayList<Preference>());
+		baseExTypes.clear();
+		for (Preference p : list) {
+			// prefix "@string/gcb_" of Preference means Group Check Box
+			if (p instanceof androidx.preference.CheckBoxPreference && p.getKey().startsWith("gcb_")) {
+				p.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+					@Override
+					public boolean onPreferenceClick(@NonNull Preference preference) {
+						chosen = (androidx.preference.CheckBoxPreference) preference;
+						return false;
+					}
+				});
+				baseExTypes.add(p);
+			}
+		}
+	}
+	private ArrayList<Preference> getPreferenceList(Preference p, ArrayList<Preference> list) {
+		if( p instanceof PreferenceCategory || p instanceof PreferenceScreen) {
+			PreferenceGroup pGroup = (PreferenceGroup) p;
+			int pCount = pGroup.getPreferenceCount();
+			for(int i = 0; i < pCount; i++) {
+				getPreferenceList(pGroup.getPreference(i), list); // recursive call
+			}
+		} else {
+			list.add(p);
+		}
+		return list;
 	}
 }

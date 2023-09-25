@@ -1,5 +1,7 @@
 package org.nebobrod.schulteplus;
 
+import androidx.annotation.NonNull;
+
 public class SCell {
 	private int x,y, value;
 	private boolean isPassed = false;
@@ -9,6 +11,12 @@ public class SCell {
 		this.x = x;
 		this.y = y;
 		this.value = value;
+	}
+
+	@NonNull
+	@Override
+	public String toString() {
+		return "SCell [x:" + x + ", y:" + y +", value:" + value + ", chance:" + chance + ", passed:" + isPassed + "] \n";
 	}
 
 	public int getX() {

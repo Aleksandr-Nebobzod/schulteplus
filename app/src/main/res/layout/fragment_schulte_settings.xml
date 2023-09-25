@@ -9,7 +9,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:layout_marginTop="10dp"
-		android:text="there are prestart settings of Schulte tables training should be soon" />
+		android:text="@string/txt_ssettings" />
 	
 	<EditText
 		android:id="@+id/et_x_size"

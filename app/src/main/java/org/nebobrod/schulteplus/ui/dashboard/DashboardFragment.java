@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.databinding.FragmentDashboardBinding;
 
 public class DashboardFragment extends Fragment {
@@ -25,6 +26,7 @@ public class DashboardFragment extends Fragment {
 		View root = binding.getRoot();
 
 		final TextView textView = binding.textDashboard;
+		textView.setText(R.string.txt_dashboard_desc);
 		dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 		return root;
 	}

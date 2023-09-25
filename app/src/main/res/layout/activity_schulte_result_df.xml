@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/loResultDialog"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_gravity="bottom"
+	android:background="@drawable/ic_border_thick" >
+	
+	
+	<TextView
+		android:id="@+id/txtTitle"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="Title text"
+		android:textAlignment="center"
+		android:textStyle="bold"
+		android:textSize="20sp"
+		android:textColor="@color/design_default_color_primary"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		android:letterSpacing=".5" />
+	
+	<ImageView
+		android:id="@+id/imageView"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="5dp"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/txtTitle"
+		app:srcCompat="@android:drawable/ic_dialog_info" />
+	
+	<TextView
+		android:id="@+id/txtMessage"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:minLines="1"
+		android:padding="5dp"
+		android:text="Here is some custom message"
+		android:textAlignment="textEnd"
+		android:textColor="@color/cardview_light_background"
+		android:textSize="18sp"
+		android:typeface="monospace"
+		app:layout_constraintStart_toStartOf="@+id/imageView"
+		app:layout_constraintTop_toBottomOf="@+id/txtTitle"
+		app:layout_marginBaseline="15dp" />
+	
+	<LinearLayout
+		android:id="@+id/llButtons"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginHorizontal="5dp"
+		android:orientation="horizontal"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/txtMessage"
+		tools:layout_editor_absoluteX="1dp"
+		android:visibility="invisible">
+		
+		<Button
+			android:id="@+id/btnOK"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginHorizontal="5dp"
+			android:layout_weight="3"
+			android:text="@string/lbl_ok" />
+		
+		<Button
+			android:id="@+id/btnCancel"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginHorizontal="5dp"
+			android:layout_weight="1"
+			android:text="@string/lbl_no" />
+	
+	</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

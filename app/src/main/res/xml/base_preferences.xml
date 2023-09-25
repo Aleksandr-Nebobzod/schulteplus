@@ -1,0 +1,74 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+	
+	<PreferenceCategory app:title="@string/messages_header"
+		app:isPreferenceVisible="false" >
+		
+		<EditTextPreference
+			app:key="signature"
+			app:title="@string/signature_title"
+			app:useSimpleSummaryProvider="false" />
+		
+		<ListPreference
+			app:defaultValue="reply"
+			app:entries="@array/reply_entries"
+			app:entryValues="@array/reply_values"
+			app:key="reply"
+			app:title="@string/reply_title"
+			app:useSimpleSummaryProvider="true" />
+	
+	</PreferenceCategory>
+	
+	<PreferenceCategory app:title="@string/sync_header"
+		app:isPreferenceVisible="false" >
+		
+		<SwitchPreferenceCompat
+			app:key="sync"
+			app:title="@string/sync_title" />
+		
+		<SwitchPreferenceCompat
+			app:dependency="sync"
+			app:key="attachment"
+			app:summaryOff="@string/attachment_summary_off"
+			app:summaryOn="@string/attachment_summary_on"
+			app:title="@string/attachment_title" />
+	
+	</PreferenceCategory>
+	
+	<PreferenceCategory app:title="@string/title_basics" app:summary="@string/txt_bas_description" >
+		
+		<CheckBoxPreference
+			app:defaultValue="true"
+			app:key="gcb_bas_dot"
+			app:title="@string/lbl_bas_dot"
+			app:icon="@drawable/ic_basics_dot"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_dbl_dot" app:defaultValue="false" app:key="gcb_bas_dbl_dot" app:icon="@drawable/ic_bsics_double_dot" />
+		<CheckBoxPreference app:title="@string/lbl_bas_pyramidot" app:defaultValue="false" app:key="gcb_bas_pyramidot" app:enabled="true"/>
+
+		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb" app:defaultValue="false" app:key="gcb_bas_circles_rb" app:icon="@drawable/ic_circles_rb"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb_lined" app:defaultValue="false" app:key="gcb_bas_circles_rb_lined" app:enabled="false" android:title="---"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_sg_khao_manee" app:defaultValue="false" app:key="gcb_bas_khao_manee" app:enabled="true" android:title="---"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb_crossed" app:defaultValue="false" app:key="gcb_bas_circles_rb_crossed" app:enabled="false" app:allowDividerBelow="true"/>
+		
+		<CheckBoxPreference app:title="@string/lbl_bas_necker_cube" app:defaultValue="false" app:key="gcb_bas_necker_cube" app:icon="@drawable/ic_basics2_black_24dp" />
+		<CheckBoxPreference app:title="@string/lbl_bas_necker_cylinder" app:defaultValue="false" app:key="gcb_bas_necker_cylinder" app:enabled="true" app:allowDividerAbove="true"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_necker_ball" app:defaultValue="false" app:key="gcb_bas_necker_ball" app:enabled="true" app:singleLineTitle="true"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_penrose_triangle" app:defaultValue="false" app:key="gcb_bas_penrose_triangle" app:enabled="false"/>
+		
+		<CheckBoxPreference app:title="@string/lbl_bas_dancing_girl" app:defaultValue="false" app:key="gcb_bas_dancing_girl" app:enabled="false"  />
+		<CheckBoxPreference app:title="@string/lbl_bas_dancing_cat" app:defaultValue="false" app:key="gcb_bas_dancing_cat" app:enabled="false" />
+		
+		<SeekBarPreference android:title="seekbar" app:seekBarIncrement="@integer/material_motion_duration_long_1" />
+		
+		<SwitchPreference
+			android:defaultValue="false"
+			android:key="sw_pref_double"
+			app:enabled="false"
+			android:title="@string/lbl_bas_double" app:summary="@string/lbl_bas_double_desc" />
+		<EditTextPreference
+			app:key="prf_ex_type"
+			app:title="Exercise Type"
+			app:isPreferenceVisible="false" />
+	</PreferenceCategory>
+	
+</PreferenceScreen>

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
@@ -25,6 +26,7 @@ public class HomeFragment extends Fragment {
 		View root = binding.getRoot();
 
 		final TextView textView = binding.textHome;
+		textView.setText(R.string.txt_news );
 		homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 		return root;
 	}

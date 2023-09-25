@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.databinding.FragmentNotificationsBinding;
 
 public class NotificationsFragment extends Fragment {
@@ -25,6 +26,7 @@ public class NotificationsFragment extends Fragment {
 		View root = binding.getRoot();
 
 		final TextView textView = binding.textNotifications;
+		textView.setText(R.string.txt_notification_desc);
 		notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 		return root;
 	}

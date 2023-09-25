@@ -1,6 +1,6 @@
 package org.nebobrod.schulteplus;
 
-import static java.security.AccessController.getContext;
+import static org.nebobrod.schulteplus.Utils.*;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -16,37 +16,50 @@ public class STable {
 	private Resources mRes;
 	private ArrayList<SCell> area = new ArrayList<>();
 	private int xSize, ySize;
-	private int turnNumber = 1;
+	private int turnNumber;
 
 	public STable(int x, int y, Context c) {
 		mContext = c;
 		mRes = mContext.getResources();
 		this.xSize = x;
 		this.ySize = y;
-		// first record in journal has time, the others time of turn
-		this.journal.add(new Turn(System.nanoTime(), 0L, 0, 0, 0, true));
 
+		this.reset();
+	}
+
+	public void reset(){
 		int value = 1;
-		for (x = xSize; x>0; x--){
-			for (y = ySize;y>0; y--){
-				area.add(new SCell(x,y,value++));
+		area.clear();
+		for (int x = xSize; x > 0; x--){
+			for (int y = ySize; y > 0; y--){
+				area.add(new SCell(x, y, value++));
 			}
 		}
+		turnNumber = 1;
+		shuffle();
+		// first record in journal has time, the others time of turn
+		this.journal.clear();
+		this.journal.add(new Turn(System.nanoTime(), 0L, turnNumber,0, 0, 0, true));
+		Log.d(TAG, "reset: \n" + area.toString());
 	}
 
 	public String getResults(){
-		int time = 0, turns;	// all this tend to milliseconds
+		int time = 0, turns = 0, turnsMissed = 0;	// time tends to milliseconds
 		float average = 0, rmsd = 0;
 		String results = "";	// this in seconds.00
 
 		turns = this.journal.size()-1;
-		results += mRes.getString(R.string.lbl_turns) + ": " + turns;
+		results += mRes.getString(R.string.lbl_turns) + ":" + tHtml()  + bHtml(""+ turns);
 
 		// time spent & average deviation
 		for (int i=1; i<=turns; i++) {
 			time += this.journal.get(i).time;
+			if (!this.journal.get(i).isCorrect) turnsMissed++;
 		}
-		results += "\n" + mRes.getString(R.string.lbl_time) + ": " + String.format("%.2f", (time /1000F));
+		if (turnsMissed != 0) { // if there are no missed turns do not show it
+			results += pHtml() + mRes.getString(R.string.lbl_turns_missed) + ":" + tHtml()  + cHtml( bHtml(""+ turnsMissed));
+		}
+		results += pHtml() + mRes.getString(R.string.lbl_time) + ":" + tHtml()  + bHtml(String.format("%.2f", (time /1000F))) + " " + mRes.getString(R.string.lbl_mu_second);
 		average = (float) time / turns;
 
 		// root mean square deviation
@@ -56,25 +69,28 @@ public class STable {
 		}
 		rmsd = (float) Math.sqrt((float) (rmsd / turns));
 
-		results += "\n" + mRes.getString(R.string.lbl_pace) + " ave: " + String.format("%.2f", (average / 1000)) + " sd: " + String.format("%.3f", (rmsd / 1000)) + " " + mRes.getString(R.string.lbl_mu_second);
+		results +=  pHtml() + mRes.getString(R.string.lbl_average) + tHtml()  +  bHtml(String.format("%.2f", (average / 1000))) + " " + mRes.getString(R.string.lbl_mu_second) +
+				pHtml()+ mRes.getString(R.string.lbl_sd) + tHtml() + bHtml(String.format("%.2f", (rmsd / 1000))) + " " + mRes.getString(R.string.lbl_mu_second);
 		Log.d(TAG, "getResults: "+ this.journal);
-		Log.d(TAG, "getResults: \n" + results);
+		Log.d(TAG, "getResults: " + results);
 
 		return results;
 	}
 
-	public boolean checkEnd() {
+	public boolean endChecked() {
 		return (turnNumber > xSize*ySize? true: false);
 	}
 
 	class Turn {
 		Long timeStamp, time;
+		int expected;
 		int x, y, position;
 		boolean isCorrect;
 
-		public Turn(Long timeStamp, Long time, int x, int y, int position, boolean isCorrect) {
+		public Turn(Long timeStamp, Long time, int expected, int x, int y, int position, boolean isCorrect) {
 			this.timeStamp = timeStamp;
 			this.time = time;
+			this.expected = expected;
 			this.x = x;
 			this.y = y;
 			this.position = position;
@@ -87,6 +103,7 @@ public class STable {
 			return "\nTurn{" +
 					"stamp=" + timeStamp +
 					", time=" + time +
+					", exp=" + expected +
 					", x=" + x +
 					", y=" + y +
 					", pos=" + position +
@@ -98,17 +115,17 @@ public class STable {
 
 	public boolean checkTurn (int position) {
 		int attemptNumber = journal.size();
-		int turnY = (position + 1) / xSize + 1;
-		int turnX = (position + 1) % xSize;
+		int turnY = (position) / xSize + 1;
+		int turnX = (position) % xSize + 1;
 
 		if (this.area.get(position).getValue() == turnNumber) {
 			this.journal.add(new Turn(
-					System.nanoTime(),(System.nanoTime() - journal.get(attemptNumber - 1).timeStamp) / 1000000, turnX, turnY, position, true));
+					System.nanoTime(),(System.nanoTime() - journal.get(attemptNumber - 1).timeStamp) / 1000000, turnNumber, turnX, turnY, position, true));
 			turnNumber++;
 			return true;
 		} else {
 			this.journal.add(new Turn(
-					System.nanoTime(), (System.nanoTime() - journal.get(attemptNumber - 1).timeStamp) / 1000000, turnX, turnY, position, false));
+					System.nanoTime(), (System.nanoTime() - journal.get(attemptNumber - 1).timeStamp) / 1000000, turnNumber, turnX, turnY, position, false));
 			return false;
 		}
 	}

@@ -15,8 +15,15 @@
 		<item>schulte_2_sequences</item>
 		<item>schulte_3_sequences</item>
 		<item>schulte_4_staggered</item>
-		<item>basic_1_dot</item>
-		<item>basic_2_necker</item>
+		<item>gcb_bas_dot</item>
+		<item>gcb_bas_dbl_dot</item>
+		<item>gcb_bas_pyramidot</item>
+		<item>gcb_bas_circles_rb</item>
+		<item>gcb_bas_khao_manee</item>
+		
+		<item>gcb_bas_necker_cube</item>
+		<item>gcb_bas_necker_cylinder</item>
+		<item>gcb_bas_necker_ball</item>
 		
 	</string-array>
 	

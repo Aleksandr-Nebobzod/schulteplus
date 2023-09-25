@@ -5,13 +5,14 @@
 	<string name="title_notifications">Notifications</string>
 	<string name="title_schulte">Schulte</string>
 	<string name="title_basics">Basics</string>
-	<string name="lbl_quick_launch">Quick Launch</string>
 	<string name="title_profile">Profile</string>
+	<string name="lbl_quick_launch">Quick Launch</string>
+	<string name="err_unknown">Unknown error</string>
 	<string name="str_empty" translatable="false"></string>
 	<string name="lbl_time">Time</string>
 	<string name="lbl_turns">Turns</string>
 	<string name="lbl_pace">Pace</string>
-	<string name="lbl_mu_second">sec.</string>
+	<string name="lbl_mu_second">sec</string>
 	<string name="err_no_data">Can\'t get required data</string>
     <!-- Preference Titles -->
 	<string name="messages_header" translatable="false">Messages</string>
@@ -27,7 +28,40 @@
 	<string name="attachment_summary_on" translatable="false">Automatically download attachments for incoming emails
 	</string>
 	<string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
-	<string name="hnt_input_width">input the width (2 -- 10)</string>
-	<string name="hnt_input_height">input the height (2 -- 10)</string>
+	<string name="hnt_input_width">input the width (1 -- 10)</string>
+	<string name="hnt_input_height">input the height (1 -- 10)</string>
+	<string name="str_continue">Would you like to go on? </string>
+	<string name="title_result">Result</string>
+	<string name="lbl_ok">OK</string>
+	<string name="lbl_no">No</string>
+	<string name="txt_one_more_q">Train one more time?</string>
+	<string name="lbl_show_password">Show password</string>
+	<string name="txt_ssettings">There are prestart settings of Schulte tables training should be improved</string>
+	<string name="txt_news">Here is the news list coming soon.\n Brief info: https://handwiki.org/wiki/Schulte_table </string>
+	<string name="txt_notification_desc">Notifications should be here</string>
+	<string name="txt_dashboard_desc">This is dashboard fragment</string>
+	<string name="lbl_bas_dbl_dot">Double Dot</string>
+	<string name="lbl_bas_dot">The Dot</string>
+	<string name="lbl_bas_circles_rb">Circles Red/Blue</string>
+	<string name="lbl_bas_circles_rb_lined">Circles R/B Lined</string>
+	<string name="lbl_bas_circles_rb_crossed">Circles R/B Crossed</string>
+	<string name="lbl_bas_pyramidot">Piramidot</string>
+	<string name="lbl_bas_necker_cube">Necker\'s cube</string>
+	<string name="lbl_bas_necker_cube_double">Necker\'s Cube Doubled</string>
+	<string name="lbl_bas_necker_ball">Necker\'s Ball</string>
+	<string name="lbl_bas_necker_cylinder">Necker\'s Cylinder</string>
+	<string name="lbl_bas_dancing_girl">Dancing Girl</string>
+	<string name="lbl_bas_dancing_cat">Dancing Cat</string>
+	<string name="txt_bas_description">There are very symple thereforee hard exercicises which are require your stable attention</string>
+	<string name="lbl_bas_double">Twin mode*</string>
+	<string name="lbl_bas_double_desc">For the asterisk-marked exercises content will run as a parallel stereo image</string>
+	<string name="lbl_bas_penrose_triangle">Penrose\'s Triangle</string>
+	<string name="lbl_sd">s.Deviation:</string>
+	<string name="lbl_average">Average:</string>
+	<string name="lbl_turns_missed">Turns missed</string>
+	<string name="title_activity_basics" translatable="false">BasicsActivity</string>
+	<string name="dummy_button" translatable="false">Dummy Button</string>
+	<string name="dummy_content" translatable="false">DUMMY\nCONTENT</string>
+	<string name="lbl_bas_sg_khao_manee">Khao Manee</string>
 
 </resources>

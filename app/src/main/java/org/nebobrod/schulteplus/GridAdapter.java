@@ -50,7 +50,7 @@ public class GridAdapter extends BaseAdapter {
 			 view = (TextView) convertView;
 
 		 view.setText("" + mExercise.getArea().get(position).getValue());
-//		 Log.d(TAG, "getView: width " + view.getWidth());
+		 //Log.d(TAG, "getView:  " + view.getText());
 //		 https://stackoverflow.com/questions/51719485/adding-border-to-textview-programmatically
 		 Drawable img = mContext.getDrawable(R.drawable.ic_border);
 		 view.setBackground(img);

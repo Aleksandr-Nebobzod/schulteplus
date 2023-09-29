@@ -3,14 +3,23 @@ package org.nebobrod.schulteplus;
 import static org.nebobrod.schulteplus.ExerciseRunner.KEY_RUNNER;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -20,6 +29,7 @@ import androidx.preference.EditTextPreference;
 import org.nebobrod.schulteplus.databinding.ActivityMainBinding;
 //import org.nebobrod.schulteplus.ui.BasicsActivity;
 import org.nebobrod.schulteplus.ui.BasicsActivity;
+import org.nebobrod.schulteplus.ui.PopupSettingsFragment;
 import org.nebobrod.schulteplus.ui.SchulteActivity02;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,11 +40,53 @@ public class MainActivity extends AppCompatActivity {
 	private FloatingActionButton fabLaunch;
 
 	@Override
+	public boolean onCreateOptionsMenu (Menu menu) {
+//		getMenuInflater().inflate(R.menu.menu_main, menu);
+		getMenuInflater().inflate(R.menu.main, menu); // this is a one button
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.menu_settings:
+				((AppCompatDialogFragment) Fragment.instantiate(this, PopupSettingsFragment.class.getName()))
+						.show(getSupportFragmentManager(), PopupSettingsFragment.class.getName());
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		binding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
+
+
+		//ActionBar
+		androidx.appcompat.app.ActionBar mainActionBar = this.getSupportActionBar();
+		int abColor =  getWindow().getStatusBarColor();
+		mainActionBar.setLogo(R.drawable.ic_ab_schulte_plus);
+		mainActionBar.setDisplayUseLogoEnabled(true);
+		mainActionBar.setDisplayShowHomeEnabled(true);
+/*** ActionBar methods tested:
+//		mainActionBar.hide();
+
+//		View view = mainActionBar.getCustomView();
+
+//		mainActionBar.setDisplayShowCustomEnabled(true);
+//		mainActionBar.setCustomView(R.layout.action_bar);
+//		mainActionBar.setTitle("T.h.e. .t.i.t.l.e");
+//		mainActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+//		mainActionBar.setIcon(R.drawable.ic_schulte_black_24dp);
+//		mainActionBar.setDisplayHomeAsUpEnabled(true);
+//		mainActionBar.setHomeAsUpIndicator(R.drawable.ic_basics_black_24dp);
+//		mainActionBar.setDisplayOptions(ActionBar.DISPLAY_USE_LOGO);
+//		mainActionBar.setHomeButtonEnabled(true);
+//		mainActionBar.setSubtitle("subtitle");
+		//mainActionBar.openOptionsMenu(); */
 
 		BottomNavigationView navView = findViewById(R.id.nav_view);
 		// Passing each menu ID as a set of Ids because each
@@ -51,6 +103,30 @@ public class MainActivity extends AppCompatActivity {
 
 		fabLaunch = findViewById(R.id.fabLaunch);
 
+		// BottomSheet for Preferences
+		findViewById(R.id.touch_outside).setOnClickListener(v -> finish());
+		BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
+				.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+					@Override
+					public void onStateChanged(@NonNull View bottomSheet, int newState) {
+						switch (newState) {
+							case BottomSheetBehavior.STATE_HIDDEN:
+								finish();
+								break;
+							case BottomSheetBehavior.STATE_EXPANDED:
+								getWindow().setStatusBarColor(Color.TRANSPARENT);
+								break;
+							default:
+								getWindow().setStatusBarColor(abColor);
+								break;
+						}
+					}
+					@Override
+					public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+						// no op
+					}
+				});
+
 		ExerciseRunner.getInstance(getApplicationContext());
 		fabLaunch.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -64,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
 					case "gcb_bas":
 						activity = BasicsActivity.class;
 						break;
-					case "schulte":
+					case "gcb_sch":
 						activity = SchulteActivity02.class;
 						break;
 					default: Toast.makeText(MainActivity.this, TAG+R.string.err_unknown, Toast.LENGTH_SHORT).show();
@@ -78,5 +154,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 	}
+
+
 
 }

@@ -19,15 +19,15 @@
 
 	<fragment
 		android:id="@+id/navigation_schulte"
-		android:name="org.nebobrod.schulteplus.ui.schultesettings.SchulteSettingsFragment"
+		android:name="org.nebobrod.schulteplus.ui.schultesettings.SchulteSettings"
 		android:label="@string/title_schulte"
-		tools:layout="@layout/fragment_schulte_settings" />
+		/>
+<!--	tools:layout="@layout/fragment_schulte_settings"-->
 	
 	<fragment
 		android:id="@+id/navigation_basics"
 		android:name="org.nebobrod.schulteplus.ui.basics.BasicSettings"
 		android:label="@string/title_basics"
-		
 		/>
 	
 </navigation>

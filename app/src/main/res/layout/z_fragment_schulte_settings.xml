@@ -3,13 +3,13 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".ui.schultesettings.SchulteSettingsFragment">
+	tools:context=".ui.schultesettings.z_SchulteSettingsFragment">
 	
 	<TextView
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:layout_marginTop="10dp"
-		android:text="@string/txt_ssettings" />
+		android:text="@string/txt_settings" />
 	
 	<EditText
 		android:id="@+id/et_x_size"

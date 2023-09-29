@@ -1,4 +1,4 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 	
 	<PreferenceCategory app:title="@string/messages_header"
@@ -35,6 +35,7 @@
 	
 	</PreferenceCategory>
 	
+	<EditTextPreference app:key="prf_ex_type" app:title="Exercise Type" app:useSimpleSummaryProvider="true"	app:isPreferenceVisible="false" />
 	<PreferenceCategory app:title="@string/title_basics" app:summary="@string/txt_bas_description" >
 		
 		<CheckBoxPreference
@@ -46,8 +47,8 @@
 		<CheckBoxPreference app:title="@string/lbl_bas_pyramidot" app:defaultValue="false" app:key="gcb_bas_pyramidot" app:enabled="true"/>
 
 		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb" app:defaultValue="false" app:key="gcb_bas_circles_rb" app:icon="@drawable/ic_circles_rb"/>
-		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb_lined" app:defaultValue="false" app:key="gcb_bas_circles_rb_lined" app:enabled="false" android:title="---"/>
-		<CheckBoxPreference app:title="@string/lbl_bas_sg_khao_manee" app:defaultValue="false" app:key="gcb_bas_khao_manee" app:enabled="true" android:title="---"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb_lined" app:defaultValue="false" app:key="gcb_bas_circles_rb_lined" app:enabled="false" />
+		<CheckBoxPreference app:title="@string/lbl_bas_sg_khao_manee" app:defaultValue="false" app:key="gcb_bas_khao_manee" app:enabled="true"/>
 		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb_crossed" app:defaultValue="false" app:key="gcb_bas_circles_rb_crossed" app:enabled="false" app:allowDividerBelow="true"/>
 		
 		<CheckBoxPreference app:title="@string/lbl_bas_necker_cube" app:defaultValue="false" app:key="gcb_bas_necker_cube" app:icon="@drawable/ic_basics2_black_24dp" />
@@ -58,17 +59,13 @@
 		<CheckBoxPreference app:title="@string/lbl_bas_dancing_girl" app:defaultValue="false" app:key="gcb_bas_dancing_girl" app:enabled="false"  />
 		<CheckBoxPreference app:title="@string/lbl_bas_dancing_cat" app:defaultValue="false" app:key="gcb_bas_dancing_cat" app:enabled="false" />
 		
-		<SeekBarPreference android:title="seekbar" app:seekBarIncrement="@integer/material_motion_duration_long_1" />
+		<SeekBarPreference app:title="seekbar" app:seekBarIncrement="@integer/material_motion_duration_long_1" />
 		
 		<SwitchPreference
-			android:defaultValue="false"
-			android:key="sw_pref_double"
+			app:defaultValue="false"
+			app:key="sw_pref_double"
 			app:enabled="false"
-			android:title="@string/lbl_bas_double" app:summary="@string/lbl_bas_double_desc" />
-		<EditTextPreference
-			app:key="prf_ex_type"
-			app:title="Exercise Type"
-			app:isPreferenceVisible="false" />
+			app:title="@string/lbl_bas_double" app:summary="@string/lbl_bas_double_desc" />
 	</PreferenceCategory>
 	
 </PreferenceScreen>

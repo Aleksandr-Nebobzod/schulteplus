@@ -11,10 +11,10 @@
 	</string-array>
 	
 	<string-array name="ex_type">
-		<item>schulte_1_sequence</item>
-		<item>schulte_2_sequences</item>
-		<item>schulte_3_sequences</item>
-		<item>schulte_4_staggered</item>
+		<item>gcb_schulte_1_sequence</item>
+		<item>gcb_schulte_2_sequences</item>
+		<item>gcb_schulte_3_sequences</item>
+		<item>gcb_schulte_4_mishmash</item>
 		<item>gcb_bas_dot</item>
 		<item>gcb_bas_dbl_dot</item>
 		<item>gcb_bas_pyramidot</item>
@@ -25,6 +25,30 @@
 		<item>gcb_bas_necker_cylinder</item>
 		<item>gcb_bas_necker_ball</item>
 		
+	</string-array>
+	
+	<string-array name="sound_modes_entries" translatable="true">
+		<item>None</item>
+		<item>Normal</item>
+		<item>Advanced</item>
+	</string-array>
+	
+	<string-array name="sound_modes_values" translatable="false">
+		<item>none</item>
+		<item>normal</item>
+		<item>advanced</item>
+	</string-array>
+	
+	<string-array name="symbol_type_entries" translatable="true">
+		<item>Number</item>
+		<item>Letter</item>
+		<item>Color</item>
+	</string-array>
+	
+	<string-array name="symbol_type_values" translatable="false">
+		<item>number</item>
+		<item>letter</item>
+		<item>color</item>
 	</string-array>
 	
 </resources>

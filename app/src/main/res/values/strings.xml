@@ -17,6 +17,9 @@
     <!-- Preference Titles -->
 	<string name="messages_header" translatable="false">Messages</string>
 	<string name="sync_header" translatable="false">Sync</string>
+	<string name="prf_title_app">Application</string>
+	<string name="prf_title_data">Share data</string>
+	<string name="prf_title_sound_mode">Sound mode</string>
 
     <!-- Messages Preferences -->
 	<string name="signature_title" translatable="false">Your signature</string>
@@ -36,7 +39,7 @@
 	<string name="lbl_no">No</string>
 	<string name="txt_one_more_q">Train one more time?</string>
 	<string name="lbl_show_password">Show password</string>
-	<string name="txt_ssettings">There are prestart settings of Schulte tables training should be improved</string>
+	<string name="txt_settings">There are prestart settings of Schulte tables training should be improved</string>
 	<string name="txt_news">Here is the news list coming soon.\n Brief info: https://handwiki.org/wiki/Schulte_table </string>
 	<string name="txt_notification_desc">Notifications should be here</string>
 	<string name="txt_dashboard_desc">This is dashboard fragment</string>
@@ -63,5 +66,66 @@
 	<string name="dummy_button" translatable="false">Dummy Button</string>
 	<string name="dummy_content" translatable="false">DUMMY\nCONTENT</string>
 	<string name="lbl_bas_sg_khao_manee">Khao Manee</string>
+	<string name="menu_user_long">User related options</string>
+	<string name="menu_user_short">User</string>
+	<string name="menu_about_long">About the application</string>
+	<string name="menu_about_short">About</string>
+	<string name="menu_contact_long">Contact to developer</string>
+	<string name="menu_contact_short">Contact</string>
+	<string name="menu_data_sharing_long">Agree to share non-personal data</string>
+	<string name="menu_how_mistakes_long">App shows mistakes</string>
+	<string name="lbl_options">Options</string>
+	<string name="prf_data_sum">SUM</string>
+	<string name="prf_data_sum_off">Your exercise results are NOT SENT to server, thou you also CAN NOT see the other users\' results (ratings off)</string>
+	<string name="prf_data_on">Your exercise results ARE  SENT to server, though you also CAN SEE the other users\' results (ratings ON)</string>
+	<string name="prf_data_st_on">ST ON</string>
+	<string name="prf_data_st_off">ST OFF</string>
+	<string name="prf_title_sound_yn">Sound</string>
+	<string name="prf_title_vibration">Vibration response</string>
+	<string name="prf_cat_help">Help</string>
+	<string name="prf_title_feedback">Send feedback</string>
+	<string name="prf_sum_feedback">Report technical issues or suggest new features</string>
+	<string name="prf_user_name">Name</string>
+	<string name="prf_user_name_sum">Name or nickname what\'s visible to other users</string>
+	<string name="prf_user_email">e-mail</string>
+	<string name="prf_user_email_sum">Identifier that allows restoring data (not visible to other users)</string>
+	<string name="prf_about_sum01">This application dedicated to main idea of human development.
+		It implements well-known trainee tool Tables of dr.Schulte who developed them to study human\'s attention and to help people with mental diseases improve their abilities.\n
+		Besides several variants of Schulte Tables, we put in the app some treasures which are necessary to everyone who pursuits: Consciousness, Self-Development and Open-Mind approach to the Universe. </string>
+	<string name="lbl_click"><![CDATA[Click here ->]]></string>
+	<string name="prf_menu_about_url">Our website</string>
+	<string name="prf_current_level_dialog_message">You can change your level within the reached span</string>
+	<string name="prf_current_level_title">"Your current level out of "</string>
+	<string name="prf_current_level_summary">The level you can choose for rating trainings</string>
+	<string name="prf_current_level_units">Stars</string>
+	<string name="prf_level_title">Level</string>
+	<string name="prf_level_summary">Your maximum reached level</string>
+	<string name="prf_hours_title">Hours</string>
+	<string name="prf_hours_summary">Earned number of \'minuties\' converted to hours of practice</string>
+	<string name="txt_schulte_description">There are core exercises based upon Schulte methods</string>
+	<string name="lbl_sch_1_sequence">Primary flow</string>
+	<string name="lbl_sch_1_sequence_sum">The exercise wants you to collect growing sequence</string>
+	<string name="x_size">Field width or x-size</string>
+	<string name="y_size">Field height or y-size</string>
+	<string name="lbl_rating">Ratings</string>
+	<string name="lbl_rating_sum_on">Your settings gets comparable to other members\' settings. Your scores might be written to the Wall of Fame.</string>
+	<string name="lbl_rating_sum_off">This settings are for variety of personal training. Your scores are saved into your Achievements table.</string>
+	<string name="lbl_sch_2_sequence">Air and Fire (7х7)</string>>
+	<string name="lbl_sch_2_sequence_sum">Two sequences are waiting: Blue grows from 1 and Red wanes from 24</string>
+	<string name="lbl_sch_3_sequence">Four Seasons (10х10)</string>
+	<string name="lbl_sch_3_sequence_sum">For sequences: Up, Down, Convergent, Divergent...  That might make you mad for starters</string>
+	<string name="lbl_hints">Hints</string>
+	<string name="lbl_hints_sum">These fancy glows, digital reminders and timing are for rookie levels only. Real psychonaut needs nothing more than void.</string>
+	<string name="lbl_symbol_type">Cell\'s symbol type</string>
+	<string name="lbl_sch_4_sequence">Mishmash!</string>
+	<string name="lbl_sch_4_sequence_sum">Well, try to find them all totally unique</string>
+	<string name="lbl_shuffle">Shaken, not stirred!</string>
+	<string name="lbl_shuffle_sum_on">Each new turn you are meeting new field</string>
+	<string name="lbl_shuffle_sum_off">Field stays permanent until coped out</string>
+	<string name="str_number" translatable="false">number</string>
+	<string name="prf_menu_about_url_sum">Visit and get additional resources</string>
+	<string name="src_home_ipir_vk_url" translatable="false">https://vk.com/public216345855</string>
+	<string name="src_menu_about_url" translatable="false">https://cutt.ly/DwbxKG56</string>
+	<string name="src_menu_about_email" translatable="false">"mailto:nebobzod@gmail.com"</string>
 
 </resources>

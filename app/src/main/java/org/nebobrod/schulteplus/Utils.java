@@ -1,15 +1,12 @@
 package org.nebobrod.schulteplus;
 
 
-
-
-
-
-
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.format.Time;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
@@ -76,6 +73,20 @@ public final class Utils {
 	}
 	public static String pHtml(){ return "<br>";}
 	public static String tHtml(){ return "\u0009";}
+
+	public static void openWebPage(String url, Context context) {
+
+		Uri webpage = Uri.parse(url);
+
+		if (!url.startsWith("http://") && !url.startsWith("https://")) {
+			webpage = Uri.parse("http://" + url);
+		}
+
+		Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+		if (intent.resolveActivity(context.getPackageManager()) != null) {
+			context.startActivity(intent);
+		}
+	}
 
 
 }

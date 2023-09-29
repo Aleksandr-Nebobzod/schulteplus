@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	
+	<string-array name="sound_modes_entries">
+		<item>Выкл</item>
+		<item>Обычный</item>
+		<item>Экспертный</item>
+	</string-array>
+	
+	<string-array name="symbol_type_entries" translatable="true">
+		<item>Число</item>
+		<item>Буква</item>
+		<item>Цвет</item>
+	</string-array>
+	
+</resources>

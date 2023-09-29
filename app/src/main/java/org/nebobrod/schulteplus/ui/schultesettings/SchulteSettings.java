@@ -1,4 +1,6 @@
-package org.nebobrod.schulteplus.ui.basics;
+package org.nebobrod.schulteplus.ui.schultesettings;
+
+import static org.nebobrod.schulteplus.Utils.intFromString;
 
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -16,8 +18,8 @@ import org.nebobrod.schulteplus.R;
 
 import java.util.ArrayList;
 
-
-public class BasicSettings extends PreferenceFragmentCompat {
+public class SchulteSettings extends PreferenceFragmentCompat {
+	// TODO: 28.09.2023 this and BasicSettings class are mostly same (think how to unify them) 
 	ArrayList<Preference> exerciseTypes = new ArrayList<>();
 	androidx.preference.CheckBoxPreference chosen;
 	private ExerciseRunner runner = ExerciseRunner.getInstance(getContext());
@@ -25,17 +27,18 @@ public class BasicSettings extends PreferenceFragmentCompat {
 
 	@Override
 	public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-		setPreferencesFromResource(R.xml.preferences_basics, rootKey);
+		setPreferencesFromResource(R.xml.preferences_schulte, rootKey);
 		PreferenceScreen screen = this.getPreferenceScreen();
 		Resources res = getResources();
 		exTypes = res.getStringArray(R.array.ex_type);
 
 		initiateExerciseTypes();
 	}
-	@Override
-	public void onResume() {
+
+	private void updatePrefScreen(){
 		runner.setPreference(getContext());
 		EditTextPreference exType = findPreference("prf_ex_type");
+
 		// to find which checkbox selected on the screen:
 		for (Preference p: exerciseTypes) {
 			if (((androidx.preference.CheckBoxPreference) p).isChecked()) {
@@ -48,8 +51,44 @@ public class BasicSettings extends PreferenceFragmentCompat {
 			chosen.setChecked(true);
 		}
 		exType.setText(chosen.getKey());
-		runner.setExType(exType.getText().toString()); // set to runner from invisible pref et
+		runner.setExType(exType.getText().toString()); // set exType to runner from invisible pref et
+		switch (chosen.getKey()){	// disable options PreferenceCategory for hard levels
+			case "gcb_schulte_1_sequence":
+				findPreference("prf_cat_options").setEnabled(true);
+				break;
+			default:
+				findPreference("prf_cat_options").setEnabled(false);
+		}
+		// set X & Y to runner
+		switch (chosen.getKey()){
+			case "gcb_schulte_1_sequence":
+				runner.setX((byte) ((androidx.preference.SeekBarPreference) findPreference("prf_x_size")).getValue());
+				runner.setY((byte) ((androidx.preference.SeekBarPreference) findPreference("prf_y_size")).getValue());
+				break;
+			case "gcb_schulte_2_sequences":
+				runner.setX((byte) 7);
+				runner.setY((byte) 7);
+				break;
+			case "gcb_schulte_3_sequences":
+				runner.setX((byte) 10);
+				runner.setY((byte) 10);
+				break;
+			default:
+				runner.setX((byte) 5);
+				runner.setY((byte) 5);
+		}
+
+	}
+	@Override
+	public void onResume() {
+		updatePrefScreen();
 		super.onResume();
+	}
+
+	@Override
+	public void onPause() {
+		updatePrefScreen();
+		super.onPause();
 	}
 
 	@Override
@@ -61,9 +100,8 @@ public class BasicSettings extends PreferenceFragmentCompat {
 				((androidx.preference.CheckBoxPreference) p).setChecked(false);
 			}
 			chosen.setChecked(true);
-			EditTextPreference exType = findPreference("prf_ex_type");
-			exType.setText(chosen.getKey().toString());
-			runner.setExType(chosen.getKey().toString());
+
+			updatePrefScreen();
 		}
 		return super.onPreferenceTreeClick(preference);
 	}
@@ -76,7 +114,7 @@ public class BasicSettings extends PreferenceFragmentCompat {
 		ArrayList<Preference> list = getPreferenceList(getPreferenceScreen(), new ArrayList<Preference>());
 		exerciseTypes.clear();
 		for (Preference p : list) {
-			// prefix "@string/gcb_" of Preference means Group Check Box
+			// prefix "gcb_" of Preference means Group Check Box
 			if (p instanceof androidx.preference.CheckBoxPreference && p.getKey().startsWith("gcb_")) {
 				p.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 					@Override
@@ -89,7 +127,7 @@ public class BasicSettings extends PreferenceFragmentCompat {
 			}
 		}
 	}
-	
+
 	private ArrayList<Preference> getPreferenceList(Preference p, ArrayList<Preference> list) {
 		if( p instanceof PreferenceCategory || p instanceof PreferenceScreen) {
 			PreferenceGroup pGroup = (PreferenceGroup) p;

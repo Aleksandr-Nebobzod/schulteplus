@@ -21,16 +21,16 @@ import android.widget.Toast;
 import org.nebobrod.schulteplus.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
 
-public class SchulteSettingsFragment extends Fragment {
+public class z_SchulteSettingsFragment extends Fragment {
 
-	private SchulteSettingsViewModel mViewModel;
+	private z_SchulteSettingsViewModel mViewModel;
 	private View view;
 	private EditText etWidth, etHeight;
 	private ExerciseRunner runner = ExerciseRunner.getInstance(getContext());
 	private String[] exTypes;
 
-	public static SchulteSettingsFragment newInstance() {
-		return new SchulteSettingsFragment();
+	public static z_SchulteSettingsFragment newInstance() {
+		return new z_SchulteSettingsFragment();
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class SchulteSettingsFragment extends Fragment {
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
 							 @Nullable Bundle savedInstanceState) {
-		view = inflater.inflate(R.layout.fragment_schulte_settings, container, false);
+		view = inflater.inflate(R.layout.z_fragment_schulte_settings, container, false);
 
 		Resources res = getResources();
 		exTypes = res.getStringArray(R.array.ex_type);
@@ -109,7 +109,7 @@ public class SchulteSettingsFragment extends Fragment {
 	@Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		mViewModel = new ViewModelProvider(this).get(SchulteSettingsViewModel.class);
+		mViewModel = new ViewModelProvider(this).get(z_SchulteSettingsViewModel.class);
 		// TODO: Use the ViewModel
 
 	}

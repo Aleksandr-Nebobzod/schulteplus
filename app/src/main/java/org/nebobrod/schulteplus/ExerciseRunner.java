@@ -1,15 +1,8 @@
 package org.nebobrod.schulteplus;
 
-import static org.nebobrod.schulteplus.Utils.intFromString;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-
-import androidx.preference.Preference;
-
-
-import org.nebobrod.schulteplus.ui.schultesettings.SchulteSettingsFragment;
 
 public class ExerciseRunner {
 	private static final String TAG = "ExerciseRunner";

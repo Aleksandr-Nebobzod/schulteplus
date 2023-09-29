@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+	<item
+		android:id="@+id/user"
+		android:icon="@drawable/ic_baseline_perm_identity_24"
+		android:orderInCategory="1"
+		app:showAsAction="withText"
+		android:title="@string/menu_user_long"
+		android:titleCondensed="@string/menu_user_short"
+		android:visible="true">
+	</item>
+	<group
+		android:id="@+id/gr_exercise_settings"
+		android:menuCategory="container" >
+		<item
+			android:id="@+id/ex_set_data_sharing"
+			android:orderInCategory="1"
+			android:title="@string/menu_data_sharing_long"
+			android:checkable="true"
+			app:showAsAction="withText" >
+		</item>
+		<item
+			android:id="@+id/ex_set_show_mistakes"
+			android:orderInCategory="2"
+			android:title="@string/menu_how_mistakes_long"
+			android:checkable="true"
+			android:checked="true"
+			app:showAsAction="withText" >
+		</item>
+	</group>
+	
+	<item
+		android:id="@+id/about"
+		android:icon="@drawable/ic_baseline_action_about_24"
+		android:orderInCategory="2"
+		app:showAsAction="never"
+		android:title="@string/menu_about_long"
+		android:titleCondensed="@string/menu_about_short"
+		android:visible="true">
+	</item>
+	<item
+		android:id="@+id/contact"
+		android:icon="@drawable/ic_baseline_contact_24"
+		android:orderInCategory="3"
+		app:showAsAction="collapseActionView"
+		android:title="@string/menu_contact_long"
+		android:titleCondensed="@string/menu_contact_short"
+		android:visible="true">
+	</item>
+</menu>

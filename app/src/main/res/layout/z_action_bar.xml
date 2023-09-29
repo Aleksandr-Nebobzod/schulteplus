@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:weightSum="1"
+		android:orientation="horizontal"
+		android:gravity="right">
+		
+		<TextView
+			android:id="@+id/title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:gravity="center"
+			android:textColor="@color/white"
+			android:text="TextView"/>
+		
+		<ImageButton
+			android:id="@+id/ib_settings"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:scaleType="fitXY"
+			android:backgroundTint="@color/transparent"
+			android:src="@drawable/ic_ab_settings"
+			android:contentDescription="@string/txt_settings"
+			android:layout_gravity="center_horizontal"
+			android:foregroundGravity="center"
+			
+			/>
+<!--		-->
+<!--		android:layout_weight="2"		-->
+<!--		app:srcCompat="@drawable/ic_ab_settings"-->
+<!--		android:text="Button"-->
+	
+	</LinearLayout>
+
+</RelativeLayout>

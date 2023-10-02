@@ -10,6 +10,11 @@ import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
 public final class Utils {
 	private static final String TAG = "Utils";
 
@@ -88,5 +93,18 @@ public final class Utils {
 		}
 	}
 
+	public static final long timeStamp(){
+		return (long) (Instant.now().getEpochSecond());
+	}
+
+	public static final String timeStampFormatted (long ts) {
+		// use correct format ('S' for milliseconds)
+//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
+		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts), ZoneId.systemDefault()).toString() + " " + ZoneId.systemDefault().toString();
+	}
+
+	public static  long transactID(){
+		return UUID.randomUUID().timestamp();
+	}
 
 }

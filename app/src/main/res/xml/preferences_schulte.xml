@@ -13,6 +13,7 @@
 			app:icon="@drawable/ic_schulte_black_24dp"/>
 		<SwitchPreference app:key="prf_sw_ratings" app:title="@string/lbl_rating" app:summaryOn="@string/lbl_rating_sum_on" android:summaryOff="@string/lbl_rating_sum_off" app:defaultValue="false" app:enabled="false" />
 		<PreferenceCategory app:key="prf_cat_options" app:title="@string/lbl_options" app:enabled="true">
+			<SwitchPreference app:key="prf_sw_hints" app:title="@string/lbl_hints" app:summary="@string/lbl_hints_sum" app:defaultValue="false" app:enabled="true" app:icon="@drawable/ic_notifications_black_24dp" />
 			<SwitchPreference app:key="prf_sw_mix" app:title="@string/lbl_shuffle" app:summaryOn="@string/lbl_shuffle_sum_on" android:summaryOff="@string/lbl_shuffle_sum_off" app:defaultValue="true" app:enabled="false" />
 			<SeekBarPreference app:key="prf_x_size" app:title="@string/x_size" app:defaultValue="5" app:min="1" android:max="10" app:showSeekBarValue="true" />
 			<SeekBarPreference app:key="prf_y_size" app:title="@string/y_size" app:defaultValue="5" app:min="1" android:max="10" app:showSeekBarValue="true"/>
@@ -22,7 +23,7 @@
 		<CheckBoxPreference app:key="gcb_schulte_2_sequences" app:title="@string/lbl_sch_2_sequence" android:summary="@string/lbl_sch_2_sequence_sum" app:defaultValue="false" app:enabled="true" />
 		<CheckBoxPreference app:key="gcb_schulte_3_sequences"  app:title="@string/lbl_sch_3_sequence" android:summary="@string/lbl_sch_3_sequence_sum" app:defaultValue="false" app:enabled="true"/>
 		<CheckBoxPreference app:key="gcb_schulte_4_mishmash"  app:title="@string/lbl_sch_4_sequence" android:summary="@string/lbl_sch_4_sequence_sum" app:defaultValue="false" app:enabled="false"/>
-		<SwitchPreference app:key="prf_sw_hints" app:title="@string/lbl_hints" app:summary="@string/lbl_hints_sum" app:defaultValue="false" app:enabled="false" app:icon="@drawable/ic_notifications_black_24dp" />
+		
 	
 	</PreferenceCategory>
 </PreferenceScreen>

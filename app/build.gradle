@@ -16,24 +16,50 @@ configurations.all {
     }
 }
 
+
+
+
 android {
     namespace 'org.nebobrod.schulteplus'
     compileSdk 34
+
 
     defaultConfig {
         applicationId "org.nebobrod.schulteplus"
         minSdk 26
         targetSdk 34
-//        versionCode 1
-//        versionName "1.0"
+        versionCode 6
+        versionName "Entada"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    android.applicationVariants.all { variant ->
+        def mergedFlavor = variant.getMergedFlavor()
+        mergedFlavor.manifestPlaceholders = [appPackageId: "org.nebobrod.schulteplus"]
+    }
+
     buildTypes {
         release {
+            debuggable false
             minifyEnabled false
+            versionNameSuffix ""
+            resValue "string", "app_version", "${defaultConfig.versionCode}${"_"}${defaultConfig.versionName}${versionNameSuffix}"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            minifyEnabled false
+            versionNameSuffix "_alpha"
+            resValue "string", "app_version", "${""}${defaultConfig.versionCode}${"_"}${defaultConfig.versionName}${versionNameSuffix}"
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                }
+        applicationVariants.all { variant ->
+            variant.outputs.each {
+                output -> String projectName = getRootProject().name
+                    String versionCode = "${""}${defaultConfig.versionCode}${"_"}${defaultConfig.versionName}"
+                output.outputFileName = projectName + "_" + versionCode + ".apk"
+            }
         }
     }
     compileOptions {
@@ -47,7 +73,6 @@ android {
 }
 
 dependencies {
-
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'

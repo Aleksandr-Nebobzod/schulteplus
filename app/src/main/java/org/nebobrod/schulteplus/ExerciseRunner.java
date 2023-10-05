@@ -9,6 +9,7 @@ import androidx.preference.PreferenceManager;
 
 public class ExerciseRunner {
 	private static final String TAG = "ExerciseRunner";
+
 	public static final String KEY_RUNNER = "runner";
 //	public static final String KEY_APP_STATE = "org.nebobrod.schulteplus_APP_STATE";
 	public static final String KEY_APP_STATE = "org.nebobrod.schulteplus_preferences";

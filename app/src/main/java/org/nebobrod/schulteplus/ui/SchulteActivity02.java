@@ -32,6 +32,8 @@ import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.SCell;
 import org.nebobrod.schulteplus.STable;
 
+import java.util.Objects;
+
 public class SchulteActivity02 extends AppCompatActivity {
 	public static final String TAG = "SchulteActivity02";
 	private GridView mGrid;
@@ -162,6 +164,12 @@ public class SchulteActivity02 extends AppCompatActivity {
 			}
 		});
 
+	}
+
+	@Override
+	protected void onResume() {
+		Objects.requireNonNull(getSupportActionBar()).hide();
+		super.onResume();
 	}
 
 	private void newExerciseDialog(String s) {

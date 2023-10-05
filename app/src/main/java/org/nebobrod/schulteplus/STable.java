@@ -1,6 +1,7 @@
 package org.nebobrod.schulteplus;
 
 import static org.nebobrod.schulteplus.Utils.*;
+import static org.nebobrod.schulteplus.Const.*;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,14 +18,21 @@ public class STable {
 	private ArrayList<SCell> area = new ArrayList<>();
 	private int xSize, ySize;
 	private int turnNumber;
+	private int sequence;
 
-	public STable(int x, int y, Context c) {
+	public STable(int x, int y, int sequence, Context c) {
 		mContext = c;
 		mRes = mContext.getResources();
 		this.xSize = x;
 		this.ySize = y;
+		this.sequence = sequence;
 
 		this.reset();
+	}
+
+	// Simplified constructor overloading for previous calls
+	public STable(int x, int y, Context c){
+		this(x, y, SEQ1_SINGLE, c);
 	}
 
 	public void reset(){
@@ -158,6 +166,11 @@ public class STable {
 	public int getY() {
 		return ySize;
 	}
+
+	public int getTurnNumber() {
+		return turnNumber;
+	}
+
 
 
 }

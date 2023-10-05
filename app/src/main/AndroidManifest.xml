@@ -3,27 +3,28 @@
 	xmlns:tools="http://schemas.android.com/tools">
 	
 	<uses-permission android:name="android.permission.INTERNET"/>
+	
+	<supports-screens
+		android:xlargeScreens="true"
+		android:largeScreens="true"
+		android:normalScreens="true"
+		android:smallScreens="false" />
+	
 	<application
+		android:label="@string/app_name"
+		android:versionCode="5"
+		android:versionName="Entada"
+		android:icon="@mipmap/ic_launcher"
+		android:roundIcon="@mipmap/ic_launcher_round"
+		android:configChanges= "orientation|screenSize"
 		android:allowBackup="true"
 		android:dataExtractionRules="@xml/data_extraction_rules"
 		android:fullBackupContent="@xml/backup_rules"
-		android:icon="@mipmap/ic_launcher"
-		android:label="@string/app_name"
 		android:supportsRtl="true"
 		android:theme="@style/Theme.SchultePlus"
-		android:versionCode="3"
-		android:versionName="Entada"
 		tools:targetApi="31">
 		
-		<activity
-			android:name=".ui.SchulteActivity02"
-			android:exported="false" />
-		<activity
-			android:name=".ui.BasicsActivity"
-			android:configChanges="orientation|keyboardHidden|screenSize"
-			android:exported="false"
-			android:label="@string/title_activity_basics"
-			android:theme="@style/Theme.SchultePlus.Fullscreen" />
+		
 		<activity
 			android:name=".MainActivity"
 			android:exported="true"
@@ -33,9 +34,28 @@
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
-
+		
 		</activity>
 		
+		<activity
+			android:name=".ui.SchulteActivity02"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:exported="false"
+			android:label="@string/title_activity_schulte"/>
+		
+		<activity
+			android:name=".ui.BasicsActivity"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:exported="true"
+			android:label="@string/title_activity_basics"
+			android:theme="@style/Theme.SchultePlus.Fullscreen">
+			<intent-filter>
+				<action android:name="android.intent.action.SEND" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<data android:mimeType="image/*" />
+			</intent-filter>
+			
+		</activity>
 
 	</application>
 

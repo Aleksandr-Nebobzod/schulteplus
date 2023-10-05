@@ -17,19 +17,19 @@
 		/>
 	<TextView
 		android:id="@+id/text_home"
-		android:layout_width="match_parent"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_margin="32dp"
-		android:layout_marginBottom="64dp"
-		android:paddingBottom="64dp"
+		android:paddingLeft="256dp"
+		android:paddingBottom="32dp"
 		android:autoLink="web"
 		android:linksClickable="true"
 		android:text="Объявление"
 		android:textAlignment="center"
 		android:textColor="@color/light_blue_A200"
-		android:textSize="16sp"
+		android:textSize="12sp"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
+		
 		/>
 </androidx.constraintlayout.widget.ConstraintLayout>

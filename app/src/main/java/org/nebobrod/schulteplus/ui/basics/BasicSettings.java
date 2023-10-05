@@ -34,7 +34,7 @@ public class BasicSettings extends PreferenceFragmentCompat {
 	}
 	@Override
 	public void onResume() {
-		runner.setPreference(getContext());
+		runner.getPreference(getContext());
 		EditTextPreference exType = findPreference("prf_ex_type");
 		// to find which checkbox selected on the screen:
 		for (Preference p: exerciseTypes) {

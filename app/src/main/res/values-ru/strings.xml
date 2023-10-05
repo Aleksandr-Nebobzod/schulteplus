@@ -23,7 +23,7 @@
 	<string name="txt_one_more_q">Ещё тренировка?</string>
 	<string name="lbl_show_password">Показывать пароль</string>
 	<string name="txt_settings">Настройки \nдля упражнений по таблицам Шульте со временем \n<b>будут обогащены</b> </string>
-	<string name="txt_news">Здесь вскоре будет страничка новостей и закрепы. А пока страничка с основаниями для разработки: \n"https://ru.wikipedia.org/wiki/Таблица_Шульте" </string>
+	<string name="txt_news">Здесь вскоре \nбудет страничка новостей и полезные закрепы. \nА пока ссылочка с основаниями для разработки: \n"https://ru.wikipedia.org/wiki/Таблица_Шульте" </string>
 	<string name="txt_notification_desc">Уведомления должны быть тут</string>
 	<string name="txt_dashboard_desc">Здесь будет перечень достижений</string>
 	<string name="lbl_bas_dbl_dot">Двойная Точка</string>
@@ -45,6 +45,7 @@
 	<string name="lbl_average">Среднее:</string>
 	<string name="lbl_sd">Отклонение:</string>
 	<string name="lbl_turns_missed">Ходы мимо</string>
+	<string name="title_activity_basics">Шульте+ Основа</string>
 	<string name="lbl_bas_sg_khao_manee">Као мани</string>
 	<string name="menu_user_long">Параметры пользователя</string>
 	<string name="menu_user_short">Пользователь</string>
@@ -106,4 +107,8 @@
 	<string name="lbl_shuffle_sum_on">Каждый ход вас ожидает новое поле</string>
 	<string name="lbl_shuffle_sum_off">Поле остаётся неизменным, пока не вспашешь всё</string>
 	<string name="prf_menu_about_url_sum">На нашем веб-сайте больше подробностей</string>
+	<string name="title_activity_schulte">Шульте+ Таблицы</string>
+	<string name="lbl_distraction">✓</string>
+	<string name="lbl_back">◁</string>
+	<string name="lbl_schulte_stats">След, Ходов, Ошибок, Время: </string>
 </resources>

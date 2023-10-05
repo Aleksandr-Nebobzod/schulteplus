@@ -1,7 +1,5 @@
 package org.nebobrod.schulteplus.ui.schultesettings;
 
-import static org.nebobrod.schulteplus.Utils.intFromString;
-
 import android.content.res.Resources;
 import android.os.Bundle;
 
@@ -36,10 +34,10 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 	}
 
 	private void updatePrefScreen(){
-		runner.setPreference(getContext());
+		runner.getPreference(getContext());
 		EditTextPreference exType = findPreference("prf_ex_type");
 
-		// to find which checkbox selected on the screen:
+		// Find which checkbox of "group" is selected on the screen:
 		for (Preference p: exerciseTypes) {
 			if (((androidx.preference.CheckBoxPreference) p).isChecked()) {
 				chosen = (androidx.preference.CheckBoxPreference) p;
@@ -77,6 +75,8 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 				runner.setX((byte) 5);
 				runner.setY((byte) 5);
 		}
+		// set hinted to runner
+		runner.setHinted(((androidx.preference.SwitchPreference) findPreference("prf_sw_hints")).isChecked());
 
 	}
 	@Override

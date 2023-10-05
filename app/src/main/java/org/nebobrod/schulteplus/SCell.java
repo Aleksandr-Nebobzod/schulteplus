@@ -1,10 +1,20 @@
 package org.nebobrod.schulteplus;
 
+
+
+import static org.nebobrod.schulteplus.Const.*;
+
 import androidx.annotation.NonNull;
 
 public class SCell {
-	private int x,y, value;
-	private boolean isPassed = false;
+	private static final String TAG = "SCell";
+
+
+	private int x,y;
+	private int	value;
+
+	private byte sequence = SEQ1_SINGLE; // by default it's for 5x5 ex.
+	private boolean isPassed = false; // set "true" for cell's been out of the game
 	private double chance = 0.5;
 
 	public SCell(int x, int y, int value) {

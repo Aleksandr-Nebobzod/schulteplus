@@ -62,7 +62,7 @@
 	<string name="lbl_sd">s.Deviation:</string>
 	<string name="lbl_average">Average:</string>
 	<string name="lbl_turns_missed">Turns missed</string>
-	<string name="title_activity_basics" translatable="false">BasicsActivity</string>
+	<string name="title_activity_basics">Schulte+ Basics</string>
 	<string name="dummy_button" translatable="false">Dummy Button</string>
 	<string name="dummy_content" translatable="false">DUMMY\nCONTENT</string>
 	<string name="lbl_bas_sg_khao_manee">Khao Manee</string>
@@ -127,5 +127,9 @@
 	<string name="src_home_ipir_vk_url" translatable="false">https://vk.com/public216345855</string>
 	<string name="src_menu_about_url" translatable="false">https://cutt.ly/DwbxKG56</string>
 	<string name="src_menu_about_email" translatable="false">"mailto:nebobzod@gmail.com"</string>
+	<string name="title_activity_schulte">Schulte+ Tables</string>
+	<string name="lbl_distraction">✓</string>
+	<string name="lbl_back">◁</string>
+	<string name="lbl_schulte_stats">Next, Turns, Wrong, Time: </string>
 
 </resources>

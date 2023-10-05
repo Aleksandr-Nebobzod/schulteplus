@@ -134,8 +134,9 @@ public class MainActivity extends AppCompatActivity {
 				Class activity = SchulteActivity02.class;
 				Intent intent = null;
 				String exType = runner.getExType();
-				// TODO: 21.09.2023 here we need to choose Activity by switch: (ExerciseRunner.getTypeOfExercise())
-//		gcb_bas_dbl_dot, gcb_bas_circles_rb, schulte_1_sequence
+				runner.savePreferences();
+				// done: 21.09.2023 here we need to choose Activity by switch: (ExerciseRunner.getTypeOfExercise())
+				// gcb_bas_dbl_dot, gcb_bas_circles_rb, schulte_1_sequence
 				switch (exType.substring(0,7)){
 					case "gcb_bas":
 						activity = BasicsActivity.class;
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 					case "gcb_sch":
 						activity = SchulteActivity02.class;
 						break;
-					default: Toast.makeText(MainActivity.this, TAG+R.string.err_unknown, Toast.LENGTH_SHORT).show();
+					default: Toast.makeText(MainActivity.this, TAG+ getResources().getString(R.string.err_unknown), Toast.LENGTH_SHORT).show();
 				}
 
 				//intent.putExtra(KEY_RUNNER, ExerciseRunner.getTypeOfExercise()); // actually it's not necessary since we got Singleton for ExerciseRunner
@@ -155,6 +156,9 @@ public class MainActivity extends AppCompatActivity {
 		});
 	}
 
-
-
+	@Override
+	protected void onResume() {
+		runner.getPreference(getApplicationContext());
+		super.onResume();
+	}
 }

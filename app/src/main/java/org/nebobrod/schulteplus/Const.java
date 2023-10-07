@@ -1,5 +1,9 @@
 package org.nebobrod.schulteplus;
 
+import androidx.appcompat.graphics.drawable.DrawableContainerCompat;
+
+import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
+
 public interface Const {
 	public static final byte SEQ1_SINGLE = 1;
 	public static final byte SEQ2_DOUBLE = 2;
@@ -10,4 +14,6 @@ public interface Const {
 	public static final byte SEQ4_BLUE = 42;
 	public static final byte SEQ4_YELLOW = 43;
 	public static final byte SEQ4_GREEN = 44;
+
+
 }

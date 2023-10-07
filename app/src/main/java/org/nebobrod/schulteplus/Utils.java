@@ -1,6 +1,7 @@
 package org.nebobrod.schulteplus;
 
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -103,8 +104,20 @@ public final class Utils {
 		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts), ZoneId.systemDefault()).toString() + " " + ZoneId.systemDefault().toString();
 	}
 
+
+
 	public static  long transactID(){
 		return UUID.randomUUID().timestamp();
+	}
+
+	public static int getVersionCode() {
+
+		return intFromString(getRes().getString(R.string.app_version_num));
+
+	}
+
+	public static  android.content.res.Resources getRes() {
+		return MainActivity.getInstance().getResources();
 	}
 
 }

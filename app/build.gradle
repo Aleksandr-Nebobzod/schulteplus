@@ -44,14 +44,16 @@ android {
             debuggable false
             minifyEnabled false
             versionNameSuffix ""
-            resValue "string", "app_version", "${defaultConfig.versionCode}${"_"}${defaultConfig.versionName}${versionNameSuffix}"
+            resValue "string", "app_version_num", "${defaultConfig.versionCode}"
+            resValue "string", "app_version_full", "${defaultConfig.versionCode}${"_"}${defaultConfig.versionName}${versionNameSuffix}"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             debuggable true
             minifyEnabled false
             versionNameSuffix "_alpha"
-            resValue "string", "app_version", "${""}${defaultConfig.versionCode}${"_"}${defaultConfig.versionName}${versionNameSuffix}"
+            resValue "string", "app_version_num", "${defaultConfig.versionCode}"
+            resValue "string", "app_version_full", "${""}${defaultConfig.versionCode}${"_"}${defaultConfig.versionName}${versionNameSuffix}"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
                 }
         applicationVariants.all { variant ->
@@ -73,6 +75,8 @@ android {
 }
 
 dependencies {
+
+    implementation 'com.j256.ormlite:ormlite-android:6.1'
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'

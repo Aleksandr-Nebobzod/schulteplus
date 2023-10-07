@@ -34,10 +34,20 @@ import org.nebobrod.schulteplus.ui.SchulteActivity02;
 
 public class MainActivity extends AppCompatActivity {
 	public static final String TAG = "MainActivity";
+	private static MainActivity instance;
+
 
 	private ActivityMainBinding binding;
 	ExerciseRunner runner = ExerciseRunner.getInstance(this);
 	private FloatingActionButton fabLaunch;
+
+	public MainActivity() {
+		instance = this;
+	}
+
+	public static MainActivity getInstance() {
+		return instance;
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {

@@ -1,11 +1,24 @@
 package org.nebobrod.schulteplus;
 
-import static org.nebobrod.schulteplus.Utils.*;
-import static org.nebobrod.schulteplus.Const.*;
+
+import static org.nebobrod.schulteplus.Const.SEQ1_SINGLE;
+import static org.nebobrod.schulteplus.Utils.bHtml;
+import static org.nebobrod.schulteplus.Utils.cHtml;
+import static org.nebobrod.schulteplus.Utils.pHtml;
+import static org.nebobrod.schulteplus.Utils.tHtml;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.SQLException;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+
+import org.nebobrod.schulteplus.data.ClickGroup;
+import org.nebobrod.schulteplus.data.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +102,7 @@ public class STable {
 		return (turnNumber > xSize*ySize? true: false);
 	}
 
+	// This object keeps what user send as a turn
 	class Turn {
 		Long timeStamp, time;
 		int expected;
@@ -121,20 +135,33 @@ public class STable {
 	}
 	public List<Turn> journal = new ArrayList<Turn>();
 
+	// This initiates user's turn handler
 	public boolean checkTurn (int position) {
 		int attemptNumber = journal.size();
 		int turnY = (position) / xSize + 1;
 		int turnX = (position) % xSize + 1;
+		boolean result = false;
 
 		if (this.area.get(position).getValue() == turnNumber) {
-			this.journal.add(new Turn(
-					System.nanoTime(),(System.nanoTime() - journal.get(attemptNumber - 1).timeStamp) / 1000000, turnNumber, turnX, turnY, position, true));
+			result = true;
 			turnNumber++;
-			return true;
-		} else {
-			this.journal.add(new Turn(
-					System.nanoTime(), (System.nanoTime() - journal.get(attemptNumber - 1).timeStamp) / 1000000, turnNumber, turnX, turnY, position, false));
-			return false;
+		}
+		this.journal.add(new Turn(
+				System.nanoTime(), (System.nanoTime() - journal.get(attemptNumber - 1).timeStamp) / 1000000,
+				(result ? turnNumber : turnNumber-1), turnX, turnY, position, result));
+		writeTurn(this.journal.get(this.journal.size()-1));
+		return result;
+	}
+
+	public void writeTurn (@NonNull Turn turn){
+		ClickGroup group = new ClickGroup();
+		group.setName(turn.toString());
+		try {
+			DatabaseHelper helper = new DatabaseHelper(MainActivity.getInstance());
+			Dao<ClickGroup, Integer> dao = helper.getGroupDao();
+			dao.create(group);
+		} catch (SQLException | java.sql.SQLException e) {
+			throw new RuntimeException(e);
 		}
 	}
 

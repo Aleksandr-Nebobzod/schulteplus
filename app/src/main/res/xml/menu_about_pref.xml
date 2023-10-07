@@ -3,14 +3,12 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:android="http://schemas.android.com/apk/res/android">
 	
-	<extra
-		android:name="version"
-		android:value="@string/app_version"/>
+
 	
 	<PreferenceCategory app:key="prf_menu_about_details"
 		app:title="@string/menu_about_long"
 		app:icon="@drawable/ic_ab_schulte_plus"
-		app:summary="@string/app_version" >
+		app:summary="@string/app_version_full" >
 
 		<Preference
 			app:key="prf_about_app_name"

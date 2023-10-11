@@ -2,9 +2,14 @@ package org.nebobrod.schulteplus;
 
 import static org.nebobrod.schulteplus.ExerciseRunner.KEY_RUNNER;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.core.os.OperationCanceledException;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -26,6 +32,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.EditTextPreference;
 
+import org.nebobrod.schulteplus.accounts.AccountUtils;
+import org.nebobrod.schulteplus.accounts.AuthPreferences;
 import org.nebobrod.schulteplus.databinding.ActivityMainBinding;
 //import org.nebobrod.schulteplus.ui.BasicsActivity;
 import org.nebobrod.schulteplus.ui.BasicsActivity;
@@ -34,15 +42,28 @@ import org.nebobrod.schulteplus.ui.SchulteActivity02;
 
 public class MainActivity extends AppCompatActivity {
 	public static final String TAG = "MainActivity";
+	 //Authentication
+	 private static final int REQ_SIGNUP = 1;
+	 private AccountManager mAccountManager;
+	 private AuthPreferences mAuthPreferences;
+	 private String authToken;
+
+	private static MainActivity instance;
 
 	private ActivityMainBinding binding;
 	ExerciseRunner runner = ExerciseRunner.getInstance(this);
 	private FloatingActionButton fabLaunch;
 
+	public MainActivity() {
+		instance = this;
+	}
+	public static MainActivity getInstance() {
+		return instance;
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu) {
-//		getMenuInflater().inflate(R.menu.menu_main, menu);
-		getMenuInflater().inflate(R.menu.main, menu); // this is a one button
+		getMenuInflater().inflate(R.menu.main, menu); // this is a one button-menu
 		return true;
 	}
 
@@ -60,10 +81,19 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		binding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
+		//Authentication:
+		authToken = null;
+		mAuthPreferences = new AuthPreferences(this);
+		mAccountManager = AccountManager.get(this);
+
+		GetAuthTokenCallback atbf;
+		atbf = new GetAuthTokenCallback();
+
+		// Ask for an auth token
+		mAccountManager.getAuthTokenByFeatures(AccountUtils.ACCOUNT_TYPE, AccountUtils.AUTH_TOKEN_TYPE, null, this, null, null, atbf, null);
 
 		//ActionBar
 		androidx.appcompat.app.ActionBar mainActionBar = this.getSupportActionBar();
@@ -160,5 +190,50 @@ public class MainActivity extends AppCompatActivity {
 	protected void onResume() {
 		runner.getPreference(getApplicationContext());
 		super.onResume();
+	}
+
+	private class GetAuthTokenCallback implements AccountManagerCallback<Bundle> {
+
+		@Override
+		public void run(AccountManagerFuture<Bundle> result) {
+			Bundle bundle;
+
+			try {
+				bundle = result.getResult();
+
+				final Intent intent = (Intent) bundle.get(AccountManager.KEY_INTENT);
+				if (null != intent) {
+					startActivityForResult(intent, REQ_SIGNUP);
+				} else {
+					authToken = bundle.getString(AccountManager.KEY_AUTHTOKEN);
+					final String accountName = bundle.getString(AccountManager.KEY_ACCOUNT_NAME);
+
+					// Save session username & auth token
+					mAuthPreferences.setAuthToken(authToken);
+					mAuthPreferences.setUsername(accountName);
+
+					String i = "A.U.T.H.E.N.T.I.C.A.T.I.O.N. .D.A.T.A:";
+					i+="\nRetrieved auth token: " + authToken;
+					i+="\nSaved account name: " + mAuthPreferences.getAccountName();
+					i+="\nSaved auth token: " + mAuthPreferences.getAuthToken();
+					Log.d(TAG, i);
+
+					// If the logged account didn't exist, we need to create it on the device
+					Account account = AccountUtils.getAccount(MainActivity.this, accountName);
+					if (null == account) {
+						account = new Account(accountName, AccountUtils.ACCOUNT_TYPE);
+						mAccountManager.addAccountExplicitly(account, bundle.getString(LoginActivity.PARAM_USER_PASSWORD), null);
+						mAccountManager.setAuthToken(account, AccountUtils.AUTH_TOKEN_TYPE, authToken);
+					}
+				}
+			} catch(OperationCanceledException e) {
+				// If signup was cancelled, force activity termination
+				finish();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+
 	}
 }

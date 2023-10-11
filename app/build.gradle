@@ -37,8 +37,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     buildFeatures {
         viewBinding true
@@ -48,6 +48,14 @@ android {
 
 dependencies {
 
+//    packagingOptions {
+//        exclude '/Users/User/AndroidStudioProjects/Schulte/app/src/main/java/org/nebobrod/schulteplus/accounts/AccountManagerFuture.java'
+//        exclude 'AccountManagerFuture.*'
+//    }
+//        exclude group: 'org.nebobrod.schulteplus.account.*'
+//        /Users/User/AndroidStudioProjects/Schulte/app/src/main/java/org/nebobrod/schulteplus/accounts/AccountManagerFuture.java
+//        exclude '**account*.*'
+//        exclude '**/Acc*.*'
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'

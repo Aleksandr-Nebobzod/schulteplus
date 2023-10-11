@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools">
 	
+	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+	<uses-permission android:name="android.permission.USE_CREDENTIALS" />
+	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+	<uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+	
 	<uses-permission android:name="android.permission.INTERNET"/>
 	
 	<supports-screens
@@ -24,6 +29,24 @@
 		android:theme="@style/Theme.SchultePlus"
 		tools:targetApi="31">
 		
+		<service
+			android:name="org.nebobrod.schulteplus.accounts.AuthenticatorService"
+			android:exported="true">
+			<intent-filter>
+				<action android:name="android.accounts.AccountAuthenticator" />
+			</intent-filter>
+			
+			<meta-data
+				android:name="android.accounts.AccountAuthenticator"
+				android:resource="@xml/authenticator" />
+		</service>
+		
+		<activity
+			android:name=".LoginActivity"
+			android:exported="true"
+			android:label="@string/title_activity_login"
+			android:windowSoftInputMode="adjustResize|stateVisible" >
+		</activity>
 		
 		<activity
 			android:name=".MainActivity"
@@ -36,6 +59,7 @@
 			</intent-filter>
 		
 		</activity>
+		
 		
 		<activity
 			android:name=".ui.SchulteActivity02"

@@ -111,4 +111,15 @@
 	<string name="lbl_distraction">✓</string>
 	<string name="lbl_back">◁</string>
 	<string name="lbl_schulte_stats">След, Ходов, Ошибок, Время: </string>
+	<string name="title_activity_login">Шульте Плюс. Имя.</string>
+	<string name="prompt_email">Емейл</string>
+	<string name="prompt_password">Пароль</string>
+	<string name="action_sign_in_register"><b>Войти</b> или представиться</string>
+	<string name="action_sign_in_short">Войти</string>
+	<string name="action_forgot_password">Восстановить утраченный пароль</string>
+	<string name="login_progress_signing_in">Вхождение в&#8230;</string>
+	<string name="error_invalid_email">Этот емейл не годится</string>
+	<string name="error_invalid_password">Этот пароль коротковат</string>
+	<string name="error_incorrect_password">Этот пароль не верный</string>
+	<string name="error_field_required">Это поле обязательное</string>
 </resources>

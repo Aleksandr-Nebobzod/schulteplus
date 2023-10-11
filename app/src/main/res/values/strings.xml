@@ -125,11 +125,26 @@
 	<string name="str_number" translatable="false">number</string>
 	<string name="prf_menu_about_url_sum">Visit and get additional resources</string>
 	<string name="src_home_ipir_vk_url" translatable="false">https://vk.com/public216345855</string>
-	<string name="src_menu_about_url" translatable="false">https://cutt.ly/DwbxKG56</string>
+	<string name="src_menu_about_url" translatable="false">https://tinyurl.com/2untjbs8</string>
 	<string name="src_menu_about_email" translatable="false">"mailto:nebobzod@gmail.com"</string>
 	<string name="title_activity_schulte">Schulte+ Tables</string>
 	<string name="lbl_distraction">✓</string>
 	<string name="lbl_back">◁</string>
 	<string name="lbl_schulte_stats">Next, Turns, Wrong, Time: </string>
+<!--	<string name="title_activity_login">Schulte Plus Login</string>-->
+	<string name="error_invalid_email">This email address is invalid</string>
+	
+	<string name="title_activity_login">Sign in</string>
+	
+	<!-- Strings related to login -->
+	<string name="prompt_email">Email</string>
+	<string name="prompt_password">Password</string>
+	<string name="action_sign_in_register"><b>Sign in</b> or register</string>
+	<string name="action_sign_in_short">Sign in</string>
+	<string name="action_forgot_password">Recover lost password</string>
+	<string name="login_progress_signing_in">Signing in&#8230;</string>
+	<string name="error_invalid_password">This password is too short</string>
+	<string name="error_incorrect_password">This password is incorrect</string>
+	<string name="error_field_required">This field is required</string>
 
 </resources>

@@ -7,4 +7,24 @@
 		<item name="android:background">@color/black_overlay</item>
 		<item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
 	</style>
+	
+<!--	Next three Styles are for org.nebobrod.schulteplus.accounts. maybe-->
+	<style name="AppBaseTheme" parent="android:Theme.Holo.Light">
+		<!--
+			Theme customizations available in newer API levels can go in
+			res/values-vXX/styles.xml, while customizations related to
+			backward-compatibility can go here.
+		-->
+	</style>
+	
+	<!-- Application theme. -->
+	<style name="AppTheme" parent="AppBaseTheme">
+		<!-- All customizations that are NOT specific to a particular API-level can go here. -->
+	</style>
+	
+	<style name="LoginFormContainer">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:padding">16dp</item>
+	</style>
 </resources>

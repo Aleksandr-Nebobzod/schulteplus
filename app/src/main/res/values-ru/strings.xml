@@ -111,4 +111,16 @@
 	<string name="lbl_distraction">✓</string>
 	<string name="lbl_back">◁</string>
 	<string name="lbl_schulte_stats">След, Ходов, Ошибок, Время: </string>
+	<string name="title_signup">Регистрация</string>
+	<string name="hint_login">Логин (псевдоним)</string>
+	<string name="hint_email">емейл адрес</string>
+	<string name="hint_pass">пароль в Шульте плюс</string>
+	<string name="lbl_go_on">Вперёд!</string>
+	<string name="str_signup_go_off">Уже есть учетная запись? Перейти на вход!</string>
+	<string name="str_login_go_off">Нет учётной записи? Перейти к регистрации!</string>
+	<string name="title_login">Вход</string>
+	<string name="msg_username_empty">Имя не может быть пустым</string>
+	<string name="msg_password_empty">Пароль не может быть пустым</string>
+	<string name="msg_username_wrong">Имя пользователя неверно</string>
+	<string name="msg_password_wrong">Пароль неверен</string>
 </resources>

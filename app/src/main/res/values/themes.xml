@@ -13,6 +13,21 @@
 		<item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
 		<!-- Customize your theme here. -->
 	</style>
+	<style name="Theme.SchultePlus.Login" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+		<!-- Primary brand color. -->
+		<item name="colorPrimary">@color/light_grey_4</item>
+		<item name="colorPrimaryVariant">@color/light_grey_6</item>
+		<item name="colorOnPrimary">@color/white</item>
+		<!-- Secondary brand color. -->
+		<item name="colorSecondary">@color/light_grey_A</item>
+		<item name="colorSecondaryVariant">@color/light_grey_8</item>
+		<item name="colorOnSecondary">@color/black</item>
+		
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowActionBar">false</item>
+
+	</style>
+	
 	<style name="Theme.SchultePlus.Fullscreen" parent="Theme.AppCompat.Light.NoActionBar">
 		<item name="android:windowNoTitle">true</item>
 		<item name="android:windowActionBar">false</item>

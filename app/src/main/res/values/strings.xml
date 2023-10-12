@@ -125,11 +125,23 @@
 	<string name="str_number" translatable="false">number</string>
 	<string name="prf_menu_about_url_sum">Visit and get additional resources</string>
 	<string name="src_home_ipir_vk_url" translatable="false">https://vk.com/public216345855</string>
-	<string name="src_menu_about_url" translatable="false">https://cutt.ly/DwbxKG56</string>
+	<string name="src_menu_about_url" translatable="false">https://tinyurl.com/2untjbs8</string>
 	<string name="src_menu_about_email" translatable="false">"mailto:nebobzod@gmail.com"</string>
 	<string name="title_activity_schulte">Schulte+ Tables</string>
 	<string name="lbl_distraction">✓</string>
 	<string name="lbl_back">◁</string>
 	<string name="lbl_schulte_stats">Next, Turns, Wrong, Time: </string>
+	<string name="title_signup">Sign Up</string>
+	<string name="hint_login">login (pseudonym)</string>
+	<string name="hint_email">email address</string>
+	<string name="hint_pass">Schulte-plus password</string>
+	<string name="lbl_go_on">Go on</string>
+	<string name="str_signup_go_off">Already have an account? Go to login!</string>
+	<string name="str_login_go_off">Do not have an account? Go to sign up!</string>
+	<string name="title_login">Log in</string>
+	<string name="msg_username_empty">The username can\'t be empty</string>
+	<string name="msg_username_wrong">The username seems incorrect</string>
+	<string name="msg_password_empty">Password can\'t be empty</string>
+	<string name="msg_password_wrong">Password seems incorrect</string>
 
 </resources>

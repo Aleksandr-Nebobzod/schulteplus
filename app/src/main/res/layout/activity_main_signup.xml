@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	android:gravity="center"
+	android:background="@drawable/bg_login02"
+	android:hapticFeedbackEnabled="true"
+	tools:context=".fbservices.SignupActivity">
+	
+	<androidx.cardview.widget.CardView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="30dp"
+		app:cardCornerRadius="20dp"
+		android:backgroundTint="@color/semi_white"
+		android:elevation="25dp">
+		
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:layout_gravity="center_vertical"
+			android:padding="15dp"
+			android:background="@drawable/border02"
+			android:alpha="1"
+			>
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/title_signup"
+				android:textAlignment="center"
+				android:textSize="32sp"
+				android:textStyle="bold"/>
+			
+			<EditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/et_email"
+				android:autofillHints="emailAddress"
+				android:inputType="textEmailAddress"
+				android:layout_marginTop="32dp"
+				android:background="@drawable/border02"
+				android:backgroundTint="@color/semi_white"
+				android:padding="8dp"
+				android:hint="@string/hint_email"
+				android:drawableStart="@drawable/ic_baseline_email_24"
+				android:drawablePadding="4dp"
+				android:textColor="@color/black"/>
+			
+			<EditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/et_name"
+				android:layout_marginTop="32dp"
+				android:background="@drawable/border02"
+				android:backgroundTint="@color/semi_white"
+				android:padding="8dp"
+				android:hint="@string/hint_login"
+				android:drawableStart="@drawable/ic_baseline_perm_identity_24"
+				android:drawablePadding="4dp"
+				android:textColor="@color/black"/>
+			
+			<EditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/et_pass"
+				android:inputType="textPassword"
+				android:layout_marginTop="32dp"
+				android:background="@drawable/border02"
+				android:backgroundTint="@color/semi_white"
+				android:padding="8dp"
+				android:hint="@string/hint_pass"
+				android:drawableStart="@drawable/ic_baseline_lock_24"
+				android:drawablePadding="4dp"
+				android:textColor="@color/black"/>
+				
+			<com.google.android.material.button.MaterialButton
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/bt_go_on"
+				android:layout_marginTop="16dp"
+				android:text="@string/lbl_go_on"
+				app:cornerRadius="25dp"
+				android:shadowRadius="5"/>
+			
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/tv_go_off"
+				android:text="@string/str_signup_go_off"
+				android:gravity="center"
+				android:layout_marginTop="16dp"
+				android:textStyle="bold"
+				android:clickable="true"/>
+				
+		
+			
+		</LinearLayout>
+	</androidx.cardview.widget.CardView>
+	
+
+</LinearLayout>

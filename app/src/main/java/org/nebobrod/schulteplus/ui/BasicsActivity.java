@@ -14,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -142,8 +140,10 @@ public class BasicsActivity extends AppCompatActivity {
 		binding = ActivityBasicsBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
-		ExerciseRunner runner = ExerciseRunner.getInstance(getApplicationContext());
 		exercise = new STable(1, 1, getApplicationContext());
+		ExerciseRunner.getInstance(getApplicationContext());
+		ExerciseRunner.savePreferences(exercise);
+
 
 		mVisible = true;
 		mControlsView = binding.fullscreenContentControls;
@@ -153,7 +153,7 @@ public class BasicsActivity extends AppCompatActivity {
 		tvCounter  = binding.tvCounter; tvCounter.setText("0");
 		tvClock = binding.tvTime; tvClock.setText("0:00");
 //		chmTime = binding.chmTime; // in Basics no live clock is useful
-		if (!runner.isHinted()) {
+		if (!ExerciseRunner.isHinted()) {
 			tvCounter.setVisibility(View.GONE);
 			tvClock.setVisibility(View.GONE);
 		}
@@ -237,13 +237,16 @@ public class BasicsActivity extends AppCompatActivity {
 		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getResources().getText(R.string.lbl_ok), new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialogInterface, int i) {
-				exercise.reset();
+//				exercise.reset();
+				dialogInterface.dismiss();
 			}
 		});
 		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,getResources().getText(R.string.lbl_no), new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialogInterface, int i) {
 				//dialogInterface.dismiss();
+				exercise.setFinished(true);
+				ExerciseRunner.savePreferences(exercise);
 				finish();
 			}
 		});
@@ -290,7 +293,7 @@ public class BasicsActivity extends AppCompatActivity {
 //		chmTime.start();
 
 		ExerciseRunner runner = ExerciseRunner.getInstance(getApplicationContext());
-		runner.getPreference(getApplicationContext());
+		runner.loadPreference(getApplicationContext());
 
 		// Take preference i.e. key="gcb_bas_dot"
 		// and make drawableName = "sg_bas_dot" and put it into iv:

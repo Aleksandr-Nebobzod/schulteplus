@@ -56,7 +56,7 @@ public class z_SchulteSettingsFragment extends Fragment {
 
 	@Override
 	public void onResume() {
-		runner.getPreference(getContext());
+		runner.loadPreference(getContext());
 		runner.setExType(exTypes[0]); //should be "schulte_1_sequence"
 
 		super.onResume();

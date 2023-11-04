@@ -130,6 +130,8 @@ public class SchulteActivity02 extends AppCompatActivity {
 
 		mGrid = (GridView)findViewById(R.id.gvArea);
 		exercise = new STable(runner.getX(), runner.getY(), mGrid.getContext());
+		ExerciseRunner.getInstance(getApplicationContext());
+		ExerciseRunner.savePreferences(exercise);
 
 		// Toolbar for exercise initiation (if hints are chosen)
 		exToolbar = new ExToolbar(findViewById(R.id.tb_custom));
@@ -149,6 +151,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 					if (!exercise.endChecked()) {
 						exercise.shuffle();
 					} else { // if no next turn needed
+						ExerciseRunner.savePreferences(exercise);
 						newExerciseDialog(exercise.getResults() +
 								pHtml() + pHtml() + bHtml(getResources().getString(R.string.txt_one_more_q)));
 					}
@@ -168,8 +171,8 @@ public class SchulteActivity02 extends AppCompatActivity {
 
 	@Override
 	protected void onResume() {
-		Objects.requireNonNull(getSupportActionBar()).hide();
 		super.onResume();
+		Objects.requireNonNull(getSupportActionBar()).hide();
 	}
 
 	private void newExerciseDialog(String s) {

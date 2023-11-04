@@ -7,4 +7,14 @@
 		<item name="android:background">@color/black_overlay</item>
 		<item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
 	</style>
+	
+	<style name="GreyTheme" parent="FirebaseUI">
+		<item name="colorPrimary">@color/light_grey_8</item>
+		<item name="colorPrimaryVariant">@color/light_grey_4</item>
+		<item name="colorAccent">@color/light_grey_A_blue</item>
+		<item name="android:colorBackground">@color/light_grey_D</item>
+		
+		<!-- On API 21+ you can use android:statusBarColor -->
+		<item name="colorPrimaryDark">@color/black</item>
+	</style>
 </resources>

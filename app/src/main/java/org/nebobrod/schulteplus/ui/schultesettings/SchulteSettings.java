@@ -1,5 +1,7 @@
 package org.nebobrod.schulteplus.ui.schultesettings;
 
+import static org.nebobrod.schulteplus.Utils.getRes;
+
 import android.content.res.Resources;
 import android.os.Bundle;
 
@@ -25,16 +27,16 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 
 	@Override
 	public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+		getPreferenceManager().setSharedPreferencesName(ExerciseRunner.uid);
 		setPreferencesFromResource(R.xml.preferences_schulte, rootKey);
 		PreferenceScreen screen = this.getPreferenceScreen();
-		Resources res = getResources();
-		exTypes = res.getStringArray(R.array.ex_type);
+		exTypes = getRes().getStringArray(R.array.ex_type);
 
 		initiateExerciseTypes();
 	}
 
 	private void updatePrefScreen(){
-		runner.getPreference(getContext());
+		runner.loadPreference(getContext());
 		EditTextPreference exType = findPreference("prf_ex_type");
 
 		// Find which checkbox of "group" is selected on the screen:
@@ -81,14 +83,15 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 	}
 	@Override
 	public void onResume() {
-		updatePrefScreen();
 		super.onResume();
+		updatePrefScreen();
 	}
 
 	@Override
 	public void onPause() {
-		updatePrefScreen();
 		super.onPause();
+		updatePrefScreen();
+		ExerciseRunner.savePreferences(null);
 	}
 
 	@Override

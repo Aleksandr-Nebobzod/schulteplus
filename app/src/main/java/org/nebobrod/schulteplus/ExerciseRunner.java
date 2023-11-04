@@ -2,28 +2,34 @@ package org.nebobrod.schulteplus;
 
 import static org.nebobrod.schulteplus.Utils.*;
 
+import static org.nebobrod.schulteplus.Const.*;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
 public class ExerciseRunner {
 	private static final String TAG = "ExerciseRunner";
 
-	public static final String KEY_RUNNER = "runner";
-//	public static final String KEY_APP_STATE = "org.nebobrod.schulteplus_APP_STATE";
-	public static final String KEY_APP_STATE = "org.nebobrod.schulteplus_preferences";
-	public static final String KEY_TYPE_OF_EXERCISE = "prf_ex_type";
-	public static final String KEY_X_SIZE = "prf_x_size";
-	public static final String KEY_Y_SIZE = "prf_y_size";
-	public static final String KEY_TS_UPDATED = "prf_ts_updated";
-	public static final String KEY_HINTED = "prf_sw_hints";
+	public static final String KEY_RUNNER = "runner"; //?
+	public static final String KEY_DEFAULT_USER_PREF = "TFKBiTdd7OVYUaplfzDHrXSCixr1";
 
-	private Context context;
+
+//	private Context context;
 	private static ExerciseRunner instance = null;
-	public SharedPreferences sharedPreferences;
+	public static SharedPreferences sharedPreferences;
 
 	// TODO: 13.09.2023   make get this fields from SchulteSettingsFragment & BaseSettingsFragment
+	public static String uid = "";
+	public static String userName = "";
+	public static String userEmail = "";
+	public static int points = 0; //  achieved point (seconds)
+	public static int hours = 0; //  achieved hours
+	public static int level = 1; // maximum achieved level
+	public static int currentLevel = 1; // level limited by user
 	private static String exType = "no_exercise";
 	private static byte xSize = 5, ySize = 5;
 	private static boolean hinted = true;
@@ -32,45 +38,19 @@ public class ExerciseRunner {
 	private ExerciseRunner(Context context) {
 		try {
 //			sharedPreferences = context.getSharedPreferences(KEY_APP_STATE, Context.MODE_PRIVATE);
-			this.getPreference(context);
+			uid = ((MainActivity) context).fbUser.getUid();
+			if (uid.isEmpty()) uid = KEY_DEFAULT_USER_PREF;
+			this.loadPreference(context);
+			this.savePreferences(null);
 		}
 		catch (Exception e){
 			Log.d(TAG, "ExerciseRunner: noContext");
 		}
 	}
 
-	public void getPreference(Context context){
-		try {
-			this.context = context;
-			sharedPreferences = context.getSharedPreferences(KEY_APP_STATE, Context.MODE_PRIVATE);
-			exType = sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, "gcb_schulte_1_sequence");
-			xSize = (byte) sharedPreferences.getInt(KEY_X_SIZE, 5);
-			ySize = (byte) sharedPreferences.getInt(KEY_Y_SIZE, 5);
-			tsRun = sharedPreferences.getLong(KEY_Y_SIZE, timeStamp());
-			hinted = sharedPreferences.getBoolean(KEY_HINTED, true);
-		}
-			catch (Exception e){
-			Log.d(TAG, "ExerciseRunner: noContext");
-		}
-	}
-
-	public void savePreferences(){
-		SharedPreferences.Editor editor = sharedPreferences.edit();
-		editor.putString(	KEY_TYPE_OF_EXERCISE, exType);
-		editor.putInt(		KEY_X_SIZE, (int) xSize).apply();
-		editor.putInt(		KEY_Y_SIZE, (int) xSize).apply();
-		tsRun = timeStamp();
-		editor.putLong(		KEY_TS_UPDATED, tsRun).apply();
-		editor.putBoolean(	KEY_HINTED, hinted).apply();
-
-		editor.commit();
-		Log.d(TAG, "savePreferences: " + this.toString());
-	}
-
 	public static ExerciseRunner getInstance(Context context) {
 		if (null == context) {
 			Log.i(TAG, "getInstance: skipped");
-			return instance;
 		}
 		if (null == instance) {
 			instance = new ExerciseRunner(context);
@@ -78,6 +58,68 @@ public class ExerciseRunner {
 		}
 		return instance;
 	}
+	public SharedPreferences getSharedPreferences() { return sharedPreferences; }
+
+	public void loadPreference(Context context){
+		try {
+			// apply previous parameters on load
+
+			sharedPreferences = context.getSharedPreferences(uid, Context.MODE_PRIVATE);
+
+			// Getting default preferences if there aren't still there
+			PreferenceManager.setDefaultValues(context, R.xml.menu_preferences, false);
+
+			// And some additional prefs:
+			userName = sharedPreferences.getString(KEY_USER_NAME, "null");
+			userEmail = sharedPreferences.getString(KEY_USER_EMAIL, "null@email.com");
+			points = sharedPreferences.getInt(KEY_POINTS, 0);
+			level = sharedPreferences.getInt(KEY_PRF_LEVEL, 2);
+			currentLevel = sharedPreferences.getInt(KEY_PRF_CURRENT_LEVEL, 1);
+			hinted = sharedPreferences.getBoolean(KEY_HINTED, true);
+
+			exType = sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, "gcb_schulte_1_sequence");
+			xSize = (byte) sharedPreferences.getInt(KEY_X_SIZE, 5);
+			ySize = (byte) sharedPreferences.getInt(KEY_Y_SIZE, 5);
+			tsRun = sharedPreferences.getLong(KEY_TS_UPDATED, timeStamp());
+		}
+			catch (Exception e){
+			Log.d(TAG, "ExerciseRunner: noContext");
+		}
+	}
+
+	public static void savePreferences(@Nullable STable exercise){
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putBoolean(	KEY_HINTED, hinted).apply();
+
+		editor.putString(	KEY_TYPE_OF_EXERCISE, exType);
+		editor.putInt(		KEY_X_SIZE, (int) xSize).apply();
+		editor.putInt(		KEY_Y_SIZE, (int) xSize).apply();
+		tsRun = timeStamp();
+		editor.putLong(		KEY_TS_UPDATED, tsRun).apply();
+		if(null != exercise){
+			if (exercise.isFinished()) {
+				// During the exercise
+				long spent = ((exercise.journal.get(exercise.journal.size()-1).timeStamp - exercise.journal.get(0).timeStamp)/1000000) ;
+				// On the whole
+				spent += sharedPreferences.getInt(KEY_POINTS, 0);
+				editor.putInt(		KEY_POINTS, (int) spent).apply();
+
+				points = (int) spent;
+				if (points > 3600){
+					hours += points / 3600;
+					points = points % 3600;
+				}
+
+			}
+		}
+		editor.putInt(		KEY_HOURS, (int) Math.sqrt(points)  ).apply();
+		editor.putInt(		KEY_PRF_LEVEL, (int) Math.sqrt(points)  ).apply();
+
+		editor.commit();
+		Log.d(TAG, "savePreferences: " + instance);
+	}
+
+
 
 
 	public void setX(byte xSize) {
@@ -113,7 +155,7 @@ public class ExerciseRunner {
 		ExerciseRunner.hinted = hinted;
 	}
 
-	public  boolean isHinted() {
+	public static boolean isHinted() {
 		return hinted;
 	}
 
@@ -124,6 +166,7 @@ public class ExerciseRunner {
 	@Override
 	public String toString() {
 		return "ExerciseRunner{" +
+				"\npoints=" + points +
 				"\nexType=" + exType +
 				"\nxSize=" + xSize +
 				"\nySize=" + ySize +

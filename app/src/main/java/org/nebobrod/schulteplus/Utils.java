@@ -1,28 +1,61 @@
 package org.nebobrod.schulteplus;
 
 
+import android.app.Activity;
 import android.app.Application;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.net.Uri;
+import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.UUID;
 
-public final class Utils {
+public final class Utils extends Application {
 	private static final String TAG = "Utils";
+//	private static Utils mInstance;
+	private static Resources res;
 
 	/**
 	 * Private constructor to prevent instantiation
 	 */
-	private Utils (){}
+//	private Utils (){}
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+//		mInstance = this;
+		res = getResources();
+	}
+
+/*	public static App getInstance() {
+		return mInstance;
+	}*/
+
+	public static Resources getRes() {
+		return res;
+	}
 
 	/**
 	 * transforms "" and null into 0
@@ -99,8 +132,8 @@ public final class Utils {
 	}
 
 	public static final String timeStampFormatted (long ts) {
-		// use correct format ('S' for milliseconds)
-//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
+
+//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"); // use correct format ('S' for milliseconds)
 		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts), ZoneId.systemDefault()).toString() + " " + ZoneId.systemDefault().toString();
 	}
 
@@ -116,8 +149,111 @@ public final class Utils {
 
 	}
 
-	public static  android.content.res.Resources getRes() {
-		return MainActivity.getInstance().getResources();
+/*	public static  android.content.res.Resources getRes() {
+//		return MainActivity.getInstance().getResources();
+		return Resources.getSystem();
+	}*/
+
+	public static String getRandomName(){
+		String[] namesArray;
+
+		namesArray = getRes().getStringArray(R.array.four_letters_nouns);
+
+		Random r = new Random();
+
+			int j = r.nextInt(namesArray.length);
+			return namesArray[j];
 	}
+
+
+	public static ProgressBar progressBar;
+	public static android.app.AlertDialog alertDialog;
+
+	public static void progressBarShow(Activity activity){
+		if (progressBar == null) {
+//			progressBarCreate (activity);
+			alertDialog = newProgressBar_AlertDialog(activity, "Wait", "loading...");
+		}
+//		progressBar.setIndeterminate(true);
+		progressBar.setVisibility(View.VISIBLE);
+		alertDialog.show();
+	}
+
+	public static void progressBarHide(Activity activity){
+		if (progressBar != null) {
+			progressBar.setVisibility(View.GONE);
+			alertDialog.hide();
+		}
+	}
+
+	private static void progressBarCreate (Activity activity){
+		RelativeLayout layout = new RelativeLayout(activity);
+		progressBar = new ProgressBar(activity, null, android.R.attr.progressBarStyleLarge); // progressBarStyleSmall , progressBarStyleLarge , progressBarStyleHorizontal
+		progressBar.setIndeterminate(true);
+		progressBar.setIndeterminateTintList(ColorStateList.valueOf(getRes().getColor(R.color.light_grey_6)));
+//		progressBar.setAlpha(0.2f);
+		progressBar.setBackgroundColor(getRes().getColor(R.color.transparent));
+		progressBar.setBackgroundDrawable(getRes().getDrawable(R.drawable.bg_login02));
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100,100);
+		params.addRule(RelativeLayout.CENTER_IN_PARENT);
+		layout.addView(progressBar,params);
+
+		activity.setContentView(layout);
+	}
+
+	private static android.app.AlertDialog newProgressBar_AlertDialog(
+			Context context, String title, String message)
+	{
+		progressBar =
+				new ProgressBar(
+						context,
+						null,
+						android.R.attr.progressBarStyleHorizontal);
+
+		progressBar.setLayoutParams(
+				new LinearLayout.LayoutParams(
+						LinearLayout.LayoutParams.WRAP_CONTENT,
+						LinearLayout.LayoutParams.WRAP_CONTENT));
+
+		progressBar.setIndeterminate(true);
+
+		final LinearLayout container =
+				new LinearLayout(context);
+
+		container.addView(progressBar);
+
+		int padding =
+				getDialogPadding(context);
+
+		container.setPadding(
+				padding, (message == null ? padding : 0), padding, 0);
+
+		android.app.AlertDialog.Builder builder =
+				new android.app.AlertDialog.Builder(context, android.R.style.Theme_Material_Light_Dialog_Alert).
+						setTitle(title).
+						setMessage(message)/*.
+						setView(container)*/;
+
+		return builder.create();
+	}
+
+	private static int getDialogPadding(Context context)
+	{
+		int[] sizeAttr = new int[] { android.R.attr.dialogPreferredPadding };
+		TypedArray a = context.obtainStyledAttributes((new TypedValue()).data, sizeAttr);
+		int size = a.getDimensionPixelSize(0, -1);
+		a.recycle();
+
+		return size;
+	}
+
+	public static String getDeviceId(Context context) {
+
+		String id = Settings.Secure.getString(context.getContentResolver(),
+				Settings.Secure.ANDROID_ID);
+		return id;
+	}
+
+
 
 }

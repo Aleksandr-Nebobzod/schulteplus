@@ -32,6 +32,7 @@ public class STable {
 	private int xSize, ySize;
 	private int turnNumber;
 	private int sequence;
+	private boolean isFinished = false;
 
 	public STable(int x, int y, int sequence, Context c) {
 		mContext = c;
@@ -48,8 +49,10 @@ public class STable {
 		this(x, y, SEQ1_SINGLE, c);
 	}
 
-	public void reset(){
+	public void reset()
+	{
 		int value = 1;
+		isFinished = false;
 		area.clear();
 		for (int x = xSize; x > 0; x--){
 			for (int y = ySize; y > 0; y--){
@@ -64,7 +67,8 @@ public class STable {
 		Log.d(TAG, "reset: \n" + area.toString());
 	}
 
-	public String getResults(){
+	public String getResults()
+	{
 		int time = 0, turns = 0, turnsMissed = 0;	// time tends to milliseconds
 		float average = 0, rmsd = 0;
 		String results = "";	// this in seconds.00
@@ -99,7 +103,11 @@ public class STable {
 	}
 
 	public boolean endChecked() {
-		return (turnNumber > xSize*ySize? true: false);
+		return (turnNumber > xSize*ySize? isFinished = true: false);
+/*		if (turnNumber > xSize*ySize) {
+			isFinished = true;
+		}
+		return isFinished;*/
 	}
 
 	// This object keeps what user send as a turn
@@ -136,7 +144,8 @@ public class STable {
 	public List<Turn> journal = new ArrayList<Turn>();
 
 	// This initiates user's turn handler
-	public boolean checkTurn (int position) {
+	public boolean checkTurn (int position)
+	{
 		int attemptNumber = journal.size();
 		int turnY = (position) / xSize + 1;
 		int turnX = (position) % xSize + 1;
@@ -153,7 +162,8 @@ public class STable {
 		return result;
 	}
 
-	public void writeTurn (@NonNull Turn turn){
+	public void writeTurn (@NonNull Turn turn)
+	{
 		ClickGroup group = new ClickGroup();
 		group.setName(turn.toString());
 		try {
@@ -165,7 +175,8 @@ public class STable {
 		}
 	}
 
-	public void shuffle(){
+	public void shuffle()
+	{
 		Random r = new Random();
 		ArrayList<SCell> clonedArea = (ArrayList<SCell>) area.clone();
 
@@ -186,18 +197,13 @@ public class STable {
 		return area.get(x * this.xSize + y * this.ySize);
 	}
 
-	public int getX() {
-		return xSize;
-	}
+	public int getX() { return xSize; }
 
-	public int getY() {
-		return ySize;
-	}
+	public int getY() { return ySize; }
 
-	public int getTurnNumber() {
-		return turnNumber;
-	}
+	public int getTurnNumber() { return turnNumber; }
 
+	public boolean isFinished() { return isFinished; }
 
-
+	public void setFinished(boolean finished) { isFinished = finished; }
 }

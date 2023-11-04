@@ -1,6 +1,10 @@
 package org.nebobrod.schulteplus.ui;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferencesName;
+import static org.nebobrod.schulteplus.Const.*;
+
 import android.app.Dialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -11,17 +15,23 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
+import androidx.preference.MultiSelectListPreference;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SeekBarPreference;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import org.nebobrod.schulteplus.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 
-public class PopupSettingsFragment extends AppCompatDialogFragment {
-
+public class PopupSettingsFragment extends AppCompatDialogFragment
+{
 
 	@Nullable
 	@Override
@@ -45,34 +55,75 @@ public class PopupSettingsFragment extends AppCompatDialogFragment {
 					.add(R.id.content, fragment)
 					.commit();
 		}
+
+
 	}
 
-	public static class PreferenceFragment extends PreferenceFragmentCompat {
-		// Preference Keys
-		public static final String KEY_PRF_LEVEL = "prf_level";
-		public static final String KEY_PRF_CURRENT_LEVEL = "prf_current_level";
-		// Shared preference
-		SharedPreferences sharedPreferences;
-
+	public static class PreferenceFragment extends PreferenceFragmentCompat implements
+			SharedPreferences.OnSharedPreferenceChangeListener
+	{
 		@Override
-		public void onCreatePreferences(Bundle bundle, String s) {
+		public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+//			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.menu_preferences);
 
-			SeekBarPreference prfCurrentLevel;
-			int currentLevel;
+			getPreferenceManager().setSharedPreferencesName(ExerciseRunner.uid);
+			getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
 
-			sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-			currentLevel = Utils.intFromString(sharedPreferences.getString(KEY_PRF_LEVEL, "1"));
-			prfCurrentLevel = getPreferenceScreen().findPreference(KEY_PRF_CURRENT_LEVEL);
-
-			if (currentLevel < prfCurrentLevel.getValue()){
-				prfCurrentLevel.setValue(currentLevel);
-			}
-			prfCurrentLevel.setMax(currentLevel);
-			prfCurrentLevel.setTitle(R.string.prf_current_level_title );
+			getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
 		}
 
+
+
+		@Override
+		public void onResume() {
+			super.onResume();
+			for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); ++i) {
+				Preference preference = getPreferenceScreen().getPreference(i);
+				if (preference instanceof PreferenceGroup) {
+					PreferenceGroup preferenceGroup = (PreferenceGroup) preference;
+					for (int j = 0; j < preferenceGroup.getPreferenceCount(); ++j) {
+						Preference singlePref = preferenceGroup.getPreference(j);
+						updatePreference(singlePref, singlePref.getKey());
+					}
+				} else {
+					updatePreference(preference, preference.getKey());
+				}
+			}
+		}
+
+		@Override
+		public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+			updatePreference(findPreference(key), key);
+		}
+
+		private void updatePreference(Preference preference, String key) {
+			if (preference == null) return;
+			if (preference instanceof ListPreference) {
+				ListPreference listPreference = (ListPreference) preference;
+				listPreference.setSummary(listPreference.getEntry());
+				return;
+			}
+			SharedPreferences sharedPrefs = getPreferenceManager().getSharedPreferences();
+
+			switch (key) {
+				case "prf_points":
+				case "prf_hours":
+				case "prf_level":
+					preference.setSummary("" + sharedPrefs.getInt(key, 0));
+					break;
+				case "prf_user_name":
+				case "prf_user_email":
+					preference.setSummary("" + sharedPrefs.getString(key, "-"));
+					break;
+				default:
+					break;
+			}
+		}
+
+
 	}
+
 }
 

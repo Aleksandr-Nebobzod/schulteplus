@@ -59,12 +59,13 @@ public class PopupSettingsFragment extends AppCompatDialogFragment
 
 	}
 
-	public static class PreferenceFragment extends PreferenceFragmentCompat implements
-			SharedPreferences.OnSharedPreferenceChangeListener
+	public static class PreferenceFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener
 	{
 		@Override
 		public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
-//			super.onCreate(savedInstanceState);
+			SeekBarPreference sbPrfCurrentLevel;
+			int currentLevel;
+
 			addPreferencesFromResource(R.xml.menu_preferences);
 
 			getPreferenceManager().setSharedPreferencesName(ExerciseRunner.uid);
@@ -72,13 +73,25 @@ public class PopupSettingsFragment extends AppCompatDialogFragment
 
 			getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
+			currentLevel = (getPreferenceScreen().getSharedPreferences().getInt(KEY_PRF_LEVEL, 0));
+			sbPrfCurrentLevel = getPreferenceScreen().findPreference(KEY_PRF_CURRENT_LEVEL);
+
+			if (currentLevel < sbPrfCurrentLevel.getValue()){
+				sbPrfCurrentLevel.setValue(currentLevel);
+			}
+			sbPrfCurrentLevel.setMax(currentLevel);
+			sbPrfCurrentLevel.setTitle(R.string.prf_current_level_title );
+
 		}
-
-
 
 		@Override
 		public void onResume() {
 			super.onResume();
+/*			// Set up a listener whenever a key changes
+			getPreferenceScreen().getSharedPreferences()
+					.registerOnSharedPreferenceChangeListener(this);*/
+
+			// This maybe redundant... nope -- registered listeners don't work
 			for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); ++i) {
 				Preference preference = getPreferenceScreen().getPreference(i);
 				if (preference instanceof PreferenceGroup) {
@@ -92,6 +105,14 @@ public class PopupSettingsFragment extends AppCompatDialogFragment
 				}
 			}
 		}
+
+/*		@Override
+		public void onPause() {
+			super.onPause();
+			// Unregister the listener whenever a key changes
+			getPreferenceScreen().getSharedPreferences()
+					.unregisterOnSharedPreferenceChangeListener(this);
+		}*/
 
 		@Override
 		public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -108,14 +129,17 @@ public class PopupSettingsFragment extends AppCompatDialogFragment
 			SharedPreferences sharedPrefs = getPreferenceManager().getSharedPreferences();
 
 			switch (key) {
+				// integer values assignment
 				case "prf_points":
 				case "prf_hours":
 				case "prf_level":
 					preference.setSummary("" + sharedPrefs.getInt(key, 0));
 					break;
+
+				// String values assignment
 				case "prf_user_name":
 				case "prf_user_email":
-					preference.setSummary("" + sharedPrefs.getString(key, "-"));
+					preference.setSummary(sharedPrefs.getString(key, "-"));
 					break;
 				default:
 					break;

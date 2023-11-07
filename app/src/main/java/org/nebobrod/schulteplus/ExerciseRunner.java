@@ -11,6 +11,8 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
+import org.nebobrod.schulteplus.fbservices.AchievementsFbData;
+
 public class ExerciseRunner {
 	private static final String TAG = "ExerciseRunner";
 
@@ -38,7 +40,9 @@ public class ExerciseRunner {
 	private ExerciseRunner(Context context) {
 		try {
 //			sharedPreferences = context.getSharedPreferences(KEY_APP_STATE, Context.MODE_PRIVATE);
-			uid = ((MainActivity) context).fbUser.getUid();
+			uid = ((MainActivity) context).userHelper.getUid();
+			userName = ((MainActivity) context).userHelper.getName();
+			userEmail = ((MainActivity) context).userHelper.getEmail();
 			if (uid.isEmpty()) uid = KEY_DEFAULT_USER_PREF;
 			this.loadPreference(context);
 			this.savePreferences(null);
@@ -70,10 +74,10 @@ public class ExerciseRunner {
 			PreferenceManager.setDefaultValues(context, R.xml.menu_preferences, false);
 
 			// And some additional prefs:
-			userName = sharedPreferences.getString(KEY_USER_NAME, "null");
-			userEmail = sharedPreferences.getString(KEY_USER_EMAIL, "null@email.com");
+			//userName = sharedPreferences.getString(KEY_USER_NAME, "null");
+			//userEmail = sharedPreferences.getString(KEY_USER_EMAIL, "null@email.com");
 			points = sharedPreferences.getInt(KEY_POINTS, 0);
-			level = sharedPreferences.getInt(KEY_PRF_LEVEL, 2);
+			level = sharedPreferences.getInt(KEY_PRF_LEVEL, 1);
 			currentLevel = sharedPreferences.getInt(KEY_PRF_CURRENT_LEVEL, 1);
 			hinted = sharedPreferences.getBoolean(KEY_HINTED, true);
 
@@ -87,36 +91,56 @@ public class ExerciseRunner {
 		}
 	}
 
-	public static void savePreferences(@Nullable STable exercise){
+	public static boolean savePreferences(@Nullable STable exercise){
 		SharedPreferences.Editor editor = sharedPreferences.edit();
-		editor.putBoolean(	KEY_HINTED, hinted).apply();
+		boolean result = true;
+		boolean newHour = false;
+		editor.putString(	KEY_USER_NAME, userName);
+		editor.putString(	KEY_USER_EMAIL, userEmail);
 
+		editor.putBoolean(	KEY_HINTED, hinted).apply();
 		editor.putString(	KEY_TYPE_OF_EXERCISE, exType);
 		editor.putInt(		KEY_X_SIZE, (int) xSize).apply();
 		editor.putInt(		KEY_Y_SIZE, (int) xSize).apply();
 		tsRun = timeStamp();
 		editor.putLong(		KEY_TS_UPDATED, tsRun).apply();
-		if(null != exercise){
-			if (exercise.isFinished()) {
-				// During the exercise
-				long spent = ((exercise.journal.get(exercise.journal.size()-1).timeStamp - exercise.journal.get(0).timeStamp)/1000000) ;
-				// On the whole
-				spent += sharedPreferences.getInt(KEY_POINTS, 0);
-				editor.putInt(		KEY_POINTS, (int) spent).apply();
 
-				points = (int) spent;
-				if (points > 3600){
-					hours += points / 3600;
-					points = points % 3600;
+		if(null != exercise){
+			CALC:
+			if (exercise.isFinished()) {
+				// Spent ms During the exercise
+				int events = exercise.journal.size()-1;
+				long spent = ((exercise.journal.get(events).timeStamp - exercise.journal.get(0).timeStamp)/1000000000) ;
+
+				// if an average turn duration exceeds 5 minutes
+				if ((spent / events) > 300) {
+					result = false;
+					break CALC;
 				}
 
+				// On the whole spent seconds
+				spent += sharedPreferences.getInt(KEY_POINTS, 0);
+
+				points = (int) spent;
+				AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormatted(timeStamp()), "Seconds", "" + points, " ");
+//				AchievementsFbData.getData();
+				if (points > 3600){
+					hours += (points / 3600);
+					points = (points % 3600);
+					newHour = true;
+				}
+				editor.putInt(		KEY_POINTS, (int) points).apply();
+				hours += sharedPreferences.getInt(KEY_HOURS, 0);
+				if (newHour) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormatted(timeStamp()), "Passed hour", "" + hours, "➚");
+				editor.putInt(		KEY_HOURS, (int) hours  ).apply();
+				editor.putInt(		KEY_PRF_LEVEL, (int) Math.sqrt(hours * 3600 + points)  ).apply();
 			}
 		}
-		editor.putInt(		KEY_HOURS, (int) Math.sqrt(points)  ).apply();
-		editor.putInt(		KEY_PRF_LEVEL, (int) Math.sqrt(points)  ).apply();
 
-		editor.commit();
-		Log.d(TAG, "savePreferences: " + instance);
+		if (result) editor.commit();
+
+		Log.d(TAG, "save " + result + " in Preferences: " + instance);
+		return result;
 	}
 
 
@@ -165,7 +189,7 @@ public class ExerciseRunner {
 
 	@Override
 	public String toString() {
-		return "ExerciseRunner{" +
+		return "ExerciseRunner of " + userName + ", " + userEmail + ", " + uid + " {" +
 				"\npoints=" + points +
 				"\nexType=" + exType +
 				"\nxSize=" + xSize +

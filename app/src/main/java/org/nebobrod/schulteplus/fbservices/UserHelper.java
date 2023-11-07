@@ -11,7 +11,13 @@ package org.nebobrod.schulteplus.fbservices;
 import static org.nebobrod.schulteplus.Utils.timeStamp;
 import static org.nebobrod.schulteplus.Utils.timeStampFormatted;
 
-public class FbUserHelper {
+import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class UserHelper implements Parcelable {
 	String email;
 	String name;
 	String password;
@@ -21,9 +27,9 @@ public class FbUserHelper {
 	String dateChanged;
 	boolean verified=false;
 
-	public FbUserHelper() {	}
+	public UserHelper() {	}
 
-	public FbUserHelper(String email, String name, String password, String uid, String deviceId, boolean verified) {
+	public UserHelper(String email, String name, String password, String uid, String deviceId, boolean verified) {
 		this.email = email;
 		this.name = name;
 		this.password = String.valueOf(password.hashCode()+password.hashCode());
@@ -32,6 +38,20 @@ public class FbUserHelper {
 		this.dateCreated = timeStampFormatted(timeStamp());
 		this.dateChanged = this.dateCreated;
 		this.verified = verified;
+	}
+
+	public UserHelper(Parcel parcel) {
+		this.email = parcel.readString();
+		this.name = parcel.readString();
+		this.password = parcel.readString();
+		this.uid = parcel.readString();
+		this.deviceId = parcel.readString();
+		this.dateCreated = parcel.readString();
+		this.dateChanged = parcel.readString();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+			this.verified =parcel.readBoolean();
+		}
+
 	}
 
 	public String getName() {
@@ -106,5 +126,34 @@ public class FbUserHelper {
 				", verified=" + verified +
 				'}';
 	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(@NonNull Parcel parcel, int i) {
+		parcel.writeString(email);
+		parcel.writeString(name);
+		parcel.writeString(password);
+		parcel.writeString(uid);
+		parcel.writeString(deviceId);
+		parcel.writeString(dateCreated);
+		parcel.writeString(dateChanged);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+			parcel.writeBoolean(verified);
+		}
+	}
+
+	public static Creator<UserHelper> CREATOR = new Creator<UserHelper>() {
+		public UserHelper createFromParcel(Parcel parcel) {
+			return new UserHelper(parcel);
+		}
+
+		public UserHelper[] newArray(int size) {
+			return new UserHelper[size];
+		}
+	};
 }
 

@@ -1,7 +1,5 @@
 package org.nebobrod.schulteplus.fbservices;
 
-import static org.nebobrod.schulteplus.fbservices.FbUserData.printQuery;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,7 +34,7 @@ import org.nebobrod.schulteplus.Utils;
 import java.util.Arrays;
 import java.util.List;
 
-public class LoginActivity extends AppCompatActivity implements FbUserData.UserCallback {
+public class LoginActivity extends AppCompatActivity implements UserFbData.UserCallback {
 	private static final String TAG = "Login";
 	private static final String NAME_REG_EXP = "^[a-z][[a-z]![0-9]]{3,14}$";
 	private static final String DB_PATH = "users";
@@ -51,6 +49,7 @@ public class LoginActivity extends AppCompatActivity implements FbUserData.UserC
 	ImageView btUnwrapExtra, btWrapExtra;
 	LinearLayout llExtras;
 	TextView tvResendVerEmail, tvResetPassword, tvAlternativeReg, tvContinueUnregistered;
+	boolean nameExists = true;
 	boolean signInPressed = false; // this is to prevent Instant Verification of FB
 
 	FirebaseAuth.AuthStateListener mAuthListener;
@@ -74,6 +73,12 @@ public class LoginActivity extends AppCompatActivity implements FbUserData.UserC
 			etEmail.setText(getIntent().getExtras().getString("email",""));
 			etName.setText(getIntent().getExtras().getString("name", ""));
 			etPassword.setText(getIntent().getExtras().getString("password", ""));
+		}
+		{
+			String mName = "nebobzod"; // This name is definitely busy
+//			etName.setText(mName);
+			nameExists = true;
+			UserFbData.isNameExist(this::onCallback, mName);
 		}
 
 		btUnwrapExtra = findViewById(R.id.bt_unwrap_extra);
@@ -117,7 +122,7 @@ public class LoginActivity extends AppCompatActivity implements FbUserData.UserC
 			}
 		};*/
 
-// This listener updates UserDisplayName in case of success authentication
+		// This listener updates UserDisplayName in case of success authentication
 		mAuthListener = new FirebaseAuth.AuthStateListener()
 		{
 			@Override
@@ -133,7 +138,7 @@ public class LoginActivity extends AppCompatActivity implements FbUserData.UserC
 
 					}
 				} else {
-//					user = null; // Here we can clean autologin (default applied token from previous session)
+					user = null; // Here we can clean autologin (default applied token from previous session)
 				}
 
 				if(user!=null){
@@ -176,6 +181,7 @@ public class LoginActivity extends AppCompatActivity implements FbUserData.UserC
 					// do nothing (input errors are handled in validation functions
 				} else {
 					signInPressed = true;
+
 					fbAuth.signInWithEmailAndPassword(email, password)
 						.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
 							@Override
@@ -190,7 +196,8 @@ public class LoginActivity extends AppCompatActivity implements FbUserData.UserC
 //									showSnackbar(btGoOn, s, getString(R.string.lbl_go_on) );
 								}
 
-								runMainActivity(user);
+								UserFbData.isExist(LoginActivity.this::onCallback, email.replace(".", "_"));
+
 //									finish();
 							}
 						}).addOnFailureListener(new OnFailureListener() {
@@ -238,7 +245,7 @@ public class LoginActivity extends AppCompatActivity implements FbUserData.UserC
 		{
 			@Override
 			public void onClick(View view) {
-				signInPressed = true;
+
 				signInAnonymously();
 			}
 		});
@@ -261,24 +268,43 @@ public class LoginActivity extends AppCompatActivity implements FbUserData.UserC
 /*		if (!val.matches(NAME_REG_EXP)) {
 			etName.setError(getString(R.string.msg_username_rules));
 			return false;
-		}*/
-		if (!FbUserData.isExist(loginCallback, val)) {
+		}
+		if (!UserFbData.isExist(this, val)) {
 			etName.setError(getString(R.string.msg_username_doesnt_exists));
 			return false;
 		}
+*/
 		etName.setError(null);
 		return true;
 
 	}
 
 	@Override
-	public void onCallback(FbUserHelper fbDbUser) {	}
+	public void onCallback(UserHelper fbDbUser)
+	{
+		if(signInPressed) {
+			if (fbDbUser != null) runMainActivity(fbDbUser);
+		} else {
+			for (int i = 0; (i < 10 & nameExists); i++ ){
+				if (fbDbUser == null) {
+					nameExists = false;
+					break;
+				} else {
+					String mName = Utils.getRandomName();
+					etName.setText(mName);
+					UserFbData.isNameExist(this::onCallback, mName);
+				}
+			}
+		}
 
-	private FbUserData.UserCallback loginCallback = new FbUserData.UserCallback()
+
+	}
+
+/*	private UserFbData.UserCallback loginCallback = new UserFbData.UserCallback()
 	{
 		@Override
-		public void onCallback(FbUserHelper fbDbUser) { Log.d(TAG, "onCallback: " + fbDbUser); }
-	};
+		public void onCallback(UserHelper fbDbUser) { Log.d(TAG, "onCallback: " + fbDbUser); }
+	};*/
 
 	private boolean validatePassword()
 	{
@@ -294,20 +320,21 @@ public class LoginActivity extends AppCompatActivity implements FbUserData.UserC
 
 	private void signInAnonymously()
 	{
-		String mName = "null";
-		etName.setText(mName);
-/*
-		for (int i = 0; (i < 10 & FbUserData.isExist(loginCallback, mName)); i++ ){
-			mName = Utils.getRandomName();
+		if (nameExists) {
+			Toast.makeText(this, "Try later with another name", Toast.LENGTH_SHORT).show();
+			String mName = Utils.getRandomName();
 			etName.setText(mName);
+			UserFbData.isNameExist(this::onCallback, mName);
+			return;
 		}
-		if (FbUserData.isExist(loginCallback, mName)) {
+
+		signInPressed = true;
+
+/*		if (UserFbData.isExist(this::onCallback, mName)) {
 			Toast.makeText(LoginActivity.this, getString(R.string.msg_cant_ensure_username), Toast.LENGTH_SHORT).show();
 			return;
 		}*/
-
 //		printQuery(loginCallback, mName);
-
 
 		// [START sign_in_anonymously]
 		fbAuth.signInAnonymously()
@@ -323,8 +350,6 @@ public class LoginActivity extends AppCompatActivity implements FbUserData.UserC
 					@Override
 					public void onComplete(@NonNull Task<AuthResult> task)
 					{
-//						SystemClock.sleep(5000);
-
 						if (task.isSuccessful()) {
 							// Sign in success, update UI with the signed-in user's information
 							FirebaseUser user = fbAuth.getCurrentUser();
@@ -333,10 +358,10 @@ public class LoginActivity extends AppCompatActivity implements FbUserData.UserC
 							String _name = etName.getText().toString().trim();
 							String _device = Utils.getDeviceId(LoginActivity.this);
 
-							FbUserData fbDbUser = new FbUserData();
-							fbDbUser.addUser(_name + _device + "@email.com", _name, "password", user.getUid(), _device, false);
+							UserFbData fbDbUser = new UserFbData();
+							fbDbUser.addUser(_name +  "@email.com", _name, "password", user.getUid(), _device, false);
 							Log.d(TAG, "onComplete signIn Anon: " + fbDbUser);
-							runMainActivity(user);
+							runMainActivity(UserFbData.getFbUserHelper());
 						} else {
 							// If sign in fails, display a message to the user.
 							Log.w(TAG, getString(R.string.msg_signin_anonymously_failure), task.getException());
@@ -344,12 +369,13 @@ public class LoginActivity extends AppCompatActivity implements FbUserData.UserC
 									Toast.LENGTH_SHORT).show();
 						}
 					}
+
 				});
 		// [END sign_in_anonymously]
 
 	}
 
-	private void runMainActivity(FirebaseUser user)
+	private void runMainActivity(UserHelper user)
 	{
 		Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 		intent.putExtra("user", user);

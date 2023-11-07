@@ -26,7 +26,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import org.nebobrod.schulteplus.databinding.ActivityMainBinding;
 //import org.nebobrod.schulteplus.ui.BasicsActivity;
-import org.nebobrod.schulteplus.fbservices.FbUserData;
+import org.nebobrod.schulteplus.fbservices.UserFbData;
+import org.nebobrod.schulteplus.fbservices.UserHelper;
 import org.nebobrod.schulteplus.ui.BasicsActivity;
 import org.nebobrod.schulteplus.ui.PopupSettingsFragment;
 import org.nebobrod.schulteplus.ui.SchulteActivity02;
@@ -37,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
 	FirebaseAuth fbAuth;
 	FirebaseUser fbUser = null;
-	FbUserData fbUserData;
+	UserHelper userHelper;
+	UserFbData userFbData;
 
 	private ActivityMainBinding binding;
 	ExerciseRunner runner;
@@ -82,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 		fbAuth = FirebaseAuth.getInstance();
 		if(getIntent() != null & getIntent().hasExtra("user"))
 		{
-			fbUser = getIntent().getExtras().getParcelable("user");
+			userHelper = getIntent().getExtras().getParcelable("user");
 
 //			etEmail.setText(getIntent().getExtras().getString("email",""));
 //			etName.setText(getIntent().getExtras().getString("name", ""));

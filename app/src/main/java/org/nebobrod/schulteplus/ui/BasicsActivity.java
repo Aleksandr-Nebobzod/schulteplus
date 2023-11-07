@@ -1,5 +1,9 @@
 package org.nebobrod.schulteplus.ui;
 
+import static org.nebobrod.schulteplus.Utils.bHtml;
+import static org.nebobrod.schulteplus.Utils.pHtml;
+import static org.nebobrod.schulteplus.Utils.tHtml;
+
 import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
@@ -29,7 +33,8 @@ import android.widget.Toast;
 
 import org.nebobrod.schulteplus.ExerciseRunner;
 import org.nebobrod.schulteplus.STable;
-import org.nebobrod.schulteplus.databinding.ActivityBasicsBinding; // TODO: 01.10.2023 figure it out! 
+import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.databinding.ActivityBasicsBinding; // TODO: 01.10.2023 figure it out!
 import org.nebobrod.schulteplus.R;
 
 /**
@@ -57,6 +62,7 @@ public class BasicsActivity extends AppCompatActivity {
 	 * and a change of the status and navigation bar.
 	 */
 	private static final int UI_ANIMATION_DELAY = 300;
+
 	private final Handler mHideHandler = new Handler(Looper.myLooper());
 	private View mContentView;
 	private final Runnable mHidePart2Runnable = new Runnable() {
@@ -80,6 +86,7 @@ public class BasicsActivity extends AppCompatActivity {
 			}
 		}
 	};
+
 	private View mControlsView;
 	private View btExit;
 	private View btDistraction;
@@ -170,12 +177,15 @@ public class BasicsActivity extends AppCompatActivity {
 		// Upon interacting with UI controls, delay any scheduled hide()
 		// operations to prevent the jarring behavior of controls going away
 		// while interacting with the UI.
-		binding.btDistraction.setOnTouchListener(mDelayHideTouchListener);
+		//binding.btDistraction.setOnTouchListener(mDelayHideTouchListener);
 
 		btExit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				newExerciseDialog("\n Продолжить \n работу?");
+				btDistraction.performClick();
+				newExerciseDialog(Utils.getRes().getString(R.string.lbl_time) + ":" + tHtml()  + bHtml(tvClock.getText().toString()) + pHtml()
+									+ Utils.getRes().getString(R.string.lbl_events) + ":" + tHtml()  + bHtml(tvCounter.getText().toString()) + pHtml()
+									+ pHtml() + bHtml(getResources().getString(R.string.txt_one_more_q)));
 			}
 		});
 		btDistraction.setOnClickListener(new View.OnClickListener() {
@@ -184,8 +194,8 @@ public class BasicsActivity extends AppCompatActivity {
 				exercise.checkTurn(0);
 				String s = String.valueOf(exercise.journal.size() - 1);
 				tvCounter.setText(s);
-				long sec = (System.nanoTime()-timeStarted)/1000000000;
-				s = String.format("%1$d:%2$02d", sec/60,sec%60);
+				long time = (System.nanoTime()-timeStarted)/1000000000;
+				s = String.format("%1$d:%2$02d", time/60,time%60);
 				tvClock.setText(s);
 			}
 		});
@@ -324,7 +334,7 @@ public class BasicsActivity extends AppCompatActivity {
 		if (mVisible) {
 			hide();
 		} else {
-			show();
+			// show();
 		}
 	}
 

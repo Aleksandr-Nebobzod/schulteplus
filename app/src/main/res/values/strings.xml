@@ -99,7 +99,7 @@
 	<string name="prf_current_level_summary">The level you can choose for rating trainings</string>
 	<string name="prf_current_level_units">Stars</string>
 	<string name="prf_level_title">Level</string>
-	<string name="prf_level_summary">Your maximum reached level is %s</string>
+	<string name="prf_level_summary">Your maximum reached level is</string>
 	<string name="prf_hours_title">Hours</string>
 	<string name="prf_hours_summary">Earned number of \'minutes\' converted to hours of practice</string>
 	<string name="txt_schulte_description">There are core exercises based upon Schulte methods</string>
@@ -161,9 +161,10 @@
 	<string name="msg_user_network_failed">Network access failed. You still able to login temporarily without registration.</string>
 	<string name="msg_signin_anonymously_success">SignIn Anonymously:success</string>
 	<string name="msg_signin_anonymously_failure">Signin anonymously failed</string>
-	<string name="msg_username_rules">should have 3–15 small Latin letters or Arabic digits</string>
+	<string name="msg_username_rules">should have 4–15 small Latin letters or Arabic digits</string>
 	<string name="msg_username_doesnt_exists">Not registered username</string>
 	<string name="msg_cant_ensure_username">There is something wrong with your name. Try again later.</string>
 	<string name="prf_points_title">Seconds</string>
+	<string name="lbl_events">Events</string>
 
 </resources>

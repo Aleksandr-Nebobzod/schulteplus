@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 
-public class SignupActivity extends AppCompatActivity implements FbUserData.UserCallback {
+public class SignupActivity extends AppCompatActivity implements UserFbData.UserCallback {
 	private static final String TAG = "Signup";
 	private static final String NAME_REG_EXP = "^[a-z][[a-z]![0-9]]{3,14}$";
 
@@ -32,7 +32,7 @@ public class SignupActivity extends AppCompatActivity implements FbUserData.User
 	MaterialButton btGoOn;
 	TextView tvGoOff;
 
-	FbUserData fbDbUser;
+	UserFbData fbDbUser;
 
 
 	@Override
@@ -83,7 +83,7 @@ public class SignupActivity extends AppCompatActivity implements FbUserData.User
 
 								// Create the fbDB copy of User
 								FirebaseUser user = auth.getCurrentUser();
-								fbDbUser = new FbUserData();
+								fbDbUser = new UserFbData();
 								fbDbUser.addUser(email, name, password, user.getUid(), Utils.getDeviceId(SignupActivity.this) , false);
 //								updateUI(user);
 
@@ -157,7 +157,7 @@ public class SignupActivity extends AppCompatActivity implements FbUserData.User
 		}
 
 		{ // asynchronous calling
-			if (FbUserData.isExist(signupCallback, val)) {
+			if (UserFbData.isExist(signupCallback, val)) {
 				etName.setError(getString(R.string.msg_username_exists));
 				return false;
 			}
@@ -180,12 +180,12 @@ public class SignupActivity extends AppCompatActivity implements FbUserData.User
 	}
 
 	@Override
-	public void onCallback(FbUserHelper value) { }
+	public void onCallback(UserHelper value) { }
 
-	private FbUserData.UserCallback signupCallback = new FbUserData.UserCallback()
+	private UserFbData.UserCallback signupCallback = new UserFbData.UserCallback()
 	{
 		@Override
-		public void onCallback(FbUserHelper fbDbUser)
+		public void onCallback(UserHelper fbDbUser)
 		{
 			Log.d(TAG, "onCallback: " + fbDbUser);
 		}

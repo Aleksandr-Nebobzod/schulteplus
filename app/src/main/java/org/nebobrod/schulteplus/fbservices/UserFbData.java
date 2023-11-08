@@ -69,6 +69,32 @@ public final class UserFbData {
 		fbReference.child(email.replace(".", "_")).setValue(userHelper);
 	}
 
+	public interface NameFreeCallback {
+		void onCallback(boolean isFree);
+	}
+	public static void isNameFree(NameFreeCallback callback, String name) // To check anonymous sign in
+	{
+//		FirebaseDatabase.getInstance().getReference().child("users").orderByChild("name").equalTo(name).addValueEventListener(new ValueEventListener() {
+		init();
+		fbReference.orderByChild("name").equalTo(name).addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.exists()) {
+					callback.onCallback(false);
+					Log.d(TAG, "This username already exists: " + name);
+					// ("");
+				} else {
+					callback.onCallback(true);
+					Log.d(TAG, "true, there is free space for: " + name);
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+				throw databaseError.toException(); // never ignore errors
+			}
+		});
+	}
 
 
 	public static boolean z_getUserFromFirebase(final UserCallback myCallback, String name)

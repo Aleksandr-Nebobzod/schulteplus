@@ -28,6 +28,8 @@ public interface Const {
 	public static final String KEY_Y_SIZE = "prf_y_size";
 	public static final String KEY_TS_UPDATED = "prf_ts_updated";
 	public static final String KEY_HINTED = "prf_sw_hints";
+	public static final String KEY_HAPTIC = "prf_vibration";
+	public static final String KEY_SOUND = "prf_sound";
 
 
 }

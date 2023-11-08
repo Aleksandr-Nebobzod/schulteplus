@@ -31,6 +31,7 @@ import org.nebobrod.schulteplus.GridAdapter;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.SCell;
 import org.nebobrod.schulteplus.STable;
+import org.nebobrod.schulteplus.Utils;
 
 import java.util.Objects;
 
@@ -119,9 +120,12 @@ public class SchulteActivity02 extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_schulte02);
 		Intent intent = getIntent();
 		runner = ExerciseRunner.getInstance(getApplicationContext());
+		boolean feedbackHaptic = runner.getPrefHaptic();
+		boolean feedbackSound = runner.getPrefSound();
 
 		if (null == intent) {
 			Toast.makeText(this, "" + this.getString(R.string.err_no_data), Toast.LENGTH_SHORT).show();
@@ -145,6 +149,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 		mGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View v, int position, long id) {
+				Utils.feedbacks (v, feedbackHaptic, feedbackSound);
 				SCell currentCell = exercise.getArea().get(position);
 				//Toast.makeText(SchulteActivity02.this, position+"_" + currentCell.getValue(), Toast.LENGTH_SHORT).show();
 				if (exercise.checkTurn(position)) {

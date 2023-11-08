@@ -203,6 +203,9 @@ public class ExerciseRunner {
 					"\n\tySize = " + String.valueOf( sharedPreferences.getBoolean(KEY_HINTED, true)) +
 				"\n}";
 	}
+
+	public static boolean getPrefHaptic(){ return sharedPreferences.getBoolean(KEY_HAPTIC, true);}
+	public static boolean getPrefSound(){ return sharedPreferences.getBoolean(KEY_HAPTIC, true);}
 }
 
 

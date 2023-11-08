@@ -80,7 +80,7 @@
 	<string name="prf_data_on">Your exercise results ARE  SENT to server, though you also CAN SEE the other users\' results (ratings ON)</string>
 	<string name="prf_data_st_on">ST ON</string>
 	<string name="prf_data_st_off">ST OFF</string>
-	<string name="prf_title_sound_yn">Sound</string>
+	<string name="prf_title_sound_yn">Sound response</string>
 	<string name="prf_title_vibration">Vibration response</string>
 	<string name="prf_cat_help">Help</string>
 	<string name="prf_title_feedback">Send feedback</string>

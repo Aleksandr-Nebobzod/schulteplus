@@ -160,11 +160,15 @@ public class BasicsActivity extends AppCompatActivity {
 		tvCounter  = binding.tvCounter; tvCounter.setText("0");
 		tvClock = binding.tvTime; tvClock.setText("0:00");
 //		chmTime = binding.chmTime; // in Basics no live clock is useful
+
 		if (!ExerciseRunner.isHinted()) {
 			tvCounter.setVisibility(View.GONE);
 			tvClock.setVisibility(View.GONE);
 		}
 		long timeStarted = System.nanoTime();
+
+		boolean feedbackHaptic = ExerciseRunner.getPrefHaptic();
+		boolean feedbackSound = ExerciseRunner.getPrefSound();
 
 		// Set up the user interaction to manually show or hide the system UI.
 		mContentView.setOnClickListener(new View.OnClickListener() {
@@ -191,6 +195,7 @@ public class BasicsActivity extends AppCompatActivity {
 		btDistraction.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				Utils.feedbacks (view, feedbackHaptic, feedbackSound);
 				exercise.checkTurn(0);
 				String s = String.valueOf(exercise.journal.size() - 1);
 				tvCounter.setText(s);

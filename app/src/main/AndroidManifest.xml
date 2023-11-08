@@ -23,7 +23,7 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/Theme.SchultePlus"
-		android:versionCode="5"
+		android:versionCode="7"
 		android:versionName="Entada"
 		tools:targetApi="31">
 		<activity

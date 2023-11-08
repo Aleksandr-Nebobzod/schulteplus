@@ -64,7 +64,7 @@
 	<string name="prf_data_on">Результаты ваших тренировок ОТПРАВЛЯЮТСЯ на сервер, вы также ВИДИТЕ результаты других участников (с рейтингами)</string>
 	<string name="prf_data_st_on">СТ ОН</string>
 	<string name="prf_data_st_off">СТ ОФФ</string>
-	<string name="prf_title_sound_yn">Звук</string>
+	<string name="prf_title_sound_yn">Звуковой отклик</string>
 	<string name="prf_title_vibration">Виброотклик</string>
 	<string name="prf_cat_help">Помощь</string>
 	<string name="prf_title_feedback">Направить обращение</string>

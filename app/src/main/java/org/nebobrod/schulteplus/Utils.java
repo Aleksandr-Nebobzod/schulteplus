@@ -17,6 +17,7 @@ import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -257,6 +258,22 @@ public final class Utils extends Application {
 		String id = Settings.Secure.getString(context.getContentResolver(),
 				Settings.Secure.ANDROID_ID);
 		return id;
+	}
+
+	/**
+	 * provides feedbacks on clicks or other view-actions
+	 * @param view from which it runs
+	 * @param sound true to play
+	 * @param haptic true to vibrate
+	 */
+	public static void feedbacks(View view, boolean haptic, boolean sound) {
+
+		if (haptic) view.performHapticFeedback(
+				HapticFeedbackConstants.VIRTUAL_KEY,
+				HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING  // Ignore device's setting. Otherwise, you can use FLAG_IGNORE_VIEW_SETTING to ignore view's setting.
+		);
+		if (sound) view.playSoundEffect(android.view.SoundEffectConstants.CLICK);
+
 	}
 
 

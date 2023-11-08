@@ -128,14 +128,14 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 			@Override
 			public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 				FirebaseUser user = firebaseAuth.getCurrentUser();
-				String mName = "null"; // etName.getText().toString().trim();
+				String mName = etName.getText().toString().trim();
 
 				if (user == null) return;
 
 				if (signInPressed) {
 					// ensuring Name for anonymous user
 					if (user.isAnonymous()) {
-
+						// do smth?..
 					}
 				} else {
 					user = null; // Here we can clean autologin (default applied token from previous session)
@@ -147,18 +147,11 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 							.setDisplayName(mName).build();
 
 					user.updateProfile(profileUpdates)
-
-/*							.addOnSuccessListener(new OnSuccessListener<Void>() {
-								@Override
-								public void onSuccess(Void unused) {
-
-								}
-							})*/
 							.addOnCompleteListener(new OnCompleteListener<Void>() { // this is just for fun
 								@Override
 								public void onComplete(@NonNull Task<Void> task) {
 									if (task.isSuccessful()) {
-										Log.d(TAG, "User profile updated. ");
+										Log.d(TAG, "User profile updated with Name: " + mName);
 									}
 								}
 							});
@@ -245,8 +238,21 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 		{
 			@Override
 			public void onClick(View view) {
+				String val = etName.getText().toString().trim();
+				if (validateName() == false)  return;
 
-				signInAnonymously();
+				UserFbData.isNameFree(new UserFbData.NameFreeCallback() {
+					@Override
+					public void onCallback(boolean isFree) {
+						if (isFree) {
+							signInAnonymously();
+						} else {
+							String mName = Utils.getRandomName();
+							etName.setText(mName);
+							Toast.makeText(LoginActivity.this, val + " is occupied, try with new name, i.e.: " +mName, Toast.LENGTH_SHORT).show();
+						}
+					}
+				}, val);
 			}
 		});
 
@@ -265,11 +271,11 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 	{
 		String val = etName.getText().toString().trim();
 
-/*		if (!val.matches(NAME_REG_EXP)) {
+		if (!val.matches(NAME_REG_EXP)) {
 			etName.setError(getString(R.string.msg_username_rules));
 			return false;
 		}
-		if (!UserFbData.isExist(this, val)) {
+/*		if (!UserFbData.isExist(this, val)) {
 			etName.setError(getString(R.string.msg_username_doesnt_exists));
 			return false;
 		}
@@ -292,7 +298,7 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 				} else {
 					String mName = Utils.getRandomName();
 					etName.setText(mName);
-					UserFbData.isNameExist(this::onCallback, mName);
+					UserFbData.isNameExist(this, mName);
 				}
 			}
 		}
@@ -320,15 +326,13 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 
 	private void signInAnonymously()
 	{
-		if (nameExists) {
+/*		if (nameExists) {
 			Toast.makeText(this, "Try later with another name", Toast.LENGTH_SHORT).show();
 			String mName = Utils.getRandomName();
 			etName.setText(mName);
 			UserFbData.isNameExist(this::onCallback, mName);
 			return;
-		}
-
-		signInPressed = true;
+		}*/
 
 /*		if (UserFbData.isExist(this::onCallback, mName)) {
 			Toast.makeText(LoginActivity.this, getString(R.string.msg_cant_ensure_username), Toast.LENGTH_SHORT).show();
@@ -336,15 +340,10 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 		}*/
 //		printQuery(loginCallback, mName);
 
+		signInPressed = true;
+
 		// [START sign_in_anonymously]
 		fbAuth.signInAnonymously()
-/*				.addOnSuccessListener(new OnSuccessListener<AuthResult>()
-				{
-					@Override
-					public void onSuccess(AuthResult authResult) {
-						Log.d(TAG, "onSuccess: from Anonymous ");
-					}
-				})*/
 				.addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>()
 				{
 					@Override

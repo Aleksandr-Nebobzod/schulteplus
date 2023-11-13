@@ -1,17 +1,27 @@
 package org.nebobrod.schulteplus.ui.schultesettings;
 
 import static org.nebobrod.schulteplus.Utils.getRes;
+import static org.nebobrod.schulteplus.Const.*;
 
-import android.content.res.Resources;
+import android.graphics.Canvas;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.preference.DropDownPreference;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
+import androidx.preference.SeekBarPreference;
+import androidx.preference.SwitchPreference;
 
 import org.nebobrod.schulteplus.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
@@ -25,6 +35,9 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 	private ExerciseRunner runner = ExerciseRunner.getInstance(getContext());
 	private String[] exTypes;
 
+	private Preference prefCatProb;
+	private SurfaceView surfaceView;
+
 	@Override
 	public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
 		getPreferenceManager().setSharedPreferencesName(ExerciseRunner.uid);
@@ -33,6 +46,20 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 		exTypes = getRes().getStringArray(R.array.ex_type);
 
 		initiateExerciseTypes();
+
+		prefCatProb = findPreference(KEY_PRF_PROBABILITIES);
+		surfaceView = new SurfaceView(getContext());
+		surfaceView = surfaceView.findViewById(prefCatProb.getWidgetLayoutResource());
+		surfaceView.draw(new Canvas());
+	}
+
+
+
+
+	@NonNull
+	@Override
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
 	private void updatePrefScreen(){
@@ -51,7 +78,7 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 			chosen.setChecked(true);
 		}
 		exType.setText(chosen.getKey());
-		runner.setExType(exType.getText().toString()); // set exType to runner from invisible pref et
+		runner.setExType(exType.getText().toString()); // set exType into the runner from invisible pref et
 		switch (chosen.getKey()){	// disable options PreferenceCategory for hard levels
 			case "gcb_schulte_1_sequence":
 				findPreference("prf_cat_options").setEnabled(true);
@@ -78,9 +105,10 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 				runner.setY((byte) 5);
 		}
 		// set hinted to runner
-		runner.setHinted(((androidx.preference.SwitchPreference) findPreference("prf_sw_hints")).isChecked());
+		runner.setHinted(((androidx.preference.SwitchPreference) findPreference(KEY_HINTED)).isChecked());
 
 	}
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -106,7 +134,52 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 
 			updatePrefScreen();
 		}
+
+		if (KEY_PRF_RATINGS.equals(preference.getKey())) {
+			enableOptions(false);
+		} else {
+			enableOptions(true);
+		}
+
+		if (KEY_PRF_PROB_ENABLED.equals(preference.getKey()))
+			enableProbability(((SwitchPreference) preference).isChecked());
+
+
 		return super.onPreferenceTreeClick(preference);
+	}
+
+	private void enableProbability(boolean action) {
+		((Preference) findPreference(KEY_PRF_PROB_DRAWER)).setEnabled(action);
+		((SeekBarPreference) findPreference(KEY_PRF_PROB_SURFACE)).setEnabled(action);
+		((SeekBarPreference) findPreference(KEY_PRF_PROB_X)).setEnabled(action);
+		((SeekBarPreference) findPreference(KEY_PRF_PROB_Y)).setEnabled(action);
+
+	}
+
+	private void enableOptions(boolean action)
+	{
+//		((PreferenceCategory) findPreference(KEY_PRF_OPTIONS)).setVisible(false);
+
+		((SwitchPreference) findPreference(KEY_HINTED)).setChecked(action);
+		((SwitchPreference) findPreference(KEY_PRF_SHUFFLE)).setChecked(action);
+		if (action) {
+			((SeekBarPreference) findPreference(KEY_X_SIZE)).setValue(5);
+			((SeekBarPreference) findPreference(KEY_Y_SIZE)).setValue(5);
+			((DropDownPreference) findPreference(KEY_PRF_SYMBOLS)).setValue("N");
+		}
+
+		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setVisible(action);
+		((SeekBarPreference) findPreference(KEY_PRF_PROB_SURFACE)).setEnabled(action);
+		((SeekBarPreference) findPreference(KEY_PRF_PROB_X)).setEnabled(action);
+		((SeekBarPreference) findPreference(KEY_PRF_PROB_Y)).setEnabled(action);
+		if (action) {
+			// do nothing
+		} else {
+			((SeekBarPreference) findPreference(KEY_PRF_PROB_SURFACE)).setValue(0);
+			((SeekBarPreference) findPreference(KEY_PRF_PROB_X)).setValue(0);
+			((SeekBarPreference) findPreference(KEY_PRF_PROB_Y)).setValue(0);
+		}
+
 	}
 
 

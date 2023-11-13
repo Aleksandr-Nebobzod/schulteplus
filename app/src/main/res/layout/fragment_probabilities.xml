@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2023. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:id="@+id/constraint_layout">
+	
+	<androidx.constraintlayout.helper.widget.Flow
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/flow"
+		app:flow_wrapMode="chain"
+		app:constraint_referenced_ids="tv_prob,tv_prob00,tv_prob25,tv_prob75,tv_prob99"
+		android:padding="5dp"
+		android:background="@color/light_grey_4"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"/>
+		
+	<TextView
+		android:id="@+id/tv_prob"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/lbl_legend"
+		android:textStyle="bold"
+		android:textColor="@color/light_grey_8"
+		android:padding="4dp" />
+	
+	<TextView
+		android:id="@+id/tv_prob00"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="@drawable/ic_border"
+		android:text="@string/lbl_prob00"
+		android:textColor="@color/prob_color00"
+		android:padding="4dp">
+	
+	
+	</TextView>
+	
+	<TextView
+		android:id="@+id/tv_prob25"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="@drawable/ic_border"
+		android:textColor="@color/prob_color25"
+		android:text="@string/lbl_prob25"
+		android:padding="4dp"/>
+	
+	<TextView
+		android:id="@+id/tv_prob75"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="@drawable/ic_border"
+		android:textColor="@color/prob_color75"
+		android:text="@string/lbl_prob75"
+		android:padding="4dp"/>
+	
+	<TextView
+		android:id="@+id/tv_prob99"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:background="@drawable/ic_border"
+		android:textColor="@color/prob_color99"
+		android:text="@string/lbl_prob99"
+		android:padding="4dp"/>
+
+
+	<SurfaceView
+		android:id="@+id/surface_view"
+		android:layout_width="300dp"
+		android:layout_height="300dp"
+		android:layout_margin="5dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/flow" />
+	
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

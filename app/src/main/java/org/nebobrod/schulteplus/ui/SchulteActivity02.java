@@ -26,6 +26,8 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import org.nebobrod.schulteplus.ExerciseRunner;
 import org.nebobrod.schulteplus.GridAdapter;
 import org.nebobrod.schulteplus.R;
@@ -143,6 +145,8 @@ public class SchulteActivity02 extends AppCompatActivity {
 		mGrid.setNumColumns(exercise.getX());
 		mGrid.setEnabled(true);
 
+
+
 		mAdapter = new GridAdapter(this, exercise);
 		mGrid.setAdapter(mAdapter);
 
@@ -152,6 +156,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 				Utils.feedbacks (v, feedbackHaptic, feedbackSound);
 				SCell currentCell = exercise.getArea().get(position);
 				//Toast.makeText(SchulteActivity02.this, position+"_" + currentCell.getValue(), Toast.LENGTH_SHORT).show();
+				if (position==1) Utils.showSnackBar(SchulteActivity02.this, position +"");
 				if (exercise.checkTurn(position)) {
 					if (!exercise.endChecked()) {
 						exercise.shuffle();
@@ -221,7 +226,6 @@ public class SchulteActivity02 extends AppCompatActivity {
 
 		alertDialog.show();
 	}
-
 
 	@Override
 	public void onConfigurationChanged(@NonNull Configuration newConfig) {

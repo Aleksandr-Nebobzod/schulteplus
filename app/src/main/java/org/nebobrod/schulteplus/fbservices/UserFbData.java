@@ -217,6 +217,29 @@ public final class UserFbData {
 		return res[0];
 	}
 
+	public static void getByUid(final UserCallback userCallback, String uid){
+		init();
+		Query myQuery = fbReference.orderByValue().equalTo(uid, "uid") ;
+
+		myQuery.addValueEventListener(new ValueEventListener() {
+
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot) {
+				userHelper = null;
+				for(DataSnapshot usersSnapshot: dataSnapshot.getChildren())
+				{
+					Log.d(TAG, "getByUid.onDataChange: "+ usersSnapshot.getValue().toString());
+				}
+				userHelper = dataSnapshot.getValue(UserHelper.class);
+				userCallback.onCallback(userHelper);
+			}
+
+			@Override
+			public void onCancelled(DatabaseError databaseError) {
+				throw databaseError.toException();
+			}
+		});
+	}
 	public static boolean isExist(final UserCallback userCallback, String key){
 		init();
 		try {
@@ -263,7 +286,7 @@ public final class UserFbData {
 				userHelper = null;
 				for(DataSnapshot usersSnapshot: dataSnapshot.getChildren())
 				{
-					Log.d(TAG, "onDataChange: "+ usersSnapshot.getValue().toString());
+					Log.d(TAG, "isNameExist:onDataChange: "+ usersSnapshot.getValue().toString());
 				}
 				userHelper = dataSnapshot.getValue(UserHelper.class);
 				myCallback.onCallback(userHelper);

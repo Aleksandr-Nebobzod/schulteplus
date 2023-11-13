@@ -4,183 +4,199 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="vertical"
-	android:gravity="center"
+	android:layout_marginBottom="0dp"
+	android:paddingBottom="0dp"
 	android:background="@drawable/bg_login02"
+	android:gravity="center"
 	android:hapticFeedbackEnabled="true"
+	android:orientation="vertical"
 	tools:context=".fbservices.LoginActivity">
 	
 	
 	<ScrollView
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginBottom="50dp">
+		android:layout_height="wrap_content" >
+		
 		<androidx.cardview.widget.CardView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_margin="30dp"
-			app:cardCornerRadius="20dp"
+			android:layout_margin="5dp"
 			android:backgroundTint="@color/semi_white"
-			android:elevation="35dp">
+			android:elevation="35dp"
+			app:cardCornerRadius="20dp">
 			
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:orientation="vertical"
 				android:layout_gravity="center_vertical"
-				android:padding="15dp"
-				android:background="@drawable/border02"
 				android:alpha="1"
-				>
+				android:background="@drawable/border02"
+				android:orientation="vertical"
+				android:padding="15dp">
+				
 				<TextView
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:text="@string/title_login"
 					android:textAlignment="center"
 					android:textSize="32sp"
-					android:textStyle="bold"/>
+					android:textStyle="bold" />
 				
 				<EditText
+					android:id="@+id/et_email"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/et_email"
 					android:layout_marginTop="32dp"
 					android:background="@drawable/border02"
 					android:backgroundTint="@color/semi_white"
-					android:padding="8dp"
-					android:hint="@string/hint_email"
 					android:drawableStart="@drawable/ic_baseline_perm_identity_24"
 					android:drawablePadding="4dp"
+					android:hint="@string/hint_email"
+					android:padding="8dp"
 					android:textColor="@color/black"
 					android:visibility="visible" />
 				
 				<EditText
+					android:id="@+id/et_name"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/et_name"
 					android:layout_marginTop="32dp"
 					android:background="@drawable/border02"
 					android:backgroundTint="@color/semi_white"
-					android:padding="8dp"
-					android:hint="@string/hint_login"
 					android:drawableStart="@drawable/ic_baseline_perm_identity_24"
 					android:drawablePadding="4dp"
-					android:textColor="@color/black"/>
+					android:hint="@string/hint_login"
+					android:padding="8dp"
+					android:textColor="@color/black" />
 				
 				<EditText
+					android:id="@+id/et_pass"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/et_pass"
-					android:inputType="textPassword"
 					android:layout_marginTop="32dp"
 					android:background="@drawable/border02"
 					android:backgroundTint="@color/semi_white"
-					android:padding="8dp"
-					android:hint="@string/hint_pass"
 					android:drawableStart="@drawable/ic_baseline_lock_24"
 					android:drawablePadding="4dp"
-					android:textColor="@color/black"/>
+					android:hint="@string/hint_pass"
+					android:inputType="textPassword"
+					android:padding="8dp"
+					android:textColor="@color/black" />
 				
 				<com.google.android.material.button.MaterialButton
+					android:id="@+id/bt_go_on"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/bt_go_on"
 					android:layout_marginTop="16dp"
+					android:shadowRadius="5"
 					android:text="@string/lbl_go_on"
 					app:cornerRadius="25dp"
-					android:shadowRadius="5"
-					app:elevation="5dp"/>
+					app:elevation="5dp" />
 				
 				<TextView
+					android:id="@+id/tv_go_off"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/tv_go_off"
-					android:textColor="@color/purple_500"
+					android:layout_marginTop="16dp"
+					android:clickable="true"
+					android:gravity="center"
 					android:maxLines="3"
 					android:text="@string/str_login_go_off"
-					android:gravity="center"
-					android:layout_marginTop="16dp"
-					android:textStyle="bold"
-					android:clickable="true"/>
+					android:textColor="@color/purple_500"
+					android:textSize="16sp"
+					android:textStyle="bold" />
+				
 				<ImageView
+					android:id="@+id/bt_unwrap_extra"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:id="@+id/bt_unwrap_extra"
-					android:scaleX="2"
-					android:scaleY="2"
-					android:theme="@style/Theme.SchultePlus"
-					android:src="@drawable/ic_baseline_arrow_drop_down_24"
 					android:layout_gravity="right"
 					android:layout_marginTop="10dp"
+					android:contentDescription="unwrap extra"
 					android:elevation="10dp"
-					android:contentDescription="unwrap extra" />
-<!--					app:tint="@color/purple_500"-->
+					android:scaleX="2"
+					android:scaleY="2"
+					android:src="@drawable/ic_baseline_arrow_drop_down_24"
+					android:theme="@style/Theme.SchultePlus" />
+				<!--					app:tint="@color/purple_500"-->
 				
 				<LinearLayout
+					android:id="@+id/ll_extras"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:id="@+id/ll_extras"
 					android:orientation="vertical"
-					android:visibility="gone"
-					>
+					android:visibility="gone">
 					
 					<TextView
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
 						android:id="@+id/tv_reset_password"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
 						android:layout_margin="6dp"
-						android:textColor="@color/purple_500"
+						android:clickable="true"
 						android:maxLines="3"
-						android:textStyle="bold"
 						android:text="@string/lbl_reset_password"
-						android:clickable="true"/>
+						android:textColor="@color/purple_500"
+						android:textSize="16sp" />
+					
 					<TextView
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
 						android:id="@+id/tv_resend_verification_email"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
 						android:layout_margin="6dp"
-						android:textColor="@color/purple_500"
+						android:clickable="true"
 						android:maxLines="3"
-						android:textStyle="bold"
 						android:text="@string/lbl_resend_verification_email"
-						android:clickable="true"/>
-					<TextView
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:id="@+id/tv_alternative_reg"
-						android:layout_margin="6dp"
 						android:textColor="@color/purple_500"
-						android:maxLines="3"
-						android:textStyle="bold"
-						android:text="@string/lbl_tv_alternative_reg"
-						android:clickable="true"/>
+						android:textSize="16sp" />
+					
 					<TextView
+						android:id="@+id/tv_alternative_reg"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:id="@+id/tv_continue_unregistered"
 						android:layout_margin="6dp"
-						android:textColor="@color/light_grey_4"
+						android:clickable="true"
 						android:maxLines="3"
-						android:textStyle="bold"
+						android:text="@string/lbl_tv_alternative_reg"
+						android:textColor="@color/purple_500"
+						android:textSize="16sp" />
+					
+					<TextView
+						android:id="@+id/tv_continue_unregistered"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_margin="6dp"
+						android:clickable="true"
+						android:maxLines="3"
 						android:text="@string/lbl_continue_unregistered"
-						android:clickable="true"/>
+						android:textColor="@color/light_grey_4"
+						android:textSize="16sp" />
+					
 					<ImageView
+						android:id="@+id/bt_wrap_extra"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:id="@+id/bt_wrap_extra"
-						android:scaleX="2"
-						android:scaleY="2"
-						android:src="@drawable/ic_baseline_arrow_drop_up_24"
 						android:layout_gravity="right"
 						android:layout_marginTop="10dp"
-						android:contentDescription="wrap extra" />
-<!--						app:tint="@color/purple_500"-->
+						android:contentDescription="wrap extra"
+						android:scaleX="2"
+						android:scaleY="2"
+						android:src="@drawable/ic_baseline_arrow_drop_up_24" />
+					<!--						app:tint="@color/purple_500"-->
 				
 				</LinearLayout>
-			
+				<TextView
+					android:id="@+id/tv_empty"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:textSize="22sp"
+					android:textAlignment="center"
+					android:text=" ." />
 			</LinearLayout>
+
 		</androidx.cardview.widget.CardView>
-		
+
 	</ScrollView>
+	
+
 
 </LinearLayout>

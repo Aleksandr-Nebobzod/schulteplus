@@ -24,12 +24,30 @@ public interface Const {
 	public static final String KEY_PRF_LEVEL = "prf_level";
 	public static final String KEY_PRF_CURRENT_LEVEL = "prf_current_level";
 	public static final String KEY_TYPE_OF_EXERCISE = "prf_ex_type";
+	public static final String KEY_TS_UPDATED = "prf_ts_updated";
+
+	public static final String KEY_PRF_RATINGS = "prf_sw_ratings";
+	public static final String KEY_PRF_OPTIONS = "prf_cat_options";
+	public static final String KEY_HINTED = "prf_sw_hints";
+	public static final String KEY_PRF_SHUFFLE = "prf_sw_shuffle";
 	public static final String KEY_X_SIZE = "prf_x_size";
 	public static final String KEY_Y_SIZE = "prf_y_size";
-	public static final String KEY_TS_UPDATED = "prf_ts_updated";
-	public static final String KEY_HINTED = "prf_sw_hints";
+	public static final String KEY_PRF_SYMBOLS = "prf_symbol_type";
+	public static final String KEY_PRF_FONT_SCALE = "prf_font_scale";
 	public static final String KEY_HAPTIC = "prf_vibration";
 	public static final String KEY_SOUND = "prf_sound";
+
+	public static final String KEY_PRF_PROBABILITIES = "prf_cat_prob";
+	public static final String KEY_PRF_PROB_ENABLED = "prf_prob_enabled";
+	public static final String KEY_PRF_PROB_DRAWER = "prf_prob_drawer";
+	public static final String KEY_PRF_PROB_SURFACE = "prf_prob_surface"; // value 4--10 should be divided by 10
+	public static final String KEY_PRF_PROB_X = "prf_prob_x";
+	public static final String KEY_PRF_PROB_Y = "prf_prob_y";
+
+	public static final String KEY_PRF_EX_S1 = "gcb_schulte_1_sequence";
+	public static final String KEY_PRF_EX_S2 = "gcb_schulte_2_sequences";
+	public static final String KEY_PRF_EX_S3 = "gcb_schulte_3_sequences";
+	public static final String KEY_PRF_EX_S4 = "gcb_schulte_4_mishmash";
 
 
 }

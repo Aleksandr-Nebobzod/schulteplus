@@ -166,5 +166,20 @@
 	<string name="msg_cant_ensure_username">There is something wrong with your name. Try again later.</string>
 	<string name="prf_points_title">Seconds</string>
 	<string name="lbl_events">Events</string>
+	<string name="lbl_Probabilities">Probabilities</string>
+	<string name="lbl_prob_surface">Probability surface</string>
+	<string name="lbl_prob_x">Horizontal shift</string>
+	<string name="lbl_prob_y">Vertical shift</string>
+	<string name="lbl_prob_enabled">User controlled distribution</string>
+	<string name="lbl_prob_disabled">Uniform distribution</string>
+	<string name="msg_signin_anonymously_credentials">" -- your dummy email and Password -- your password (change it asap)"</string>
+	<string name="lbl_font_scale">Font scale</string>
+<!--	probabilities are duplicated in arrays-->
+	<string name="lbl_legend">Legend</string>
+	<string name="lbl_prob00">Impossibly</string>
+	<string name="lbl_prob25">Unlikely</string>
+	<string name="lbl_prob75">Standard Chance</string>
+	<string name="lbl_prob99">Likely</string>
+	<string name="lbl_prob11">Certainly</string>
 
 </resources>

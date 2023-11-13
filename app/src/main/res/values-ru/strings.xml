@@ -146,4 +146,18 @@
 	<string name="msg_cant_ensure_username">There is something wrong with your name. Try again later.</string>
 	<string name="prf_points_title">Секунд</string>
 	<string name="lbl_events">Событий</string>
+	<string name="lbl_Probabilities">Вероятности</string>
+	<string name="lbl_prob_surface">Распределение вероятностей</string>
+	<string name="lbl_prob_x">Смещение по горизонтали</string>
+	<string name="lbl_prob_y">Смещение по вертикали</string>
+	<string name="lbl_prob_enabled">Управляемое распределение</string>
+	<string name="lbl_prob_disabled">Равномерное распределение</string>
+	<string name="msg_signin_anonymously_credentials">" -- your dummy email and Password -- your password (change it asap)"</string>
+	<string name="lbl_font_scale">Размер шрифта</string>
+	<string name="lbl_legend">Легенда</string>
+	<string name="lbl_prob00">Невозможно</string>
+	<string name="lbl_prob25">Маловероятно</string>
+	<string name="lbl_prob75">Вероятно</string>
+	<string name="lbl_prob99">Наверное</string>
+	<string name="lbl_prob11">Определённо</string>
 </resources>

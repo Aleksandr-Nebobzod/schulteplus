@@ -5,7 +5,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 //import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -74,12 +77,12 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 			etName.setText(getIntent().getExtras().getString("name", ""));
 			etPassword.setText(getIntent().getExtras().getString("password", ""));
 		}
-		{
+/*		{
 			String mName = "nebobzod"; // This name is definitely busy
 //			etName.setText(mName);
 			nameExists = true;
 			UserFbData.isNameExist(this::onCallback, mName);
-		}
+		}*/
 
 		btUnwrapExtra = findViewById(R.id.bt_unwrap_extra);
 		btWrapExtra = findViewById(R.id.bt_wrap_extra);
@@ -138,10 +141,10 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 						// do smth?..
 					}
 				} else {
-					user = null; // Here we can clean autologin (default applied token from previous session)
+					// user = null; // Here we can clean autologin (default applied token from previous session)
 				}
 
-				if(user!=null){
+				if(user!=null & !mName.equals("")){
 					// update name in authDB
 					UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
 							.setDisplayName(mName).build();
@@ -238,7 +241,9 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 		{
 			@Override
 			public void onClick(View view) {
-				String val = etName.getText().toString().trim();
+				String val = Utils.getRandomName();
+				etName.setText(val);
+
 				if (validateName() == false)  return;
 
 				UserFbData.isNameFree(new UserFbData.NameFreeCallback() {
@@ -326,19 +331,6 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 
 	private void signInAnonymously()
 	{
-/*		if (nameExists) {
-			Toast.makeText(this, "Try later with another name", Toast.LENGTH_SHORT).show();
-			String mName = Utils.getRandomName();
-			etName.setText(mName);
-			UserFbData.isNameExist(this::onCallback, mName);
-			return;
-		}*/
-
-/*		if (UserFbData.isExist(this::onCallback, mName)) {
-			Toast.makeText(LoginActivity.this, getString(R.string.msg_cant_ensure_username), Toast.LENGTH_SHORT).show();
-			return;
-		}*/
-//		printQuery(loginCallback, mName);
 
 		signInPressed = true;
 
@@ -352,20 +344,35 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 						if (task.isSuccessful()) {
 							// Sign in success, update UI with the signed-in user's information
 							FirebaseUser user = fbAuth.getCurrentUser();
-							Log.d(TAG, getString(R.string.msg_signin_anonymously_success) +" UID: "+ user.getUid());
-							// name either from screen as generated before
-							String _name = etName.getText().toString().trim();
-							String _device = Utils.getDeviceId(LoginActivity.this);
 
-							UserFbData fbDbUser = new UserFbData();
-							fbDbUser.addUser(_name +  "@email.com", _name, "password", user.getUid(), _device, false);
-							Log.d(TAG, "onComplete signIn Anon: " + fbDbUser);
-							runMainActivity(UserFbData.getFbUserHelper());
+							//SharedPreferences sharedPreferences = LoginActivity.this.getSharedPreferences(user.getUid(), Context.MODE_PRIVATE);
+
+							Log.d(TAG, getString(R.string.msg_signin_anonymously_success) +" UID: "+ user.getUid());
+
+							if (task.getResult().getAdditionalUserInfo().isNewUser()) {
+								// name either from screen as generated before
+								UserFbData fbDbUser = new UserFbData();								String _name = etName.getText().toString().trim();
+								String _device = Utils.getDeviceId(LoginActivity.this);
+
+								fbDbUser.addUser(_name +  "@email.com", _name, "password", user.getUid(), _device, false);
+								Log.d(TAG, "onComplete signIn Anon: " + fbDbUser);
+//							Toast.makeText(LoginActivity.this, _name +  "@email.com" + getString(R.string.msg_signin_anonymously_credentials), Toast.LENGTH_LONG).show();
+								Snackbar.make(tvContinueUnregistered,
+												_name +  "@email.com" + getString(R.string.msg_signin_anonymously_credentials), Snackbar.LENGTH_INDEFINITE)
+										.setAction("✓", null).show();
+
+								runMainActivity(UserFbData.getFbUserHelper());							}
+							else {
+								UserFbData.getByUid(LoginActivity.this::onCallback, user.getUid());
+
+
+							}
+
 						} else {
 							// If sign in fails, display a message to the user.
 							Log.w(TAG, getString(R.string.msg_signin_anonymously_failure), task.getException());
 							Toast.makeText(LoginActivity.this, getString(R.string.msg_signin_anonymously_failure),
-									Toast.LENGTH_SHORT).show();
+									Toast.LENGTH_LONG).show();
 						}
 					}
 

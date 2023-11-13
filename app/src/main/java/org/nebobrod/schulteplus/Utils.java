@@ -1,6 +1,8 @@
 package org.nebobrod.schulteplus;
 
 
+import static com.google.android.material.internal.ContextUtils.getActivity;
+
 import android.app.Activity;
 import android.app.Application;
 import android.app.ProgressDialog;
@@ -10,6 +12,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -25,6 +28,8 @@ import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -274,6 +279,30 @@ public final class Utils extends Application {
 		);
 		if (sound) view.playSoundEffect(android.view.SoundEffectConstants.CLICK);
 
+	}
+
+	public static void showSnackBar(Activity activity, String message) {
+//	public static void showSnackBar(String message) {
+//		View view = getView(); // --
+		View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+		Snackbar.make(rootView, message, Snackbar.LENGTH_INDEFINITE) // LENGTH_LONG
+				.show();
+	}
+
+	public static void showSnackBarConfirmation(Activity activity, String message) {
+		View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+
+		Snackbar snackbar = Snackbar
+				.make(rootView, message, Snackbar.LENGTH_INDEFINITE)
+				.setAction(getRes().getString(R.string.lbl_ok), new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Snackbar mSnackbar = Snackbar.make(rootView, getRes().getString(R.string.app_version_num), Snackbar.LENGTH_SHORT);
+						mSnackbar.show();
+					}
+				});
+
+		snackbar.show();
 	}
 
 

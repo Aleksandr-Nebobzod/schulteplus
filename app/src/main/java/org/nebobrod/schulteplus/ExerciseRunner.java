@@ -122,7 +122,7 @@ public class ExerciseRunner {
 				spent += sharedPreferences.getInt(KEY_POINTS, 0);
 
 				points = (int) spent;
-				AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormatted(timeStamp()), "Seconds", "" + points, " ");
+				AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormatted(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, " ");
 //				AchievementsFbData.getData();
 				if (points > 3600){
 					hours += (points / 3600);
@@ -131,7 +131,7 @@ public class ExerciseRunner {
 				}
 				editor.putInt(		KEY_POINTS, (int) points).apply();
 				hours += sharedPreferences.getInt(KEY_HOURS, 0);
-				if (newHour) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormatted(timeStamp()), "Passed hour", "" + hours, "➚");
+				if (newHour) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormatted(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
 				editor.putInt(		KEY_HOURS, (int) hours  ).apply();
 				editor.putInt(		KEY_PRF_LEVEL, (int) Math.sqrt(hours * 3600 + points)  ).apply();
 			}
@@ -206,6 +206,7 @@ public class ExerciseRunner {
 
 	public static boolean getPrefHaptic(){ return sharedPreferences.getBoolean(KEY_HAPTIC, true);}
 	public static boolean getPrefSound(){ return sharedPreferences.getBoolean(KEY_HAPTIC, true);}
+	public static int getPrefTextScale(){ return sharedPreferences.getInt(KEY_PRF_FONT_SCALE, 0);}
 }
 
 

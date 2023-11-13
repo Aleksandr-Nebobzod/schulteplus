@@ -33,4 +33,11 @@
 	<color name="material_green_500">#4CAF50</color>
 	<color name="material_green_700">#388E3C</color>
 	<color name="material_purple_a700">#AA00FF</color>
+<!--	Colors of probabilities-->
+	<color name="prob_color00">#FFFFFF</color>
+	<color name="prob_color25">#FFF869</color>
+	<color name="prob_color75">#A5A5A5</color>
+	<color name="prob_color99">#30FF75</color>
+	<color name="prob_color11">#FFFFFF</color>
+
 </resources>

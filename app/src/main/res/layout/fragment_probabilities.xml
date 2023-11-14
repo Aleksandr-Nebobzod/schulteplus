@@ -14,13 +14,13 @@
 	android:id="@+id/constraint_layout">
 	
 	<androidx.constraintlayout.helper.widget.Flow
-		android:layout_width="match_parent"
+		android:layout_width="300dp"
 		android:layout_height="wrap_content"
 		android:id="@+id/flow"
 		app:flow_wrapMode="chain"
 		app:constraint_referenced_ids="tv_prob,tv_prob00,tv_prob25,tv_prob75,tv_prob99"
 		android:padding="5dp"
-		android:background="@color/light_grey_4"
+		android:background="@color/light_grey_A"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"/>
@@ -31,7 +31,7 @@
 		android:layout_height="wrap_content"
 		android:text="@string/lbl_legend"
 		android:textStyle="bold"
-		android:textColor="@color/light_grey_8"
+		android:textColor="@color/black"
 		android:padding="4dp" />
 	
 	<TextView
@@ -79,11 +79,24 @@
 		android:layout_width="300dp"
 		android:layout_height="300dp"
 		android:layout_margin="5dp"
+		android:backgroundTint="@color/light_grey_A"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@id/flow" />
+		app:layout_constraintTop_toBottomOf="@id/flow"
+		app:layout_constraintBottom_toTopOf="@id/seekBar"/>
 	
-
+	<SeekBar
+		android:id="@+id/seekBar"
+		android:layout_width="300dp"
+		android:layout_height="wrap_content"
+		android:layout_margin="5dp"
+		android:max="100"
+		android:min="40"
+		
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/surface_view" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -36,8 +36,8 @@
 <!--	Colors of probabilities-->
 	<color name="prob_color00">#FFFFFF</color>
 	<color name="prob_color25">#FFF869</color>
-	<color name="prob_color75">#A5A5A5</color>
-	<color name="prob_color99">#30FF75</color>
+	<color name="prob_color75">#95FE01</color>
+	<color name="prob_color99">#30FFAC</color>
 	<color name="prob_color11">#FFFFFF</color>
 
 </resources>

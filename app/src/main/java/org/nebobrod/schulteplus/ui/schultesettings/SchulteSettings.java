@@ -3,12 +3,18 @@ package org.nebobrod.schulteplus.ui.schultesettings;
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Const.*;
 
+import android.annotation.SuppressLint;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -29,14 +35,17 @@ import org.nebobrod.schulteplus.R;
 import java.util.ArrayList;
 
 public class SchulteSettings extends PreferenceFragmentCompat {
-	// TODO: 28.09.2023 this and BasicSettings class are mostly same (think how to unify them) 
+	// TODO: 28.09.2023 this and BasicSettings class are mostly same (think how to unify them)
+	private static final String TAG = "SchulteSettings";
 	ArrayList<Preference> exerciseTypes = new ArrayList<>();
 	androidx.preference.CheckBoxPreference chosen;
 	private ExerciseRunner runner = ExerciseRunner.getInstance(getContext());
 	private String[] exTypes;
 
-	private Preference prefCatProb;
+	private DrawerPreference drawerPreference;
 	private SurfaceView surfaceView;
+	private Paint paint;
+
 
 	@Override
 	public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -47,10 +56,8 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 
 		initiateExerciseTypes();
 
-		prefCatProb = findPreference(KEY_PRF_PROBABILITIES);
-		surfaceView = new SurfaceView(getContext());
-		surfaceView = surfaceView.findViewById(prefCatProb.getWidgetLayoutResource());
-		surfaceView.draw(new Canvas());
+		drawerPreference = findPreference(KEY_PRF_PROB_DRAWER);
+
 	}
 
 
@@ -59,7 +66,23 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 	@NonNull
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		return super.onCreateView(inflater, container, savedInstanceState);
+		View view = super.onCreateView(inflater, container, savedInstanceState);
+
+/*		if (null != view) {
+			SurfaceView surfaceView = (SurfaceView) view.findViewById(android.R.id.list);
+			if (null != surfaceView)
+				surfaceView.setPadding(0, 0, 0, 0);
+		}*/
+
+		surfaceView = drawerPreference.getSurfaceView();
+
+
+		return view;
+	}
+
+	@Override
+	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
 	}
 
 	private void updatePrefScreen(){
@@ -141,18 +164,94 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 			enableOptions(true);
 		}
 
-		if (KEY_PRF_PROB_ENABLED.equals(preference.getKey()))
+		if (KEY_PRF_PROB_ENABLED.equals(preference.getKey())) {
+			if (null == surfaceView) {
+				surfaceView = drawerPreference.getSurfaceView();
+
+				paint = new Paint();
+				paint.setAntiAlias(true);
+				paint.setDither(true);
+				paint.setColor(getRes().getColor(R.color.prob_color99));
+				paint.setStyle(Paint.Style.STROKE);
+				paint.setStrokeJoin(Paint.Join.ROUND);
+				paint.setStrokeCap(Paint.Cap.ROUND);
+				paint.setStrokeWidth(24);
+
+			}
 			enableProbability(((SwitchPreference) preference).isChecked());
+		}
 
 
 		return super.onPreferenceTreeClick(preference);
 	}
 
+	@SuppressLint("ClickableViewAccessibility")
 	private void enableProbability(boolean action) {
 		((Preference) findPreference(KEY_PRF_PROB_DRAWER)).setEnabled(action);
 		((SeekBarPreference) findPreference(KEY_PRF_PROB_SURFACE)).setEnabled(action);
 		((SeekBarPreference) findPreference(KEY_PRF_PROB_X)).setEnabled(action);
 		((SeekBarPreference) findPreference(KEY_PRF_PROB_Y)).setEnabled(action);
+
+//		if (surfaceView == null) return; // just for safety
+
+		if (action) {
+//			surfaceView.setBackgroundColor(Color.GRAY);
+			surfaceView.setOnTouchListener(new View.OnTouchListener() {
+				@Override
+				public boolean onTouch(View view, MotionEvent event) {
+					int sizeX = surfaceView.getWidth();
+					int sizeY = surfaceView.getHeight();
+					int startX, startY, endX, endY, dX, dY;
+					startX = startY = endX = endY = dX = dY = 0;
+					int touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+
+					if (event.getAction() == MotionEvent.ACTION_DOWN) {
+						startX = (int) event.getX();
+						startY = (int) event.getY();
+
+						((SeekBarPreference) findPreference(KEY_PRF_PROB_X)).setValue((int) (10*(2F*startX/sizeX-1)));
+						((SeekBarPreference) findPreference(KEY_PRF_PROB_Y)).setValue((int) (10*(2F*startY/sizeY-1)));
+
+						Canvas canvas = surfaceView.getHolder().lockCanvas();
+//						canvas.drawPaint(paint);
+						Log.d(TAG, "onTouch: " + startX + " and: " +startY);
+						// clear:
+//						canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+						canvas.drawColor(Color.GRAY);
+						// draw:
+						canvas.drawPoint(startX, startY, paint);
+						surfaceView.getHolder().unlockCanvasAndPost(canvas);
+						canvas = null;
+
+//						surfaceView.performClick();
+
+						return true;
+					}
+
+/*					if (event.getAction() == MotionEvent.ACTION_UP) {
+						endX = (int) event.getX();
+						endY = (int) event.getY();
+						dX = Math.abs(endX - startX);
+						dY = Math.abs(endY - startY);
+
+
+						if (Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2)) <= touchSlop) {
+							// Your on click logic here...
+							return true;
+						}
+					}*/
+					return false;
+				}
+			});
+
+
+		} else {
+			Canvas canvas = surfaceView.getHolder().lockCanvas();
+			canvas.drawColor(Color.DKGRAY);
+			surfaceView.getHolder().unlockCanvasAndPost(canvas);
+			canvas = null;
+			surfaceView = null;
+		}
 
 	}
 

@@ -29,7 +29,9 @@
 			android:title="@string/lbl_Probabilities">
 			<SwitchPreference app:key="prf_prob_enabled"  app:summaryOn="@string/lbl_prob_enabled"  app:summaryOff="@string/lbl_prob_disabled" app:defaultValue="false" />
 			
-			<Preference app:key="prf_prob_drawer" android:layout="@layout/fragment_probabilities" app:isPreferenceVisible="true" app:persistent="false" app:enabled="false" />
+<!--			<org.nebobrod.schulteplus.ui.schultesettings.DrawerPreference app:key="prf_prob_drawer" android:layout="@layout/fragment_probabilities" app:isPreferenceVisible="true" app:persistent="false" app:enabled="false" />-->
+<!--			<Preference app:key="prf_prob_drawer" android:layout="@layout/fragment_probabilities" app:isPreferenceVisible="true" app:persistent="false" app:enabled="false" />-->
+			<org.nebobrod.schulteplus.ui.schultesettings.DrawerPreference app:key="prf_prob_drawer" app:layout="@layout/fragment_probabilities" />
 			<SeekBarPreference app:key="prf_prob_surface" app:title="@string/lbl_prob_surface" app:defaultValue="10" app:min="4" android:max="10" app:showSeekBarValue="false" app:enabled="false" />
 			<SeekBarPreference app:key="prf_prob_x" app:title="@string/lbl_prob_x" app:isPreferenceVisible="true" app:defaultValue="0" app:min="-10" android:max="10" app:enabled="false" />
 			<SeekBarPreference app:key="prf_prob_y" app:title="@string/lbl_prob_y" app:isPreferenceVisible="true" app:defaultValue="0" app:min="-10" android:max="10" app:enabled="false" />

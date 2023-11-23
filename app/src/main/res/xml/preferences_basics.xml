@@ -1,40 +1,30 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:android="http://schemas.android.com/apk/res/android">
-	
-
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto" >
 	
 	<EditTextPreference app:key="prf_ex_type" app:title="Exercise Type" app:useSimpleSummaryProvider="true"	app:isPreferenceVisible="false" />
 
-	<PreferenceCategory app:title="@string/title_basics" app:summary="@string/txt_bas_description" app:singleLineTitle="false"  >
+	<PreferenceCategory app:title="@string/title_basics" >
+		<Preference app:key="prf_bas_description" app:summary="@string/txt_bas_description" />
 
-		<CheckBoxPreference
-			app:defaultValue="true"
-			app:key="gcb_bas_dot"
-			app:title="@string/lbl_bas_dot"
-			app:icon="@drawable/ic_basics_dot"/>
+		<CheckBoxPreference app:defaultValue="true" app:key="gcb_bas_dot" app:title="@string/lbl_bas_dot" app:icon="@drawable/ic_basics_dot" app:allowDividerAbove="true"/>
 		<CheckBoxPreference app:title="@string/lbl_bas_dbl_dot" app:defaultValue="false" app:key="gcb_bas_dbl_dot" app:icon="@drawable/ic_bsics_double_dot" />
 		<CheckBoxPreference app:title="@string/lbl_bas_pyramidot" app:defaultValue="false" app:key="gcb_bas_pyramidot" app:enabled="true"/>
 
-		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb" app:defaultValue="false" app:key="gcb_bas_circles_rb" app:icon="@drawable/ic_circles_rb"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb" app:defaultValue="false" app:key="gcb_bas_circles_rb" app:icon="@drawable/ic_circles_rb"  app:allowDividerAbove="true"/>
 		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb_lined" app:defaultValue="false" app:key="gcb_bas_circles_rb_lined" app:enabled="false" />
 		<CheckBoxPreference app:title="@string/lbl_bas_sg_khao_manee" app:defaultValue="false" app:key="gcb_bas_khao_manee" app:enabled="true"/>
 		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb_crossed" app:defaultValue="false" app:key="gcb_bas_circles_rb_crossed" app:enabled="false" app:allowDividerBelow="true"/>
 		
-		<CheckBoxPreference app:title="@string/lbl_bas_necker_cube" app:defaultValue="false" app:key="gcb_bas_necker_cube" app:icon="@drawable/ic_basics2_black_24dp" />
-		<CheckBoxPreference app:title="@string/lbl_bas_necker_cylinder" app:defaultValue="false" app:key="gcb_bas_necker_cylinder" app:enabled="true" app:allowDividerAbove="true"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_necker_cube" app:defaultValue="false" app:key="gcb_bas_necker_cube" app:icon="@drawable/ic_basics2_black_24dp"  app:allowDividerAbove="true"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_necker_cylinder" app:defaultValue="false" app:key="gcb_bas_necker_cylinder" app:enabled="true"/>
 		<CheckBoxPreference app:title="@string/lbl_bas_necker_ball" app:defaultValue="false" app:key="gcb_bas_necker_ball" app:enabled="true" app:singleLineTitle="true"/>
 		<CheckBoxPreference app:title="@string/lbl_bas_penrose_triangle" app:defaultValue="false" app:key="gcb_bas_penrose_triangle" app:enabled="false"/>
 		
-		<CheckBoxPreference app:title="@string/lbl_bas_dancing_girl" app:defaultValue="false" app:key="gcb_bas_dancing_girl" app:enabled="false"  />
+		<CheckBoxPreference app:title="@string/lbl_bas_dancing_girl" app:defaultValue="false" app:key="gcb_bas_dancing_girl" app:enabled="false"  app:allowDividerAbove="true" />
 		<CheckBoxPreference app:title="@string/lbl_bas_dancing_cat" app:defaultValue="false" app:key="gcb_bas_dancing_cat" app:enabled="false" />
 		
-		<SeekBarPreference app:title="seekbar" app:seekBarIncrement="@integer/material_motion_duration_long_1" />
-		
-		<SwitchPreference
-			app:defaultValue="false"
-			app:key="sw_pref_double"
-			app:enabled="false"
-			app:title="@string/lbl_bas_double" app:summary="@string/lbl_bas_double_desc" />
+		<SwitchPreference app:defaultValue="false" app:key="sw_pref_double" app:enabled="false" app:title="@string/lbl_bas_double" app:summary="@string/lbl_bas_double_desc"  app:allowDividerAbove="true" />
+		<SwitchPreference app:key="prf_sw_hints" app:title="@string/lbl_hints" app:summary="@string/lbl_hints_sum" app:defaultValue="false" app:enabled="true" app:persistent="true" app:icon="@drawable/ic_notifications_black_24dp" />
+	
 	</PreferenceCategory>
 	
 </PreferenceScreen>

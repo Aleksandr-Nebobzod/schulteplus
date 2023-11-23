@@ -17,4 +17,22 @@
 		<!-- On API 21+ you can use android:statusBarColor -->
 		<item name="colorPrimaryDark">@color/black</item>
 	</style>
+	
+	<!-- Setting window animation -->
+	<style name="Theme.SchultePlus.WindowTransition" parent="android:style/Animation.Activity">
+		<!--		<item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>-->
+		<!--		<item name="android:windowExitAnimation">@android:anim/slide_out_right</item>-->
+		<item name="android:windowActivityTransitions">true</item>
+		<item name="android:windowAllowEnterTransitionOverlap">true</item>
+		
+		<item name="android:activityOpenEnterAnimation">@android:anim/fade_in</item>
+		<item name="android:taskOpenEnterAnimation">@android:anim/fade_in</item>
+		
+		<item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+		<item name="android:windowEnterTransition">@android:anim/fade_in</item>
+		
+		<item name="android:windowExitAnimation">@android:anim/fade_out</item>
+		<item name="android:windowExitTransition">@android:anim/fade_out</item>
+	
+	</style>
 </resources>

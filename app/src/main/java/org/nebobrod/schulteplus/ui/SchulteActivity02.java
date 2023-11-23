@@ -135,7 +135,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 		}
 
 		mGrid = (GridView)findViewById(R.id.gvArea);
-		exercise = new STable(runner.getX(), runner.getY(), mGrid.getContext());
+		exercise = new STable(runner.getX(), runner.getY());
 		ExerciseRunner.getInstance(getApplicationContext());
 		ExerciseRunner.savePreferences(exercise);
 

@@ -8,8 +8,6 @@
 
 package org.nebobrod.schulteplus.fbservices;
 
-import static org.nebobrod.schulteplus.Utils.timeStamp;
-
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -24,12 +22,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
+
 /**
- * Realtime Database's copy of FirebaseUser in Authentication db
+ * Realtime Database's copy of FirebaseUser from Authentication db
  * */
 public final class UserFbData {
 	private static final String TAG = "UserData";
@@ -43,7 +38,7 @@ public final class UserFbData {
 		return userHelper;
 	}
 
-	public interface UserCallback {
+	public interface UserHelperCallback {
 		void onCallback(@Nullable UserHelper fbDbUser);
 	}
 
@@ -97,7 +92,7 @@ public final class UserFbData {
 	}
 
 
-	public static boolean z_getUserFromFirebase(final UserCallback myCallback, String name)
+	public static boolean z_getUserFromFirebase(final UserHelperCallback myCallback, String name)
 	{
 		init();
 /*		fbReference.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -188,7 +183,7 @@ public final class UserFbData {
 
 	public static boolean z_checkUserNamePass(String name, String password){
 		final boolean[] res = {false};
-		DatabaseReference reference = FirebaseDatabase.getInstance("https://schulte-plus-default-rtdb.europe-west1.firebasedatabase.app").getReference(DB_PATH);
+/*		DatabaseReference reference = FirebaseDatabase.getInstance("https://schulte-plus-default-rtdb.europe-west1.firebasedatabase.app").getReference(DB_PATH);
 		reference.addListenerForSingleValueEvent(new ValueEventListener() {
 
 			@Override
@@ -197,13 +192,13 @@ public final class UserFbData {
 
 					String passwordFromDB = snapshot.child(name).child("password").getValue(String.class);
 					res[0] = true;
-/*					if (!passwordFromDB.equals(password)) {
+					if (!passwordFromDB.equals(password)) {
 
 						Log.d(TAG, "Go on proceeded for user: " + name);
 						res[0] = true;
 					} else {
 						Log.d(TAG, "Wrong pass for user: " + name);
-					}*/
+					}
 				} else {
 					Log.d(TAG, "Wrong username: " + name);
 				}
@@ -213,11 +208,12 @@ public final class UserFbData {
 			public void onCancelled(@NonNull DatabaseError error) {
 				Log.d("TAG", error.getMessage());
 			}
-		});
+		});*/
 		return res[0];
 	}
 
-	public static void getByUid(final UserCallback userCallback, String uid){
+	public static void getByUid(final UserHelperCallback userHelperCallback, String uid)
+	{
 		init();
 		Query myQuery = fbReference.orderByValue().equalTo(uid, "uid") ;
 
@@ -231,7 +227,7 @@ public final class UserFbData {
 					Log.d(TAG, "getByUid.onDataChange: "+ usersSnapshot.getValue().toString());
 				}
 				userHelper = dataSnapshot.getValue(UserHelper.class);
-				userCallback.onCallback(userHelper);
+				userHelperCallback.onCallback(userHelper);
 			}
 
 			@Override
@@ -240,7 +236,8 @@ public final class UserFbData {
 			}
 		});
 	}
-	public static boolean isExist(final UserCallback userCallback, String key){
+	public static boolean isExist(final UserHelperCallback userHelperCallback, String key)
+	{
 		init();
 		try {
 			fbReference.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -248,7 +245,7 @@ public final class UserFbData {
 				@Override
 				public void onDataChange(DataSnapshot dataSnapshot) {
 					userHelper = dataSnapshot.getValue(UserHelper.class);
-					userCallback.onCallback(userHelper);
+					userHelperCallback.onCallback(userHelper);
 				}
 
 				@Override
@@ -269,9 +266,9 @@ public final class UserFbData {
 		}
 	}
 
-	public static void isNameExist(final UserCallback myCallback, String name)
+	public static void isNameExist(final UserHelperCallback myCallback, String name)
 	{
-		init();
+/*		init();
 
 //		fbReference.orderByChild("name").equalTo(name).addListenerForSingleValueEvent(new ValueEventListener() {
 //		Query myQuery = fbReference.orderByValue().equalTo(name);
@@ -296,11 +293,12 @@ public final class UserFbData {
 			public void onCancelled(DatabaseError databaseError) {
 				throw databaseError.toException();
 			}
-		});
+		});*/
 
 	}
 
-	public static void printQuery (final UserCallback myCallback, String name) {
+	public static void printQuery (final UserHelperCallback myCallback, String name) {
+/*
 		DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
 		DatabaseReference userRef = rootRef.child(DB_PATH);
 		ValueEventListener eventListener = new ValueEventListener() {
@@ -326,103 +324,14 @@ public final class UserFbData {
 		};
 		userRef.addListenerForSingleValueEvent(eventListener);
 
-	}
-
-	private static boolean z_isUserExists(String name)
-	{
-		final boolean[] res = {false};
-		DatabaseReference reference = FirebaseDatabase.getInstance("https://schulte-plus-default-rtdb.europe-west1.firebasedatabase.app").getReference(DB_PATH);
-		//"https://schulte-plus-default-rtdb.europe-west1.firebasedatabase.app"
-		Semaphore sem = new Semaphore(0);
-
-		reference.addListenerForSingleValueEvent(new ValueEventListener() {
-
-			@Override
-			public void onDataChange(@NonNull DataSnapshot snapshot) {
-				if (snapshot.hasChild(name)) {
-					sem.release();
-					res[0] = true;
-//					Log.e(TAG, "User with Key: " + snapshot.child(name).getKey() + "--exists!.");
-
-				} else {
-//					Log.d(TAG, "Wrong username: " + name);
-				}
-			}
-
-			@Override
-			public void onCancelled(@NonNull DatabaseError error) {
-//				Log.d("TAG", error.getMessage());
-			}
-		});
-
-/*		try {
-//			userReference = reference.child(name);
-			reference.addValueEventListener(userListener);
-			res[0] = true;
-			Log.d(TAG, "E.x.i.s.t.i.n.g username: " + name);
-			reference.removeEventListener(userListener);
-		} catch (Exception e) {
-			Log.d(TAG, "F.r.e.e username: " + name + e.getMessage());
-		}*/
-
-
-
-/*		reference.addValueEventListener(new ValueEventListener() {
-
-			@Override
-			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				for (DataSnapshot item: dataSnapshot.getChildren()) {
-					if (item.getKey().equals(name))
-					{
-						res[0] = true;
-					}
-
-				}
-				if (dataSnapshot.hasChild(name)) {
-					res[0] = true;
-				} else {
-					Log.d(TAG, "Wrong username: " + name);
-				}
-			}
-
-			@Override
-			public void onCancelled(@NonNull DatabaseError error) {
-				Log.d("TAG", error.getMessage());
-			}
-		});*/
-
-/*		reference.child("users").child(name).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-			@Override
-			public void onComplete(@NonNull Task<DataSnapshot> task) {
-				if (task.isSuccessful()) {
-					Log.e(TAG, "User with Key: " + String.valueOf(task.getResult().getKey()) + "--exists!.");
-					res[0] = true;
-				}
-				else {
-					Log.d(TAG, "Error getting data", task.getException());
-				}
-			}
-		});*/
-
-		try
-		{
-			sem.tryAcquire(5000, TimeUnit.MILLISECONDS);
-//			sem.acquire();
-		}
-		catch (Exception ignored)
-		{
-		}
-
-		reference = null;
-
-		return res[0];
+*/
 	}
 
 /*	static ValueEventListener userListener = new ValueEventListener() {
 		@Override
 		public void onDataChange(DataSnapshot dataSnapshot) {
 			// Get Post object and use the values to update the UI
-			fbUserHelper = dataSnapshot.getValue(FbUserHelper.class);
+			userHelper = dataSnapshot.getValue(UserHelper.class);
 
 		}
 
@@ -435,7 +344,7 @@ public final class UserFbData {
 
 	// TODO: 30.10.2023 maybe -- this method is about to refresh users-data-structure
 	private static void refreshUserDb(){
-		final String DB_NEW_PATH = "users_" + timeStamp();
+/*		final String DB_NEW_PATH = "users_" + timeStamp();
 		DatabaseReference fbReferenceNew = fbDatabase.getReference(DB_NEW_PATH);
 
 		init();
@@ -449,7 +358,7 @@ public final class UserFbData {
 
 		//delete data from DB_PATH
 
-		// copy and enrich data to DB_PATH
+		// copy and enrich data to DB_PATH*/
 
 	}
 

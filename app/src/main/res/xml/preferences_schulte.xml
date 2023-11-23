@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:android="http://schemas.android.com/apk/res/android">
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	app:iconSpaceReserved="false">
 	<EditTextPreference app:key="prf_ex_type" app:title="Exercise Type" app:useSimpleSummaryProvider="true"	app:isPreferenceVisible="false" />
 	
-	<PreferenceCategory app:title="@string/title_schulte" app:summary="@string/txt_schulte_description">
+	<PreferenceCategory app:title="@string/title_schulte" >
+		<Preference app:key="prf_cat_schulte_description" app:summary="@string/txt_schulte_description"/>
 	
-		<CheckBoxPreference
-			app:defaultValue="true"
-			app:key="gcb_schulte_1_sequence"
-			app:title="@string/lbl_sch_1_sequence"
-			app:summary="@string/lbl_sch_1_sequence_sum"
-			app:icon="@drawable/ic_schulte_black_24dp"/>
+		<CheckBoxPreference app:defaultValue="true" app:key="gcb_schulte_1_sequence" app:title="@string/lbl_sch_1_sequence" app:summary="@string/lbl_sch_1_sequence_sum" app:icon="@drawable/ic_schulte_black_24dp"/>
 		
 <!--		Ratings make off all the other settings-->
 		<SwitchPreference app:key="prf_sw_ratings" app:title="@string/lbl_rating" app:summaryOn="@string/lbl_rating_sum_on" android:summaryOff="@string/lbl_rating_sum_off" app:defaultValue="false" app:enabled="true" />
@@ -21,22 +18,21 @@
 			<SeekBarPreference app:key="prf_x_size" app:title="@string/x_size" app:defaultValue="5" app:min="1" android:max="10" app:showSeekBarValue="true" />
 			<SeekBarPreference app:key="prf_y_size" app:title="@string/y_size" app:defaultValue="5" app:min="2" android:max="10" app:showSeekBarValue="true"/>
 			<DropDownPreference app:key="prf_symbol_type" app:title="@string/lbl_symbol_type" app:entries="@array/symbol_type_entries" app:entryValues="@array/symbol_type_values" app:defaultValue="@string/str_number" app:useSimpleSummaryProvider="true" app:enabled="false" />
-			<SeekBarPreference app:key="prf_font_scale" app:title="@string/lbl_font_scale" app:defaultValue="0" app:min="-1" android:max="1" app:shouldDisableView="true" app:persistent="true" app:showSeekBarValue="false"/>
 		</PreferenceCategory>
+		
+			<SeekBarPreference app:key="prf_font_scale" app:title="@string/lbl_font_scale" app:defaultValue="0" app:min="-1" android:max="1" app:persistent="true" app:showSeekBarValue="false"/>
 		
 		<PreferenceCategory
 			app:key="prf_cat_prob"
 			android:title="@string/lbl_Probabilities">
 			<SwitchPreference app:key="prf_prob_enabled"  app:summaryOn="@string/lbl_prob_enabled"  app:summaryOff="@string/lbl_prob_disabled" app:defaultValue="false" />
 			
-<!--			<org.nebobrod.schulteplus.ui.schultesettings.DrawerPreference app:key="prf_prob_drawer" android:layout="@layout/fragment_probabilities" app:isPreferenceVisible="true" app:persistent="false" app:enabled="false" />-->
-<!--			<Preference app:key="prf_prob_drawer" android:layout="@layout/fragment_probabilities" app:isPreferenceVisible="true" app:persistent="false" app:enabled="false" />-->
 			<org.nebobrod.schulteplus.ui.schultesettings.DrawerPreference app:key="prf_prob_drawer" app:layout="@layout/fragment_probabilities" />
+			<SwitchPreference app:key="prf_prob_zero"  app:summaryOn="@string/lbl_prob_zero_enabled"  app:summaryOff="@string/lbl_prob_zero_disabled" app:defaultValue="false" />
 			<SeekBarPreference app:key="prf_prob_surface" app:title="@string/lbl_prob_surface" app:defaultValue="10" app:min="4" android:max="10" app:showSeekBarValue="false" app:enabled="false" />
-			<SeekBarPreference app:key="prf_prob_x" app:title="@string/lbl_prob_x" app:isPreferenceVisible="true" app:defaultValue="0" app:min="-10" android:max="10" app:enabled="false" />
-			<SeekBarPreference app:key="prf_prob_y" app:title="@string/lbl_prob_y" app:isPreferenceVisible="true" app:defaultValue="0" app:min="-10" android:max="10" app:enabled="false" />
-		
-		
+			
+			<SeekBarPreference app:key="prf_prob_x" app:title="@string/lbl_prob_x" app:isPreferenceVisible="false" app:defaultValue="0" app:min="-10" android:max="10" app:enabled="false"  />
+			<SeekBarPreference app:key="prf_prob_y" app:title="@string/lbl_prob_y" app:isPreferenceVisible="false" app:defaultValue="0" app:min="-10" android:max="10" app:enabled="false" />
 		</PreferenceCategory>
 		
 		<CheckBoxPreference app:key="gcb_schulte_2_sequences" app:title="@string/lbl_sch_2_sequence" android:summary="@string/lbl_sch_2_sequence_sum" app:defaultValue="false" app:enabled="true" />

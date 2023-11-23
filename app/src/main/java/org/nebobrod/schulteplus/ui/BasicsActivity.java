@@ -147,7 +147,7 @@ public class BasicsActivity extends AppCompatActivity {
 		binding = ActivityBasicsBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
-		exercise = new STable(1, 1, getApplicationContext());
+		exercise = new STable(1, 1);
 		ExerciseRunner.getInstance(getApplicationContext());
 		ExerciseRunner.savePreferences(exercise);
 
@@ -308,7 +308,7 @@ public class BasicsActivity extends AppCompatActivity {
 //		chmTime.start();
 
 		ExerciseRunner runner = ExerciseRunner.getInstance(getApplicationContext());
-		runner.loadPreference(getApplicationContext());
+		runner.loadPreference();
 
 		// Take preference i.e. key="gcb_bas_dot"
 		// and make drawableName = "sg_bas_dot" and put it into iv:

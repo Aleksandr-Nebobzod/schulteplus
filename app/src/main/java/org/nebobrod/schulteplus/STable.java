@@ -4,11 +4,11 @@ package org.nebobrod.schulteplus;
 import static org.nebobrod.schulteplus.Const.SEQ1_SINGLE;
 import static org.nebobrod.schulteplus.Utils.bHtml;
 import static org.nebobrod.schulteplus.Utils.cHtml;
+import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.pHtml;
 import static org.nebobrod.schulteplus.Utils.tHtml;
 
-import android.content.Context;
-import android.content.res.Resources;
+
 import android.database.SQLException;
 import android.util.Log;
 
@@ -21,38 +21,49 @@ import org.nebobrod.schulteplus.data.ClickGroup;
 import org.nebobrod.schulteplus.data.DatabaseHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 public class STable {
 	public static final String TAG = "STable";
-	private Context mContext;
-	private Resources mRes;
+	private ArrayList<Double> probabilities = new ArrayList<>();
 	private ArrayList<SCell> area = new ArrayList<>();
 	private int xSize, ySize;
+	private final double dX, dY; // coordinates shift for probabilities
+	// surface for probabilities
+	// if 0 -> uniform, 0.4 : 1.0 -> normal, 1.4 : 2.0 -> remove 1.0 and cut 10% of low prob to zero, see KEY_PRF_PROB_ZERO
+	private final double w;
 	private int turnNumber;
 	private int sequence;
 	private boolean isFinished = false;
 
-	public STable(int x, int y, int sequence, Context c) {
-		mContext = c;
-		mRes = mContext.getResources();
+	public STable(int x, int y, int sequence, double dX, double dY, double w) {
+
 		this.xSize = x;
 		this.ySize = y;
 		this.sequence = sequence;
 
+		this.dX = dX;
+		this.dY = dY;
+		this.w = w;
+
 		this.reset();
+	}
+	public STable(int x, int y, int sequence) {
+		this(x, y, sequence, 0, 0, 0);
 	}
 
 	// Simplified constructor overloading for previous calls
-	public STable(int x, int y, Context c){
-		this(x, y, SEQ1_SINGLE, c);
+	public STable(int x, int y){
+		this(x, y, SEQ1_SINGLE);
 	}
 
 	public void reset()
 	{
 		int value = 1;
 		isFinished = false;
+		probabilities = fillProbabilities (xSize, ySize, dX, dY, w);
 		area.clear();
 		for (int x = xSize; x > 0; x--){
 			for (int y = ySize; y > 0; y--){
@@ -67,6 +78,28 @@ public class STable {
 		Log.d(TAG, "reset: \n" + area.toString());
 	}
 
+	private ArrayList<Double> fillProbabilities(int xSize, int ySize, double dX, double dY, double w) {
+		ArrayList<Double> result = new ArrayList<>(Collections.nCopies(xSize * ySize, (Double) 0.5));
+
+		if (w == 0) { // uniform dispersion
+			return result;
+		} else {
+			double xStep = (2D/xSize);
+			double yStep = (2D/ySize);
+			for (int j = 0; j< ySize; j++) {
+				System.out.print("\nRow: " + j);
+				for (int i = 0; i< xSize; i++) {
+					result.set(i*xSize + j,  camelSurface(-1 + i * xStep + xStep/2, -1 + j * yStep + yStep/2, dX, dY, w));
+					System.out.printf("\t'%1.3f'", result.get(i*xSize + j));
+
+				}
+			}
+
+
+			return result;
+		}
+	}
+
 	public String getResults()
 	{
 		int time = 0, turns = 0, turnsMissed = 0;	// time tends to milliseconds
@@ -74,7 +107,7 @@ public class STable {
 		String results = "";	// this in seconds.00
 
 		turns = this.journal.size()-1;
-		results += mRes.getString(R.string.lbl_turns) + ":" + tHtml()  + bHtml(""+ turns);
+		results += getRes().getString(R.string.lbl_turns) + ":" + tHtml()  + bHtml(""+ turns);
 
 		// time spent & average deviation
 		for (int i=1; i<=turns; i++) {
@@ -82,9 +115,10 @@ public class STable {
 			if (!this.journal.get(i).isCorrect) turnsMissed++;
 		}
 		if (turnsMissed != 0) { // if there are no missed turns do not show it
-			results += pHtml() + mRes.getString(R.string.lbl_turns_missed) + ":" + tHtml()  + cHtml( bHtml(""+ turnsMissed));
+			results += pHtml() + getRes().getString(R.string.lbl_turns_missed) + ":" + tHtml()  + cHtml( bHtml(""+ turnsMissed));
 		}
-		results += pHtml() + mRes.getString(R.string.lbl_time) + ":" + tHtml()  + bHtml(String.format("%.2f", (time /1000F))) + " " + mRes.getString(R.string.lbl_mu_second);
+		results += pHtml() + getRes().getString(R.string.lbl_time) + ":" + tHtml()  + bHtml(String.format("%.2f", (time /1000F)))
+				+ " " + getRes().getString(R.string.lbl_mu_second);
 		average = (float) time / turns;
 
 		// root mean square deviation
@@ -94,8 +128,10 @@ public class STable {
 		}
 		rmsd = (float) Math.sqrt((float) (rmsd / turns));
 
-		results +=  pHtml() + mRes.getString(R.string.lbl_average) + tHtml()  +  bHtml(String.format("%.2f", (average / 1000))) + " " + mRes.getString(R.string.lbl_mu_second) +
-				pHtml()+ mRes.getString(R.string.lbl_sd) + tHtml() + bHtml(String.format("%.2f", (rmsd / 1000))) + " " + mRes.getString(R.string.lbl_mu_second);
+		results +=  pHtml() + getRes().getString(R.string.lbl_average) + tHtml()  +  bHtml(String.format("%.2f", (average / 1000)))
+				+ " " + getRes().getString(R.string.lbl_mu_second)
+				+ pHtml() + getRes().getString(R.string.lbl_sd) + tHtml() + bHtml(String.format("%.2f", (rmsd / 1000)))
+				+ " " + getRes().getString(R.string.lbl_mu_second);
 		Log.d(TAG, "getResults: "+ this.journal);
 		Log.d(TAG, "getResults: " + results);
 
@@ -175,19 +211,50 @@ public class STable {
 		}
 	}
 
-	public void shuffle()
-	{
-		Random r = new Random();
-		ArrayList<SCell> clonedArea = (ArrayList<SCell>) area.clone();
+	public void shuffle() 	{shuffle(1);}
+	public void shuffle(int expected) 	{
+		if (this.w == 0) { // uniform distribution:
 
-		for (int i = xSize * ySize-1; i>=0; i--){
-			int j = r.nextInt(clonedArea.size());
-			area.set( i, clonedArea.get(j));	// instead of .add, .set replaces current O
+			//todo Collections.shuffle(area);
+
+			Random r = new Random();
+			ArrayList<SCell> clonedArea = (ArrayList<SCell>) area.clone();
+
+			for (int i = xSize * ySize-1; i>=0; i--){
+				int j = r.nextInt(clonedArea.size());
+				area.set( i, clonedArea.get(j));	// instead of .add, .set replaces current Object
 //			Log.d(TAG, "shuffle: i=" + i +" j="+ j);
-			clonedArea.remove(j);
+				clonedArea.remove(j);
+			}
+		} else { // custom distribution:
+
 		}
 
 	}
+
+	/**
+	 * Depending of w this function provides either hump or circle wave
+	 * @param x
+	 * @param y  coordinates (-1 : 1) of searchable value of f
+	 * @param dX
+	 * @param dY shift of center (-1 : 1)
+	 * @param w coefficient of curve (0.4 : 1)
+	 * @return value of probability at x,y (0.01 : 0.70)
+	 */
+	public static double camelSurface(double x, double y, double dX, double dY, double w) {
+		// Safety of zero dividing:
+		if (0 == (Math.pow ((Math.pow (w*x - dX, 2) + Math.pow (w*y - dY, 2) + w), 4) + w)) return 0;
+
+		return Math.pow ((Math.pow (w*x - dX, 2) + Math.pow (w*y - dY, 2) + w), 2)
+				/ (Math.pow ((Math.pow (w*x - dX, 2) + Math.pow (w*y - dY, 2) + w), 4) + w);
+
+//		return Math.pow ((Math.pow (w*x - dX*x, 2) + Math.pow (w*y - dY*y, 2) + w), 2)
+//				/ (Math.pow ((Math.pow (w*x - dX*x, 2) + Math.pow (w*y - dY*y, 2) + w), 4) + w);
+//		This one was mistyped '*x' and it changes form... may be useful (straight vertical or horizontal)
+
+	}
+
+	public ArrayList<Double> getProbabilities() { return probabilities;}
 
 	public ArrayList<SCell> getArea() {
 		return area;

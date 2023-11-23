@@ -1,9 +1,13 @@
 package org.nebobrod.schulteplus;
 
 
+import static org.nebobrod.schulteplus.Utils.getRes;
+import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.Fragment;
@@ -26,18 +31,20 @@ import androidx.navigation.ui.NavigationUI;
 
 import org.nebobrod.schulteplus.databinding.ActivityMainBinding;
 //import org.nebobrod.schulteplus.ui.BasicsActivity;
+import org.nebobrod.schulteplus.fbservices.LoginActivity;
+import org.nebobrod.schulteplus.fbservices.SignupActivity;
 import org.nebobrod.schulteplus.fbservices.UserFbData;
 import org.nebobrod.schulteplus.fbservices.UserHelper;
 import org.nebobrod.schulteplus.ui.BasicsActivity;
 import org.nebobrod.schulteplus.ui.PopupSettingsFragment;
 import org.nebobrod.schulteplus.ui.SchulteActivity02;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements UserFbData.UserHelperCallback {
 	public static final String TAG = "MainActivity";
 	private static MainActivity instance;
 
 	FirebaseAuth fbAuth;
-	FirebaseUser fbUser = null;
+	FirebaseUser user = null;
 	UserHelper userHelper;
 	UserFbData userFbData;
 
@@ -81,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 		binding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
-		fbAuth = FirebaseAuth.getInstance();
+
 		if(getIntent() != null & getIntent().hasExtra("user"))
 		{
 			userHelper = getIntent().getExtras().getParcelable("user");
@@ -164,7 +171,8 @@ public class MainActivity extends AppCompatActivity {
 				Class activity = SchulteActivity02.class;
 				Intent intent = null;
 				String exType = runner.getExType();
-				runner.savePreferences(null);
+//				runner.savePreferences(null);
+				ExerciseRunner.loadPreference();
 				// done: 21.09.2023 here we need to choose Activity by switch: (ExerciseRunner.getTypeOfExercise())
 				// gcb_bas_dbl_dot, gcb_bas_circles_rb, schulte_1_sequence
 				switch (exType.substring(0,7)){
@@ -190,5 +198,28 @@ public class MainActivity extends AppCompatActivity {
 	protected void onResume() {
 		super.onResume();
 //		runner.loadPreference(getApplicationContext());
+	}
+
+	@Override
+	public void onBackPressed() {
+
+//		finishAndRemoveTask();
+		finishAffinity();
+//		finish();
+
+
+//		super.onBackPressed();
+	}
+
+	@Override
+	public void onCallback(@Nullable UserHelper fbDbUser) {
+		if (fbDbUser == null) {
+			showSnackBarConfirmation(this, getRes().getString(R.string.err_unknown) + " ");
+		} else {
+			// TODO: 19.11.2023 load profile from server
+
+			Toast.makeText(this, getRes().getString(R.string.txt_welcome_back)
+					+ ", " + fbDbUser.getName() + "!", Toast.LENGTH_SHORT).show();
+		}
 	}
 }

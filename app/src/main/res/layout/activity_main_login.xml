@@ -25,6 +25,8 @@
 			android:elevation="35dp"
 			app:cardCornerRadius="20dp">
 			
+
+			
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
@@ -46,7 +48,8 @@
 					android:id="@+id/et_email"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_marginTop="32dp"
+					android:layout_marginTop="16dp"
+					android:minHeight="48dp"
 					android:background="@drawable/border02"
 					android:backgroundTint="@color/semi_white"
 					android:drawableStart="@drawable/ic_baseline_perm_identity_24"
@@ -60,28 +63,43 @@
 					android:id="@+id/et_name"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_marginTop="32dp"
+					android:layout_marginTop="16dp"
+					android:minHeight="48dp"
 					android:background="@drawable/border02"
 					android:backgroundTint="@color/semi_white"
 					android:drawableStart="@drawable/ic_baseline_perm_identity_24"
 					android:drawablePadding="4dp"
 					android:hint="@string/hint_login"
 					android:padding="8dp"
-					android:textColor="@color/black" />
+					android:textColor="@color/black"
+					
+					android:text="username" android:visibility="gone" />
 				
-				<EditText
-					android:id="@+id/et_pass"
+				<com.google.android.material.textfield.TextInputLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_marginTop="32dp"
-					android:background="@drawable/border02"
-					android:backgroundTint="@color/semi_white"
-					android:drawableStart="@drawable/ic_baseline_lock_24"
-					android:drawablePadding="4dp"
 					android:hint="@string/hint_pass"
-					android:inputType="textPassword"
-					android:padding="8dp"
-					android:textColor="@color/black" />
+					app:endIconMode="password_toggle" >
+					
+					<EditText
+						android:id="@+id/et_pass"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="16dp"
+						android:minHeight="48dp"
+						android:background="@drawable/border02"
+						android:backgroundTint="@color/semi_white"
+						android:drawableStart="@drawable/ic_baseline_lock_24"
+						android:drawablePadding="4dp"
+						android:inputType="textPassword"
+						android:contentDescription="@string/hint_pass"
+						android:padding="8dp"
+						android:textColor="@color/black" />
+					
+				</com.google.android.material.textfield.TextInputLayout>
+				
+				
+
 				
 				<com.google.android.material.button.MaterialButton
 					android:id="@+id/bt_go_on"
@@ -97,7 +115,7 @@
 					android:id="@+id/tv_go_off"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_marginTop="16dp"
+					android:minHeight="48dp"
 					android:clickable="true"
 					android:gravity="center"
 					android:maxLines="3"
@@ -111,7 +129,6 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_gravity="right"
-					android:layout_marginTop="10dp"
 					android:contentDescription="unwrap extra"
 					android:elevation="10dp"
 					android:scaleX="2"
@@ -148,28 +165,7 @@
 						android:text="@string/lbl_resend_verification_email"
 						android:textColor="@color/purple_500"
 						android:textSize="16sp" />
-					
-					<TextView
-						android:id="@+id/tv_alternative_reg"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:layout_margin="6dp"
-						android:clickable="true"
-						android:maxLines="3"
-						android:text="@string/lbl_tv_alternative_reg"
-						android:textColor="@color/purple_500"
-						android:textSize="16sp" />
-					
-					<TextView
-						android:id="@+id/tv_continue_unregistered"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:layout_margin="6dp"
-						android:clickable="true"
-						android:maxLines="3"
-						android:text="@string/lbl_continue_unregistered"
-						android:textColor="@color/light_grey_4"
-						android:textSize="16sp" />
+
 					
 					<ImageView
 						android:id="@+id/bt_wrap_extra"
@@ -192,6 +188,16 @@
 					android:textAlignment="center"
 					android:text=" ." />
 			</LinearLayout>
+			<ProgressBar
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:id="@+id/progress_bar"
+				android:layout_margin="150dp"
+				android:indeterminate="true"
+				android:indeterminateTint="@color/light_grey_D"
+				android:tooltipText="@string/app_name"
+				/>
+<!--				android:indeterminateDrawable="@drawable/progress"-->
 
 		</androidx.cardview.widget.CardView>
 

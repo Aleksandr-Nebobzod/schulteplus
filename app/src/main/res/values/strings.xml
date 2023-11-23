@@ -181,5 +181,19 @@
 	<string name="lbl_prob75">Standard Chance</string>
 	<string name="lbl_prob99">Likely</string>
 	<string name="lbl_prob11">Certainly</string>
+	<string name="lbl_prob_zero_disabled">Low chance is not zero</string>
+	<string name="lbl_prob_zero_enabled">Low chance means zero</string>
+	<string name="prf_user_logoff">Log off</string>
+	<string name="prf_user_logoff_description">Leave the app unauthorized</string>
+	<string name="txt_welcome_back">Welcome back</string>
+	<string name="lbl_ver">ver.:</string>
+	<string name="lbl_vendor">Conscious rover</string>
+	<string name="msg_selfcheck">Selfcheck...</string>
+	<string name="msg_network_connection">Network connection</string>
+	<string name="msg_app_consistency">App consistency</string>
+	<string name="msg_internet">Internet</string>
+	<string name="msg_datasources">Datasourcses</string>
+	<string name="msg_user">User</string>
+	<string name="msg_veryfied">Veryfied</string>
 
 </resources>

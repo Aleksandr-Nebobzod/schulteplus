@@ -31,14 +31,14 @@ public class BasicSettings extends PreferenceFragmentCompat {
 		getPreferenceManager().setSharedPreferencesName(ExerciseRunner.uid);
 		getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
 		setPreferencesFromResource(R.xml.preferences_basics, rootKey);
-		PreferenceScreen screen = this.getPreferenceScreen();
+//		PreferenceScreen screen = this.getPreferenceScreen();
 		exTypes = getRes().getStringArray(R.array.ex_type);
 
 		initiateExerciseTypes();
 	}
 	@Override
 	public void onResume() {
-		runner.loadPreference(getContext());
+		runner.loadPreference();
 		EditTextPreference exType = findPreference("prf_ex_type");
 		// to find which checkbox selected on the screen:
 		for (Preference p: exerciseTypes) {

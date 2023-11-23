@@ -1,15 +1,13 @@
 package org.nebobrod.schulteplus.fbservices;
 
-import androidx.activity.result.ActivityResultLauncher;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-//import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,33 +15,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 
 import org.nebobrod.schulteplus.MainActivity;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class LoginActivity extends AppCompatActivity implements UserFbData.UserCallback {
+public class LoginActivity extends AppCompatActivity implements UserFbData.UserHelperCallback {
 	private static final String TAG = "Login";
-	private static final String NAME_REG_EXP = "^[a-z][[a-z]![0-9]]{3,14}$";
+
 	private static final String DB_PATH = "users";
 
 	FirebaseAuth fbAuth;
-	FirebaseUser fbUser;
+	FirebaseUser user;
 
 	EditText etEmail, etName, etPassword;
 	MaterialButton btGoOn;
@@ -51,12 +40,10 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 
 	ImageView btUnwrapExtra, btWrapExtra;
 	LinearLayout llExtras;
-	TextView tvResendVerEmail, tvResetPassword, tvAlternativeReg, tvContinueUnregistered;
+	TextView tvResendVerEmail, tvResetPassword;
 	boolean nameExists = true;
 	boolean signInPressed = false; // this is to prevent Instant Verification of FB
 
-	FirebaseAuth.AuthStateListener mAuthListener;
-//	OnSuccessListener mTaskListener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +57,14 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 		tvGoOff = findViewById(R.id.tv_go_off);
 
 		fbAuth = FirebaseAuth.getInstance();
+		user = fbAuth.getCurrentUser();
+
+/*		if (user != null) {
+			isLoginAuthorized(user);
+			finish();
+		}*/
+
+		// Started with credentials?...
 		if (getIntent() != null & getIntent().hasExtra("email"))
 		{
 //			fbUser = getIntent().getExtras().getParcelable("user");
@@ -77,134 +72,39 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 			etName.setText(getIntent().getExtras().getString("name", ""));
 			etPassword.setText(getIntent().getExtras().getString("password", ""));
 		}
-/*		{
-			String mName = "nebobzod"; // This name is definitely busy
-//			etName.setText(mName);
-			nameExists = true;
-			UserFbData.isNameExist(this::onCallback, mName);
-		}*/
 
 		btUnwrapExtra = findViewById(R.id.bt_unwrap_extra);
 		btWrapExtra = findViewById(R.id.bt_wrap_extra);
 		llExtras = findViewById(R.id.ll_extras);
 		tvResendVerEmail = findViewById(R.id.tv_resend_verification_email);
 		tvResetPassword = findViewById(R.id.tv_reset_password);
-		tvAlternativeReg = findViewById(R.id.tv_alternative_reg);
-		tvContinueUnregistered = findViewById(R.id.tv_continue_unregistered);
 
-		// Choose authentication providers
-		List<AuthUI.IdpConfig> providers = Arrays.asList(
-				new AuthUI.IdpConfig.EmailBuilder().build());
-//				new AuthUI.IdpConfig.PhoneBuilder().build(), // -- we can do it later
-//				new AuthUI.IdpConfig.GoogleBuilder().build(),
-//				new AuthUI.IdpConfig.FacebookBuilder().build(),
-//				new AuthUI.IdpConfig.TwitterBuilder().build()
-//		);
+		btGoOn.setOnClickListener(view -> {
+			String email = etEmail.getText().toString().trim();
+			String name = etName.getText().toString().trim();
+			String password = etPassword.getText().toString().trim();
 
-// Create and launch sign-in intent for an alternative registration
-		Intent signInIntent = AuthUI.getInstance()
-				.createSignInIntentBuilder()
-				.setAvailableProviders(providers)
-				.setTheme(R.style.GreyTheme)
-				.build();
+			// Check name & pass, extract user data from db,
+			if (!validateEmail() | !validateName() | !validatePassword()){
+				// do nothing (input errors are handled in validation functions
+			} else {
+				signInPressed = true;
 
-		ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
-				new FirebaseAuthUIActivityResultContract(),
-				(result) -> {
-					// Handle the FirebaseAuthUIAuthenticationResult
-					// ...
-					Log.d(TAG, "AuthUI launcher: " + result);
-					Toast.makeText(LoginActivity.this, "AuthUI launcher: " + result, Toast.LENGTH_LONG).show();
-				});
+				fbAuth.signInWithEmailAndPassword(email, password)
+					.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+						@Override
+						public void onSuccess(AuthResult authResult) {
 
-		// This should listen events of authentication
-		/*mTaskListener = new OnSuccessListener() {
-			@Override
-			public void onSuccess(Object o) {
-				Log.d(TAG, "onSuccess: " + o.toString());
-			}
-		};*/
-
-		// This listener updates UserDisplayName in case of success authentication
-		mAuthListener = new FirebaseAuth.AuthStateListener()
-		{
-			@Override
-			public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-				FirebaseUser user = firebaseAuth.getCurrentUser();
-				String mName = etName.getText().toString().trim();
-
-				if (user == null) return;
-
-				if (signInPressed) {
-					// ensuring Name for anonymous user
-					if (user.isAnonymous()) {
-						// do smth?..
-					}
-				} else {
-					// user = null; // Here we can clean autologin (default applied token from previous session)
-				}
-
-				if(user!=null & !mName.equals("")){
-					// update name in authDB
-					UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-							.setDisplayName(mName).build();
-
-					user.updateProfile(profileUpdates)
-							.addOnCompleteListener(new OnCompleteListener<Void>() { // this is just for fun
-								@Override
-								public void onComplete(@NonNull Task<Void> task) {
-									if (task.isSuccessful()) {
-										Log.d(TAG, "User profile updated with Name: " + mName);
-									}
-								}
-							});
-				} else {
-					firebaseAuth.signOut();
-				}
-			}
-		};
-
-		btGoOn.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View view) {
-				String email = etEmail.getText().toString().trim();
-				String name = etName.getText().toString().trim();
-				String password = etPassword.getText().toString().trim();
-
-				// Check name & pass, extract user data from db,
-				if (!validateName() | !validatePassword()){
-					// do nothing (input errors are handled in validation functions
-				} else {
-					signInPressed = true;
-
-					fbAuth.signInWithEmailAndPassword(email, password)
-						.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-							@Override
-							public void onSuccess(AuthResult authResult) {
-								FirebaseUser user = fbAuth.getCurrentUser();
-								if (user.isEmailVerified()){
-									String s = name + " " + getString(R.string.msg_user_logged_in);
-									Log.d(TAG, s);
-								} else {
-									String s = name + ", " + getString(R.string.msg_user_unverified);
-									Log.d(TAG, s);
-//									showSnackbar(btGoOn, s, getString(R.string.lbl_go_on) );
-								}
-
-								UserFbData.isExist(LoginActivity.this::onCallback, email.replace(".", "_"));
-
-//									finish();
-							}
-						}).addOnFailureListener(new OnFailureListener() {
-							@Override
-							public void onFailure(@NonNull Exception e) {
-								String s = name + " " + getString(R.string.msg_user_login_failed) + e.getMessage();
-								Log.d(TAG, s);
-								Toast.makeText(LoginActivity.this, s, Toast.LENGTH_LONG).show();
-							}
-						});
-				}
+							isLoginAuthorized(authResult.getUser());
+						}
+					}).addOnFailureListener(new OnFailureListener() {
+						@Override
+						public void onFailure(@NonNull Exception e) {
+							String s = email + " " + getString(R.string.msg_user_login_failed) + e.getMessage();
+							Log.d(TAG, s);
+							Toast.makeText(LoginActivity.this, s, Toast.LENGTH_LONG).show();
+						}
+					});
 			}
 		});
 
@@ -237,64 +137,22 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 			}
 		});
 
-		tvContinueUnregistered.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View view) {
-				String val = Utils.getRandomName();
-				etName.setText(val);
-
-				if (validateName() == false)  return;
-
-				UserFbData.isNameFree(new UserFbData.NameFreeCallback() {
-					@Override
-					public void onCallback(boolean isFree) {
-						if (isFree) {
-							signInAnonymously();
-						} else {
-							String mName = Utils.getRandomName();
-							etName.setText(mName);
-							Toast.makeText(LoginActivity.this, val + " is occupied, try with new name, i.e.: " +mName, Toast.LENGTH_SHORT).show();
-						}
-					}
-				}, val);
-			}
-		});
-
-		tvAlternativeReg.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View view)
-			{
-				signInLauncher.launch(signInIntent);
-			}
-		});
-
 	}
 
-	private boolean validateName()
-	{
-		String val = etName.getText().toString().trim();
+	private void isLoginAuthorized(FirebaseUser user) {
+		String strMessage, email = user.getEmail();
 
-		if (!val.matches(NAME_REG_EXP)) {
-			etName.setError(getString(R.string.msg_username_rules));
-			return false;
-		}
-/*		if (!UserFbData.isExist(this, val)) {
-			etName.setError(getString(R.string.msg_username_doesnt_exists));
-			return false;
-		}
-*/
-		etName.setError(null);
-		return true;
+		UserFbData.isExist(LoginActivity.this::onCallback, email.replace(".", "_"));
 
+//		finish();
 	}
 
 	@Override
 	public void onCallback(UserHelper fbDbUser)
 	{
-		if(signInPressed) {
 			if (fbDbUser != null) runMainActivity(fbDbUser);
+			finish();
+		/*if(signInPressed) {
 		} else {
 			for (int i = 0; (i < 10 & nameExists); i++ ){
 				if (fbDbUser == null) {
@@ -306,7 +164,7 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 					UserFbData.isNameExist(this, mName);
 				}
 			}
-		}
+		}*/
 
 
 	}
@@ -316,6 +174,40 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 		@Override
 		public void onCallback(UserHelper fbDbUser) { Log.d(TAG, "onCallback: " + fbDbUser); }
 	};*/
+
+
+	private boolean validateEmail()
+	{
+		String val = etEmail.getText().toString().trim();
+		if (val.isEmpty()) {
+			etEmail.setError(getString(R.string.msg_email_empty));
+			return false;
+		} else if (!Patterns.EMAIL_ADDRESS.matcher(val).matches()) {
+			etEmail.setError(getString(R.string.msg_email_pattern));
+			return false;
+		} else {
+			etEmail.setError(null);
+			return true;
+		}
+	}
+
+	private boolean validateName()
+	{
+		/*String val = etName.getText().toString().trim();
+
+		if (!val.matches(NAME_REG_EXP)) {
+			etName.setError(getString(R.string.msg_username_rules));
+			return false;
+		}
+*//*		if (!UserFbData.isExist(this, val)) {
+			etName.setError(getString(R.string.msg_username_doesnt_exists));
+			return false;
+		}
+*//*
+		etName.setError(null);*/
+		return true;
+
+	}
 
 	private boolean validatePassword()
 	{
@@ -329,79 +221,14 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserC
 		}
 	}
 
-	private void signInAnonymously()
-	{
-
-		signInPressed = true;
-
-		// [START sign_in_anonymously]
-		fbAuth.signInAnonymously()
-				.addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>()
-				{
-					@Override
-					public void onComplete(@NonNull Task<AuthResult> task)
-					{
-						if (task.isSuccessful()) {
-							// Sign in success, update UI with the signed-in user's information
-							FirebaseUser user = fbAuth.getCurrentUser();
-
-							//SharedPreferences sharedPreferences = LoginActivity.this.getSharedPreferences(user.getUid(), Context.MODE_PRIVATE);
-
-							Log.d(TAG, getString(R.string.msg_signin_anonymously_success) +" UID: "+ user.getUid());
-
-							if (task.getResult().getAdditionalUserInfo().isNewUser()) {
-								// name either from screen as generated before
-								UserFbData fbDbUser = new UserFbData();								String _name = etName.getText().toString().trim();
-								String _device = Utils.getDeviceId(LoginActivity.this);
-
-								fbDbUser.addUser(_name +  "@email.com", _name, "password", user.getUid(), _device, false);
-								Log.d(TAG, "onComplete signIn Anon: " + fbDbUser);
-//							Toast.makeText(LoginActivity.this, _name +  "@email.com" + getString(R.string.msg_signin_anonymously_credentials), Toast.LENGTH_LONG).show();
-								Snackbar.make(tvContinueUnregistered,
-												_name +  "@email.com" + getString(R.string.msg_signin_anonymously_credentials), Snackbar.LENGTH_INDEFINITE)
-										.setAction("✓", null).show();
-
-								runMainActivity(UserFbData.getFbUserHelper());							}
-							else {
-								UserFbData.getByUid(LoginActivity.this::onCallback, user.getUid());
-
-
-							}
-
-						} else {
-							// If sign in fails, display a message to the user.
-							Log.w(TAG, getString(R.string.msg_signin_anonymously_failure), task.getException());
-							Toast.makeText(LoginActivity.this, getString(R.string.msg_signin_anonymously_failure),
-									Toast.LENGTH_LONG).show();
-						}
-					}
-
-				});
-		// [END sign_in_anonymously]
-
-	}
-
 	private void runMainActivity(UserHelper user)
 	{
-		Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+		Intent intent = new Intent(this, MainActivity.class);
 		intent.putExtra("user", user);
 		startActivity(intent);
-	}
-	@Override
-	public void onResume()
-	{
-		super.onResume();
-		fbAuth.addAuthStateListener(mAuthListener);
+		finish();
 	}
 
-	@Override
-	public void onStop()
-	{
-		super.onStop();
-		if(mAuthListener != null){
-			fbAuth.removeAuthStateListener(mAuthListener);
-		}
-	}
 
 
 /*	@Override

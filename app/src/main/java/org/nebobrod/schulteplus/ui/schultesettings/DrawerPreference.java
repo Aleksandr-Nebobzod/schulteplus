@@ -14,7 +14,6 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
 
 import org.nebobrod.schulteplus.R;
@@ -48,6 +47,4 @@ public class DrawerPreference extends androidx.preference.Preference {
 		super.onBindViewHolder(holder);
 	}
 
-
 }
-

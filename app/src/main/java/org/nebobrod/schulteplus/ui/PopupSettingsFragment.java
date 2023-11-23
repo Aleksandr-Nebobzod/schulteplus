@@ -1,6 +1,7 @@
 package org.nebobrod.schulteplus.ui;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferencesName;
+import static androidx.core.app.ActivityCompat.finishAffinity;
 import static org.nebobrod.schulteplus.Const.*;
 
 import android.app.Dialog;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.Fragment;
@@ -25,8 +27,10 @@ import androidx.preference.PreferenceManager;
 import androidx.preference.SeekBarPreference;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.nebobrod.schulteplus.ExerciseRunner;
+import org.nebobrod.schulteplus.MainActivity;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 
@@ -81,6 +85,20 @@ public class PopupSettingsFragment extends AppCompatDialogFragment
 			}
 			sbPrfCurrentLevel.setMax(currentLevel);
 			sbPrfCurrentLevel.setTitle(R.string.prf_current_level_title );
+
+		}
+
+		@Override
+		public boolean onPreferenceTreeClick(@NonNull Preference preference) {
+			switch (preference.getKey()) {
+				case "prf_user_logoff":
+					FirebaseAuth.getInstance().signOut();
+//					finishAndRemoveTask();
+					MainActivity.getInstance().finishAndRemoveTask();
+					return true; // makes not necessary of break;
+				default:
+					return super.onPreferenceTreeClick(preference);
+			}
 
 		}
 

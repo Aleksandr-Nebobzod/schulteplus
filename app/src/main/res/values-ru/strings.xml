@@ -38,7 +38,7 @@
 	<string name="lbl_bas_necker_cylinder">Цилиндр Неккера</string>
 	<string name="lbl_bas_dancing_girl">Балеринка</string>
 	<string name="lbl_bas_dancing_cat">Кот-Балерун</string>
-	<string name="txt_bas_description">Это подборка простых упражнений, которые сложны тем, что требуют устойчивости внимания</string>
+	<string name="txt_bas_description">Здесь подобраны простые упражнения, которые сложны тем, что требуют и тренируют устойчивость внимания</string>
 	<string name="lbl_bas_double">Двойное изображение*</string>
 	<string name="lbl_bas_double_desc">Для упражнений отмеченных звёздочкой, изображение будет удвоено для параллельного стереопросмотра.</string>
 	<string name="lbl_bas_penrose_triangle" >Треугольник Пенроуза</string>
@@ -59,9 +59,9 @@
 	<string name="prf_title_app">Приложение</string>
 	<string name="prf_title_data">Делиться данными</string>
 	<string name="prf_title_sound_mode">Звуковое сопровождение</string>
-	<string name="prf_data_sum_off">Результаты ваших тренировок НЕ отправляются на сервер, вы также НЕ видите результатов других участников (без рейтингов)</string>
+	<string name="prf_data_sum_off">Результаты ваших тренировок НЕ публичны, вы также не видите результатов других участников (рейтинги недоступны)</string>
 	<string name="prf_data_sum">СУМ</string>
-	<string name="prf_data_on">Результаты ваших тренировок ОТПРАВЛЯЮТСЯ на сервер, вы также ВИДИТЕ результаты других участников (с рейтингами)</string>
+	<string name="prf_data_on">Результаты ваших тренировок ОТПРАВЛЯЮТСЯ публичны, вам также доступны результаты других участников</string>
 	<string name="prf_data_st_on">СТ ОН</string>
 	<string name="prf_data_st_off">СТ ОФФ</string>
 	<string name="prf_title_sound_yn">Звуковой отклик</string>
@@ -152,7 +152,7 @@
 	<string name="lbl_prob_y">Смещение по вертикали</string>
 	<string name="lbl_prob_enabled">Управляемое распределение</string>
 	<string name="lbl_prob_disabled">Равномерное распределение</string>
-	<string name="msg_signin_anonymously_credentials">" -- your dummy email and Password -- your password (change it asap)"</string>
+	<string name="msg_signin_anonymously_credentials"> -- ваш липовый емайл, а Password -- ваш действующий пароль (желательно поменять)</string>
 	<string name="lbl_font_scale">Размер шрифта</string>
 	<string name="lbl_legend">Легенда</string>
 	<string name="lbl_prob00">Невозможно</string>
@@ -160,4 +160,18 @@
 	<string name="lbl_prob75">Вероятно</string>
 	<string name="lbl_prob99">Наверное</string>
 	<string name="lbl_prob11">Определённо</string>
+	<string name="lbl_prob_zero_disabled">Малый шанс не нулевой</string>
+	<string name="lbl_prob_zero_enabled">Некоторые вероятности равны нулю</string>
+	<string name="prf_user_logoff">Выйти</string>
+	<string name="prf_user_logoff_description">Закрыть приложение, очистить данные автовхода</string>
+	<string name="txt_welcome_back">С возвращением</string>
+	<string name="lbl_ver">вер.:</string>
+	<string name="lbl_vendor">Conscious rover</string>
+	<string name="msg_selfcheck">Самопроверка…</string>
+	<string name="msg_network_connection">Network connection</string>
+	<string name="msg_app_consistency">App consistency</string>
+	<string name="msg_internet">Internet</string>
+	<string name="msg_datasources">Datasourcses</string>
+	<string name="msg_user">User</string>
+	<string name="msg_veryfied">Veryfied</string>
 </resources>

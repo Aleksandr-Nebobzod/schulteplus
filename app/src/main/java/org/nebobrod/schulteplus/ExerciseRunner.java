@@ -34,7 +34,14 @@ public class ExerciseRunner {
 	public static int currentLevel = 1; // level limited by user
 	private static String exType = "no_exercise";
 	private static byte xSize = 5, ySize = 5;
+	private static boolean ratings = false; // Limitation of Settings
 	private static boolean hinted = true;
+	private static boolean shuffled = true;
+	private static String symbolType = "number"; // See string-array name="symbol_type_values"
+	public static int fontScale = 0; // {-1, 0, 1}
+	private static boolean probEnabled = false; // Probabilities control
+	private static boolean probZero = false; // Probabilities can be 0
+	private static double probDx = .0, probDy = .0, probW = .0;
 	public static  long tsRun;	// Timestamp of started
 
 	private ExerciseRunner(Context context) {
@@ -44,7 +51,11 @@ public class ExerciseRunner {
 			userName = ((MainActivity) context).userHelper.getName();
 			userEmail = ((MainActivity) context).userHelper.getEmail();
 			if (uid.isEmpty()) uid = KEY_DEFAULT_USER_PREF;
-			this.loadPreference(context);
+			sharedPreferences = context.getSharedPreferences(uid, Context.MODE_PRIVATE);
+			// Getting default preferences if there aren't still there
+			PreferenceManager.setDefaultValues(context, R.xml.menu_preferences, false);
+
+			this.loadPreference();
 			this.savePreferences(null);
 		}
 		catch (Exception e){
@@ -52,7 +63,8 @@ public class ExerciseRunner {
 		}
 	}
 
-	public static ExerciseRunner getInstance(Context context) {
+	public static ExerciseRunner getInstance(Context context)
+	{
 		if (null == context) {
 			Log.i(TAG, "getInstance: skipped");
 		}
@@ -64,26 +76,51 @@ public class ExerciseRunner {
 	}
 	public SharedPreferences getSharedPreferences() { return sharedPreferences; }
 
-	public void loadPreference(Context context){
+	public static void loadPreference(){
 		try {
 			// apply previous parameters on load
 
-			sharedPreferences = context.getSharedPreferences(uid, Context.MODE_PRIVATE);
-
-			// Getting default preferences if there aren't still there
-			PreferenceManager.setDefaultValues(context, R.xml.menu_preferences, false);
-
 			// And some additional prefs:
-			//userName = sharedPreferences.getString(KEY_USER_NAME, "null");
-			//userEmail = sharedPreferences.getString(KEY_USER_EMAIL, "null@email.com");
+			// userName = sharedPreferences.getString(KEY_USER_NAME, "null");
+			// userEmail = sharedPreferences.getString(KEY_USER_EMAIL, "null@email.com");
 			points = sharedPreferences.getInt(KEY_POINTS, 0);
 			level = sharedPreferences.getInt(KEY_PRF_LEVEL, 1);
 			currentLevel = sharedPreferences.getInt(KEY_PRF_CURRENT_LEVEL, 1);
-			hinted = sharedPreferences.getBoolean(KEY_HINTED, true);
+			ratings = sharedPreferences.getBoolean(KEY_PRF_RATINGS, false);
+			exType = sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, KEY_PRF_EX_S1);
+			fontScale = sharedPreferences.getInt(KEY_PRF_FONT_SCALE, 0);
+			if (ratings) {
+				hinted = false;
+				shuffled = true;
+				switch (exType){
+//					case KEY_PRF_EX_S1: xSize = ySize = 5; break; // see default
+					case KEY_PRF_EX_S2: xSize = ySize = 7; break;
+					case KEY_PRF_EX_S3: xSize = ySize = 10; break;
+					default: xSize = ySize = 5;
+				}
+				symbolType = "number";
+				probEnabled = false;
+				probDx = probDy = probW = 0D;
+			} else {
+				hinted = sharedPreferences.getBoolean(KEY_HINTED, true);
+				shuffled = sharedPreferences.getBoolean(KEY_PRF_SHUFFLE, true);
+				xSize = (byte) sharedPreferences.getInt(KEY_X_SIZE, 5);
+				ySize = (byte) sharedPreferences.getInt(KEY_Y_SIZE, 5);
+				symbolType = sharedPreferences.getString(KEY_PRF_SYMBOLS, "number");
+//				shuffled = sharedPreferences.getBoolean(KEY_PRF_PROB_ENABLED, true);
+				if (! probEnabled) {
+					probZero = sharedPreferences.getBoolean(KEY_PRF_PROB_ZERO, false);
+					probDx = sharedPreferences.getInt(KEY_PRF_PROB_X, 0) / 10D;
+					probDy = sharedPreferences.getInt(KEY_PRF_PROB_Y, 0) / 10D;
+					probW = sharedPreferences.getInt(KEY_PRF_PROB_SURFACE, 0) / 10D;
 
-			exType = sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, "gcb_schulte_1_sequence");
-			xSize = (byte) sharedPreferences.getInt(KEY_X_SIZE, 5);
-			ySize = (byte) sharedPreferences.getInt(KEY_Y_SIZE, 5);
+				}
+
+			}
+
+
+
+
 			tsRun = sharedPreferences.getLong(KEY_TS_UPDATED, timeStamp());
 		}
 			catch (Exception e){
@@ -98,12 +135,12 @@ public class ExerciseRunner {
 		editor.putString(	KEY_USER_NAME, userName);
 		editor.putString(	KEY_USER_EMAIL, userEmail);
 
-		editor.putBoolean(	KEY_HINTED, hinted).apply();
+/*		editor.putBoolean(	KEY_HINTED, hinted);
 		editor.putString(	KEY_TYPE_OF_EXERCISE, exType);
-		editor.putInt(		KEY_X_SIZE, (int) xSize).apply();
-		editor.putInt(		KEY_Y_SIZE, (int) xSize).apply();
+		editor.putInt(		KEY_X_SIZE, (int) xSize);
+		editor.putInt(		KEY_Y_SIZE, (int) xSize);*/
 		tsRun = timeStamp();
-		editor.putLong(		KEY_TS_UPDATED, tsRun).apply();
+		editor.putLong(		KEY_TS_UPDATED, tsRun);
 
 		if(null != exercise){
 			CALC:
@@ -129,11 +166,11 @@ public class ExerciseRunner {
 					points = (points % 3600);
 					newHour = true;
 				}
-				editor.putInt(		KEY_POINTS, (int) points).apply();
+				editor.putInt(		KEY_POINTS, (int) points);
 				hours += sharedPreferences.getInt(KEY_HOURS, 0);
 				if (newHour) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormatted(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
-				editor.putInt(		KEY_HOURS, (int) hours  ).apply();
-				editor.putInt(		KEY_PRF_LEVEL, (int) Math.sqrt(hours * 3600 + points)  ).apply();
+				editor.putInt(		KEY_HOURS, (int) hours  );
+				editor.putInt(		KEY_PRF_LEVEL, (int) Math.sqrt(hours * 3600 + points) );
 			}
 		}
 

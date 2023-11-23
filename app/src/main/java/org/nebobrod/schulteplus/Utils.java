@@ -12,6 +12,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.text.SpannableString;
@@ -25,6 +26,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -297,12 +299,33 @@ public final class Utils extends Application {
 				.setAction(getRes().getString(R.string.lbl_ok), new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						Snackbar mSnackbar = Snackbar.make(rootView, getRes().getString(R.string.app_version_num), Snackbar.LENGTH_SHORT);
-						mSnackbar.show();
+//						Snackbar mSnackbar = Snackbar.make(rootView, getRes().getString(R.string.app_version_num), Snackbar.LENGTH_SHORT);
+//						mSnackbar.show();
+
 					}
 				});
 
+//		Snackbar snackbar =  Snackbar.make(view, "Text",Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_LONG);
+		View snackbarView = snackbar.getView();
+		TextView tv= (TextView) snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+		tv.setMaxLines(7);
+
 		snackbar.show();
+	}
+
+	//Current Android version data
+	public static String currentVersion(){
+		double release=Double.parseDouble(Build.VERSION.RELEASE.replaceAll("(\\d+[.]\\d+)(.*)","$1"));
+		String codeName="Unsupported";//below Jelly Bean
+		if(release >= 4.1 && release < 4.4) codeName = "Jelly Bean";
+		else if(release < 5)   codeName="Kit Kat";
+		else if(release < 6)   codeName="Lollipop";
+		else if(release < 7)   codeName="Marshmallow";
+		else if(release < 8)   codeName="Nougat";
+		else if(release < 9)   codeName="Oreo";
+		else if(release < 10)  codeName="Pie";
+		else if(release >= 10) codeName="Android "+((int)release);//since API 29 no more candy code names
+		return codeName+" v"+release+", API Level: "+Build.VERSION.SDK_INT;
 	}
 
 

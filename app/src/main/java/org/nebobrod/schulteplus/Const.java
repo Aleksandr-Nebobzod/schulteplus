@@ -6,15 +6,18 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 
 public interface Const {
 	// set of exercise related constants
+	public static final String NAME_REG_EXP = "^[a-z][[a-z]![0-9]]{3,14}$";
+
+	// set of exercise related constants
 	public static final byte SEQ1_SINGLE = 1;
 	public static final byte SEQ2_DOUBLE = 2;
-	public static final byte SEQ2_RED = 21;
-	public static final byte SEQ2_BLUE = 22;
+	public static final byte 	SEQ2_RED = 21;
+	public static final byte 	SEQ2_BLUE = 22;
 	public static final byte SEQ4_QUARTER = 4;
-	public static final byte SEQ4_RED = 41;
-	public static final byte SEQ4_BLUE = 42;
-	public static final byte SEQ4_YELLOW = 43;
-	public static final byte SEQ4_GREEN = 44;
+	public static final byte 	SEQ4_RED = 41;
+	public static final byte 	SEQ4_BLUE = 42;
+	public static final byte 	SEQ4_YELLOW = 43;
+	public static final byte 	SEQ4_GREEN = 44;
 
 	// set of prf related constants
 	public static final String KEY_USER_NAME = "prf_user_name";
@@ -40,9 +43,10 @@ public interface Const {
 	public static final String KEY_PRF_PROBABILITIES = "prf_cat_prob";
 	public static final String KEY_PRF_PROB_ENABLED = "prf_prob_enabled";
 	public static final String KEY_PRF_PROB_DRAWER = "prf_prob_drawer";
-	public static final String KEY_PRF_PROB_SURFACE = "prf_prob_surface"; // value 4--10 should be divided by 10
-	public static final String KEY_PRF_PROB_X = "prf_prob_x";
-	public static final String KEY_PRF_PROB_Y = "prf_prob_y";
+	public static final String KEY_PRF_PROB_ZERO = "prf_prob_zero"; // can make "white spaces"
+	public static final String KEY_PRF_PROB_X = "prf_prob_x"; // value -10:10 should be divided by 10
+	public static final String KEY_PRF_PROB_Y = "prf_prob_y"; // value -10;10 should be divided by 10
+	public static final String KEY_PRF_PROB_SURFACE = "prf_prob_surface"; // value 4:10 should be divided by 10
 
 	public static final String KEY_PRF_EX_S1 = "gcb_schulte_1_sequence";
 	public static final String KEY_PRF_EX_S2 = "gcb_schulte_2_sequences";

@@ -12,12 +12,12 @@ import android.os.Bundle;
  */
 public final class AlertDialogFragment extends DialogFragment {
 
+	public static final String TAG = "dialog_fragment_tag";
 	public static final String ALERT_DIALOG_ICON_KEY = "alert_dialog_icon_key";
 	public static final String ALERT_DIALOG_TITLE_KEY = "alert_dialog_title_key";
 	public static final String ALERT_DIALOG_MESSAGE_KEY = "alert_dialog_message_key";
 	public static final String ALERT_DIALOG_BUTTON_KEY = "alert_dialog_button_key";
 
-	public static final String DIALOG_FRAGMENT_TAG = "dialog_fragment_tag";
 
 	public static AlertDialogFragment newInstance(int iconResourceId,
 												  CharSequence titleText, CharSequence messageText,

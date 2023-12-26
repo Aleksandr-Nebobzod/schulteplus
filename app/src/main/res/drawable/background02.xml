@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+	<!-- Base background color -->
+	<item>
+		<color android:color="@color/light_grey_A"/>
+	</item>
+	
+	<!-- Logo centered on the screen -->
+	<item>
+		<bitmap
+			android:src="@drawable/bg_login021"
+			android:gravity="fill"
+			android:antialias="true"
+			android:tileMode="disabled" />
+	</item>
+</layer-list>

@@ -1,5 +1,5 @@
 #
-# generated on 2023/10/06 05:00:07
+# generated on 2023/12/22 07:09:27
 #
 # --table-start--
 dataClass=org.nebobrod.schulteplus.data.ClickCount
@@ -40,6 +40,38 @@ generatedId=true
 # --field-end--
 # --field-start--
 fieldName=name
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.Achievement
+tableName=achievement
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uid
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=dateTime
+# --field-end--
+# --field-start--
+fieldName=recordText
+# --field-end--
+# --field-start--
+fieldName=recordValue
+# --field-end--
+# --field-start--
+fieldName=specialMark
 # --field-end--
 # --table-fields-end--
 # --table-end--

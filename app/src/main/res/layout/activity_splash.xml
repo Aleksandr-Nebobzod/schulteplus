@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/cl_root"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/light_grey_A"
+	tools:context=".ui.SplashActivity">
+	
+	<ImageView
+		android:id="@+id/iv_background"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@drawable/bg_login02"
+		android:visibility="visible" />
+	
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/cl_text_holder"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_marginBottom="25dp"
+		android:visibility="invisible">
+		
+		<com.google.android.material.textview.MaterialTextView
+			android:id="@+id/tv_vendor"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/lbl_vendor"
+			android:textSize="12sp"
+			android:layout_margin="5dp"
+			app:layout_constraintEnd_toEndOf="@id/cl_text_holder"
+			app:layout_constraintTop_toTopOf="@id/cl_text_holder" />
+		
+		<TextView
+			android:id="@+id/tv_app_name"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="200dp"
+			android:text="@string/app_name"
+			android:textAlignment="center"
+			android:textSize="36sp"
+			android:shadowColor="@color/semi_white"
+			android:shadowRadius="15"
+			android:textStyle="bold"
+			app:layout_constraintTop_toTopOf="@id/cl_text_holder"
+			/>
+		
+		<com.google.android.material.textview.MaterialTextView
+			android:id="@+id/tv_ver_txt"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/lbl_ver"
+			android:textSize="22sp"
+			android:textAlignment="center"
+			app:layout_constraintBottom_toTopOf="@id/tv_version"
+			app:layout_constraintEnd_toEndOf="@id/cl_text_holder"
+			app:layout_constraintStart_toStartOf="@id/cl_text_holder" />
+		
+		<com.google.android.material.textview.MaterialTextView
+			android:id="@+id/tv_version"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/app_version_full"
+			android:layout_marginBottom="100dp"
+			android:textSize="22sp"
+			android:shadowColor="@color/semi_white"
+			android:shadowRadius="15"
+			android:textStyle="bold"
+			android:textAlignment="center"
+			app:layout_constraintBottom_toBottomOf="@id/cl_text_holder"
+			/>
+		
+		<LinearLayout
+			android:id="@+id/ll_check_icons"
+			android:layout_width="match_parent"
+			android:layout_height="100dp"
+			android:orientation="horizontal"
+			android:gravity="center_horizontal"
+			app:layout_constraintBottom_toBottomOf="@id/cl_text_holder">
+			
+			<ImageView
+				android:id="@+id/iv_01_app"
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:src="@drawable/ic_ab_settings"
+				android:layout_gravity="center_vertical"
+				android:layout_margin="10dp"
+				/>
+			<ImageView
+				android:id="@+id/iv_02_user"
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:src="@drawable/ic_baseline_person_24"
+				android:layout_gravity="center_vertical"
+				android:layout_margin="10dp"
+				/>
+			<ImageView
+				android:id="@+id/iv_03_verified"
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:src="@drawable/ic_baseline_verified_24"
+				android:layout_gravity="center_vertical"
+				android:layout_margin="10dp"
+				/>
+			<ImageView
+				android:id="@+id/iv_04_network"
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:src="@drawable/ic_baseline_cloud_queue_24"
+				android:layout_gravity="center_vertical"
+				android:layout_margin="10dp"
+				/>
+			<ImageView
+				android:id="@+id/iv_05_data"
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:src="@drawable/ic_baseline_data_exploration_24"
+				android:layout_gravity="center_vertical"
+				android:layout_margin="10dp"
+				/>
+			
+		</LinearLayout>
+		
+		<ProgressBar
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:id="@+id/progress_bar"
+			android:layout_margin="150dp"
+			android:indeterminate="true"
+			android:indeterminateTint="@color/light_grey_D"
+			android:tooltipText="@string/app_name"
+			/>
+		
+<!--		<androidx.core.widget.ContentLoadingProgressBar
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:foregroundGravity="center"
+			android:visibility="visible"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+		-->
+		<TextView
+			android:id="@+id/tv_status"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/msg_selfcheck"
+			android:textSize="22sp"
+			android:shadowColor="@color/semi_white"
+			android:shadowRadius="15"
+			android:textAlignment="center"
+			app:layout_constraintBottom_toBottomOf="@id/cl_text_holder"/>
+	
+	</androidx.constraintlayout.widget.ConstraintLayout>
+	
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,11 +11,34 @@
 	<color name="light_blue_600">#FF039BE5</color>
 	<color name="light_blue_900">#FF01579B</color>
 	<color name="light_blue_A200">#FF40C4FF</color>
+	<color name="semi_grey_6">#66666666</color>
+	<color name="semi_white">#66FFFFFF</color>
+	<color name="light_grey_2">#222222</color>
+	<color name="light_grey_2_red">#623232</color>
+	<color name="light_grey_2_green">#225222</color>
+	<color name="light_grey_2_blue">#224292</color>
 	<color name="light_grey_4">#444444</color>
 	<color name="light_grey_6">#666666</color>
 	<color name="light_grey_8">#888888</color>
 	<color name="light_grey_A">#AAAAAA</color>
+	<color name="light_grey_A_red">#DAAAAA</color>
+	<color name="light_grey_A_blue">#7AAAFF</color>
+	<color name="light_grey_A_green">#AADAAA</color>
+	<color name="light_grey_A_yellow">#DADA70</color>
 	<color name="light_grey_D">#DDDDDD</color>
 	<color name="light_blue_A400">#FF00B0FF</color>
 	<color name="black_overlay">#66000000</color>
+	
+<!--	FirebaseUI default:-->
+	<color name="material_green_50">#E8F5E9</color>
+	<color name="material_green_500">#4CAF50</color>
+	<color name="material_green_700">#388E3C</color>
+	<color name="material_purple_a700">#AA00FF</color>
+<!--	Colors of probabilities-->
+	<color name="prob_color00">#FFFFFF</color>
+	<color name="prob_color25">#FFF869</color>
+	<color name="prob_color75">#95FE01</color>
+	<color name="prob_color99">#30FFAC</color>
+	<color name="prob_color11">#FFFFFF</color>
+
 </resources>

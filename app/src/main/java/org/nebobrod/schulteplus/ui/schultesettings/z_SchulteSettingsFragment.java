@@ -26,7 +26,7 @@ public class z_SchulteSettingsFragment extends Fragment {
 	private z_SchulteSettingsViewModel mViewModel;
 	private View view;
 	private EditText etWidth, etHeight;
-	private ExerciseRunner runner = ExerciseRunner.getInstance(getContext());
+	private ExerciseRunner runner = ExerciseRunner.getInstance();
 	private String[] exTypes;
 
 	public static z_SchulteSettingsFragment newInstance() {
@@ -56,7 +56,7 @@ public class z_SchulteSettingsFragment extends Fragment {
 
 	@Override
 	public void onResume() {
-		runner.getPreference(getContext());
+		runner.loadPreference();
 		runner.setExType(exTypes[0]); //should be "schulte_1_sequence"
 
 		super.onResume();

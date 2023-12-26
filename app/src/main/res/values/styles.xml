@@ -7,4 +7,32 @@
 		<item name="android:background">@color/black_overlay</item>
 		<item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
 	</style>
+	
+	<style name="GreyTheme" parent="FirebaseUI">
+		<item name="colorPrimary">@color/light_grey_8</item>
+		<item name="colorPrimaryVariant">@color/light_grey_4</item>
+		<item name="colorAccent">@color/light_grey_A_blue</item>
+		<item name="android:colorBackground">@color/light_grey_D</item>
+		
+		<!-- On API 21+ you can use android:statusBarColor -->
+		<item name="colorPrimaryDark">@color/black</item>
+	</style>
+	
+	<!-- Setting window animation -->
+	<style name="Theme.SchultePlus.WindowTransition" parent="android:style/Animation.Activity">
+		<!--		<item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>-->
+		<!--		<item name="android:windowExitAnimation">@android:anim/slide_out_right</item>-->
+		<item name="android:windowActivityTransitions">true</item>
+		<item name="android:windowAllowEnterTransitionOverlap">true</item>
+		
+		<item name="android:activityOpenEnterAnimation">@android:anim/fade_in</item>
+		<item name="android:taskOpenEnterAnimation">@android:anim/fade_in</item>
+		
+		<item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+		<item name="android:windowEnterTransition">@android:anim/fade_in</item>
+		
+		<item name="android:windowExitAnimation">@android:anim/fade_out</item>
+		<item name="android:windowExitTransition">@android:anim/fade_out</item>
+	
+	</style>
 </resources>

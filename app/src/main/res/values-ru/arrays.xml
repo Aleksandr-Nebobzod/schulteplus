@@ -14,4 +14,12 @@
 		<item>Цвет</item>
 	</string-array>
 	
+	<string-array name="probabilities" translatable="true">
+		<item>Невозможно</item>
+		<item>Маловероятно</item>
+		<item>Вероятно</item>
+		<item>Наверное</item>
+		<item>Определённо</item>
+	</string-array>
+	
 </resources>

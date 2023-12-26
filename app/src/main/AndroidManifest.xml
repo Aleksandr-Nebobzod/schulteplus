@@ -1,63 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools">
-	
-	<uses-permission android:name="android.permission.INTERNET"/>
-	
-	<supports-screens
-		android:xlargeScreens="true"
-		android:largeScreens="true"
-		android:normalScreens="true"
-		android:smallScreens="false" />
-	
-	<application
-		android:label="@string/app_name"
-		android:versionCode="5"
-		android:versionName="Entada"
-		android:icon="@mipmap/ic_launcher"
-		android:roundIcon="@mipmap/ic_launcher_round"
-		android:configChanges= "orientation|screenSize"
-		android:allowBackup="true"
-		android:dataExtractionRules="@xml/data_extraction_rules"
-		android:fullBackupContent="@xml/backup_rules"
-		android:supportsRtl="true"
-		android:theme="@style/Theme.SchultePlus"
-		tools:targetApi="31">
-		
-		
-		<activity
-			android:name=".MainActivity"
-			android:exported="true"
-			android:label="@string/app_name">
-			<intent-filter>
-				<!-- This activity is the main entry, should appear in app launcher -->
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		
-		</activity>
-		
-		<activity
-			android:name=".ui.SchulteActivity02"
-			android:configChanges="orientation|keyboardHidden|screenSize"
-			android:exported="false"
-			android:label="@string/title_activity_schulte"/>
-		
-		<activity
-			android:name=".ui.BasicsActivity"
-			android:configChanges="orientation|keyboardHidden|screenSize"
-			android:exported="true"
-			android:label="@string/title_activity_basics"
-			android:theme="@style/Theme.SchultePlus.Fullscreen">
-			<intent-filter>
-				<action android:name="android.intent.action.SEND" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<data android:mimeType="image/*" />
-			</intent-filter>
-			
-		</activity>
+    xmlns:tools="http://schemas.android.com/tools" >
 
-	</application>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <supports-screens
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="false"
+        android:xlargeScreens="true" />
+
+    <application
+        android:name=".Utils"
+        android:allowBackup="true"
+        android:configChanges="orientation|screenSize"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SchultePlus.Fullscreen"
+        android:versionCode="9"
+        android:versionName="Entada"
+        tools:targetApi="31" >
+        
+        <activity
+            android:name=".ui.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SchultePlus.Fullstart" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.SchultePlus" >
+<!--            android:label="@string/app_name"-->
+
+<!--            <intent-filter>-->
+                <!-- This activity is the main entry, should appear in app launcher -->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".fbservices.LoginActivity"
+            android:exported="false"
+            android:theme="@style/Theme.SchultePlus.Login"
+            android:windowSoftInputMode="adjustNothing" >
+        </activity>
+        <activity
+            android:name=".fbservices.SignupActivity"
+            android:theme="@style/Theme.SchultePlus.Login"
+            android:windowSoftInputMode="adjustNothing" >
+        </activity>
+        <activity
+            android:name=".ui.SchulteActivity02"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label="@string/title_activity_schulte" />
+        <activity
+            android:name=".ui.BasicsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="true"
+            android:label="@string/title_activity_basics"
+            android:theme="@style/Theme.SchultePlus.Fullscreen" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+    </application>
 
 </manifest>

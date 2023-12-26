@@ -2,17 +2,15 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:android="http://schemas.android.com/apk/res/android">
 	
-	<PreferenceCategory app:key="prf_application" app:title="@string/prf_title_app" app:icon="@drawable/ic_ab_settings" >
-		<EditTextPreference
-			app:key="prf_level"
+	<PreferenceCategory app:key="prf_menu_user" app:title="@string/menu_user_short" app:icon="@drawable/ic_baseline_perm_identity_24" >
+		<EditTextPreference app:key="prf_level"
 			app:defaultValue="1"
 			app:icon="@drawable/ic_baseline_star_24"
 			app:title="@string/prf_level_title"
 			app:summary="@string/prf_level_summary"
-			app:useSimpleSummaryProvider="true"
-			app:enabled="true"/>
-		<SeekBarPreference
-			app:key="prf_current_level"
+			app:enabled="false"/>
+		<!--			app:useSimpleSummaryProvider="true"-->
+		<SeekBarPreference app:key="prf_current_level"
 			app:defaultValue="1"
 			app:min="1"
 			
@@ -22,27 +20,25 @@
 			app:summary="@string/prf_current_level_summary"
 			app:dialogMessage="@string/prf_current_level_dialog_message"
 			/>
-<!--		android:max="2"-->
-		<SwitchPreference app:key="prf_sound" app:title="@string/prf_title_sound_yn" />
-		<ListPreference app:key="prf_sound_mode" app:title="@string/prf_title_sound_mode" app:entries="@array/sound_modes_entries" app:entryValues="@array/sound_modes_values" />
-		<SwitchPreference app:key="prf_vibration" app:title="@string/prf_title_vibration" />
-
+		<!--		android:max="2"-->
+		<EditTextPreference app:key="prf_hours" app:title="@string/prf_hours_title" app:isPreferenceVisible="true" android:enabled="false"/>
+		<EditTextPreference app:key="prf_points" app:title="@string/prf_points_title" app:isPreferenceVisible="true" android:enabled="false"/>
+		<EditTextPreference app:key="prf_user_name" app:title="@string/prf_user_name" app:summary="@string/prf_user_name_sum" />
+		<EditTextPreference app:key="prf_user_email" app:title="@string/prf_user_email" app:summary="@string/prf_user_email"/>
+		<SwitchPreferenceCompat app:key="prf_title_data" app:title="@string/prf_title_data" app:summary="@string/prf_data_sum"  app:summaryOff="@string/prf_data_sum_off" app:summaryOn="@string/prf_data_on" app:switchTextOn="@string/prf_data_st_on" app:switchTextOff="@string/prf_data_st_off"  />
+		<Preference
+			app:key="prf_user_logoff"
+			app:title="@string/prf_user_logoff"
+			app:summary="@string/prf_user_logoff_description" />
+	
 	</PreferenceCategory>
 	
-	<PreferenceCategory app:key="prf_menu_user" app:title="@string/menu_user_short" app:icon="@drawable/ic_baseline_perm_identity_24" >
-		<EditTextPreference app:key="prf_user_name" app:title="@string/prf_user_name" app:summary="@string/prf_user_name_sum" app:useSimpleSummaryProvider="true" />
-		<EditTextPreference app:key="prf_user_email" app:title="@string/prf_user_email" app:summary="@string/prf_user_email" app:useSimpleSummaryProvider="true" />
-		<EditTextPreference
-			app:key="prf_points"
-			app:defaultValue="0"
-			app:icon="@drawable/ic_baseline_trending_up_24"
-			app:title="@string/prf_hours_title"
-			app:summary="@string/prf_hours_summary"
-			app:useSimpleSummaryProvider="true"
-			app:enabled="false"/>
-		<SwitchPreferenceCompat app:title="@string/prf_title_data" app:key="prf_title_data" app:summary="@string/prf_data_sum"  app:summaryOff="@string/prf_data_sum_off" app:summaryOn="@string/prf_data_on" app:switchTextOn="@string/prf_data_st_on" app:switchTextOff="@string/prf_data_st_off"  >
-		</SwitchPreferenceCompat>
-		
+	<PreferenceCategory app:key="prf_application" app:title="@string/prf_title_app" app:icon="@drawable/ic_ab_settings" >
+		<SwitchPreference app:key="prf_online" app:title="@string/prf_title_online" />
+		<SwitchPreference app:key="prf_vibration" app:title="@string/prf_title_vibration" />
+		<SwitchPreference app:key="prf_sound" app:title="@string/prf_title_sound_yn" />
+		<ListPreference app:key="prf_sound_mode" app:title="@string/prf_title_sound_mode" app:entries="@array/sound_modes_entries" app:entryValues="@array/sound_modes_values" />
+
 	</PreferenceCategory>
 	
 	<PreferenceCategory app:key="help_category" app:title="@string/prf_cat_help" app:icon="@drawable/ic_baseline_action_about_24" >

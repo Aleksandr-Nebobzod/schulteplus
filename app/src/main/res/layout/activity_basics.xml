@@ -38,7 +38,8 @@
 			android:layout_gravity="bottom|center_horizontal"
 			android:weightSum="4"
 			android:orientation="horizontal"
-			tools:ignore="UselessParent">
+			>
+<!--			tools:ignore="UselessParent"-->
 			
 			<Button
 				android:id="@+id/bt_exit"

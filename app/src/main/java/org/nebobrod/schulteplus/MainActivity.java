@@ -1,22 +1,26 @@
 package org.nebobrod.schulteplus;
 
-import static org.nebobrod.schulteplus.ExerciseRunner.KEY_RUNNER;
+
+import static org.nebobrod.schulteplus.Utils.getRes;
+import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.Fragment;
@@ -24,40 +28,51 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.preference.EditTextPreference;
 
 import org.nebobrod.schulteplus.databinding.ActivityMainBinding;
 //import org.nebobrod.schulteplus.ui.BasicsActivity;
+import org.nebobrod.schulteplus.fbservices.LoginActivity;
+import org.nebobrod.schulteplus.fbservices.SignupActivity;
+import org.nebobrod.schulteplus.fbservices.UserFbData;
+import org.nebobrod.schulteplus.fbservices.UserHelper;
 import org.nebobrod.schulteplus.ui.BasicsActivity;
 import org.nebobrod.schulteplus.ui.PopupSettingsFragment;
 import org.nebobrod.schulteplus.ui.SchulteActivity02;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements UserFbData.UserHelperCallback {
 	public static final String TAG = "MainActivity";
-	private static MainActivity instance;
+//	private static MainActivity instance;
 
+	FirebaseAuth fbAuth;
+	FirebaseUser user = null;
+	UserHelper userHelper;
+	UserFbData userFbData;
 
 	private ActivityMainBinding binding;
-	ExerciseRunner runner = ExerciseRunner.getInstance(this);
+	ExerciseRunner runner;
 	private FloatingActionButton fabLaunch;
 
-	public MainActivity() {
+/*	public MainActivity() {
 		instance = this;
-	}
+	}*/
 
+/*
 	public static MainActivity getInstance() {
 		return instance;
 	}
+*/
 
 	@Override
-	public boolean onCreateOptionsMenu (Menu menu) {
+	public boolean onCreateOptionsMenu (Menu menu)
+	{
 //		getMenuInflater().inflate(R.menu.menu_main, menu);
 		getMenuInflater().inflate(R.menu.main, menu); // this is a one button
 		return true;
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+	public boolean onOptionsItemSelected(@NonNull MenuItem item)
+	{
 		switch (item.getItemId()) {
 			case R.id.menu_settings:
 				((AppCompatDialogFragment) Fragment.instantiate(this, PopupSettingsFragment.class.getName()))
@@ -68,12 +83,26 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 
 		binding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
+
+		if(getIntent() != null & getIntent().hasExtra("user"))
+		{
+			userHelper = getIntent().getExtras().getParcelable("user");
+
+//			etEmail.setText(getIntent().getExtras().getString("email",""));
+//			etName.setText(getIntent().getExtras().getString("name", ""));
+//			etPassword.setText(getIntent().getExtras().getString("password", ""));
+		}
+
+
+		// if no user at all
+		runner = ( null != userHelper ? ExerciseRunner.getInstance(userHelper) : ExerciseRunner.getInstance());
 
 		//ActionBar
 		androidx.appcompat.app.ActionBar mainActionBar = this.getSupportActionBar();
@@ -137,14 +166,15 @@ public class MainActivity extends AppCompatActivity {
 					}
 				});
 
-		ExerciseRunner.getInstance(getApplicationContext());
+//		ExerciseRunner.getInstance();
 		fabLaunch.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				Class activity = SchulteActivity02.class;
 				Intent intent = null;
 				String exType = runner.getExType();
-				runner.savePreferences();
+//				runner.savePreferences(null);
+				ExerciseRunner.loadPreference();
 				// done: 21.09.2023 here we need to choose Activity by switch: (ExerciseRunner.getTypeOfExercise())
 				// gcb_bas_dbl_dot, gcb_bas_circles_rb, schulte_1_sequence
 				switch (exType.substring(0,7)){
@@ -168,7 +198,30 @@ public class MainActivity extends AppCompatActivity {
 
 	@Override
 	protected void onResume() {
-		runner.getPreference(getApplicationContext());
 		super.onResume();
+//		runner.loadPreference(getApplicationContext());
+	}
+
+	@Override
+	public void onBackPressed() {
+
+//		finishAndRemoveTask();
+		finishAffinity();
+//		finish();
+
+
+//		super.onBackPressed();
+	}
+
+	@Override
+	public void onCallback(@Nullable UserHelper fbDbUser) {
+		if (fbDbUser == null) {
+			showSnackBarConfirmation(this, getRes().getString(R.string.err_unknown) + " ", null);
+		} else {
+			// TODO: 19.11.2023 load profile from server
+
+			Toast.makeText(this, getRes().getString(R.string.txt_welcome_back)
+					+ ", " + fbDbUser.getName() + "!", Toast.LENGTH_SHORT).show();
+		}
 	}
 }

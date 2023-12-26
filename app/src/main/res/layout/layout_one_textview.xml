@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2023. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<TextView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/tv_name"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:text="| eqlair43 |\n|www"
+	android:textSize="14sp"
+	android:typeface="monospace"
+	android:paddingVertical="2dp"
+	android:paddingHorizontal="8dp"
+	android:soundEffectsEnabled="true"
+	/>

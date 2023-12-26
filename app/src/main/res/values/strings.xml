@@ -35,14 +35,14 @@
 	<string name="hnt_input_height">input the height (1 -- 10)</string>
 	<string name="str_continue">Would you like to go on? </string>
 	<string name="title_result">Result</string>
-	<string name="lbl_ok">OK</string>
+	<string name="lbl_ok">oK</string>
 	<string name="lbl_no">No</string>
 	<string name="txt_one_more_q">Train one more time?</string>
 	<string name="lbl_show_password">Show password</string>
 	<string name="txt_settings">There are prestart settings of Schulte tables training should be improved</string>
 	<string name="txt_news">Here is the news list coming soon.\n Brief info: https://handwiki.org/wiki/Schulte_table </string>
 	<string name="txt_notification_desc">Notifications should be here</string>
-	<string name="txt_dashboard_desc">This is dashboard fragment</string>
+	<string name="txt_dashboard_desc">Here the dashboard is developing</string>
 	<string name="lbl_bas_dbl_dot">Double Dot</string>
 	<string name="lbl_bas_dot">The Dot</string>
 	<string name="lbl_bas_circles_rb">Circles Red/Blue</string>
@@ -80,7 +80,7 @@
 	<string name="prf_data_on">Your exercise results ARE  SENT to server, though you also CAN SEE the other users\' results (ratings ON)</string>
 	<string name="prf_data_st_on">ST ON</string>
 	<string name="prf_data_st_off">ST OFF</string>
-	<string name="prf_title_sound_yn">Sound</string>
+	<string name="prf_title_sound_yn">Sound response</string>
 	<string name="prf_title_vibration">Vibration response</string>
 	<string name="prf_cat_help">Help</string>
 	<string name="prf_title_feedback">Send feedback</string>
@@ -99,9 +99,9 @@
 	<string name="prf_current_level_summary">The level you can choose for rating trainings</string>
 	<string name="prf_current_level_units">Stars</string>
 	<string name="prf_level_title">Level</string>
-	<string name="prf_level_summary">Your maximum reached level</string>
+	<string name="prf_level_summary">Your maximum reached level is</string>
 	<string name="prf_hours_title">Hours</string>
-	<string name="prf_hours_summary">Earned number of \'minuties\' converted to hours of practice</string>
+	<string name="prf_hours_summary">Earned number of \'minutes\' converted to hours of practice</string>
 	<string name="txt_schulte_description">There are core exercises based upon Schulte methods</string>
 	<string name="lbl_sch_1_sequence">Primary flow</string>
 	<string name="lbl_sch_1_sequence_sum">The exercise wants you to collect growing sequence</string>
@@ -125,11 +125,81 @@
 	<string name="str_number" translatable="false">number</string>
 	<string name="prf_menu_about_url_sum">Visit and get additional resources</string>
 	<string name="src_home_ipir_vk_url" translatable="false">https://vk.com/public216345855</string>
-	<string name="src_menu_about_url" translatable="false">https://cutt.ly/DwbxKG56</string>
+	<string name="src_menu_about_url" translatable="false">https://tinyurl.com/2untjbs8</string>
 	<string name="src_menu_about_email" translatable="false">"mailto:nebobzod@gmail.com"</string>
 	<string name="title_activity_schulte">Schulte+ Tables</string>
 	<string name="lbl_distraction">✓</string>
 	<string name="lbl_back">◁</string>
 	<string name="lbl_schulte_stats">Next, Turns, Wrong, Time: </string>
+	<string name="title_signup">Sign Up</string>
+	<string name="hint_login">login (pseudonym)</string>
+	<string name="hint_email">email address</string>
+	<string name="hint_pass">Schulte-plus password</string>
+	<string name="lbl_go_on">Go on</string>
+	<string name="str_signup_go_off">Already have an account?\nGo to login!</string>
+	<string name="str_login_go_off">Do not have an account?\nGo to sign up!</string>
+	<string name="title_login">Log in</string>
+	<string name="msg_username_empty">The username can\'t be empty</string>
+	<string name="msg_username_wrong">The username seems incorrect</string>
+	<string name="msg_password_empty">Password can\'t be empty</string>
+	<string name="msg_password_wrong">Password seems incorrect</string>
+	<string name="msg_user_signed_up">successfully signed up.</string>
+	<string name="msg_user_signed_up_failed">"-- unable to sign up. "</string>
+	<string name="msg_email_pattern">email should be in an appropriate format</string>
+	<string name="msg_email_empty">email can\'t be empty</string>
+	<string name="msg_user_login_failed">can\'t login</string>
+	<string name="msg_user_logged_in">successfully logged in</string>
+	<string name="msg_user_unverified">hi! Your registration has been successfully started. Please, check your email instructions to verify your Schulte plus account.</string>
+	<string name="msg_user_verif_sent">Verification instructions email sent.</string>
+	<string name="msg_user_verif_not_sent">Verification instructions email can\'t be sent.</string>
+	<string name="lbl_reset_password">Reset your password</string>
+	<string name="lbl_resend_verification_email">Resend verification email</string>
+	<string name="lbl_continue_anonymously">Continue anonymously (not recommend)</string>
+	<string name="lbl_continue_unregistered">Continue unregistered (not recommend)</string>
+	<string name="str_confirmation_caution">You might be asked to confirm your email address</string>
+	<string name="lbl_tv_alternative_reg">Alternative registration way</string>
+	<string name="msg_username_exists">This username is busy</string>
+	<string name="msg_user_network_failed">Network access failed. You still able to login temporarily without registration.</string>
+	<string name="msg_signin_anonymously_success">SignIn Anonymously:success</string>
+	<string name="msg_signin_anonymously_failure">Signin anonymously failed</string>
+	<string name="msg_username_rules">should have 4–15 small Latin letters or Arabic digits</string>
+	<string name="msg_username_doesnt_exists">Not registered username</string>
+	<string name="msg_cant_ensure_username">There is something wrong with your name. Try again later.</string>
+	<string name="prf_points_title">Seconds</string>
+	<string name="lbl_events">Events</string>
+	<string name="lbl_Probabilities">Probabilities</string>
+	<string name="lbl_prob_surface">Probability surface</string>
+	<string name="lbl_prob_x">Horizontal shift</string>
+	<string name="lbl_prob_y">Vertical shift</string>
+	<string name="lbl_prob_enabled">User controlled distribution</string>
+	<string name="lbl_prob_disabled">Uniform distribution</string>
+	<string name="msg_signin_anonymously_credentials">" -- your dummy email and Password -- your password (change it asap)"</string>
+	<string name="lbl_font_scale">Font scale</string>
+<!--	probabilities are duplicated in arrays-->
+	<string name="lbl_legend">Legend</string>
+	<string name="lbl_prob00">Impossibly</string>
+	<string name="lbl_prob25">Unlikely</string>
+	<string name="lbl_prob75">Standard Chance</string>
+	<string name="lbl_prob99">Likely</string>
+	<string name="lbl_prob11">Certainly</string>
+	<string name="lbl_prob_zero_disabled">Low chance is not zero</string>
+	<string name="lbl_prob_zero_enabled">Low chance means zero</string>
+	<string name="prf_user_logoff">Log off</string>
+	<string name="prf_user_logoff_description">Leave the app unauthorized</string>
+	<string name="txt_welcome_back">Welcome back</string>
+	<string name="lbl_ver">ver.:</string>
+	<string name="lbl_vendor">Conscious rover</string>
+	<string name="msg_selfcheck">Selfcheck...</string>
+	<string name="msg_network_connection">Network connection</string>
+	<string name="msg_app_consistency">App consistency</string>
+	<string name="msg_internet">Internet</string>
+	<string name="msg_datasources">Datasourcses</string>
+	<string name="msg_user">User</string>
+	<string name="msg_veryfied">Veryfied</string>
+	<string name="msg_tests_failed">Some tests failed</string>
+	<string name="txt_continue_ex">Continue exercise</string>
+	<string name="prf_title_online">Online</string>
+	<string name="lbl_datasource_local">local</string>
+	<string name="lbl_datasource_www">www</string>
 
 </resources>

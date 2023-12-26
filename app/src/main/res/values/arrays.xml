@@ -51,4 +51,27 @@
 		<item>color</item>
 	</string-array>
 	
+	<string-array name="probabilities" translatable="true">
+		<item>Impossibly</item>
+		<item>Unlikely</item>
+		<item>Standard Chance</item>
+		<item>Likely</item>
+		<item>Certainly</item>
+	</string-array>
+	
+	<array name="prob_fractions" translatable="false">
+		<item name="Impossibly" type="fraction">0%</item>
+		<item name="Unlikely" type="fraction">25%</item>
+		<item name="Standard Chance" type="fraction">75%</item>
+		<item name="Likely" type="fraction">99%</item>
+		<item name="Certainly" type="fraction">100%</item>
+	</array>
+	
+	<array name="prob_colors" translatable="false">
+		<item>#FFFFFF</item>
+		<item>#FFF869</item>
+		<item>#FFD463</item>
+		<item>#BFFF47</item>
+		<item>#30FF75</item>
+	</array>
 </resources>

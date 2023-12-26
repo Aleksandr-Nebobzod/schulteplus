@@ -1,5 +1,8 @@
 package org.nebobrod.schulteplus.ui.basics;
 
+import static org.nebobrod.schulteplus.Utils.getRes;
+
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 
@@ -20,21 +23,22 @@ import java.util.ArrayList;
 public class BasicSettings extends PreferenceFragmentCompat {
 	ArrayList<Preference> exerciseTypes = new ArrayList<>();
 	androidx.preference.CheckBoxPreference chosen;
-	private ExerciseRunner runner = ExerciseRunner.getInstance(getContext());
+	private ExerciseRunner runner = ExerciseRunner.getInstance();
 	private String[] exTypes;
 
 	@Override
 	public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+		getPreferenceManager().setSharedPreferencesName(ExerciseRunner.uid);
+		getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
 		setPreferencesFromResource(R.xml.preferences_basics, rootKey);
-		PreferenceScreen screen = this.getPreferenceScreen();
-		Resources res = getResources();
-		exTypes = res.getStringArray(R.array.ex_type);
+//		PreferenceScreen screen = this.getPreferenceScreen();
+		exTypes = getRes().getStringArray(R.array.ex_type);
 
 		initiateExerciseTypes();
 	}
 	@Override
 	public void onResume() {
-		runner.getPreference(getContext());
+		runner.loadPreference();
 		EditTextPreference exType = findPreference("prf_ex_type");
 		// to find which checkbox selected on the screen:
 		for (Preference p: exerciseTypes) {
@@ -53,7 +57,14 @@ public class BasicSettings extends PreferenceFragmentCompat {
 	}
 
 	@Override
-	public boolean onPreferenceTreeClick(@NonNull Preference preference) {
+	public void onPause() {
+		super.onPause();
+		ExerciseRunner.savePreferences(null);
+	}
+
+	@Override
+	public boolean onPreferenceTreeClick(@NonNull Preference preference)
+	{
 		// only for Group Check Boxes:
 		if (exerciseTypes.contains(preference)) {
 			chosen = (androidx.preference.CheckBoxPreference) preference;
@@ -72,7 +83,8 @@ public class BasicSettings extends PreferenceFragmentCompat {
 	/**
 	 * method provides fnc Group of Checkboxes directly in _preferences.xml -- layout
 	 */
-	private void initiateExerciseTypes(){
+	private void initiateExerciseTypes()
+	{
 		ArrayList<Preference> list = getPreferenceList(getPreferenceScreen(), new ArrayList<Preference>());
 		exerciseTypes.clear();
 		for (Preference p : list) {
@@ -90,7 +102,8 @@ public class BasicSettings extends PreferenceFragmentCompat {
 		}
 	}
 	
-	private ArrayList<Preference> getPreferenceList(Preference p, ArrayList<Preference> list) {
+	private ArrayList<Preference> getPreferenceList(Preference p, ArrayList<Preference> list)
+	{
 		if( p instanceof PreferenceCategory || p instanceof PreferenceScreen) {
 			PreferenceGroup pGroup = (PreferenceGroup) p;
 			int pCount = pGroup.getPreferenceCount();

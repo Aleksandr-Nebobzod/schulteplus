@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -39,7 +40,7 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 	private static final String TAG = "SchulteSettings";
 	ArrayList<Preference> exerciseTypeCheckBoxes = new ArrayList<>();
 	androidx.preference.CheckBoxPreference chosen;
-	private ExerciseRunner runner = ExerciseRunner.getInstance(getContext());
+	private ExerciseRunner runner = ExerciseRunner.getInstance();
 	private String[] exTypes;
 
 	private DrawerPreference drawerPreference;
@@ -107,7 +108,7 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 		}
 
 		if (KEY_PRF_RATINGS.equals(preference.getKey())) {
-			enableOptions (((SwitchPreference)preference).isChecked());
+			enableOptions ( ! ((SwitchPreference)preference).isChecked()); //		Action is opposite of ratings
 		}
 
 		if (KEY_PRF_PROB_ENABLED.equals(preference.getKey())) {
@@ -224,7 +225,7 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 		System.out.printf("\tmax '%1.3f'",zMax);
 		System.out.println();
 
-		Canvas canvas;
+		Canvas canvas = null;
 		// Draw touch point:
 /*						canvas = surfaceView.getHolder().lockCanvas();
 						// clear:
@@ -233,8 +234,14 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 						// draw:
 						canvas.drawPoint(startX, startY, paint);
 						surfaceView.getHolder().unlockCanvasAndPost(canvas);*/
-		canvas = surfaceView.getHolder().lockCanvas();
-		canvas.drawColor(Color.GRAY);
+
+		try {
+			canvas = surfaceView.getHolder().lockCanvas();
+			canvas.drawColor(Color.GRAY);
+		} catch (Exception e){
+			Log.e(TAG, "drawProbabilities: " + e.getMessage());
+			return;
+		}
 //						Random r = new Random();
 		zMax -= zMin; // now z can be always between 0 and zMax
 		for (int i = -10; i<=10; i++) {
@@ -276,28 +283,25 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 
 
 
-	private void enableOptions(boolean ratings)
-	{
-//		Action is true if ratings off
-		boolean action = !ratings;
-
-		((SwitchPreference) findPreference(KEY_HINTED)).setEnabled(action);
-		((SwitchPreference) findPreference(KEY_PRF_SHUFFLE)).setEnabled(action);
-		((SeekBarPreference) findPreference(KEY_X_SIZE)).setEnabled(action);
-		((SeekBarPreference) findPreference(KEY_Y_SIZE)).setEnabled(action);
+	private void enableOptions(boolean action)
+	{ //		Action is true if ratings off
+		((PreferenceCategory) findPreference(KEY_PRF_OPTIONS)).setVisible(action);
+		((PreferenceCategory) findPreference(KEY_PRF_OPTIONS)).setEnabled(action);
 
 		// Set off if Disabled
-		if (action) {
+/*		if (action) {
 
 		} else {
 			((SeekBarPreference) findPreference(KEY_X_SIZE)).setValue(5);
 			((SeekBarPreference) findPreference(KEY_Y_SIZE)).setValue(5);
 			((DropDownPreference) findPreference(KEY_PRF_SYMBOLS)).setValue("number");
-		}
+		}*/
 
 		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setVisible(action);
-		((SeekBarPreference) findPreference(KEY_PRF_PROB_SURFACE)).setEnabled(action);
-		((SwitchPreference) findPreference(KEY_PRF_PROB_ZERO)).setEnabled(action);
+		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setEnabled(action);
+
+//		((SeekBarPreference) findPreference(KEY_PRF_PROB_SURFACE)).setEnabled(action);
+//		((SwitchPreference) findPreference(KEY_PRF_PROB_ZERO)).setEnabled(action);
 //		((SeekBarPreference) findPreference(KEY_PRF_PROB_X)).setEnabled(action);
 //		((SeekBarPreference) findPreference(KEY_PRF_PROB_Y)).setEnabled(action);
 		if (action) {
@@ -312,7 +316,7 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 	}
 
 	private void updatePrefScreen(){
-		runner.loadPreference();
+//		runner.loadPreference();
 		EditTextPreference exType = findPreference("prf_ex_type");
 
 		// Find which checkbox of "group" is selected on the screen:
@@ -328,30 +332,54 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 		}
 		exType.setText(chosen.getKey());
 		runner.setExType(exType.getText().toString()); // set exType into the runner from invisible pref et
+		runner.setRatings(((SwitchPreference) findPreference(KEY_PRF_RATINGS)).isChecked());
 
 		// set X & Y to runner
 		switch (chosen.getKey()){
-			case "gcb_schulte_1_sequence":
-				runner.setX((byte) ((androidx.preference.SeekBarPreference) findPreference(KEY_X_SIZE)).getValue());
-				runner.setY((byte) ((androidx.preference.SeekBarPreference) findPreference(KEY_Y_SIZE)).getValue());
+			case KEY_PRF_EX_S1:
+
+				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(true);
+//				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
+				// check if is Ratings
+				if (runner.isRatings()) {
+					enableOptions(false);
+					runner.setX((byte) 5);
+					runner.setY((byte) 5);
+				} else { // enable options PreferenceCategory for ease levels
+					enableOptions(true);
+					runner.setX((byte) ((androidx.preference.SeekBarPreference) findPreference(KEY_X_SIZE)).getValue());
+					runner.setY((byte) ((androidx.preference.SeekBarPreference) findPreference(KEY_Y_SIZE)).getValue());
+				}
 				break;
-			case "gcb_schulte_2_sequences":
+			case KEY_PRF_EX_S2:
 				runner.setX((byte) 7);
 				runner.setY((byte) 7);
 				// disable options PreferenceCategory for hard levels
-				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(false);
+				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
+				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(false);
 				enableOptions(false);
 				break;
-			case "gcb_schulte_3_sequences":
+			case KEY_PRF_EX_S3:
 				runner.setX((byte) 10);
 				runner.setY((byte) 10);
 				// disable options PreferenceCategory for hard levels
-				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(false);
+				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
+				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(false);
+				enableOptions(false);
+				break;
+			case KEY_PRF_EX_S4:
+//				runner.setX((byte) 10);
+//				runner.setY((byte) 10);
+				// disable options PreferenceCategory for hard levels
+				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
+				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(false);
 				enableOptions(false);
 				break;
 			default:
 				runner.setX((byte) 5);
 				runner.setY((byte) 5);
+				// enable options PreferenceCategory for ease levels
+				enableOptions(true);
 		}
 		// set hinted to runner
 //		runner.setHinted(((androidx.preference.SwitchPreference) findPreference(KEY_HINTED)).isChecked());

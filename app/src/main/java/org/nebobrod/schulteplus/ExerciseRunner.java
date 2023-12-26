@@ -8,12 +8,20 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
+import org.nebobrod.schulteplus.data.OrmUtils;
 import org.nebobrod.schulteplus.fbservices.AchievementsFbData;
+import org.nebobrod.schulteplus.fbservices.UserDbPref;
+import org.nebobrod.schulteplus.fbservices.UserHelper;
 
-public class ExerciseRunner {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 	private static final String TAG = "ExerciseRunner";
 
 	public static final String KEY_RUNNER = "runner"; //?
@@ -24,53 +32,72 @@ public class ExerciseRunner {
 	private static ExerciseRunner instance = null;
 	public static SharedPreferences sharedPreferences;
 
-	// TODO: 13.09.2023   make get this fields from SchulteSettingsFragment & BaseSettingsFragment
 	public static String uid = "";
 	public static String userName = "";
 	public static String userEmail = "";
+	public static boolean sendData = false; // KEY_SEND_DATA
 	public static int points = 0; //  achieved point (seconds)
 	public static int hours = 0; //  achieved hours
 	public static int level = 1; // maximum achieved level
 	public static int currentLevel = 1; // level limited by user
 	private static String exType = "no_exercise";
 	private static byte xSize = 5, ySize = 5;
+
 	private static boolean ratings = false; // Limitation of Settings
 	private static boolean hinted = true;
 	private static boolean shuffled = true;
 	private static String symbolType = "number"; // See string-array name="symbol_type_values"
-	public static int fontScale = 0; // {-1, 0, 1}
+	private static int fontScale = 0; // {-1, 0, 1}
 	private static boolean probEnabled = false; // Probabilities control
 	private static boolean probZero = false; // Probabilities can be 0
 	private static double probDx = .0, probDy = .0, probW = .0;
-	public static  long tsRun;	// Timestamp of started
+	public static  long tsUpdated;	// Timestamp of data updated
+	private static boolean online = true; // False if no connection to the Internet
+	private static UserHelper userHelper;
 
-	private ExerciseRunner(Context context) {
+
+	private ExerciseRunner(UserHelper userHelper) {
+		Context context = getAppContext();
+		setUserHelper(userHelper);
 		try {
 //			sharedPreferences = context.getSharedPreferences(KEY_APP_STATE, Context.MODE_PRIVATE);
-			uid = ((MainActivity) context).userHelper.getUid();
-			userName = ((MainActivity) context).userHelper.getName();
-			userEmail = ((MainActivity) context).userHelper.getEmail();
+			uid = userHelper.getUid();
+			userName = userHelper.getName();
+			userEmail = userHelper.getEmail();
 			if (uid.isEmpty()) uid = KEY_DEFAULT_USER_PREF;
-			sharedPreferences = context.getSharedPreferences(uid, Context.MODE_PRIVATE);
-			// Getting default preferences if there aren't still there
-			PreferenceManager.setDefaultValues(context, R.xml.menu_preferences, false);
-
-			this.loadPreference();
-			this.savePreferences(null);
 		}
 		catch (Exception e){
-			Log.d(TAG, "ExerciseRunner: noContext");
+			Log.d(TAG, "ExerciseRunner: not enough data");
+			online = false;
+			uid = KEY_DEFAULT_USER_PREF;
 		}
+
+		sharedPreferences = context.getSharedPreferences(uid, Context.MODE_PRIVATE);
+		// Getting default preferences if there aren't still there
+		PreferenceManager.setDefaultValues(context, R.xml.menu_preferences, false);
+
+		this.loadPreference();
+		this.savePreferences(null);
 	}
 
-	public static ExerciseRunner getInstance(Context context)
-	{
+	public static ExerciseRunner getInstance() 	{
+
+		if (userHelper == null) userHelper = new UserHelper("nebobzod@gmail.com", "all", "password", "TFKBiTdd7OVYUaplfzDHrXSCixr1", "65ed474536cced3a", false);
+		return  getInstance(userHelper);
+	}
+	public static ExerciseRunner getInstance(@NonNull UserHelper userHelper) {
+/*		Context context = getAppContext();
 		if (null == context) {
 			Log.i(TAG, "getInstance: skipped");
-		}
+		}*/
 		if (null == instance) {
-			instance = new ExerciseRunner(context);
+			instance = new ExerciseRunner(userHelper);
+			UserDbPref.getInstance(instance);
 			Log.i(TAG, "getInstance: applied");
+		}
+		if (!uid.equals(userHelper.getUid())) {
+			instance = new ExerciseRunner(userHelper);
+			UserDbPref.getInstance(instance);
 		}
 		return instance;
 	}
@@ -79,15 +106,16 @@ public class ExerciseRunner {
 	public static void loadPreference(){
 		try {
 			// apply previous parameters on load
-
 			// And some additional prefs:
-			// userName = sharedPreferences.getString(KEY_USER_NAME, "null");
-			// userEmail = sharedPreferences.getString(KEY_USER_EMAIL, "null@email.com");
+			userName = sharedPreferences.getString(KEY_USER_NAME, userName);
+			userEmail = sharedPreferences.getString(KEY_USER_EMAIL, userEmail);
+			sendData = sharedPreferences.getBoolean(KEY_PRF_SEND_DATA, false);
 			points = sharedPreferences.getInt(KEY_POINTS, 0);
 			level = sharedPreferences.getInt(KEY_PRF_LEVEL, 1);
 			currentLevel = sharedPreferences.getInt(KEY_PRF_CURRENT_LEVEL, 1);
 			ratings = sharedPreferences.getBoolean(KEY_PRF_RATINGS, false);
 			exType = sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, KEY_PRF_EX_S1);
+			if (!exType.equals(KEY_PRF_EX_S1)) ratings = true; // an extra assurance
 			fontScale = sharedPreferences.getInt(KEY_PRF_FONT_SCALE, 0);
 			if (ratings) {
 				hinted = false;
@@ -102,26 +130,21 @@ public class ExerciseRunner {
 				probEnabled = false;
 				probDx = probDy = probW = 0D;
 			} else {
-				hinted = sharedPreferences.getBoolean(KEY_HINTED, true);
+				hinted = sharedPreferences.getBoolean(KEY_PRF_HINTED, true);
 				shuffled = sharedPreferences.getBoolean(KEY_PRF_SHUFFLE, true);
 				xSize = (byte) sharedPreferences.getInt(KEY_X_SIZE, 5);
 				ySize = (byte) sharedPreferences.getInt(KEY_Y_SIZE, 5);
 				symbolType = sharedPreferences.getString(KEY_PRF_SYMBOLS, "number");
-//				shuffled = sharedPreferences.getBoolean(KEY_PRF_PROB_ENABLED, true);
 				if (! probEnabled) {
 					probZero = sharedPreferences.getBoolean(KEY_PRF_PROB_ZERO, false);
 					probDx = sharedPreferences.getInt(KEY_PRF_PROB_X, 0) / 10D;
 					probDy = sharedPreferences.getInt(KEY_PRF_PROB_Y, 0) / 10D;
 					probW = sharedPreferences.getInt(KEY_PRF_PROB_SURFACE, 0) / 10D;
-
 				}
 
 			}
 
-
-
-
-			tsRun = sharedPreferences.getLong(KEY_TS_UPDATED, timeStamp());
+			tsUpdated = sharedPreferences.getLong(KEY_TS_UPDATED, timeStamp());
 		}
 			catch (Exception e){
 			Log.d(TAG, "ExerciseRunner: noContext");
@@ -131,16 +154,15 @@ public class ExerciseRunner {
 	public static boolean savePreferences(@Nullable STable exercise){
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		boolean result = true;
-		boolean newHour = false;
+		List<AchievementFlags> achieved = new ArrayList<>();
 		editor.putString(	KEY_USER_NAME, userName);
 		editor.putString(	KEY_USER_EMAIL, userEmail);
 
-/*		editor.putBoolean(	KEY_HINTED, hinted);
-		editor.putString(	KEY_TYPE_OF_EXERCISE, exType);
-		editor.putInt(		KEY_X_SIZE, (int) xSize);
-		editor.putInt(		KEY_Y_SIZE, (int) xSize);*/
-		tsRun = timeStamp();
-		editor.putLong(		KEY_TS_UPDATED, tsRun);
+		editor.putBoolean(	KEY_PRF_ONLINE, online);
+
+
+		tsUpdated = timeStamp();
+		editor.putLong(		KEY_TS_UPDATED, tsUpdated);
 
 		if(null != exercise){
 			CALC:
@@ -159,28 +181,54 @@ public class ExerciseRunner {
 				spent += sharedPreferences.getInt(KEY_POINTS, 0);
 
 				points = (int) spent;
-				AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormatted(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, " ");
-//				AchievementsFbData.getData();
+				achieved.add(AchievementFlags.SECONDS);
 				if (points > 3600){
 					hours += (points / 3600);
 					points = (points % 3600);
-					newHour = true;
+					achieved.add(AchievementFlags.HOURS);
 				}
 				editor.putInt(		KEY_POINTS, (int) points);
 				hours += sharedPreferences.getInt(KEY_HOURS, 0);
-				if (newHour) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormatted(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
 				editor.putInt(		KEY_HOURS, (int) hours  );
-				editor.putInt(		KEY_PRF_LEVEL, (int) Math.sqrt(hours * 3600 + points) );
+				int _level = (int) Math.sqrt(hours * 3600 + points);
+				if (_level > level) {
+					editor.putInt(		KEY_PRF_LEVEL, level = _level );
+				}
 			}
 		}
 
-		if (result) editor.commit();
+		if (result) {
+			editor.commit();
+			achievedToBothDb(achieved, uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, " ");
+		} else {
+			editor.clear();
+
+		}
+		if (null != instance) UserDbPref.getInstance(instance).save();
 
 		Log.d(TAG, "save " + result + " in Preferences: " + instance);
 		return result;
 	}
 
+	/**Checks @achieved and put records to Local & Server db */
+	private static void achievedToBothDb(List<AchievementFlags> achieved, String uid, String userName, long timeStamp, String timeStampFormattedLocal, String string, String s, String s1) {
 
+		for (AchievementFlags flag: achieved) {
+			switch (flag) {
+				case SECONDS:
+					OrmUtils.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
+					if (sendData) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
+				break;
+				case HOURS:
+					OrmUtils.achievePut(  uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
+					if (sendData) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
+				break;
+			}
+		}
+
+
+
+	}
 
 
 	public void setX(byte xSize) {
@@ -207,7 +255,7 @@ public class ExerciseRunner {
 		return ySize;
 	}
 
-	public  String getExType() {
+	public static String getExType() {
 //		exType = sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, "");
 		return exType; // may be the var here is redundant
 	}
@@ -221,7 +269,19 @@ public class ExerciseRunner {
 	}
 
 	public  String getDateTimeUpdated() {
-		return timeStampFormatted(tsRun);
+		return timeStampFormattedLocal(tsUpdated);
+	}
+
+	public static double probDx() {
+		return probDx;
+	}
+
+	public static double probDy() {
+		return probDy;
+	}
+
+	public static double probW() {
+		return probW;
 	}
 
 	@Override
@@ -232,18 +292,74 @@ public class ExerciseRunner {
 				"\nxSize=" + xSize +
 				"\nySize=" + ySize +
 				"\nHints=" + (hinted ?"On":"Off") +
-				"\ntsUpdated=" + tsRun + "\ntsUpdatedDateTime=" + timeStampFormatted(tsRun) +
+				"\ntsUpdated=" + tsUpdated + "\ntsUpdatedDateTime=" + timeStampFormattedLocal(tsUpdated) +
 				"\nsharedPreferences=" +
 					"\n\texType = " + sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, "gcb_schulte_1_sequence<") +
 					"\n\txSize = " + String.valueOf( sharedPreferences.getInt(KEY_X_SIZE, 5)) +
 					"\n\tySize = " + String.valueOf( sharedPreferences.getInt(KEY_Y_SIZE, 5)) +
-					"\n\tySize = " + String.valueOf( sharedPreferences.getBoolean(KEY_HINTED, true)) +
+					"\n\tySize = " + String.valueOf( sharedPreferences.getBoolean(KEY_PRF_HINTED, true)) +
 				"\n}";
 	}
 
-	public static boolean getPrefHaptic(){ return sharedPreferences.getBoolean(KEY_HAPTIC, true);}
-	public static boolean getPrefSound(){ return sharedPreferences.getBoolean(KEY_HAPTIC, true);}
+	public static boolean getPrefHaptic(){ return sharedPreferences.getBoolean(KEY_PRF_HAPTIC, true);}
+	public static boolean getPrefSound(){ return sharedPreferences.getBoolean(KEY_PRF_HAPTIC, true);}
 	public static int getPrefTextScale(){ return sharedPreferences.getInt(KEY_PRF_FONT_SCALE, 0);}
+
+	public static boolean isOnline() {		return online;	}
+	public static void setOnline(boolean online) {		ExerciseRunner.online = online;	}
+
+	public static UserHelper getUserHelper() {	return userHelper;	}
+	public static void setUserHelper(UserHelper userHelper) { ExerciseRunner.userHelper = userHelper;}
+
+	public static boolean isRatings() {return ratings;}
+	public static void setRatings(boolean ratings) {ExerciseRunner.ratings = ratings;}
+
+	public static boolean isShuffled() {return shuffled;}
+	public static void setShuffled(boolean shuffled) {ExerciseRunner.shuffled = shuffled;}
+
+	public static String GetUid() {return uid;}
+
+	public String getName() {return userName;}
+	public String getEmail() {return userEmail;}
+	public int getPoints() {return points;}
+	public int getHours() {return hours;}
+	public int getLevel() {return level;}
+	public long getTsUpdated() {return tsUpdated;}
+	public String getUid() {return uid;	}
+
+	@Override
+	public void onCallback(Map<String, Object> objectMap) {
+		if (objectMap == null & uid != null) {
+			// Seems a new user
+			UserDbPref.getInstance(instance).save();
+			return;
+		}
+		// check which source is more fresh (local or srv)
+		long sumPointsDb = ((Number)  objectMap.get("hours")).longValue() * 3600 + ((Number) objectMap.get("hours")).longValue();
+		long sumPointsLocal = getHours() * 3600 + this.getPoints();
+		if (sumPointsLocal == sumPointsDb) {
+			// do nothing
+		} else if (sumPointsLocal > sumPointsDb) {
+			UserDbPref.getInstance(instance).save();
+		} else {
+			loadFromDbPref();
+		}
+
+	}
+
+	private void loadFromDbPref() {
+
+		Map<String, Object> objectMap = UserDbPref.getInstance(instance).getObjectMap();
+
+		uid = objectMap.get("uid").toString();
+		userName = objectMap.get("name").toString();
+		userEmail = objectMap.get("email").toString();
+		points = ((Number) objectMap.get("psyCoins")).intValue();
+		hours = ((Number) objectMap.get("hours")).intValue();
+		level = ((Number) objectMap.get("level")).intValue();
+		tsUpdated = ((Number) objectMap.get("tsUpdated")).longValue();
+		savePreferences(null);
+	}
 }
 
 

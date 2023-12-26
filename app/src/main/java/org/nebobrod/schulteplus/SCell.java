@@ -10,12 +10,14 @@ public class SCell {
 	private static final String TAG = "SCell";
 
 
-	private int x,y;
+	/** It's a main sequence (no colored, to wit: the view and its content defined in STable ) */
 	private int	value;
+	/** x,y are a bit extra here 'cos they are recalculated each shuffle() */
+	private int x,y;
 
-	private byte sequence = SEQ1_SINGLE; // by default it's for 5x5 ex.
+/*	private byte sequence = SEQ1_SINGLE; // by default it's for 5x5 ex.
 	private boolean isPassed = false; // set "true" for cell's been out of the game
-	private double chance = 0.5;
+	private double chance = 0.5;*/
 
 	public SCell(int x, int y, int value) {
 		this.x = x;
@@ -26,7 +28,7 @@ public class SCell {
 	@NonNull
 	@Override
 	public String toString() {
-		return "SCell [x:" + x + ", y:" + y +", value:" + value + ", chance:" + chance + ", passed:" + isPassed + "] \n";
+		return "SCell [x:" + x + ", y:" + y +", value:" + value + ", chance:" + "=chance" + ", passed:" + "=isPassed" + "] \n";
 	}
 
 	public int getX() {
@@ -45,7 +47,7 @@ public class SCell {
 		this.value = value;
 	}
 
-	public boolean isPassed() {
+/*	public boolean isPassed() {
 		return isPassed;
 	}
 
@@ -59,5 +61,5 @@ public class SCell {
 
 	public void setChance(double chance) {
 		this.chance = chance;
-	}
+	}*/
 }

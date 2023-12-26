@@ -18,6 +18,8 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import java.net.URL;
 
 import javax.inject.Inject;
@@ -37,28 +39,32 @@ public class NetworkConnectivity {
 		this.context = context;
 	}
 
-	public synchronized void checkInternetConnection(ConnectivityCallback callback) {
+	public synchronized void checkInternetConnection(ConnectivityCallback callback, @Nullable String specUrl) {
 		appExecutors.getNetworkIO().execute(() -> {
 			Log.d(TAG, "checkInternetConnection: " + Thread.currentThread());
 			if (isNetworkAvailable()) {
 				HttpsURLConnection connection = null;
 				try {
-					connection = (HttpsURLConnection)
-							new URL("https://clients3.google.com/generate_204").openConnection();
+//					String spec = UserFbData.DB_URL;
+//					String spec =  (specUrl == null ? "https://www.google.com/humans.txt" : specUrl);
+//					connection = (HttpsURLConnection) new URL("https://clients3.google.com/generate_204").openConnection();
+//					connection = (HttpsURLConnection) new URL(spec).openConnection();
+					connection = (HttpsURLConnection) new URL("https://www.google.com/humans.txt").openConnection();
 					connection.setRequestProperty("User-Agent", "Android");
 					connection.setRequestProperty("Connection", "close");
 					connection.setConnectTimeout(1000);
-					connection.connect();
+//					connection.setReadTimeout (10 * 100);
+//					connection.connect();
 
-					boolean isConnected = connection.getResponseCode() == 204 && connection.getContentLength() == 0;
-					postCallback(callback, isConnected);
+					boolean isConnected = connection.getResponseCode() == 200; // && connection.getContentLength() == 286 for humans.txt;
+					postCallback(isConnected, callback);
 					connection.disconnect();
 				} catch (Exception e) {
-					postCallback(callback, false);
+					postCallback( false, callback);
 					if(connection != null) connection.disconnect();
 				}
 			} else {
-				postCallback(callback, false);
+				postCallback(false, callback);
 			}
 		});
 	}
@@ -91,7 +97,7 @@ public class NetworkConnectivity {
 		void onDetected(boolean isConnected);
 	}
 
-	private void postCallback(ConnectivityCallback callBack, boolean isConnected) {
+	private void postCallback(boolean isConnected, ConnectivityCallback callBack) {
 		appExecutors.mainThread().execute(() -> callBack.onDetected(isConnected));
 	}
 

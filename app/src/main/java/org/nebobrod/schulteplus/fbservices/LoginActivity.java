@@ -2,8 +2,10 @@ package org.nebobrod.schulteplus.fbservices;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +44,8 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 	ImageView btUnwrapExtra, btWrapExtra;
 	LinearLayout llExtras;
 	TextView tvResendVerEmail, tvResetPassword;
+	ProgressBar progressBar;
+	ProgressDialog progressDialog;
 	boolean nameExists = true;
 	boolean signInPressed = false; // this is to prevent Instant Verification of FB
 
@@ -55,6 +60,8 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 		etPassword = findViewById(R.id.et_pass);
 		btGoOn = findViewById(R.id.bt_go_on);
 		tvGoOff = findViewById(R.id.tv_go_off);
+		progressBar = findViewById(R.id.progress_bar);
+
 
 		fbAuth = FirebaseAuth.getInstance();
 		user = fbAuth.getCurrentUser();
@@ -89,6 +96,16 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 				// do nothing (input errors are handled in validation functions
 			} else {
 				signInPressed = true;
+				progressBar.setVisibility(View.VISIBLE);
+//				progressDialog = ProgressDialog.show(getApplicationContext(),
+//						"Please wait...", "Retrieving data ...", true);
+				UserFbData.getUserFromFirebase(new UserFbData.UserHelperCallback() {
+					@Override
+					public void onCallback(@Nullable UserHelper fbDbUser) {
+//						Toast.makeText(LoginActivity.this, fbDbUser.toString(), Toast.LENGTH_SHORT).show();
+					}
+				}, email);
+
 
 				fbAuth.signInWithEmailAndPassword(email, password)
 					.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -100,11 +117,12 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 					}).addOnFailureListener(new OnFailureListener() {
 						@Override
 						public void onFailure(@NonNull Exception e) {
-							String s = email + " " + getString(R.string.msg_user_login_failed) + e.getMessage();
+							String s = email + " " + getString(R.string.msg_user_login_failed) + " - " + e.getMessage();
 							Log.d(TAG, s);
 							Toast.makeText(LoginActivity.this, s, Toast.LENGTH_LONG).show();
 						}
 					});
+				progressBar.setVisibility(View.INVISIBLE);
 			}
 		});
 

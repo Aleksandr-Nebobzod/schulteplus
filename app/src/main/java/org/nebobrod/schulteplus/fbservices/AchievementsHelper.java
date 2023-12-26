@@ -8,6 +8,13 @@
 
 package org.nebobrod.schulteplus.fbservices;
 
+
+import android.text.Html;
+import android.text.Spanned;
+
+import static org.nebobrod.schulteplus.Utils.*;
+import org.nebobrod.schulteplus.Utils;
+
 public class AchievementsHelper {
 	String uid;
 	String name;
@@ -18,7 +25,8 @@ public class AchievementsHelper {
 	String specialMark; // May be i.e.: 1st achievement of day, one done 3 at once, selfrecords
 	// (if I got today most point than the best day before, or for week), duels wins, etc...
 
-	public AchievementsHelper() {		}
+	public AchievementsHelper() {
+	}
 
 	public AchievementsHelper(String uid, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark) {
 		this.uid = uid;
@@ -42,6 +50,12 @@ public class AchievementsHelper {
 				", specialMark='" + specialMark + '\'' +
 				'}';
 	}
+
+	public Spanned toSpanned() {
+		return Html.fromHtml("| \t" + this.getSpecialMark() + "\t| " + Utils.timeStampFormattedLocal(this.getTimeStamp()) + " | " + iHtml(this.getName()) + pHtml()
+				+ "|\t." + "\t| " + bHtml(this.getRecordValue()) + "\t " + this.getRecordText() + "|");
+	}
+
 
 	public String getUid() {
 		return uid;

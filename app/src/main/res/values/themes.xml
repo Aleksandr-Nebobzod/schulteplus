@@ -36,7 +36,7 @@
 
 	</style>
 	
-	<style name="Theme.SchultePlus.Fullscreen" parent="Theme.AppCompat.Light.NoActionBar">
+	<style name="Theme.SchultePlus.Fullstart" parent="Theme.AppCompat.Light.NoActionBar">
 		<item name="android:windowNoTitle">true</item>
 		<item name="android:windowActionBar">false</item>
 		<item name="android:windowFullscreen">true</item>
@@ -46,7 +46,17 @@
 		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
 	</style>
 	
+	<style name="Theme.SchultePlus.Fullscreen" parent="Theme.AppCompat.Light.NoActionBar">
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowActionBar">false</item>
+		<item name="android:windowFullscreen">true</item>
+		<item name="android:windowContentOverlay">@null</item>
+		
+		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
+	</style>
+	
 	<style name="ThemeOverlay.SchultePlus.FullscreenContainer" parent="">
+		<item name="android:windowActionBar">false</item>
 		<item name="fullscreenBackgroundColor">@color/white</item>
 		<item name="fullscreenTextColor">@color/light_grey_6</item>
 	</style>

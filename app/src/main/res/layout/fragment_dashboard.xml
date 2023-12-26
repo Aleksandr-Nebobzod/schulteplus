@@ -8,23 +8,66 @@
 	
 	<TextView
 		android:id="@+id/text_dashboard"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
 		android:layout_marginStart="8dp"
 		android:layout_marginTop="8dp"
 		android:layout_marginEnd="8dp"
+		android:autoSizeTextType="uniform"
+		android:padding="4dp"
 		android:textAlignment="center"
-		android:textSize="20sp"
-		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintBottom_toBottomOf="@+id/rg_source"
+		app:layout_constraintEnd_toStartOf="@+id/rg_source"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
-	<ListView
-		android:layout_width="match_parent"
-		android:id="@+id/elv_dashboard"
+	<!--		android:textSize="22sp"-->
+	
+	
+	<RadioGroup
+		android:id="@+id/rg_source"
+		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_margin="8dp"
+		android:orientation="horizontal"
+		android:theme="@style/Theme.SchultePlus.Login"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+		
+		<RadioButton
+			android:id="@+id/rb_www"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:checked="true"
+			android:padding="8sp"
+			android:text="@string/lbl_datasource_www"
+			tools:ignore="TouchTargetSizeCheck" />
+		
+		<RadioButton
+			android:id="@+id/rb_local"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="8sp"
+			android:text="@string/lbl_datasource_local"
+			tools:ignore="TouchTargetSizeCheck" />
+	
+	</RadioGroup>
+	
+	<ListView
+		android:id="@+id/elv_dashboard"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_margin="8dp"
+		android:layout_marginBottom="100dp"
+		app:layout_constraintBottom_toBottomOf="@id/guideline"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/text_dashboard"
-		android:layout_margin="8dp"
-		/>
+		app:layout_constraintTop_toBottomOf="@+id/text_dashboard" />
+	
+	<androidx.constraintlayout.widget.Guideline
+		android:id="@+id/guideline"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		app:layout_constraintGuide_end="44dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

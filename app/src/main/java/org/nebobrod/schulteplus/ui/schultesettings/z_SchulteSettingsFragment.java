@@ -26,7 +26,7 @@ public class z_SchulteSettingsFragment extends Fragment {
 	private z_SchulteSettingsViewModel mViewModel;
 	private View view;
 	private EditText etWidth, etHeight;
-	private ExerciseRunner runner = ExerciseRunner.getInstance(getContext());
+	private ExerciseRunner runner = ExerciseRunner.getInstance();
 	private String[] exTypes;
 
 	public static z_SchulteSettingsFragment newInstance() {

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class BasicSettings extends PreferenceFragmentCompat {
 	ArrayList<Preference> exerciseTypes = new ArrayList<>();
 	androidx.preference.CheckBoxPreference chosen;
-	private ExerciseRunner runner = ExerciseRunner.getInstance(getContext());
+	private ExerciseRunner runner = ExerciseRunner.getInstance();
 	private String[] exTypes;
 
 	@Override

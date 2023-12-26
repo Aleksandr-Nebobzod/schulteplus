@@ -1,21 +1,26 @@
 package org.nebobrod.schulteplus;
 
-
-import static org.nebobrod.schulteplus.Const.SEQ1_SINGLE;
+import static org.nebobrod.schulteplus.Const.*;
 import static org.nebobrod.schulteplus.Utils.bHtml;
 import static org.nebobrod.schulteplus.Utils.cHtml;
+import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.pHtml;
 import static org.nebobrod.schulteplus.Utils.tHtml;
 
 
 import android.database.SQLException;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.RuntimeExceptionDao;
 
 import org.nebobrod.schulteplus.data.ClickGroup;
 import org.nebobrod.schulteplus.data.DatabaseHelper;
@@ -25,39 +30,55 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Schulte Table -- a List of Cells represented as a rectangular
+ * (xSize, ySize)
+ */
 public class STable {
 	public static final String TAG = "STable";
 	private ArrayList<Double> probabilities = new ArrayList<>();
+	private double probabilitiesSum = 0;
 	private ArrayList<SCell> area = new ArrayList<>();
 	private int xSize, ySize;
-	private final double dX, dY; // coordinates shift for probabilities
-	// surface for probabilities
-	// if 0 -> uniform, 0.4 : 1.0 -> normal, 1.4 : 2.0 -> remove 1.0 and cut 10% of low prob to zero, see KEY_PRF_PROB_ZERO
-	private final double w;
-	private int turnNumber;
-	private int sequence;
+	/** coordinates shift for probabilities */
+	private double dX, dY;
+	/** surface for probabilities
+	 * if 0 -> uniform, 0.4 : 1.0 -> normal, 1.4 : 2.0 -> remove 1.0 and cut 10% of low prob to zero, see KEY_PRF_PROB_ZERO */
+	private double w;
+	/** turnNumber is expected Cell (not an attempt) */
+	private int expectedValue;
 	private boolean isFinished = false;
 
-	public STable(int x, int y, int sequence, double dX, double dY, double w) {
+	public STable(int x, int y, double dX, double dY, double w) {
 
 		this.xSize = x;
 		this.ySize = y;
-		this.sequence = sequence;
+//		this.sequence = sequence;
 
 		this.dX = dX;
 		this.dY = dY;
 		this.w = w;
+		if (ExerciseRunner.isRatings()) {
+			this.dX = 0;
+			this.dY = 0;
+			this.w = 0;
+		}
 
 		this.reset();
 	}
-	public STable(int x, int y, int sequence) {
-		this(x, y, sequence, 0, 0, 0);
+	// Simplified constructor overloading for previous calls
+	public STable(int x, int y) {
+		this(x, y, 0, 0, 0);
 	}
 
-	// Simplified constructor overloading for previous calls
-	public STable(int x, int y){
-		this(x, y, SEQ1_SINGLE);
-	}
+/*	public STable() {
+		if (ExerciseRunner.isRatings()) {
+			new STable(ExerciseRunner.getInstance().getX(), ExerciseRunner.getInstance().getY());
+		} else {
+			ExerciseRunner.loadPreference();
+			new STable(ExerciseRunner.getInstance().getX(), ExerciseRunner.getInstance().getY(), ExerciseRunner.probDx(), ExerciseRunner.probDy(), ExerciseRunner.probW());
+		}
+	}*/
 
 	public void reset()
 	{
@@ -70,16 +91,75 @@ public class STable {
 				area.add(new SCell(x, y, value++));
 			}
 		}
-		turnNumber = 1;
+		expectedValue = 1;
 		shuffle();
 		// first record in journal has time, the others time of turn
 		this.journal.clear();
-		this.journal.add(new Turn(System.nanoTime(), 0L, turnNumber,0, 0, 0, true));
+		this.journal.add(new Turn(System.nanoTime(), 0L, expectedValue,0, 0, 0, true));
 		Log.d(TAG, "reset: \n" + area.toString());
+	}
+
+	/**
+	 * Set Cell graphics by ExType
+	 * mono, two-colored sequences, four-colored sequences
+	 */
+	public TextView setViewContent (TextView view, int position) {
+		int value = area.get(position).getValue();
+		@ColorInt int color;
+		//		 https://stackoverflow.com/questions/51719485/adding-border-to-textview-programmatically
+		Drawable img = AppCompatResources.getDrawable(getAppContext(), R.drawable.ic_border);
+		color = ContextCompat.getColor(getAppContext(), R.color.light_grey_D);
+
+		switch (ExerciseRunner.getExType()){
+			case KEY_PRF_EX_S1:
+//				view.setText(value); // value keeps its sequence
+//				color = ContextCompat.getColor(getAppContext(), R.color.transparent);
+				break;
+			case KEY_PRF_EX_S2:
+				if (value % 2 != 0) { // odd
+					value = 1 + value / 2; // 1:25 red
+					color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_blue);
+				} else { // even
+					value = 25 - value / 2; // 24:1 blue
+					color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_red);
+				}
+//				img.setColorFilter(Color.valueOf(getColor(R.color.light_grey_A_red)).toArgb(), PorterDuff.Mode.SRC_IN);
+				break;
+			case KEY_PRF_EX_S3:
+				switch (value % 4) {
+					case 1: // Growing
+						value = 1 + value / 4; // 1:25 blue
+						color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_blue);
+						break;
+					case 2: // Downward
+						value = (102 - value) / 4; // 25:1 red
+						color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_red);
+						break;
+					case 3: // Convergent
+						value +=1; // 1,25:12,13 green
+						value = (0 == (value % 8) ? 26 - (value / 8) : (value + 4) / 8);
+						color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_green);
+						break;
+					case 0: // Divergent
+						value = (0 == (value % 8) ? 13 + (value / 8) : 13 - value / 8); // 12,13:1,25 yellow
+						color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_yellow);
+						break;
+				}
+				break;
+			default:
+		}
+		view.setText("" + value);
+		img.setColorFilter(color, PorterDuff.Mode.DST_ATOP);
+		view.setBackground(img);
+
+		return view;
 	}
 
 	private ArrayList<Double> fillProbabilities(int xSize, int ySize, double dX, double dY, double w) {
 		ArrayList<Double> result = new ArrayList<>(Collections.nCopies(xSize * ySize, (Double) 0.5));
+		// -- prefilled with 50% probabilities (but it isn't used anywhere)
+
+		probabilitiesSum = 0;
 
 		if (w == 0) { // uniform dispersion
 			return result;
@@ -87,19 +167,28 @@ public class STable {
 			double xStep = (2D/xSize);
 			double yStep = (2D/ySize);
 			for (int j = 0; j< ySize; j++) {
-				System.out.print("\nRow: " + j);
+				String output = "Row: " + j;
+//				System.out.print("\nRow: " + j);
 				for (int i = 0; i< xSize; i++) {
-					result.set(i*xSize + j,  camelSurface(-1 + i * xStep + xStep/2, -1 + j * yStep + yStep/2, dX, dY, w));
-					System.out.printf("\t'%1.3f'", result.get(i*xSize + j));
-
+					Double probWeigh = Math.pow(100 * camelSurface(-1 + i * xStep + xStep/2, -1 + j * yStep + yStep/2, dX, dY, w),
+							3) / 10000;
+					result.set(i*xSize + j, probWeigh);
+					probabilitiesSum += result.get(i*xSize + j);
+					output = output + String.format ("%.2f | ", result.get(i*xSize + j)) + " |";
+//					System.out.printf("\t'%3.3f'", result.get(i*xSize + j));
 				}
+				Log.d(TAG, "fillProbabilities: " + output);
 			}
-
-
 			return result;
 		}
 	}
 
+
+	/**
+	 * Gathering statistics of passed exercise
+	 * as formatted String
+	 */
+	// TODO: 25.12.2023 later return this as Map to display in ListView
 	public String getResults()
 	{
 		int time = 0, turns = 0, turnsMissed = 0;	// time tends to milliseconds
@@ -139,14 +228,16 @@ public class STable {
 	}
 
 	public boolean endChecked() {
-		return (turnNumber > xSize*ySize? isFinished = true: false);
+		return (expectedValue > xSize*ySize? isFinished = true: false);
 /*		if (turnNumber > xSize*ySize) {
 			isFinished = true;
 		}
 		return isFinished;*/
 	}
 
-	// This object keeps what user send as a turn
+	/**
+	 * Subclass keeps what user send as a turn
+	 */
 	class Turn {
 		Long timeStamp, time;
 		int expected;
@@ -179,7 +270,10 @@ public class STable {
 	}
 	public List<Turn> journal = new ArrayList<Turn>();
 
-	// This initiates user's turn handler
+	/**
+	 * Answers was it correct cell? puts turn-data into journal
+	 * @param position number of clicked Cell
+	 */
 	public boolean checkTurn (int position)
 	{
 		int attemptNumber = journal.size();
@@ -187,23 +281,26 @@ public class STable {
 		int turnX = (position) % xSize + 1;
 		boolean result = false;
 
-		if (this.area.get(position).getValue() == turnNumber) {
+		if (this.area.get(position).getValue() == expectedValue) {
 			result = true;
-			turnNumber++;
+			expectedValue++;
 		}
 		this.journal.add(new Turn(
 				System.nanoTime(), (System.nanoTime() - journal.get(attemptNumber - 1).timeStamp) / 1000000,
-				(result ? turnNumber : turnNumber-1), turnX, turnY, position, result));
+				(result ? expectedValue : expectedValue -1), turnX, turnY, position, result));
 		writeTurn(this.journal.get(this.journal.size()-1));
 		return result;
 	}
 
-	public void writeTurn (@NonNull Turn turn)
-	{
+	/**
+	 * This writes turn-data to local db (just extra)
+	 * @param turn
+	 */
+	public void writeTurn (@NonNull Turn turn) {
 		ClickGroup group = new ClickGroup();
 		group.setName(turn.toString());
 		try {
-			DatabaseHelper helper = new DatabaseHelper(MainActivity.getInstance());
+			DatabaseHelper helper = new DatabaseHelper();
 			Dao<ClickGroup, Integer> dao = helper.getGroupDao();
 			dao.create(group);
 		} catch (SQLException | java.sql.SQLException e) {
@@ -211,25 +308,49 @@ public class STable {
 		}
 	}
 
-	public void shuffle() 	{shuffle(1);}
-	public void shuffle(int expected) 	{
+	/**
+	 * Rearranges Cells in the Table
+	 */
+	public void shuffle() 	{
+
+		if (!ExerciseRunner.isShuffled()) return; // if no-shuffle option in user Prefs
+
+		Random r = new Random();
+		ArrayList<SCell> clonedArea = (ArrayList<SCell>) area.clone();
+
 		if (this.w == 0) { // uniform distribution:
 
-			//todo Collections.shuffle(area);
-
-			Random r = new Random();
-			ArrayList<SCell> clonedArea = (ArrayList<SCell>) area.clone();
+			//todo maybe Collections.shuffle(area);
 
 			for (int i = xSize * ySize-1; i>=0; i--){
 				int j = r.nextInt(clonedArea.size());
 				area.set( i, clonedArea.get(j));	// instead of .add, .set replaces current Object
-//			Log.d(TAG, "shuffle: i=" + i +" j="+ j);
+//				Log.d(TAG, "shuffle: i=" + i +" j="+ j);
 				clonedArea.remove(j);
 			}
 		} else { // custom distribution:
+			double nextExpectedPosition = (r.nextDouble() * probabilitiesSum);
+			int caughtValue =0 ;
+			double cumulativeBoundary = probabilitiesSum;
+			int i = 0;
+			Log.d(TAG, "probabilitiesSum: " + probabilitiesSum + " nextExpectedPosition: " + nextExpectedPosition);
+			for (double prob : probabilities){
+				i++;
+				cumulativeBoundary -= prob ;
+				Log.d(TAG, "shuffle: i=" + i +" neExP="+ nextExpectedPosition +" prob="+ prob + " cB="+ cumulativeBoundary + " j=+ j");
+				if (cumulativeBoundary < nextExpectedPosition) {
+					caughtValue = i;
+					break;
+				}
+			}
+			Log.d(TAG, "shuffle: caughtValue: " + caughtValue + " expectedValue: " + expectedValue  + " area.indexOf(caughtValue): " + area.indexOf(caughtValue));
+			area.indexOf(caughtValue);
 
+
+				int j = r.nextInt(clonedArea.size());
+//				area.set( i, clonedArea.get(j));
+				clonedArea.remove(j);
 		}
-
 	}
 
 	/**
@@ -260,6 +381,14 @@ public class STable {
 		return area;
 	}
 
+	public int getExpectedPosition(){
+		int i = area.size()-1;
+		for ( ; i>=0; i--) {
+			if (area.get(i).getValue() == expectedValue) break;
+		}
+		return i;
+	}
+
 	public SCell getSCell(int x, int y) {
 		return area.get(x * this.xSize + y * this.ySize);
 	}
@@ -268,7 +397,7 @@ public class STable {
 
 	public int getY() { return ySize; }
 
-	public int getTurnNumber() { return turnNumber; }
+	public int getExpectedValue() { return expectedValue; }
 
 	public boolean isFinished() { return isFinished; }
 

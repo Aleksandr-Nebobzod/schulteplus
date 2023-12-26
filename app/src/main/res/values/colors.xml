@@ -22,8 +22,9 @@
 	<color name="light_grey_8">#888888</color>
 	<color name="light_grey_A">#AAAAAA</color>
 	<color name="light_grey_A_red">#DAAAAA</color>
+	<color name="light_grey_A_blue">#7AAAFF</color>
 	<color name="light_grey_A_green">#AADAAA</color>
-	<color name="light_grey_A_blue">#AAAAFA</color>
+	<color name="light_grey_A_yellow">#DADA70</color>
 	<color name="light_grey_D">#DDDDDD</color>
 	<color name="light_blue_A400">#FF00B0FF</color>
 	<color name="black_overlay">#66000000</color>

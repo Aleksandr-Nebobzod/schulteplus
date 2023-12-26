@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import org.nebobrod.schulteplus.ExerciseRunner;
 import org.nebobrod.schulteplus.MainActivity;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
@@ -41,7 +42,7 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 
 	EditText etEmail, etName, etPassword;
 	MaterialButton btGoOn;
-	TextView tvGoOff, tvAlternativeReg, tvContinueUnregistered;
+	TextView tvGoOff, tvAlternativeReg, tvContinueAnonymously, tvContinueUnregistered;
 
 	ImageView btUnwrapExtra, btWrapExtra;
 	LinearLayout llExtras;
@@ -69,8 +70,20 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 		btWrapExtra = findViewById(R.id.bt_wrap_extra);
 		llExtras = findViewById(R.id.ll_extras);
 		tvAlternativeReg = findViewById(R.id.tv_alternative_reg);
+		tvContinueAnonymously = findViewById(R.id.tv_continue_anonymously);
 		tvContinueUnregistered = findViewById(R.id.tv_continue_unregistered);
 
+
+		if (false == ExerciseRunner.isOnline()){
+			etEmail.setEnabled(false);
+			etName.setEnabled(false);
+			etPassword.setEnabled(false);
+			btGoOn.setEnabled(false);
+			tvAlternativeReg.setEnabled(false);
+			tvContinueAnonymously.setEnabled(false);
+//			tvGoOff & tvContinueUnregistered -- active only
+			tvContinueUnregistered.setTextColor(getColor(R.color.purple_500));
+		}
 
 		// Choose authentication providers for an alternative registration
 		List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -164,7 +177,6 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 						}
 					});
 				}
-
 			}
 		});
 
@@ -178,16 +190,7 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 
 				if (user == null) return;
 
-				/*if (signInPressed) {
-					// ensuring Name for anonymous user
-					if (user.isAnonymous()) {
-						// do smth?..
-					}
-				} else {
-					// user = null; // Here we can clean autologin (default applied token from previous session)
-				}*/
-
-				if(user!=null & !mName.equals("")){
+				if(user!=null & validateName()){
 					// update name in authDB
 					UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
 							.setDisplayName(mName).build();
@@ -202,7 +205,7 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 								}
 							});
 				} else {
-					firebaseAuth.signOut();
+//					firebaseAuth.signOut();
 				}
 			}
 		};
@@ -242,7 +245,7 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 			}
 		});
 
-		tvContinueUnregistered.setOnClickListener(new View.OnClickListener()
+		tvContinueAnonymously.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(View view) {
@@ -258,11 +261,24 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 							signInAnonymously();
 						} else {
 							String mName = Utils.getRandomName();
-							etName.setText(mName);
+
 							Toast.makeText(SignupActivity.this, val + " is occupied, try with new name, i.e.: " +mName, Toast.LENGTH_SHORT).show();
+							etName.postDelayed(new Runnable() {
+								@Override
+								public void run() {
+									etName.setText(mName);
+								}
+							}, 1000);
 						}
 					}
 				}, val);
+			}
+		});
+
+		tvContinueUnregistered.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				startActivity(new Intent(SignupActivity.this, MainActivity.class));
 			}
 		});
 
@@ -300,13 +316,7 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 			etName.setError(getString(R.string.msg_username_rules));
 			return false;
 		}
-
-		{ // asynchronous calling
-			if (UserFbData.isExist(signupCallback, val)) {
-				etName.setError(getString(R.string.msg_username_exists));
-				return false;
-			}
-		}
+		// etName.setError(getString(R.string.msg_username_exists));
 
 		etName.setError(null);
 		return true;
@@ -324,11 +334,8 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 		}
 	}
 
-	public void signInAnonymously()
-	{
-
+	public void signInAnonymously() {
 //		signInPressed = true;
-
 		// [START sign_in_anonymously]
 		fbAuth.signInAnonymously()
 				.addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>()
@@ -346,22 +353,21 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 
 							if (task.getResult().getAdditionalUserInfo().isNewUser()) {
 								// name either from screen as generated before
-								UserFbData fbDbUser = new UserFbData();								String _name = etName.getText().toString().trim();
+								UserFbData fbDbUser = new UserFbData();
+								String _name = etName.getText().toString().trim();
 								String _device = Utils.getDeviceId(SignupActivity.this);
 
 								fbDbUser.addUser(_name +  "@email.com", _name, "password", user.getUid(), _device, false);
 								Log.d(TAG, "onComplete signIn Anon: " + fbDbUser);
 //							Toast.makeText(LoginActivity.this, _name +  "@email.com" + getString(R.string.msg_signin_anonymously_credentials), Toast.LENGTH_LONG).show();
-								Snackbar.make(tvContinueUnregistered,
+								Snackbar.make(tvContinueAnonymously,
 												_name +  "@email.com" + getString(R.string.msg_signin_anonymously_credentials), Snackbar.LENGTH_INDEFINITE)
 										.setAction("✓", null).show();
 
 								runMainActivity(UserFbData.getFbUserHelper());
 							}
 							else {
-								UserFbData.getByUid(SignupActivity.this::onCallback, user.getUid());
-
-
+								UserFbData.getByUid(signupCallback, user.getUid());
 							}
 
 						} else {
@@ -410,6 +416,7 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 		public void onCallback(UserHelper fbDbUser)
 		{
 			Log.d(TAG, "onCallback: " + fbDbUser);
+			runMainActivity(fbDbUser);
 		}
 	};
 }

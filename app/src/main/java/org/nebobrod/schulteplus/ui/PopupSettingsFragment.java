@@ -93,8 +93,7 @@ public class PopupSettingsFragment extends AppCompatDialogFragment
 			switch (preference.getKey()) {
 				case "prf_user_logoff":
 					FirebaseAuth.getInstance().signOut();
-//					finishAndRemoveTask();
-					MainActivity.getInstance().finishAndRemoveTask();
+					getActivity().finishAndRemoveTask();
 					return true; // makes not necessary of break;
 				default:
 					return super.onPreferenceTreeClick(preference);

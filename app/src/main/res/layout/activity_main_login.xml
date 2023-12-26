@@ -196,6 +196,7 @@
 				android:indeterminate="true"
 				android:indeterminateTint="@color/light_grey_D"
 				android:tooltipText="@string/app_name"
+				android:visibility="invisible"
 				/>
 <!--				android:indeterminateDrawable="@drawable/progress"-->
 

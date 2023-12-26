@@ -1,8 +1,12 @@
+/*
+ * Copyright (c) 2023. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
 package org.nebobrod.schulteplus;
-
-
-
-
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -56,34 +60,33 @@ public class GridAdapter extends BaseAdapter {
 		 else
 			 view = (TextView) convertView;
 
-		 view.setText("" + mExercise.getArea().get(position).getValue());
+		 // TODONE: 28.11.2023--14.12 extend this to Stable.setViewContent by exType & position
+//		 view.setText("" + mExercise.getArea().get(position).getValue());
+		 view = mExercise.setViewContent(view, position);
 		 //Log.d(TAG, "getView:  " + view.getText());
 
 
 		 { // Squared cells
+			 int itemWidth = ((GridView) parent).getColumnWidth();
 			 int itemHeight = ((GridView) parent).getColumnWidth();
 			 int rows = ((GridView) parent).getCount() / ((GridView) parent).getNumColumns();
-			 if (itemHeight * rows > ((GridView) parent).getHeight()) {
+			 /*if (itemHeight * rows > ((GridView) parent).getHeight())*/ {
 				 itemHeight = ((GridView) parent).getHeight() / rows;
 			 }
-			 Log.d(TAG, "itemHeight: " + itemHeight);
-			 view.setLayoutParams(new GridView.LayoutParams(new ViewGroup.LayoutParams(itemHeight, itemHeight)));
-			 view.setTextSize((itemHeight/(.5F * textScale + 3)));
+//			 Log.d(TAG, "itemHeight: " + itemHeight);
+//			 view.setLayoutParams(new GridView.LayoutParams(new ViewGroup.LayoutParams(itemHeight, itemHeight)));
+			 view.setLayoutParams(new GridView.LayoutParams(new ViewGroup.LayoutParams(itemWidth, itemHeight)));
+			 view.setTextSize((Math.min(itemWidth, itemHeight)/(-1.3F * textScale + 5)));
 		 }
 
-
-//		 https://stackoverflow.com/questions/51719485/adding-border-to-textview-programmatically
-		 Drawable img = mContext.getDrawable(R.drawable.ic_border);
-		 view.setBackground(img);
 //		 TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 22, 36, 1, TypedValue.COMPLEX_UNIT_DIP);
 //		 TextViewCompat.setAutoSizeTextTypeWithDefaults(view, TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
 		 view.setGravity(Gravity.CENTER_VERTICAL);
 		 view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 //		 view.setPadding(0, 25, 0, 25);
-		 Log.d(TAG, "itemHeight: " + view.getHeight() + " and TextSize: " + view.getTextSize());
+//		 Log.d(TAG, "itemHeight: " + view.getHeight() + " and TextSize: " + view.getTextSize());
 
 		 return view;
 	 }
-
 
  }

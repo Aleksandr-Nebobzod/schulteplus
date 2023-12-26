@@ -6,15 +6,86 @@
   ~ Vestibulum commodo. Ut rhoncus gravida arcu.
   -->
 
-	
-	<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:id="@+id/tv_name" />
 
-<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="horizontal">-->
-<!--</LinearLayout>-->
-<!--	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/tv_date_time" />-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_gravity="fill_horizontal"
+	android:layout_margin="2dp"
+	android:orientation="horizontal">
+<!--	android:background="@color/light_grey_A_green"-->
+	
+	<TextView
+		android:id="@+id/tv_name"
+		android:layout_width="30dp"
+		android:layout_height="wrap_content"
+		android:gravity="end"
+		android:soundEffectsEnabled="true"
+		android:padding="2sp"
+		android:text="|#"
+		android:typeface="monospace" />
+	
+	<TextView
+		android:id="@+id/tv_date"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="fill_horizontal"
+		android:layout_margin="1dp"
+		android:background="@color/light_grey_D"
+		android:padding="2sp"
+		android:text="2023.12.24"
+		android:typeface="monospace" />
+	
+	<TextView
+		android:id="@+id/tv_time"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="fill_horizontal"
+		android:layout_margin="1dp"
+		android:background="@color/light_grey_D"
+		android:padding="2sp"
+		android:text="19:08"
+		android:typeface="monospace" />
+	
+	<TextView
+		android:id="@+id/tv_record_text"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_gravity="fill_horizontal"
+		android:layout_margin="1dp"
+		android:layout_weight="1"
+		android:background="@color/light_grey_D"
+		android:padding="2sp"
+		android:text="seconds"
+		android:typeface="monospace"/>
+	
+	<TextView
+		android:id="@+id/tv_record_value"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_gravity="fill_horizontal"
+		android:gravity="end"
+		android:layout_margin="1dp"
+		android:layout_weight="1"
+		android:background="@color/light_grey_D"
+		android:padding="2sp"
+		android:text="4012"
+		android:typeface="monospace" />
+	
+	<TextView
+		android:id="@+id/tv_special_mark"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_gravity="fill_horizontal"
+		android:gravity="center"
+		android:layout_margin="1dp"
+		android:layout_weight="1"
+		android:padding="2sp"
+		android:text=" * "
+		android:typeface="monospace"/>
+<!--		android:background="@color/light_grey_D"-->
+</LinearLayout>
+
 <!--	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/tv_record_text" />-->
 <!--	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"  android:id="@+id/tv_record_value" />-->
 <!--	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"  android:id="@+id/tv_special_mark" />-->

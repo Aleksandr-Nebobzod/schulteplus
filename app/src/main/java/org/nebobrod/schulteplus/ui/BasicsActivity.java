@@ -1,6 +1,7 @@
 package org.nebobrod.schulteplus.ui;
 
 import static org.nebobrod.schulteplus.Utils.bHtml;
+import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.pHtml;
 import static org.nebobrod.schulteplus.Utils.tHtml;
 
@@ -10,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -148,7 +151,7 @@ public class BasicsActivity extends AppCompatActivity {
 		setContentView(binding.getRoot());
 
 		exercise = new STable(1, 1);
-		ExerciseRunner.getInstance(getApplicationContext());
+		ExerciseRunner.getInstance();
 		ExerciseRunner.savePreferences(exercise);
 
 
@@ -159,7 +162,7 @@ public class BasicsActivity extends AppCompatActivity {
 		btDistraction = binding.btDistraction;
 		tvCounter  = binding.tvCounter; tvCounter.setText("0");
 		tvClock = binding.tvTime; tvClock.setText("0:00");
-//		chmTime = binding.chmTime; // in Basics no live clock is useful
+//		chmTime = binding.chmTime; // in Basics no alive clock is useful
 
 		if (!ExerciseRunner.isHinted()) {
 			tvCounter.setVisibility(View.GONE);
@@ -170,6 +173,7 @@ public class BasicsActivity extends AppCompatActivity {
 		boolean feedbackHaptic = ExerciseRunner.getPrefHaptic();
 		boolean feedbackSound = ExerciseRunner.getPrefSound();
 
+		hide();
 		// Set up the user interaction to manually show or hide the system UI.
 		mContentView.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -189,7 +193,7 @@ public class BasicsActivity extends AppCompatActivity {
 				btDistraction.performClick();
 				newExerciseDialog(Utils.getRes().getString(R.string.lbl_time) + ":" + tHtml()  + bHtml(tvClock.getText().toString()) + pHtml()
 									+ Utils.getRes().getString(R.string.lbl_events) + ":" + tHtml()  + bHtml(tvCounter.getText().toString()) + pHtml()
-									+ pHtml() + bHtml(getResources().getString(R.string.txt_one_more_q)));
+									+ pHtml() + bHtml(getResources().getString(R.string.txt_continue_ex) + "?"));
 			}
 		});
 		btDistraction.setOnClickListener(new View.OnClickListener() {
@@ -256,14 +260,11 @@ public class BasicsActivity extends AppCompatActivity {
 				dialogInterface.dismiss();
 			}
 		});
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,getResources().getText(R.string.lbl_no), new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialogInterface, int i) {
-				//dialogInterface.dismiss();
-				exercise.setFinished(true);
-				ExerciseRunner.savePreferences(exercise);
-				finish();
-			}
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,getResources().getText(R.string.lbl_no), (dialogInterface, i) -> {
+			//dialogInterface.dismiss();
+			exercise.setFinished(true);
+			ExerciseRunner.savePreferences(exercise);
+			finish();
 		});
 
 		alertDialog.show();
@@ -307,7 +308,7 @@ public class BasicsActivity extends AppCompatActivity {
 //		chmTime.setBase(SystemClock.elapsedRealtime());
 //		chmTime.start();
 
-		ExerciseRunner runner = ExerciseRunner.getInstance(getApplicationContext());
+		ExerciseRunner runner = ExerciseRunner.getInstance();
 		runner.loadPreference();
 
 		// Take preference i.e. key="gcb_bas_dot"
@@ -330,16 +331,38 @@ public class BasicsActivity extends AppCompatActivity {
 
 	@Override
 	protected void onPostResume() {
-
 		super.onPostResume();
+	}
 
+	@Override
+	public void onBackPressed() {
+		Context context = this;
+
+		btDistraction.performClick();
+
+		DialogInterface.OnClickListener okListener = (dialogInterface, i) -> {
+			// Means continue ex i.e. do nothing
+		};
+		DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialogInterface, int i) {
+				exercise.setFinished(true);
+				ExerciseRunner.savePreferences(exercise);
+				finish();
+			}
+		};
+
+		Utils.resultDialog(context, getRes().getString(R.string.txt_continue_ex) + "?",
+				okListener,
+				cancelListener);
+//		super.onBackPressed();
 	}
 
 	private void toggle() {
 		if (mVisible) {
 			hide();
 		} else {
-			// show();
+			 show();
 		}
 	}
 

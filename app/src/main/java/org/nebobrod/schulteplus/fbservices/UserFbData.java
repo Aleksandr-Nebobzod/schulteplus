@@ -28,6 +28,7 @@ import java.io.IOException;
  * */
 public final class UserFbData {
 	private static final String TAG = "UserData";
+	public static final String DB_URL = "https://schulte-plus-default-rtdb.europe-west1.firebasedatabase.app";
 	private static final String DB_PATH = "users";
 	static FirebaseDatabase fbDatabase;
 	static DatabaseReference fbReference;
@@ -49,15 +50,14 @@ public final class UserFbData {
 	}
 
 	private  static void init () {
-		fbDatabase = FirebaseDatabase.getInstance("https://schulte-plus-default-rtdb.europe-west1.firebasedatabase.app");
+		fbDatabase = FirebaseDatabase.getInstance(DB_URL);
 		//fbDatabase.setLogLevel(Logger.Level.INFO); // comment if no debugging... but it works strange
 
 		fbReference = fbDatabase.getReference(DB_PATH);
 	}
 
 	void addUser(String email, String name, String password, String uid, String deviceId, boolean verified){
-		fbDatabase = FirebaseDatabase.getInstance("https://schulte-plus-default-rtdb.europe-west1.firebasedatabase.app");
-		fbReference = fbDatabase.getReference(DB_PATH);
+		init ();
 
 		userHelper = new UserHelper(email, name, password, uid, deviceId, verified);
 		// Firebase Database paths must not contain '.', '#', '$', '[', or ']', so email:
@@ -91,37 +91,30 @@ public final class UserFbData {
 		});
 	}
 
-
-	public static boolean z_getUserFromFirebase(final UserHelperCallback myCallback, String name)
+	public static void getUserFromFirebase(final UserHelperCallback myCallback, String email)
 	{
 		init();
-/*		fbReference.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
+		fbReference.child(email.replace(".", "_")).addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
-				fbUserHelper = dataSnapshot.getValue(FbUserHelper.class);
-//				assert user != null;
-//				fbUserHelper = user;
-				for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-					FbUserHelper user = snapshot.getValue(FbUserHelper.class);
-					assert user != null;
-//					String contact_found = user.getUid();
-//					mContactsFromFirebase.add(contact_found);
-					fbUserHelper = user;
-					System.out.println("Loaded " + fbUserHelper.toString() + " user");
-				}
-				myCallback.onCallback(fbUserHelper);
-			}
+				userHelper = dataSnapshot.getValue(UserHelper.class);
 
+/*				for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+					UserHelper user = snapshot.getValue(UserHelper.class);
+					assert user != null;
+					String contact_found = user.getUid();
+					mContactsFromFirebase.add(contact_found);
+					userHelper = user;
+					System.out.println("Loaded " + userHelper.toString() + " user");
+				}*/
+				myCallback.onCallback(userHelper);
+			}
 			@Override
 			public void onCancelled(DatabaseError databaseError) {
+				myCallback.onCallback(null);
 				throw databaseError.toException();
 			}
-		});*/
-		if (userHelper != null) {
-			return true;
-		} else {
-			return false;
-		}
+		});
 	}
 
 	String getData (String name) {
@@ -215,7 +208,11 @@ public final class UserFbData {
 	public static void getByUid(final UserHelperCallback userHelperCallback, String uid)
 	{
 		init();
-		Query myQuery = fbReference.orderByValue().equalTo(uid, "uid") ;
+//		Query myQuery = fbReference.orderByValue().equalTo(uid, "uid") ;
+//		Query myQuery = fbReference.equalTo(uid, "uid") ;
+//		Query myQuery = fbReference.orderByChild("uid") ; // THIS WORKED with dataset ( many records)
+//		Query myQuery = fbReference.orderByChild("uid").equalTo(uid, "uid") ; // Doesn't work ((
+		Query myQuery = fbReference.orderByChild("uid").equalTo(uid) ; //
 
 		myQuery.addValueEventListener(new ValueEventListener() {
 
@@ -223,15 +220,18 @@ public final class UserFbData {
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				userHelper = null;
 				for(DataSnapshot usersSnapshot: dataSnapshot.getChildren())
-				{
+				{ // this is a redundant cycle but it works...
 					Log.d(TAG, "getByUid.onDataChange: "+ usersSnapshot.getValue().toString());
+					userHelper = usersSnapshot.getValue(UserHelper.class);
 				}
-				userHelper = dataSnapshot.getValue(UserHelper.class);
+
 				userHelperCallback.onCallback(userHelper);
 			}
 
 			@Override
 			public void onCancelled(DatabaseError databaseError) {
+
+				userHelperCallback.onCallback(null);
 				throw databaseError.toException();
 			}
 		});
@@ -245,11 +245,13 @@ public final class UserFbData {
 				@Override
 				public void onDataChange(DataSnapshot dataSnapshot) {
 					userHelper = dataSnapshot.getValue(UserHelper.class);
+					Log.d(TAG, "onDataChange: "  + Thread.currentThread());
 					userHelperCallback.onCallback(userHelper);
 				}
 
 				@Override
 				public void onCancelled(DatabaseError databaseError) {
+					userHelperCallback.onCallback(null);
 					throw databaseError.toException();
 				}
 			});

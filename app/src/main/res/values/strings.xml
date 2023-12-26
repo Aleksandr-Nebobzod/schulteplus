@@ -35,14 +35,14 @@
 	<string name="hnt_input_height">input the height (1 -- 10)</string>
 	<string name="str_continue">Would you like to go on? </string>
 	<string name="title_result">Result</string>
-	<string name="lbl_ok">OK</string>
+	<string name="lbl_ok">oK</string>
 	<string name="lbl_no">No</string>
 	<string name="txt_one_more_q">Train one more time?</string>
 	<string name="lbl_show_password">Show password</string>
 	<string name="txt_settings">There are prestart settings of Schulte tables training should be improved</string>
 	<string name="txt_news">Here is the news list coming soon.\n Brief info: https://handwiki.org/wiki/Schulte_table </string>
 	<string name="txt_notification_desc">Notifications should be here</string>
-	<string name="txt_dashboard_desc">This is dashboard fragment</string>
+	<string name="txt_dashboard_desc">Here the dashboard is developing</string>
 	<string name="lbl_bas_dbl_dot">Double Dot</string>
 	<string name="lbl_bas_dot">The Dot</string>
 	<string name="lbl_bas_circles_rb">Circles Red/Blue</string>
@@ -154,6 +154,7 @@
 	<string name="msg_user_verif_not_sent">Verification instructions email can\'t be sent.</string>
 	<string name="lbl_reset_password">Reset your password</string>
 	<string name="lbl_resend_verification_email">Resend verification email</string>
+	<string name="lbl_continue_anonymously">Continue anonymously (not recommend)</string>
 	<string name="lbl_continue_unregistered">Continue unregistered (not recommend)</string>
 	<string name="str_confirmation_caution">You might be asked to confirm your email address</string>
 	<string name="lbl_tv_alternative_reg">Alternative registration way</string>
@@ -195,5 +196,10 @@
 	<string name="msg_datasources">Datasourcses</string>
 	<string name="msg_user">User</string>
 	<string name="msg_veryfied">Veryfied</string>
+	<string name="msg_tests_failed">Some tests failed</string>
+	<string name="txt_continue_ex">Continue exercise</string>
+	<string name="prf_title_online">Online</string>
+	<string name="lbl_datasource_local">local</string>
+	<string name="lbl_datasource_www">www</string>
 
 </resources>

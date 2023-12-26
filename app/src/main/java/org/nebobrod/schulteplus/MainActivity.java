@@ -41,7 +41,7 @@ import org.nebobrod.schulteplus.ui.SchulteActivity02;
 
 public class MainActivity extends AppCompatActivity implements UserFbData.UserHelperCallback {
 	public static final String TAG = "MainActivity";
-	private static MainActivity instance;
+//	private static MainActivity instance;
 
 	FirebaseAuth fbAuth;
 	FirebaseUser user = null;
@@ -52,13 +52,15 @@ public class MainActivity extends AppCompatActivity implements UserFbData.UserHe
 	ExerciseRunner runner;
 	private FloatingActionButton fabLaunch;
 
-	public MainActivity() {
+/*	public MainActivity() {
 		instance = this;
-	}
+	}*/
 
+/*
 	public static MainActivity getInstance() {
 		return instance;
 	}
+*/
 
 	@Override
 	public boolean onCreateOptionsMenu (Menu menu)
@@ -99,8 +101,8 @@ public class MainActivity extends AppCompatActivity implements UserFbData.UserHe
 		}
 
 
-
-		runner = ExerciseRunner.getInstance(this);
+		// if no user at all
+		runner = ( null != userHelper ? ExerciseRunner.getInstance(userHelper) : ExerciseRunner.getInstance());
 
 		//ActionBar
 		androidx.appcompat.app.ActionBar mainActionBar = this.getSupportActionBar();
@@ -164,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements UserFbData.UserHe
 					}
 				});
 
-		ExerciseRunner.getInstance(getApplicationContext());
+//		ExerciseRunner.getInstance();
 		fabLaunch.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -214,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements UserFbData.UserHe
 	@Override
 	public void onCallback(@Nullable UserHelper fbDbUser) {
 		if (fbDbUser == null) {
-			showSnackBarConfirmation(this, getRes().getString(R.string.err_unknown) + " ");
+			showSnackBarConfirmation(this, getRes().getString(R.string.err_unknown) + " ", null);
 		} else {
 			// TODO: 19.11.2023 load profile from server
 

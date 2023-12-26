@@ -1,17 +1,17 @@
 package org.nebobrod.schulteplus.ui;
 
-import static org.nebobrod.schulteplus.Utils.bHtml;
-import static org.nebobrod.schulteplus.Utils.intFromString;
-import static org.nebobrod.schulteplus.Utils.pHtml;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.Html;
@@ -26,14 +26,16 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import org.nebobrod.schulteplus.ExerciseRunner;
 import org.nebobrod.schulteplus.GridAdapter;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.SCell;
 import org.nebobrod.schulteplus.STable;
 import org.nebobrod.schulteplus.Utils;
+import static org.nebobrod.schulteplus.Utils.*;
+//import static org.nebobrod.schulteplus.Utils.bHtml;
+//import static org.nebobrod.schulteplus.Utils.getRes;
+//import static org.nebobrod.schulteplus.Utils.pHtml;
 
 import java.util.Objects;
 
@@ -62,7 +64,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 
 		private void init() {
 			iCounter = iMistakes = 0;
-			iExpectedTurn = exercise.getTurnNumber();
+			iExpectedTurn = exercise.getExpectedValue();
 
 			tvExpectedTurn = toolbar.findViewById(R.id.tv_expected_turn);
 			tvExpectedTurn.setText("" + iExpectedTurn);
@@ -76,7 +78,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 		}
 
 		private void refresh() {
-			tvExpectedTurn.setText("" + exercise.getTurnNumber());
+			tvExpectedTurn.setText("" + exercise.getExpectedValue());
 			tvCounter.setText("" + iCounter);
 			tvMistakes.setText("" + iMistakes);
 //			chmTime.setBase(SystemClock.elapsedRealtime());
@@ -125,7 +127,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 
 		setContentView(R.layout.activity_schulte02);
 		Intent intent = getIntent();
-		runner = ExerciseRunner.getInstance(getApplicationContext());
+		runner = ExerciseRunner.getInstance();
 		boolean feedbackHaptic = runner.getPrefHaptic();
 		boolean feedbackSound = runner.getPrefSound();
 
@@ -135,8 +137,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 		}
 
 		mGrid = (GridView)findViewById(R.id.gvArea);
-		exercise = new STable(runner.getX(), runner.getY());
-		ExerciseRunner.getInstance(getApplicationContext());
+		exercise = new STable(runner.getX(), runner.getY(), ExerciseRunner.probDx(), ExerciseRunner.probDy(), ExerciseRunner.probW());
 		ExerciseRunner.savePreferences(exercise);
 
 		// Toolbar for exercise initiation (if hints are chosen)
@@ -150,27 +151,48 @@ public class SchulteActivity02 extends AppCompatActivity {
 		mAdapter = new GridAdapter(this, exercise);
 		mGrid.setAdapter(mAdapter);
 
+		mGrid.setLongClickable(true);
+
+		mGrid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+//				int expected = exercise.getExpectedPosition();
+
+				View v = adapterView.getChildAt(exercise.getExpectedValue()-1);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+//					animThrob(v, Color.valueOf(getColor(R.color.light_grey_A_green)));
+					animThrob(v, null);
+
+				}
+				return true;
+			}
+		});
+
 		mGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View v, int position, long id) {
-				Utils.feedbacks (v, feedbackHaptic, feedbackSound);
+				feedbacks (v, feedbackHaptic, feedbackSound);
 				SCell currentCell = exercise.getArea().get(position);
 				//Toast.makeText(SchulteActivity02.this, position+"_" + currentCell.getValue(), Toast.LENGTH_SHORT).show();
-				if (position==1) Utils.showSnackBar(SchulteActivity02.this, position +"");
+//				if (position==1) Utils.showSnackBar(SchulteActivity02.this, position +"");
 				if (exercise.checkTurn(position)) {
-					if (!exercise.endChecked()) {
+					if (!exercise.endChecked()) { // continue ex
 						exercise.shuffle();
-					} else { // if no next turn needed
+					} else { // of Fin if no next turn needed
 						ExerciseRunner.savePreferences(exercise);
 						newExerciseDialog(exercise.getResults() +
-								pHtml() + pHtml() + bHtml(getResources().getString(R.string.txt_one_more_q)));
+								pHtml() + pHtml() + bHtml(getRes().getString(R.string.txt_one_more_q)));
 					}
 					mAdapter.notifyDataSetChanged();
 
-				} else if ("showMistakes"=="showMistakes") {
+				} else if (ExerciseRunner.isHinted()) {
 					exToolbar.plusMistake();
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+						animThrob(v, Color.valueOf(getColor(R.color.light_grey_A_red)));
+					}
 				}
-				exToolbar.setiExpectedTurn(exercise.getTurnNumber());
+				exToolbar.setiExpectedTurn(exercise.getExpectedValue());
 				exToolbar.setiCounter(exercise.journal.size() - 1);
 				Log.d(TAG, "onItemClick: " + exercise.journal.get(exercise.journal.size() - 1));
 
@@ -182,7 +204,25 @@ public class SchulteActivity02 extends AppCompatActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Objects.requireNonNull(getSupportActionBar()).hide();
+		if (null != getSupportActionBar()) {
+			Objects.requireNonNull(getSupportActionBar()).hide();
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		Context context = this;
+		DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialogInterface, int i) {
+				finish();
+			}
+		};
+
+		Utils.resultDialog(context, getRes().getString(R.string.txt_continue_ex) + "?",
+				null,
+				cancelListener);
+//		super.onBackPressed();
 	}
 
 	private void newExerciseDialog(String s) {

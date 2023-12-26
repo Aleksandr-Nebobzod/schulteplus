@@ -8,6 +8,7 @@
 
 package org.nebobrod.schulteplus.fbservices;
 
+import android.text.Spanned;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -19,10 +20,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import org.nebobrod.schulteplus.Utils;
-
 import java.util.ArrayList;
+import java.util.Collections;
 
+import static org.nebobrod.schulteplus.Const.*;
+
+/** Achievements datasource in Realtime Database Firestore */
 public class AchievementsFbData
 {
 	private static final String TAG = "UserData";
@@ -32,7 +35,7 @@ public class AchievementsFbData
 	private static AchievementsHelper achieve = achieveReturn();
 
 	public interface DashboardCallback {
-		void onCallback(ArrayList<String> list);
+		void onCallback(ArrayList<Spanned> list);
 	}
 
 	private  static void init () {
@@ -92,9 +95,9 @@ public class AchievementsFbData
 		});
 	}
 
-	public static void  basicQueryValueListener(final DashboardCallback dashboardCallback, ArrayList<String> list) {
+	public static void  basicQueryValueListener(final DashboardCallback dashboardCallback, ArrayList<Spanned> list) {
 		init();
-		Query freshAchievementsQuery = fbReference.limitToLast(10)
+		Query freshAchievementsQuery = fbReference.limitToLast(QUERY_COMMON_LIMIT)
 				.orderByChild("timeStamp");
 
 		// [START basic_query_value_listener]
@@ -103,11 +106,14 @@ public class AchievementsFbData
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				list.clear();
+				long i = dataSnapshot.getChildrenCount();
 				for (DataSnapshot ds: dataSnapshot.getChildren()) {
 					AchievementsHelper achieve = ds.getValue(AchievementsHelper.class);
-					String achieveStr = "|* " + Utils.timeStampFormattedShort(achieve.getTimeStamp()) + " || " + achieve.getName() + " || " + achieve.getRecordText()	+ ": " + achieve.getRecordValue() + " || " + achieve.getSpecialMark() + " |";
+					Spanned achieveStr = achieve.toSpanned();
 					list.add(achieveStr);
+					i--;
 				}
+				Collections.reverse(list);
 				dashboardCallback.onCallback(list);
 
 			}

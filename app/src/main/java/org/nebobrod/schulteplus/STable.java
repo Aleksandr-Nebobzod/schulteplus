@@ -166,15 +166,15 @@ public class STable {
 		} else {
 			double xStep = (2D/xSize);
 			double yStep = (2D/ySize);
-			for (int j = 0; j< ySize; j++) {
-				String output = "Row: " + j;
+			for (int j = 0; j< ySize; j++) { // Rows or vertical step
+				String output = "Row: " + j + ": ";
 //				System.out.print("\nRow: " + j);
-				for (int i = 0; i< xSize; i++) {
+				for (int i = 0; i< xSize; i++) { // Columns or horizontal step
 					Double probWeigh = Math.pow(100 * camelSurface(-1 + i * xStep + xStep/2, -1 + j * yStep + yStep/2, dX, dY, w),
 							3) / 10000;
-					result.set(i*xSize + j, probWeigh);
-					probabilitiesSum += result.get(i*xSize + j);
-					output = output + String.format ("%.2f | ", result.get(i*xSize + j)) + " |";
+					result.set(j*xSize + i, probWeigh);
+					probabilitiesSum += result.get(j*xSize + i);
+					output = output + String.format ("%.2f | ", result.get(j*xSize + i)) + " |";
 //					System.out.printf("\t'%3.3f'", result.get(i*xSize + j));
 				}
 				Log.d(TAG, "fillProbabilities: " + output);
@@ -318,7 +318,7 @@ public class STable {
 		Random r = new Random();
 		ArrayList<SCell> clonedArea = (ArrayList<SCell>) area.clone();
 
-		if (this.w == 0) { // uniform distribution:
+		{ // uniform distribution:
 
 			//todo maybe Collections.shuffle(area);
 
@@ -328,28 +328,41 @@ public class STable {
 //				Log.d(TAG, "shuffle: i=" + i +" j="+ j);
 				clonedArea.remove(j);
 			}
-		} else { // custom distribution:
+		}
+		if (this.w != 0) { // custom distribution:
 			double nextExpectedPosition = (r.nextDouble() * probabilitiesSum);
-			int caughtValue =0 ;
+			int caughtPosition =0 ;
 			double cumulativeBoundary = probabilitiesSum;
 			int i = 0;
 			Log.d(TAG, "probabilitiesSum: " + probabilitiesSum + " nextExpectedPosition: " + nextExpectedPosition);
 			for (double prob : probabilities){
-				i++;
 				cumulativeBoundary -= prob ;
-				Log.d(TAG, "shuffle: i=" + i +" neExP="+ nextExpectedPosition +" prob="+ prob + " cB="+ cumulativeBoundary + " j=+ j");
+				Log.d(TAG, "shuffle: i=" + i + " neExP="+ nextExpectedPosition +" prob="+ prob + " cB="+ cumulativeBoundary + " j=+ j");
 				if (cumulativeBoundary < nextExpectedPosition) {
-					caughtValue = i;
+					caughtPosition = i;
 					break;
 				}
+				i++;
 			}
-			Log.d(TAG, "shuffle: caughtValue: " + caughtValue + " expectedValue: " + expectedValue  + " area.indexOf(caughtValue): " + area.indexOf(caughtValue));
-			area.indexOf(caughtValue);
+			Log.d(TAG, "shuffle: caughtPosition: " + caughtPosition + " expectedValue: " + expectedValue  + " " );
+//			area.indexOf(caughtPosition);
+			/** define the victim Cell, where we move the N which occupies necessary caughtPosition */
+			if (area.get(caughtPosition).getValue() != expectedValue) {
+				for (int k = 0; k < area.size(); k++) {
+					if (area.get(k).getValue() == expectedValue) {
+						Collections.swap(area, k, caughtPosition);
+						Log.d(TAG, "shuffle: swap: " + caughtPosition + " and k: " + k);
+						Log.d(TAG, "shuffle: value of caughtPosition: " + area.get(caughtPosition).getValue());
+						break;
+					}
+				}
+			}
+//			int changedPosition = 0;
+//			do {
+//				changedPosition = r.nextInt(area.size());
+//			} while (changedPosition == caughtPosition);
 
 
-				int j = r.nextInt(clonedArea.size());
-//				area.set( i, clonedArea.get(j));
-				clonedArea.remove(j);
 		}
 	}
 

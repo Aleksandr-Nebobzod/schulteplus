@@ -110,8 +110,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	/**
-	 * Close the database connections and clear any cached DAOs. For each call to {@link #getHelper(Context)}, there
-	 * should be 1 and only 1 call to this method. If there were 3 calls to {@link #getHelper(Context)} then on the 3rd
+	 * Close the database connections and clear any cached DAOs. For each call to {@link #getHelper()}, there
+	 * should be 1 and only 1 call to this method. If there were 3 calls to {@link #getHelper()} then on the 3rd
 	 * call to this method, the helper and the underlying database connections will be closed.
 	 */
 	@Override

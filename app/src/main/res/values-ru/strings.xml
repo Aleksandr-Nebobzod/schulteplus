@@ -59,9 +59,9 @@
 	<string name="prf_title_app">Приложение</string>
 	<string name="prf_title_data">Делиться данными</string>
 	<string name="prf_title_sound_mode">Звуковое сопровождение</string>
-	<string name="prf_data_sum_off">Результаты ваших тренировок НЕ публичны, вы также не видите результатов других участников (рейтинги недоступны)</string>
+	<string name="prf_data_sum_off">Результаты ваших тренировок НЕ публичны, вы также не видите результатов других участников</string>
 	<string name="prf_data_sum">СУМ</string>
-	<string name="prf_data_on">Результаты ваших тренировок ОТПРАВЛЯЮТСЯ публичны, вам также доступны результаты других участников</string>
+	<string name="prf_data_on">Результаты ваших тренировок публичны, вам также доступны результаты других участников</string>
 	<string name="prf_data_st_on">СТ ОН</string>
 	<string name="prf_data_st_off">СТ ОФФ</string>
 	<string name="prf_title_sound_yn">Звуковой отклик</string>
@@ -148,7 +148,7 @@
 	<string name="prf_points_title">Секунд</string>
 	<string name="lbl_events">Событий</string>
 	<string name="lbl_Probabilities">Вероятности</string>
-	<string name="lbl_prob_surface">Распределение вероятностей</string>
+	<string name="lbl_prob_surface">Форма распределения</string>
 	<string name="lbl_prob_x">Смещение по горизонтали</string>
 	<string name="lbl_prob_y">Смещение по вертикали</string>
 	<string name="lbl_prob_enabled">Управляемое распределение</string>

@@ -1,9 +1,9 @@
 package org.nebobrod.schulteplus.ui.basics;
 
+import static org.nebobrod.schulteplus.Const.*;
 import static org.nebobrod.schulteplus.Utils.getRes;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -53,6 +53,9 @@ public class BasicSettings extends PreferenceFragmentCompat {
 		}
 		exType.setText(chosen.getKey());
 		runner.setExType(exType.getText().toString()); // set to runner from invisible pref et
+		// set hinted to runner
+		runner.setHinted(((androidx.preference.SwitchPreference) findPreference(KEY_PRF_HINTED)).isChecked());
+
 		super.onResume();
 	}
 

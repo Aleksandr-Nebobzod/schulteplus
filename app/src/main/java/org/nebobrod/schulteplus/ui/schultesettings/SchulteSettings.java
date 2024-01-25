@@ -12,13 +12,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.preference.DropDownPreference;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
@@ -35,7 +35,7 @@ import org.nebobrod.schulteplus.STable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class SchulteSettings extends PreferenceFragmentCompat {
+public class SchulteSettings extends PreferenceFragmentCompat implements SurfaceHolder.Callback, DrawerPreference.SurfaceViewCallback {
 	// TODO: 28.09.2023 this and BasicSettings class are mostly same (think how to unify them)
 	private static final String TAG = "SchulteSettings";
 	ArrayList<Preference> exerciseTypeCheckBoxes = new ArrayList<>();
@@ -43,11 +43,11 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 	private ExerciseRunner runner = ExerciseRunner.getInstance();
 	private String[] exTypes;
 
+	private boolean canDraw = false;
 	private DrawerPreference drawerPreference;
 	private SurfaceView surfaceView;
+	private SurfaceHolder surfaceHolder;
 	private Paint paint;
-
-
 
 
 	@Override
@@ -56,12 +56,15 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 		getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
 
 		setPreferencesFromResource(R.xml.preferences_schulte, rootKey);
-		PreferenceScreen screen = this.getPreferenceScreen();
-		exTypes = getRes().getStringArray(R.array.ex_type);
 
+		exTypes = getRes().getStringArray(R.array.ex_type);
 		initiateExerciseTypes();
 
+		PreferenceScreen screen = this.getPreferenceScreen();
+
 		drawerPreference = findPreference(KEY_PRF_PROB_DRAWER);
+//		drawerPreference.isShown();
+//		surfaceView = drawerPreference.getSurfaceView();
 
 	}
 
@@ -70,8 +73,8 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = super.onCreateView(inflater, container, savedInstanceState);
 
-		surfaceView = drawerPreference.getSurfaceView();
 
+		Log.d(TAG, "onCreateView: " + view.toString());
 
 		return view;
 	}
@@ -79,18 +82,58 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		/* this was an attempt to update ProbDrawer in real time appearing on screen. Callback is better.
+		this.getListView().setOnScrollChangeListener(new View.OnScrollChangeListener() {
+			@Override
+			public void onScrollChange(View view, int i, int i1, int i2, int i3) {
+				if (null == surfaceView) {
+					surfaceView = drawerPreference.getSurfaceView();
+					if (null == surfaceView) return;
+					surfaceHolder = surfaceView.getHolder();
+					surfaceHolder.addCallback(new SurfaceHolder.Callback() {
+						@Override
+						public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
+							//				drawProbabilities(shiftX10, shiftY10, w, false);
+							double w = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_SURFACE))).getValue() / 10D;
+							boolean probZero = ((SwitchPreference) findPreference(KEY_PRF_PROB_ZERO)).isChecked();
+							int shiftX10 = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_X))).getValue();
+							int shiftY10 = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_Y))).getValue();
+							drawProbabilities(shiftX10, shiftY10, w, probZero);
+						}
+
+						@Override
+						public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+							//				drawProbabilities(shiftX10, shiftY10, w, false);
+							double w = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_SURFACE))).getValue() / 10D;
+							boolean probZero = ((SwitchPreference) findPreference(KEY_PRF_PROB_ZERO)).isChecked();
+							int shiftX10 = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_X))).getValue();
+							int shiftY10 = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_Y))).getValue();
+							drawProbabilities(shiftX10, shiftY10, w, probZero);
+						}
+
+						@Override
+						public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
+
+						}
+					});
+				}
+			}
+		});*/
+//		surfaceView = drawerPreference.getSurfaceView();
+//		Log.d(TAG, "onViewCreated: " + view.toString());
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
+		drawerPreference.getSurfaceView(this::onCallback, surfaceView);
 		updatePrefScreen();
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-//		updatePrefScreen();
+		// TODO: 16.01.2024 probably here bundle is needed for surfaceView 
 		ExerciseRunner.savePreferences(null);
 	}
 
@@ -112,36 +155,16 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 		}
 
 		if (KEY_PRF_PROB_ENABLED.equals(preference.getKey())) {
-			if (null == surfaceView) {
-				surfaceView = drawerPreference.getSurfaceView();
 
-				paint = new Paint();
-				paint.setAntiAlias(true);
-				paint.setDither(true);
-				paint.setColor(getRes().getColor(R.color.prob_color99));
-				paint.setStyle(Paint.Style.STROKE);
-				paint.setStrokeJoin(Paint.Join.ROUND);
-				paint.setStrokeCap(Paint.Cap.ROUND);
-				paint.setStrokeWidth(24);
-
-			}
 			enableProbability(((SwitchPreference) preference).isChecked());
 		}
 
 		if (KEY_PRF_PROB_SURFACE.equals(preference.getKey())) {
-			double w = ((SeekBarPreference) preference).getValue() / 10D;
-			boolean probZero = ((SwitchPreference) findPreference(KEY_PRF_PROB_ZERO)).isChecked();
-			int shiftX10 = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_X))).getValue();
-			int shiftY10 = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_Y))).getValue();
-			drawProbabilities(shiftX10, shiftY10, w, probZero);
-
-//			Toast.makeText(getContext(), "Surface" + w, Toast.LENGTH_SHORT).show();
+			drawProbabilities();
 		}
 
 		return super.onPreferenceTreeClick(preference);
 	}
-
-
 
 	@SuppressLint("ClickableViewAccessibility")
 	private void enableProbability(boolean action) {
@@ -151,23 +174,17 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 		((SeekBarPreference) findPreference(KEY_PRF_PROB_X)).setEnabled(action);
 		((SeekBarPreference) findPreference(KEY_PRF_PROB_Y)).setEnabled(action);
 
-//		if (surfaceView == null) return; // just for safety
-
+		if (surfaceView == null) return; // just for safety
 		if (action) {
 //			surfaceView.setBackgroundColor(Color.GRAY);
-
-			int shiftX10 = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_X))).getValue();
-			int shiftY10 = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_Y))).getValue();
-			boolean canBeZero = ((SwitchPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_ZERO))).isChecked();
-			final double w = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_SURFACE))).getValue()/10D;
-			drawProbabilities(shiftX10, shiftY10, w, canBeZero);
+			drawProbabilities();
 
 			surfaceView.setOnTouchListener(new View.OnTouchListener() {
 				@Override
 				public boolean onTouch(View view, MotionEvent event) {
 
 					int startX, startY, shiftX10, shiftY10;
-					double w = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_SURFACE))).getValue()/10D;
+//					double w = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_SURFACE))).getValue()/10D;
 //					int touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 
 					if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -178,12 +195,8 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 						((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_X))).setValue(shiftX10);
 						((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_Y))).setValue(shiftY10);
 
-
-						drawProbabilities(shiftX10, shiftY10, w, false);
-
-
+						drawProbabilities();
 //						surfaceView.performClick();
-
 						return true;
 					}
 
@@ -193,19 +206,45 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 
 
 		} else {
-			Canvas canvas = surfaceView.getHolder().lockCanvas();
-			canvas.drawColor(Color.DKGRAY);
-			surfaceView.getHolder().unlockCanvasAndPost(canvas);
-			canvas = null;
+			try {
+				Canvas canvas = surfaceView.getHolder().lockCanvas();
+				canvas.drawColor(Color.DKGRAY);
+				surfaceView.getHolder().unlockCanvasAndPost(canvas);
+			} catch (Exception e) {
+				Log.e(TAG, "enableProbability: " + e.getMessage(), null);
+			}
+//			canvas = null;
 //			surfaceView = null;
 		}
 
 	}
 
-	private void drawProbabilities(int shiftX10, int shiftY10, double w, boolean canBeZero) {
+	private void drawProbabilities() {
+		int shiftX10 = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_X))).getValue();
+		int shiftY10 = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_Y))).getValue();
+		double w = ((SeekBarPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_SURFACE))).getValue()/10D;
+		boolean canBeZero = ((SwitchPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_ZERO))).isChecked();
+
 		double zMin = 10;
 		double zMax = -10;
 
+		// Skip if isn't allowed to draw (prob mgmt is off)
+		if (!((SwitchPreference) Objects.requireNonNull(findPreference(KEY_PRF_PROB_ENABLED))).isChecked()) return;
+		if (!canDraw) return; // seems the surfaceView is invisible
+		if (surfaceView == null) return; // just for safety
+
+		// Prepare the Paint
+		{
+			paint = new Paint();
+			paint.setAntiAlias(true);
+			paint.setDither(true);
+			paint.setColor(getRes().getColor(R.color.prob_color99));
+			paint.setStyle(Paint.Style.STROKE);
+			paint.setStrokeJoin(Paint.Join.ROUND);
+			paint.setStrokeCap(Paint.Cap.ROUND);
+			paint.setStrokeWidth(24);
+
+		}
 
 		// Prepare array of row values
 		for (int i = -10; i<=10; i++) {
@@ -213,17 +252,17 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 				double x,y,z;
 				x = i / 10D; y = j / 10D;
 				z = STable.camelSurface(x, y, .1*shiftX10, .1*shiftY10, w);
-				System.out.printf("\t'%1.3f'",z);
+//				System.out.printf("\t'%1.3f'",z);
 
 				zMin = Math.min(z, zMin);
 				zMax = Math.max(z, zMax);
 
 			}
-			System.out.println();
+//			System.out.println();
 		}
-		System.out.printf("\tmin '%1.3f', ",zMin);
-		System.out.printf("\tmax '%1.3f'",zMax);
-		System.out.println();
+//		System.out.printf("\tmin '%1.3f', ",zMin);
+//		System.out.printf("\tmax '%1.3f'",zMax);
+//		System.out.println();
 
 		Canvas canvas = null;
 		// Draw touch point:
@@ -281,21 +320,10 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 		canvas = null;
 	}
 
-
-
-	private void enableOptions(boolean action)
-	{ //		Action is true if ratings off
+	private void enableOptions(boolean action) {
+		//		Action is true if ratings off
 		((PreferenceCategory) findPreference(KEY_PRF_OPTIONS)).setVisible(action);
 		((PreferenceCategory) findPreference(KEY_PRF_OPTIONS)).setEnabled(action);
-
-		// Set off if Disabled
-/*		if (action) {
-
-		} else {
-			((SeekBarPreference) findPreference(KEY_X_SIZE)).setValue(5);
-			((SeekBarPreference) findPreference(KEY_Y_SIZE)).setValue(5);
-			((DropDownPreference) findPreference(KEY_PRF_SYMBOLS)).setValue("number");
-		}*/
 
 		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setVisible(action);
 		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setEnabled(action);
@@ -349,6 +377,8 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 					enableOptions(true);
 					runner.setX((byte) ((androidx.preference.SeekBarPreference) findPreference(KEY_X_SIZE)).getValue());
 					runner.setY((byte) ((androidx.preference.SeekBarPreference) findPreference(KEY_Y_SIZE)).getValue());
+					// set hinted to runner
+					runner.setHinted(((androidx.preference.SwitchPreference) findPreference(KEY_PRF_HINTED)).isChecked());
 				}
 				break;
 			case KEY_PRF_EX_S2:
@@ -381,11 +411,8 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 				// enable options PreferenceCategory for ease levels
 				enableOptions(true);
 		}
-		// set hinted to runner
-//		runner.setHinted(((androidx.preference.SwitchPreference) findPreference(KEY_HINTED)).isChecked());
 
 	}
-
 
 	/**
 	 * method provides functionality "Group of Checkboxes" directly in _preferences.xml -- layout
@@ -408,6 +435,12 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 		}
 	}
 
+	/**
+	 * Recursive filling preferences,
+	 * @param p starting from root (i.e. Pref.Screen)
+	 * @param list
+	 * @return
+	 */
 	private ArrayList<Preference> getPreferenceList(Preference p, ArrayList<Preference> list) {
 		if( p instanceof PreferenceCategory || p instanceof PreferenceScreen) {
 			PreferenceGroup pGroup = (PreferenceGroup) p;
@@ -419,5 +452,31 @@ public class SchulteSettings extends PreferenceFragmentCompat {
 			list.add(p);
 		}
 		return list;
+	}
+
+	@Override
+	public void onCallback(@Nullable SurfaceView sView) {
+		if (null != sView) {
+			surfaceView = sView;
+			surfaceHolder = surfaceView.getHolder();
+			surfaceHolder.addCallback(this);
+
+		}
+	}
+
+	@Override
+	public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
+		canDraw = true;
+		drawProbabilities();
+	}
+
+	@Override
+	public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+		;
+	}
+
+	@Override
+	public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
+		canDraw = false;
 	}
 }

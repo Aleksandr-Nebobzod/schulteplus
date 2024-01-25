@@ -45,6 +45,11 @@ import java.util.Random;
 
 import javax.inject.Inject;
 
+/**
+ * This class a bit obfuscated.
+ * Checks the environment, shows animation and routes user to
+ * Signup or Login or Main
+ */
 public class SplashActivity extends AppCompatActivity  implements UserFbData.UserHelperCallback, NetworkConnectivity.ConnectivityCallback {
 	public static final String TAG = "SplashActivity";
 	private static final long SPLASH_STEP_TIME = 500;

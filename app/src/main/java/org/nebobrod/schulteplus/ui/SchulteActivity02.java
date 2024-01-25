@@ -137,6 +137,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 		}
 
 		mGrid = (GridView)findViewById(R.id.gvArea);
+		ExerciseRunner.loadPreference();
 		exercise = new STable(runner.getX(), runner.getY(), ExerciseRunner.probDx(), ExerciseRunner.probDy(), ExerciseRunner.probW());
 		ExerciseRunner.savePreferences(exercise);
 
@@ -156,9 +157,9 @@ public class SchulteActivity02 extends AppCompatActivity {
 		mGrid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-//				int expected = exercise.getExpectedPosition();
+				int expected = exercise.getExpectedPosition();
 
-				View v = adapterView.getChildAt(exercise.getExpectedValue()-1);
+				View v = adapterView.getChildAt(expected);
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
 //					animThrob(v, Color.valueOf(getColor(R.color.light_grey_A_green)));

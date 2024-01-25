@@ -41,7 +41,7 @@ import org.nebobrod.schulteplus.databinding.ActivityBasicsBinding; // TODO: 01.1
 import org.nebobrod.schulteplus.R;
 
 /**
- * An example full-screen activity that shows and hides the system UI (i.e.
+ * A full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
 public class BasicsActivity extends AppCompatActivity {
@@ -164,7 +164,10 @@ public class BasicsActivity extends AppCompatActivity {
 		tvClock = binding.tvTime; tvClock.setText("0:00");
 //		chmTime = binding.chmTime; // in Basics no alive clock is useful
 
-		if (!ExerciseRunner.isHinted()) {
+		if (ExerciseRunner.isHinted()) {
+			tvCounter.setVisibility(View.VISIBLE);
+			tvClock.setVisibility(View.VISIBLE);
+		} else {
 			tvCounter.setVisibility(View.GONE);
 			tvClock.setVisibility(View.GONE);
 		}

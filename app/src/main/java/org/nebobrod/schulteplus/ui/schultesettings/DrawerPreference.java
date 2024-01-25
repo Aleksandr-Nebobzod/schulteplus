@@ -17,10 +17,20 @@ import androidx.annotation.Nullable;
 import androidx.preference.PreferenceViewHolder;
 
 import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.fbservices.UserFbData;
+import org.nebobrod.schulteplus.fbservices.UserHelper;
 
+/**
+ * Custom Preference which allows set values by touching SurfaceView on layout/fragment_probabilities
+ */
 public class DrawerPreference extends androidx.preference.Preference {
 	SurfaceView surfaceView;
+	SurfaceViewCallback dsvCallback;
 
+	/**
+	 * These variety of constructors required for proper using in xml, they say
+	 * @param context
+	 */
 	public DrawerPreference(@NonNull Context context) {
 		super(context);
 	}
@@ -37,14 +47,26 @@ public class DrawerPreference extends androidx.preference.Preference {
 		super(context, attrs);
 	}
 
+	public interface SurfaceViewCallback {
+		void onCallback(@Nullable SurfaceView sView);
+	}
+
+	public void getSurfaceView(final SurfaceViewCallback myCallback, SurfaceView sView) {
+		myCallback.onCallback(sView);
+		dsvCallback = myCallback;
+	}
 	public SurfaceView getSurfaceView() {
 		return surfaceView;
 	}
 
 	@Override
 	public void onBindViewHolder(@NonNull PreferenceViewHolder holder) {
-		surfaceView = (SurfaceView) holder.findViewById(R.id.surface_view);
 		super.onBindViewHolder(holder);
+		surfaceView = (SurfaceView) holder.findViewById(R.id.surface_view);
+		if (dsvCallback != null) dsvCallback.onCallback(surfaceView);
 	}
+
+
+
 
 }

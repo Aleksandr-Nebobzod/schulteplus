@@ -22,8 +22,8 @@ public class AchievementsHelper {
 	String dateTime;
 	String recordText;
 	String recordValue;
-	String specialMark; // May be i.e.: 1st achievement of day, one done 3 at once, selfrecords
-	// (if I got today most point than the best day before, or for week), duels wins, etc...
+	String specialMark; // May be i.e.: 1st achievement of day, one done 3 at once, self-record
+	// (if I got today most point than the best day before, or for week), duel's win, etc...
 
 	public AchievementsHelper() {
 	}
@@ -52,8 +52,13 @@ public class AchievementsHelper {
 	}
 
 	public Spanned toSpanned() {
-		return Html.fromHtml("| \t" + this.getSpecialMark() + "\t| " + Utils.timeStampFormattedLocal(this.getTimeStamp()) + " | " + iHtml(this.getName()) + pHtml()
-				+ "|\t." + "\t| " + bHtml(this.getRecordValue()) + "\t " + this.getRecordText() + "|");
+// first try		return Html.fromHtml("| \t" + this.getSpecialMark() + "\t| " + Utils.timeStampFormattedLocal(this.getTimeStamp()) + " | " + iHtml(this.getName()) + pHtml()
+//				+ "|\t." + "\t| " + bHtml(this.getRecordValue()) + "\t " + this.getRecordText() + "|");
+
+
+		return Html.fromHtml( Utils.timeStampLocal(this.getTimeStamp())
+				+ iHtml(String.format(" %8s", this.getName())) // + pHtml()
+				+ bHtml(String.format("=%6s", this.getRecordValue())) + String.format(" %-6s ", this.getRecordText())  + String.format("|%3s|", this.getSpecialMark()));
 	}
 
 

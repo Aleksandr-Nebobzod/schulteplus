@@ -26,14 +26,19 @@ import org.nebobrod.schulteplus.fbservices.AppExecutors;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
-/** Provides common methods working with local SchultePlus DB SQLite by ORMLite*/
-
-public class OrmUtils {
+/** Provides common methods working with local SchultePlus DB SQLite by ORMLite
+ **/
+public class OrmUtils implements DataRepository {
 
 //	private static final String TAG = getClass().getSimpleName();
 	private static final String TAG = OrmUtils.class.getSimpleName();
 
 	private static final AppExecutors appExecutors = new AppExecutors();
+
+	@Override
+	public synchronized void exResultPut(ExResult exResult) {
+	}
+
 
 	public interface OrmGetCallback<R> {
 		void onComplete(R result);
@@ -126,5 +131,7 @@ public class OrmUtils {
 			return null;
 		}
 	}
+
+
 
 }

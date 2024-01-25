@@ -23,26 +23,22 @@ import java.util.Map;
 
 public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 	private static final String TAG = "ExerciseRunner";
-
 	public static final String KEY_RUNNER = "runner"; //?
 	public static final String KEY_DEFAULT_USER_PREF = "TFKBiTdd7OVYUaplfzDHrXSCixr1";
-
-
-//	private Context context;
-	private static ExerciseRunner instance = null;
 	public static SharedPreferences sharedPreferences;
-
 	public static String uid = "";
 	public static String userName = "";
 	public static String userEmail = "";
-	public static boolean sendData = false; // KEY_SEND_DATA
+	public static boolean sharedData = false; // KEY_SEND_DATA
 	public static int points = 0; //  achieved point (seconds)
 	public static int hours = 0; //  achieved hours
 	public static int level = 1; // maximum achieved level
 	public static int currentLevel = 1; // level limited by user
+	public static  long tsUpdated;	// Timestamp of data updated
+//	private Context context;
+	private static ExerciseRunner instance = null;
 	private static String exType = "no_exercise";
 	private static byte xSize = 5, ySize = 5;
-
 	private static boolean ratings = false; // Limitation of Settings
 	private static boolean hinted = true;
 	private static boolean shuffled = true;
@@ -51,7 +47,6 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 	private static boolean probEnabled = false; // Probabilities control
 	private static boolean probZero = false; // Probabilities can be 0
 	private static double probDx = .0, probDy = .0, probW = .0;
-	public static  long tsUpdated;	// Timestamp of data updated
 	private static boolean online = true; // False if no connection to the Internet
 	private static UserHelper userHelper;
 
@@ -101,7 +96,6 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 		}
 		return instance;
 	}
-	public SharedPreferences getSharedPreferences() { return sharedPreferences; }
 
 	public static void loadPreference(){
 		try {
@@ -109,14 +103,19 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 			// And some additional prefs:
 			userName = sharedPreferences.getString(KEY_USER_NAME, userName);
 			userEmail = sharedPreferences.getString(KEY_USER_EMAIL, userEmail);
-			sendData = sharedPreferences.getBoolean(KEY_PRF_SEND_DATA, false);
+			sharedData = sharedPreferences.getBoolean(KEY_PRF_SHARED_DATA, false);
 			points = sharedPreferences.getInt(KEY_POINTS, 0);
 			level = sharedPreferences.getInt(KEY_PRF_LEVEL, 1);
 			currentLevel = sharedPreferences.getInt(KEY_PRF_CURRENT_LEVEL, 1);
 			ratings = sharedPreferences.getBoolean(KEY_PRF_RATINGS, false);
+			probEnabled = sharedPreferences.getBoolean(KEY_PRF_PROB_ENABLED, false);
 			exType = sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, KEY_PRF_EX_S1);
-			if (!exType.equals(KEY_PRF_EX_S1)) ratings = true; // an extra assurance
-			fontScale = sharedPreferences.getInt(KEY_PRF_FONT_SCALE, 0);
+			if (exType.equals(KEY_PRF_EX_S2)
+				| exType.equals(KEY_PRF_EX_S3)
+				| exType.equals(KEY_PRF_EX_S4)) ratings = true; // an extra assurance for advanced level of STable
+			if (exType.startsWith("gcb_bas_")) ratings = false; // clearance for basics
+			// So, only TS 5x5 allows ratings On or Off
+
 			if (ratings) {
 				hinted = false;
 				shuffled = true;
@@ -127,23 +126,24 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 					default: xSize = ySize = 5;
 				}
 				symbolType = "number";
-				probEnabled = false;
-				probDx = probDy = probW = 0D;
+				probEnabled = false; probDx = probDy = probW = 0D;
 			} else {
 				hinted = sharedPreferences.getBoolean(KEY_PRF_HINTED, true);
 				shuffled = sharedPreferences.getBoolean(KEY_PRF_SHUFFLE, true);
 				xSize = (byte) sharedPreferences.getInt(KEY_X_SIZE, 5);
 				ySize = (byte) sharedPreferences.getInt(KEY_Y_SIZE, 5);
 				symbolType = sharedPreferences.getString(KEY_PRF_SYMBOLS, "number");
-				if (! probEnabled) {
+				if (probEnabled) {
 					probZero = sharedPreferences.getBoolean(KEY_PRF_PROB_ZERO, false);
 					probDx = sharedPreferences.getInt(KEY_PRF_PROB_X, 0) / 10D;
 					probDy = sharedPreferences.getInt(KEY_PRF_PROB_Y, 0) / 10D;
 					probW = sharedPreferences.getInt(KEY_PRF_PROB_SURFACE, 0) / 10D;
+				} else {
+					probDx = probDy = probW = 0D;
 				}
-
 			}
 
+			fontScale = sharedPreferences.getInt(KEY_PRF_FONT_SCALE, 0);
 			tsUpdated = sharedPreferences.getLong(KEY_TS_UPDATED, timeStamp());
 		}
 			catch (Exception e){
@@ -211,32 +211,26 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 	}
 
 	/**Checks @achieved and put records to Local & Server db */
-	private static void achievedToBothDb(List<AchievementFlags> achieved, String uid, String userName, long timeStamp, String timeStampFormattedLocal, String string, String s, String s1) {
+	private static void achievedToBothDb
+	(List<AchievementFlags> achieved, String uid, String userName, long timeStamp, String timeStampFormattedLocal, String string, String s, String s1) {
 
 		for (AchievementFlags flag: achieved) {
 			switch (flag) {
 				case SECONDS:
 					OrmUtils.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
-					if (sendData) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
+					if (sharedData) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
 				break;
 				case HOURS:
 					OrmUtils.achievePut(  uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
-					if (sendData) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
+					if (sharedData) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
 				break;
 			}
 		}
-
-
-
 	}
 
-
-	public void setX(byte xSize) {
-		this.xSize = xSize;
-	}
-
-	public void setY(byte ySize) {
-		this.ySize = ySize;
+	public static String getExType() {
+//		exType = sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, "");
+		return exType; // may be the var here is redundant
 	}
 
 	public void setExType(String s) {
@@ -247,29 +241,12 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 		editor.commit();
 	}
 
-	public int getX (){
-		return xSize;
-	}
-
-	public int getY (){
-		return ySize;
-	}
-
-	public static String getExType() {
-//		exType = sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, "");
-		return exType; // may be the var here is redundant
-	}
-
-	public void setHinted(boolean hinted) {
-		ExerciseRunner.hinted = hinted;
-	}
-
 	public static boolean isHinted() {
 		return hinted;
 	}
 
-	public  String getDateTimeUpdated() {
-		return timeStampFormattedLocal(tsUpdated);
+	public void setHinted(boolean hinted) {
+		ExerciseRunner.hinted = hinted;
 	}
 
 	public static double probDx() {
@@ -282,6 +259,56 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 
 	public static double probW() {
 		return probW;
+	}
+
+	public static boolean getPrefHaptic(){ return sharedPreferences.getBoolean(KEY_PRF_HAPTIC, true);}
+
+	public static boolean getPrefSound(){ return sharedPreferences.getBoolean(KEY_PRF_HAPTIC, true);}
+
+	public static int getPrefTextScale(){ return sharedPreferences.getInt(KEY_PRF_FONT_SCALE, 0);}
+
+	public static boolean isOnline() {		return online;	}
+
+	public static void setOnline(boolean online) {		ExerciseRunner.online = online;	}
+
+	public static UserHelper getUserHelper() {	return userHelper;	}
+
+	public static void setUserHelper(UserHelper userHelper) { ExerciseRunner.userHelper = userHelper;}
+
+	public static boolean isRatings() {return ratings;}
+
+	public static void setRatings(boolean ratings) {ExerciseRunner.ratings = ratings;}
+
+	public static boolean isProbEnabled() {return probEnabled;}
+
+	public static void setProbEnabled(boolean probEnabled) {ExerciseRunner.probEnabled = probEnabled;}
+
+	public static boolean isShuffled() {return shuffled;}
+
+	public static void setShuffled(boolean shuffled) {ExerciseRunner.shuffled = shuffled;}
+
+	public static String GetUid() {return uid;}
+
+	public SharedPreferences getSharedPreferences() { return sharedPreferences; }
+
+	public int getX (){
+		return xSize;
+	}
+
+	public void setX(byte xSize) {
+		this.xSize = xSize;
+	}
+
+	public int getY (){
+		return ySize;
+	}
+
+	public void setY(byte ySize) {
+		this.ySize = ySize;
+	}
+
+	public  String getDateTimeUpdated() {
+		return timeStampFormattedLocal(tsUpdated);
 	}
 
 	@Override
@@ -300,24 +327,6 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 					"\n\tySize = " + String.valueOf( sharedPreferences.getBoolean(KEY_PRF_HINTED, true)) +
 				"\n}";
 	}
-
-	public static boolean getPrefHaptic(){ return sharedPreferences.getBoolean(KEY_PRF_HAPTIC, true);}
-	public static boolean getPrefSound(){ return sharedPreferences.getBoolean(KEY_PRF_HAPTIC, true);}
-	public static int getPrefTextScale(){ return sharedPreferences.getInt(KEY_PRF_FONT_SCALE, 0);}
-
-	public static boolean isOnline() {		return online;	}
-	public static void setOnline(boolean online) {		ExerciseRunner.online = online;	}
-
-	public static UserHelper getUserHelper() {	return userHelper;	}
-	public static void setUserHelper(UserHelper userHelper) { ExerciseRunner.userHelper = userHelper;}
-
-	public static boolean isRatings() {return ratings;}
-	public static void setRatings(boolean ratings) {ExerciseRunner.ratings = ratings;}
-
-	public static boolean isShuffled() {return shuffled;}
-	public static void setShuffled(boolean shuffled) {ExerciseRunner.shuffled = shuffled;}
-
-	public static String GetUid() {return uid;}
 
 	public String getName() {return userName;}
 	public String getEmail() {return userEmail;}

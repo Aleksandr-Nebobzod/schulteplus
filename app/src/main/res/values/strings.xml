@@ -76,8 +76,8 @@
 	<string name="menu_how_mistakes_long">App shows mistakes</string>
 	<string name="lbl_options">Options</string>
 	<string name="prf_data_sum">SUM</string>
-	<string name="prf_data_sum_off">Your exercise results are NOT SENT to server, thou you also CAN NOT see the other users\' results (ratings off)</string>
-	<string name="prf_data_on">Your exercise results ARE  SENT to server, though you also CAN SEE the other users\' results (ratings ON)</string>
+	<string name="prf_data_sum_off">Your exercise results are NOT seeable, so you also can NOT see the other users\' results</string>
+	<string name="prf_data_on">Your exercise results are SEEABLE on the server dashboard, though you also can SEE the other users\' results</string>
 	<string name="prf_data_st_on">ST ON</string>
 	<string name="prf_data_st_off">ST OFF</string>
 	<string name="prf_title_sound_yn">Sound response</string>

@@ -19,7 +19,7 @@ public interface Const {
 	// set of prf related constants
 	public static final String KEY_USER_NAME = "prf_user_name";
 	public static final String KEY_USER_EMAIL = "prf_user_email";
-	public static final String KEY_PRF_SEND_DATA = "prf_title_data";
+	public static final String KEY_PRF_SHARED_DATA = "prf_title_data";
 	public static final String KEY_POINTS = "prf_points"; // number of points earned (seconds + hits + prises)
 	public static final String KEY_HOURS = "prf_hours"; // number of hours practicing
 	public static final String KEY_PRF_LEVEL = "prf_level";
@@ -47,14 +47,18 @@ public interface Const {
 	public static final String KEY_PRF_PROB_Y = "prf_prob_y"; // value -10;10 should be divided by 10
 	public static final String KEY_PRF_PROB_SURFACE = "prf_prob_surface"; // value 4:10 should be divided by 10
 
+	// gcb means Group Check Box
 	public static final String KEY_PRF_EX_S1 = "gcb_schulte_1_sequence";
 	public static final String KEY_PRF_EX_S2 = "gcb_schulte_2_sequences";
 	public static final String KEY_PRF_EX_S3 = "gcb_schulte_3_sequences";
 	public static final String KEY_PRF_EX_S4 = "gcb_schulte_4_mishmash";
 
+	/** PRFs for basics exercise */
+	public static final String KEY_PRF_EX_B1 = "gcb_bas_dot";
+
 	/** Enumerates types of Achievements*/
 	public static enum AchievementFlags {
-		/** any time of success exercise added to log */
+		/** any period of success exercise in seconds added to log */
 		SECONDS,
 		/** an Hour of practicing added */
 		HOURS,

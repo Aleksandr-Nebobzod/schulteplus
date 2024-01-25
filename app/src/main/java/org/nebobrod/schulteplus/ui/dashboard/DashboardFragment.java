@@ -71,26 +71,35 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		rgSource.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-				switch(checkedId)
-				{
-					case R.id.rb_local:
-						OrmUtils.achieveGet25(DashboardFragment.this::onComplete);
-						arrayAdapter = new AchievementsAdapter(getAppContext(), R.layout.fragment_dashboard_elv_item, listAchievement);
-						elvChart.setAdapter(arrayAdapter);
-
-						break;
-					case R.id.rb_www:
-						adapter = new ArrayAdapter<>(getAppContext(), R.layout.layout_one_textview, list);
-						elvChart.setAdapter(adapter);
-						AchievementsFbData.basicQueryValueListener(DashboardFragment.this::onCallback, list);
-						break;
-					default:
-						// do nothing
-				}
+				updateListView(checkedId);
 			}
 		});
 
 		return root;
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		updateListView(rgSource.getCheckedRadioButtonId());
+	}
+
+	private void updateListView(int checkedRadioButtonId) {
+		switch(checkedRadioButtonId)
+		{
+			case R.id.rb_local:
+				OrmUtils.achieveGet25(DashboardFragment.this::onComplete);
+				arrayAdapter = new AchievementsAdapter(getAppContext(), R.layout.fragment_dashboard_elv_item, listAchievement);
+				elvChart.setAdapter(arrayAdapter);
+				break;
+			case R.id.rb_www:
+				adapter = new ArrayAdapter<>(getAppContext(), R.layout.layout_one_textview, list);
+				elvChart.setAdapter(adapter);
+				AchievementsFbData.basicQueryValueListener(DashboardFragment.this::onCallback, list);
+				break;
+			default:
+				// do nothing
+		}
 	}
 
 	@Override
@@ -143,7 +152,6 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 			textView.setText((CharSequence) text);
 		}
 	}
-
 
 
 }

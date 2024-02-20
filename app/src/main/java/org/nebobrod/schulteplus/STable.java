@@ -195,7 +195,7 @@ public class STable {
 		float average = 0, rmsd = 0;
 		String results = "";	// this in seconds.00
 
-		turns = this.journal.size()-1;
+		turns = this.journal.size()-1; // 'cos 1-st position journal[0] means no turns (start record)
 		results += getRes().getString(R.string.lbl_turns) + ":" + tHtml()  + bHtml(""+ turns);
 
 		// time spent & average deviation
@@ -203,7 +203,8 @@ public class STable {
 			time += this.journal.get(i).time;
 			if (!this.journal.get(i).isCorrect) turnsMissed++;
 		}
-		if (turnsMissed != 0) { // if there are no missed turns do not show it
+		// if there are no missed turns do not show it
+		if (turnsMissed != 0) {
 			results += pHtml() + getRes().getString(R.string.lbl_turns_missed) + ":" + tHtml()  + cHtml( bHtml(""+ turnsMissed));
 		}
 		results += pHtml() + getRes().getString(R.string.lbl_time) + ":" + tHtml()  + bHtml(String.format("%.2f", (time /1000F)))
@@ -213,7 +214,7 @@ public class STable {
 		// root mean square deviation
 		for (int i=1; i<=turns; i++) {
 			rmsd += Math.pow ((average - this.journal.get(i).time), 2);
-//			Log.d(TAG, "getResults: RMSD " +i+ "_" + String.format("%.2f", rmsd) );
+//			Log.d(TAG, "getResults: RMSD " + i + "_" + String.format("%.2f", rmsd) );
 		}
 		rmsd = (float) Math.sqrt((float) (rmsd / turns));
 
@@ -246,7 +247,7 @@ public class STable {
 
 		public Turn(Long timeStamp, Long time, int expected, int x, int y, int position, boolean isCorrect) {
 			this.timeStamp = timeStamp;
-			this.time = time;
+			this.time = time; // num of nanoseconds since previous turn
 			this.expected = expected;
 			this.x = x;
 			this.y = y;
@@ -268,7 +269,7 @@ public class STable {
 					'}';
 		}
 	}
-	public List<Turn> journal = new ArrayList<Turn>();
+	public List<Turn> journal = new ArrayList<>();
 
 	/**
 	 * Answers was it correct cell? puts turn-data into journal
@@ -293,7 +294,7 @@ public class STable {
 	}
 
 	/**
-	 * This writes turn-data to local db (just extra)
+	 * This writes turn-data to local db (just for extra history assurance)
 	 * @param turn
 	 */
 	public void writeTurn (@NonNull Turn turn) {
@@ -302,7 +303,7 @@ public class STable {
 		try {
 			DatabaseHelper helper = new DatabaseHelper();
 			Dao<ClickGroup, Integer> dao = helper.getGroupDao();
-			dao.create(group);
+			dao.create(group); // TODO: 29.01.2024 move into ClickGroup with "this" as put-method 
 		} catch (SQLException | java.sql.SQLException e) {
 			throw new RuntimeException(e);
 		}

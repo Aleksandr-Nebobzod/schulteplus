@@ -24,6 +24,7 @@ import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.fbservices.AppExecutors;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /** Provides common methods working with local SchultePlus DB SQLite by ORMLite
@@ -39,11 +40,14 @@ public class OrmUtils implements DataRepository {
 	public synchronized void exResultPut(ExResult exResult) {
 	}
 
+	@Override
+	public List<ExResult> exResultGet25() {
+		return null;
+	}
 
 	public interface OrmGetCallback<R> {
 		void onComplete(R result);
 	}
-
 
 	public static synchronized void achievePut(String uid, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark) {
 		Achievement achievement = new Achievement();
@@ -57,13 +61,18 @@ public class OrmUtils implements DataRepository {
 		}
 	}
 
+	/**
+	 * return result of query to local db in background thread. play sound on success.
+	 * @param callback for main thread
+	 * @param <R> (check the reason of this)
+	 */
 	public static <R> void achieveGet25(OrmGetCallback<R> callback) {
 		final ArrayList[] arrayList = {null};
 
 		appExecutors.getDiskIO().execute(() -> {
 			final R result;
 			try {
-				Log.d(TAG, "checkInternetConnection: " + Thread.currentThread());
+				Log.d(TAG, "query to local db within: " + Thread.currentThread());
 //				result = callable.call();
 				Dao<Achievement, Integer> dao = getHelper().getAchievementDao();
 				QueryBuilder<Achievement, Integer> builder = dao.queryBuilder();

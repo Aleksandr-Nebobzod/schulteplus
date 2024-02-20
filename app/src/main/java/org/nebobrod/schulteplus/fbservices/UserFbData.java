@@ -43,12 +43,6 @@ public final class UserFbData {
 		void onCallback(@Nullable UserHelper fbDbUser);
 	}
 
-	public static void main(String[] args) throws IOException {
-		System.out.println("hello from test");
-		//println(Log.DEBUG, "main: run!", "main: run!");
-		//Log.d(TAG, "main: run!");
-	}
-
 	private  static void init () {
 		fbDatabase = FirebaseDatabase.getInstance(DB_URL);
 		//fbDatabase.setLogLevel(Logger.Level.INFO); // comment if no debugging... but it works strange

@@ -8,13 +8,15 @@
 
 package org.nebobrod.schulteplus.data;
 
+import java.util.List;
+
 /** Provides necessary methods for stored data
  */
 public interface DataRepository {
 
-	 void exResultPut(ExResult exResult);
+	void exResultPut(ExResult exResult);
 
-//	List<ExResult> getGameResults();
+	List<ExResult> exResultGet25();
 
 }
 

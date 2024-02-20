@@ -35,6 +35,7 @@ import java.io.Serializable;
  */
 @DatabaseTable
 public class Achievement implements Serializable {
+	private static final String TAG = "Achievement";
 
 	private static final long serialVersionUID = -7874823823497497001L;
 	public static final String DATE_FIELD_NAME = "dateTime";
@@ -122,10 +123,5 @@ public class Achievement implements Serializable {
 		this.specialMark = specialMark;
 
 		return this;
-
-
 	}
-
-
-
 }

@@ -7,6 +7,10 @@
  */
 
 package org.nebobrod.schulteplus.data;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /** Makes one entry point for different places to maintain data
  */
 public class DataRepositories implements DataRepository {
@@ -14,6 +18,11 @@ public class DataRepositories implements DataRepository {
 
 	@Override
 	public void exResultPut(ExResult exResult) {
-		
+
 	}
+
+	public List<ExResult> exResultGet25() {
+		return null;
+	}
+
 }

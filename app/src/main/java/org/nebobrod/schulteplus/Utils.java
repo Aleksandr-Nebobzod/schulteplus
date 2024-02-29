@@ -37,6 +37,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -437,6 +438,41 @@ public final class Utils extends Application {
 		return Utils.context;
 	}
 
+	// TODO: 28.02.2024 check author
+	public static int getStringId(String stringId) {
+		return getAppContext().getResources().getIdentifier(stringId, "string", getAppContext().getPackageName());
+	}
+	
+	public static String getString(String stringId) {
+		int sid = getStringId(stringId);
+		if (sid > 0) {
+			return getAppContext().getResources().getString(sid);
+		} else {
+			return "-";
+		}
+	}
 
+	/**
+	 * Puts into FirebaseCrashlytics
+	 * @param message log-record
+	 */
+	public static void logFbCrash(String message) {
+		FirebaseCrashlytics.getInstance().log(message);
+	}
 
+	/**
+	 * Puts into FirebaseCrashlytics
+	 * @param uid user identifier
+	 */
+	public static void userFbCrash(String uid) {
+		FirebaseCrashlytics.getInstance().setUserId(uid);
+	}
+
+	/**
+	 * Puts into FirebaseCrashlytics
+	 * @param e recorded Exception
+	 */
+	public static void exceptionFbCrash(Exception e) {
+		FirebaseCrashlytics.getInstance().recordException(e);
+	}
 }

@@ -6,27 +6,30 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package org.nebobrod.schulteplus.data;
+package org.nebobrod.schulteplus.fbservices;
 
 import org.nebobrod.schulteplus.Const;
+import org.nebobrod.schulteplus.data.DataRepository;
 
 import java.util.List;
 
-/** Makes one entry point for different places to maintain data
- */
-public class DataRepositories implements DataRepository {
+/** Provides common CRUD methods working on external SchultePlus DB by FirebaseFirestore
+ **/
+public class FbFsRepo implements DataRepository {
 
-	private static final OrmRepo ormLiteDataHandler = new OrmRepo(DatabaseHelper.getHelper());
-//	private static final FirestoreUtils firestoreDataHandler = new FirestoreUtils();
+	private static final String TAG = FbFsRepo.class.getSimpleName();
+
+	private static final AppExecutors appExecutors = new AppExecutors();
+
 
 
 	/**
 	 * Puts into a DataRepository
 	 *
-	 * @param result
+	 * @param result ExResult's child classes
 	 */
 	@Override
-	public void putResult(Object result) {
+	public<T> void putResult(T result) {
 
 	}
 

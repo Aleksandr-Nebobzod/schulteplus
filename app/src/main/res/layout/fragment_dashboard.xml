@@ -6,8 +6,8 @@
 	android:layout_height="match_parent"
 	tools:context=".ui.dashboard.DashboardFragment">
 	
-	<TextView
-		android:id="@+id/text_dashboard"
+	<Spinner
+		android:id="@+id/sp_dashboard"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
 		android:layout_marginStart="8dp"
@@ -15,7 +15,9 @@
 		android:layout_marginEnd="8dp"
 		android:autoSizeTextType="uniform"
 		android:padding="4dp"
-		android:textAlignment="center"
+		android:textAlignment="textStart"
+		android:contentDescription="@string/lbl_dashboard_report"
+		android:entries="@array/ex_type"
 		app:layout_constraintBottom_toBottomOf="@+id/rg_source"
 		app:layout_constraintEnd_toStartOf="@+id/rg_source"
 		app:layout_constraintStart_toStartOf="parent"
@@ -29,6 +31,7 @@
 		android:layout_height="wrap_content"
 		android:layout_margin="8dp"
 		android:orientation="horizontal"
+		android:isScrollContainer="true"
 		android:theme="@style/Theme.SchultePlus.Login"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintTop_toTopOf="parent">
@@ -58,11 +61,12 @@
 		android:layout_height="0dp"
 		android:layout_margin="8dp"
 		android:layout_marginBottom="100dp"
+		tools:listitem="@layout/fragment_dashboard_elv_item"
 		app:layout_constraintBottom_toBottomOf="@id/guideline"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/text_dashboard" />
-	
+		app:layout_constraintTop_toBottomOf="@+id/sp_dashboard" />
+		
 	<androidx.constraintlayout.widget.Guideline
 		android:id="@+id/guideline"
 		android:layout_width="wrap_content"

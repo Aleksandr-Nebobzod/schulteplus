@@ -201,5 +201,6 @@
 	<string name="prf_title_online">Online</string>
 	<string name="lbl_datasource_local">local</string>
 	<string name="lbl_datasource_www">www</string>
+	<string name="lbl_dashboard_report">Dashboard report</string>
 
 </resources>

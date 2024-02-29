@@ -71,8 +71,6 @@ public class UserDbPref {
 
 		this.objectMap = new HashMap<>();
 
-//		dbRead(null,this.uid);
-//		objectMap = getSubCollectionDocumentRef().get().getResult().getData();
 		getSubCollectionDocumentRef(null, exerciseRunner.getUid());
 	}
 

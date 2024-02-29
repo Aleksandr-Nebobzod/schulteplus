@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
-import org.nebobrod.schulteplus.data.OrmUtils;
+import org.nebobrod.schulteplus.data.OrmRepo;
 import org.nebobrod.schulteplus.fbservices.AchievementsFbData;
 import org.nebobrod.schulteplus.fbservices.UserDbPref;
 import org.nebobrod.schulteplus.fbservices.UserHelper;
@@ -60,6 +60,7 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 			userName = userHelper.getName();
 			userEmail = userHelper.getEmail();
 			if (uid.isEmpty()) uid = KEY_DEFAULT_USER_PREF;
+			userFbCrash(uid);
 		}
 		catch (Exception e){
 			Log.d(TAG, "ExerciseRunner: not enough data");
@@ -217,11 +218,11 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 		for (AchievementFlags flag: achieved) {
 			switch (flag) {
 				case SECONDS:
-					OrmUtils.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
+					OrmRepo.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
 					if (sharedData) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
 				break;
 				case HOURS:
-					OrmUtils.achievePut(  uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
+					OrmRepo.achievePut(  uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
 					if (sharedData) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
 				break;
 			}

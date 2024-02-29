@@ -8,42 +8,88 @@
 
 package org.nebobrod.schulteplus.data;
 
+import static org.nebobrod.schulteplus.Const.QUERY_COMMON_LIMIT;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.data.DatabaseHelper.getHelper;
 
 import android.database.SQLException;
 import android.media.MediaPlayer;
-import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ListView;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 
-import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.Const;
 import org.nebobrod.schulteplus.fbservices.AppExecutors;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-/** Provides common methods working with local SchultePlus DB SQLite by ORMLite
+/** Provides common CRUD methods working on local SchultePlus SQLite DB by ORMLite
  **/
-public class OrmUtils implements DataRepository {
+public class OrmRepo implements DataRepository {
 
 //	private static final String TAG = getClass().getSimpleName();
-	private static final String TAG = OrmUtils.class.getSimpleName();
+	private static final String TAG = OrmRepo.class.getSimpleName();
 
 	private static final AppExecutors appExecutors = new AppExecutors();
 
-	@Override
-	public synchronized void exResultPut(ExResult exResult) {
+	private final DatabaseHelper helper;
+
+	public OrmRepo(DatabaseHelper helper) {
+		this.helper = helper;
 	}
 
+	public<T> Dao<T, Integer>  getAnyDao(String className) {
+		Dao<T, Integer> dao;
+
+		try {
+			// getting method name like "getExResultBasicsDao"
+			String methodName = "get" + className + "Dao";
+			// getting method
+			Method daoMethod = helper.getClass().getMethod(methodName);
+
+			// Calling method to get Dao of object
+			dao = (Dao<T, Integer>) daoMethod.invoke(helper);
+		} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+
+		return dao;
+	}
+
+	/**
+	 * Puts into a DataRepository
+	 *
+	 * @param result ExResult's child classes
+	 */
 	@Override
-	public List<ExResult> exResultGet25() {
+	public<T> void putResult(T result) {
+		Dao<T, Integer> dao = getAnyDao(result.getClass().getSimpleName());
+
+		try {
+			// put the object into DB:
+			dao.create(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Gets from a DataRepository <p>
+	 * number of rows as defined in: {@link Const#QUERY_COMMON_LIMIT}
+	 */
+	@Override
+	public<T> List<T> getResultsLimited(Class<T> clazz) {
+
+
+
 		return null;
 	}
+
 
 	public interface OrmGetCallback<R> {
 		void onComplete(R result);
@@ -76,13 +122,12 @@ public class OrmUtils implements DataRepository {
 //				result = callable.call();
 				Dao<Achievement, Integer> dao = getHelper().getAchievementDao();
 				QueryBuilder<Achievement, Integer> builder = dao.queryBuilder();
-				builder.orderBy(Achievement.DATE_FIELD_NAME, false).limit(25L);
+				builder.orderBy(Achievement.DATE_FIELD_NAME, false).limit(QUERY_COMMON_LIMIT);
 				result = (R) dao.query(builder.prepare());
 
 				MediaPlayer mp = MediaPlayer.create(getAppContext(), org.nebobrod.schulteplus.R.raw.slow_whoop_bubble_pop);
 				mp.start();
 				mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-
 					@Override
 					public void onCompletion(MediaPlayer mPlayer) {
 						mPlayer.release();
@@ -129,14 +174,14 @@ public class OrmUtils implements DataRepository {
 */
 
 	public static ArrayList getAchievementList(){
-		Log.i(OrmUtils.class.getName(), "Show list again");
+		Log.i(OrmRepo.class.getName(), "Show list again");
 		try {
 			Dao<Achievement, Integer> dao = getHelper().getAchievementDao();
 			QueryBuilder<Achievement, Integer> builder = dao.queryBuilder();
-			builder.orderBy(Achievement.DATE_FIELD_NAME, false).limit(25L);
+			builder.orderBy(Achievement.DATE_FIELD_NAME, false).limit(QUERY_COMMON_LIMIT);
 			return (ArrayList) dao.query(builder.prepare());
 		} catch (Exception e) {
-			Log.i(OrmUtils.class.getName(), e.getMessage());
+			Log.i(OrmRepo.class.getName(), e.getMessage());
 			return null;
 		}
 	}

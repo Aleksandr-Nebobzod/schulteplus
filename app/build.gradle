@@ -1,6 +1,9 @@
 plugins {
-    id 'com.android.application'
+    // Add the Crashlytics Gradle plugin
+    id 'com.google.firebase.crashlytics'
+    // Make sure that you have the Google services Gradle plugin
     id 'com.google.gms.google-services'
+    id 'com.android.application'
 }
 
 //configurations.all {
@@ -73,6 +76,9 @@ android {
 }
 
 dependencies {
+    implementation("com.google.firebase:firebase-crashlytics:18.6.2")
+    implementation("com.google.firebase:firebase-analytics:21.5.1")
+//    implementation 'com.google.firebase:firebase-crash:16.2.1'
 //    implementation 'com.google.api-client:google-api-client:1.25.0'
 //    implementation 'com.google.api-client:google-api-client:1.23.0'
     implementation 'com.google.firebase:firebase-firestore:24.10.0'

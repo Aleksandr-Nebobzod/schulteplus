@@ -74,4 +74,30 @@
 		<item>#BFFF47</item>
 		<item>#30FF75</item>
 	</array>
+	
+	<array name="level_of_emotion_values" translatable="false">
+		<item>-2</item>
+		<item>-1</item>
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+	</array>
+	<string-array name="level_of_emotion_entries" translatable="true">
+		<item>Disgust</item>
+		<item>Annoyance</item>
+		<item>Equity</item>
+		<item>Interest</item>
+		<item>Ardour</item>
+	</string-array>
+	
+	<array name="level_of_energy_values" translatable="false">
+		<item>-1</item>
+		<item>0</item>
+		<item>1</item>
+	</array>
+	<string-array name="level_of_energy_entries" translatable="true">
+		<item>High</item>
+		<item>Normal</item>
+		<item>Low</item>
+	</string-array>
 </resources>

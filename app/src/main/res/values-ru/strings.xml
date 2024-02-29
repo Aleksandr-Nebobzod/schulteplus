@@ -23,11 +23,11 @@
 	<string name="txt_one_more_q">Ещё тренировка?</string>
 	<string name="lbl_show_password">Показывать пароль</string>
 	<string name="txt_settings">Настройки \nдля упражнений по таблицам Шульте со временем \n<b>будут обогащены</b> </string>
-	<string name="txt_news">Здесь вскоре \nбудет страничка новостей и полезные закрепы. \nА пока ссылочка с основаниями для разработки: \n"https://ru.wikipedia.org/wiki/Таблица_Шульте" </string>
+	<string name="txt_news">Будущая \nстраница новостей и полезных закрепов. \nА пока ссылка с основаниями для разработки: \n"https://ru.wikipedia.org/wiki/Таблица_Шульте" </string>
 	<string name="txt_notification_desc">Уведомления должны быть тут</string>
 	<string name="txt_dashboard_desc">Здесь будет развиваться перечень достижений</string>
-	<string name="lbl_bas_dbl_dot">Двойная Точка</string>
 	<string name="lbl_bas_dot">Точка</string>
+	<string name="lbl_bas_dbl_dot">Двойная Точка</string>
 	<string name="lbl_bas_circles_rb">Круги (кр/син)</string>
 	<string name="lbl_bas_circles_rb_lined">Круги вертикальные</string>
 	<string name="lbl_bas_circles_rb_crossed">Круги скрещенные</string>
@@ -180,4 +180,5 @@
 	<string name="prf_title_online">Онлайн</string>
 	<string name="lbl_datasource_www">Все</string>
 	<string name="lbl_datasource_local">Мои</string>
+	<string name="lbl_dashboard_report">Выбор отчёта</string>
 </resources>

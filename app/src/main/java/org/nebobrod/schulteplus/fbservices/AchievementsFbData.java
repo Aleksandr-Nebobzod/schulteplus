@@ -97,7 +97,7 @@ public class AchievementsFbData
 
 	public static void  basicQueryValueListener(final DashboardCallback dashboardCallback, ArrayList<Spanned> list) {
 		init();
-		Query freshAchievementsQuery = fbReference.limitToLast(QUERY_COMMON_LIMIT)
+		Query freshAchievementsQuery = fbReference.limitToLast((int) QUERY_COMMON_LIMIT)
 				.orderByChild("timeStamp");
 
 		// [START basic_query_value_listener]

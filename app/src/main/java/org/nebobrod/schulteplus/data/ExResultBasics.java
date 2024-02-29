@@ -8,31 +8,11 @@
 
 package org.nebobrod.schulteplus.data;
 
-public class ExResultBasics extends ExResult<ExResultBasics> {
+public class ExResultBasics extends ExResult{
 	private static final String TAG = "ExResultBasics";
 	/** No fields yet only numValue & comment are used */
 
-	public ExResultBasics(String exType, String exDescription, long numValue, String comment) {
-		super(exType, exDescription, numValue, comment);
-	}
-
-	@Override
-	public ExResultBasics getResult() {
-		return this;
-	}
-
-	@Override
-	// Taking updated values info this object
-	public void setResult(ExResultBasics result) {
-		this.exDescription = result.exDescription;
-		this.numValue = result.numValue;
-		this.comment = result.comment;
-	}
-
-	@Override
-	// Putting data into Repositories
-	public void putResult(ExResultBasics result) {
-		понял -- объекта нет!
-		DataRepositories.exResultPut(result);
+	public ExResultBasics(long numValue, int levelOfEmotion, int levelOfEnergy, String comment) {
+		super(numValue, levelOfEmotion, levelOfEnergy, comment);
 	}
 }

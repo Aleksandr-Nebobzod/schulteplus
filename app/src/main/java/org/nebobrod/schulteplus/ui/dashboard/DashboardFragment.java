@@ -1,6 +1,7 @@
 package org.nebobrod.schulteplus.ui.dashboard;
 
 import static org.nebobrod.schulteplus.Utils.getAppContext;
+import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.timeStampDateLocal;
 import static org.nebobrod.schulteplus.Utils.timeStampTimeLocal;
 
@@ -10,31 +11,39 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.data.Achievement;
-import org.nebobrod.schulteplus.data.OrmUtils;
+import org.nebobrod.schulteplus.data.DatabaseHelper;
+import org.nebobrod.schulteplus.data.ExResult;
+import org.nebobrod.schulteplus.data.ExResultBasics;
+import org.nebobrod.schulteplus.data.OrmRepo;
 import org.nebobrod.schulteplus.databinding.FragmentDashboardBinding;
 import org.nebobrod.schulteplus.fbservices.AchievementsFbData;
+import org.nebobrod.schulteplus.fbservices.AppExecutors;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardFragment extends Fragment implements AchievementsFbData.DashboardCallback, OrmUtils.OrmGetCallback {
+public class DashboardFragment extends Fragment implements AchievementsFbData.DashboardCallback, OrmRepo.OrmGetCallback {
 	private static final String TAG = "Dashboard";
 
 	private FragmentDashboardBinding binding;
-	ListView elvChart;
+	Spinner spDashboard;
 	RadioGroup rgSource;
+	ListView elvChart;
 	ArrayList<Spanned> list;
 	ArrayList<Achievement> listAchievement;
 	ArrayAdapter<Spanned> adapter;
@@ -48,15 +57,49 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		binding = FragmentDashboardBinding.inflate(inflater, container, false);
 		View root = binding.getRoot();
 
-		final TextView textView = binding.textDashboard;
-		textView.setText(R.string.txt_dashboard_desc);
-		dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+/*		{
+			// Spinner to choose the dashboard
+			spDashboard = binding.spDashboard;
+			// Language independent values
+			String[] exTypeValues = getRes().getStringArray(R.array.ex_type);
+			// Language-dependent entries based on spinner-entries array (which was values indeed)
+			int spLength = exTypeValues.length;
+			String[] exTypeEntries = new String[spLength];
+			for (int i = 0; i < spLength; i++) {
+				String newEntry = exTypeValues[i].replace("gcb_", "lbl_");
+				exTypeValues[i] = Utils.getString(newEntry);
+			}
+			// Create an ArrayAdapter using the string array and a default spinner layout
+			ArrayAdapter<CharSequence> spAdapter = new ArrayAdapter(
+					getAppContext(),
+					android.R.layout.simple_spinner_item,
+					exTypeEntries);
+			// set simple layout resource file for each item of spinner
+			spAdapter.setDropDownViewResource(
+					android.R.layout
+							.simple_spinner_dropdown_item);
+			// Set the ArrayAdapter data on the Spinner which binds data to spinner
+			spDashboard.setAdapter(spAdapter);
+			// Set livedata Key when Dashboard spinner changed
+			spDashboard.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+				@Override
+				public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+					dashboardViewModel.setKey(exTypeValues[position]);
+				}
+
+				@Override
+				public void onNothingSelected(AdapterView<?> adapterView) {
+					// do nothing
+				}
+			});
+		}*/
+
 
 		elvChart = binding.elvDashboard;
 		rgSource = binding.rgSource;
 
 //		local datasource
-		listAchievement = OrmUtils.getAchievementList();
+		listAchievement = OrmRepo.getAchievementList();
 		arrayAdapter = new AchievementsAdapter(getAppContext(), R.layout.fragment_dashboard_elv_item, listAchievement);
 		elvChart.setAdapter(arrayAdapter);
 		arrayAdapter.notifyDataSetChanged();
@@ -84,11 +127,12 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		updateListView(rgSource.getCheckedRadioButtonId());
 	}
 
+
 	private void updateListView(int checkedRadioButtonId) {
 		switch(checkedRadioButtonId)
 		{
 			case R.id.rb_local:
-				OrmUtils.achieveGet25(DashboardFragment.this::onComplete);
+				OrmRepo.achieveGet25(DashboardFragment.this::onComplete);
 				arrayAdapter = new AchievementsAdapter(getAppContext(), R.layout.fragment_dashboard_elv_item, listAchievement);
 				elvChart.setAdapter(arrayAdapter);
 				break;
@@ -152,6 +196,4 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 			textView.setText((CharSequence) text);
 		}
 	}
-
-
 }

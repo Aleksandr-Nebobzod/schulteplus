@@ -14,7 +14,7 @@ public interface Const {
 	byte 	SEQ4_BLUE = 42;
 	byte 	SEQ4_YELLOW = 43;
 	byte 	SEQ4_GREEN = 44;
-	int 	QUERY_COMMON_LIMIT = 25;
+	long 	QUERY_COMMON_LIMIT = 25;
 
 	// set of prf related constants
 	String KEY_USER_NAME = "prf_user_name";
@@ -47,13 +47,14 @@ public interface Const {
 	String KEY_PRF_PROB_Y = "prf_prob_y"; // value -10;10 should be divided by 10
 	String KEY_PRF_PROB_SURFACE = "prf_prob_surface"; // value 4:10 should be divided by 10
 
-	// gcb means Group Check Box
+	/* PRFs for the schulte exercises */
+	/* gcb means Group Check Box  */
 	String KEY_PRF_EX_S1 = "gcb_schulte_1_sequence";
 	String KEY_PRF_EX_S2 = "gcb_schulte_2_sequences";
 	String KEY_PRF_EX_S3 = "gcb_schulte_3_sequences";
 	String KEY_PRF_EX_S4 = "gcb_schulte_4_mishmash";
 
-	/** PRFs for the basic exercises */
+	/* PRFs for the basic exercises */
 	String KEY_PRF_EX_B1 = "gcb_bas_dot";
 	String KEY_PRF_EX_B2 = "gcb_bas_dbl_dot";
 	String KEY_PRF_EX_B3 = "gcb_bas_pyramidot";
@@ -85,7 +86,6 @@ public interface Const {
 		RECORD_PUBLIC,
 		/** added when an aim is reached */
 		AIM
-
 	}
 
 }

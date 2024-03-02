@@ -17,11 +17,15 @@ import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 
 import org.nebobrod.schulteplus.Const;
+import org.nebobrod.schulteplus.ExerciseRunner;
 import org.nebobrod.schulteplus.fbservices.AppExecutors;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -30,7 +34,6 @@ import java.util.List;
 /** Provides common CRUD methods working on local SchultePlus SQLite DB by ORMLite
  **/
 public class OrmRepo implements DataRepository {
-
 //	private static final String TAG = getClass().getSimpleName();
 	private static final String TAG = OrmRepo.class.getSimpleName();
 
@@ -38,8 +41,8 @@ public class OrmRepo implements DataRepository {
 
 	private final DatabaseHelper helper;
 
-	public OrmRepo(DatabaseHelper helper) {
-		this.helper = helper;
+	public OrmRepo() {
+		this.helper = DatabaseHelper.getHelper();
 	}
 
 	public<T> Dao<T, Integer>  getAnyDao(String className) {
@@ -83,11 +86,46 @@ public class OrmRepo implements DataRepository {
 	 * number of rows as defined in: {@link Const#QUERY_COMMON_LIMIT}
 	 */
 	@Override
-	public<T> List<T> getResultsLimited(Class<T> clazz) {
+	public<T> List<T> getResultsLimited(Class<T> clazz, String exType) {
+		try {
+			// get name of data-class
+			String className = clazz.getSimpleName();
+			// get dao-method name
+			String methodName = "get" + className + "Dao";
+			// get dao-method by name
+			Method daoMethod = helper.getClass().getMethod(methodName);
 
+			// call method to get Dao of clazz
+			Dao<T, Integer> dao = (Dao<T, Integer>) daoMethod.invoke(helper);
 
+			// Prepare the Query
+			QueryBuilder<T, Integer> qb = dao.queryBuilder();
+			Where where = qb.where();
+			Field field;
+			String fieldName;
 
-		return null;
+			// uid field must be filtered
+			field = clazz.getDeclaredField("UID_FIELD_NAME");
+			fieldName = (String) field.get(null);
+			where.eq(fieldName, ExerciseRunner.getUserHelper().getUid());
+
+			// and
+			where.and();
+			// exType field must be filtered
+			field = clazz.getDeclaredField("EXTYPE_FIELD_NAME");
+			fieldName = (String) field.get(null);
+			where.eq(fieldName, exType);
+
+//			PreparedQuery<T> preparedQuery = qb.prepare();
+
+			// return result of query
+//			return dao.queryBuilder().limit(QUERY_COMMON_LIMIT).query();
+			return qb.limit(QUERY_COMMON_LIMIT).query();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 
 

@@ -12,7 +12,7 @@
 
 		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb" app:key="gcb_bas_circles_rb" app:defaultValue="false" app:icon="@drawable/ic_circles_rb"  app:allowDividerAbove="true"/>
 		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb_lined" app:key="gcb_bas_circles_rb_lined" app:defaultValue="false" app:enabled="false" />
-		<CheckBoxPreference app:title="@string/lbl_bas_sg_khao_manee" app:key="gcb_bas_khao_manee" app:defaultValue="false" app:enabled="true"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_khao_manee" app:key="gcb_bas_khao_manee" app:defaultValue="false" app:enabled="true"/>
 		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb_crossed" app:key="gcb_bas_circles_rb_crossed" app:defaultValue="false" app:enabled="false" app:allowDividerBelow="true"/>
 		
 		<CheckBoxPreference app:title="@string/lbl_bas_necker_cube" app:key="gcb_bas_necker_cube" app:defaultValue="false" app:icon="@drawable/ic_basics2_black_24dp"  app:allowDividerAbove="true"/>

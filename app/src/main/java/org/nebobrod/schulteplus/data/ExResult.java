@@ -19,7 +19,7 @@ import org.nebobrod.schulteplus.ExerciseRunner;
 import java.io.Serializable;
 
 /**
- * Uniform class for Exercise Results of:
+ * Uniform class for Exercise Results of any exercise
  */
 @DatabaseTable
 public class ExResult implements Serializable {
@@ -27,13 +27,15 @@ public class ExResult implements Serializable {
 
 	private static final long serialVersionUID = -7874823823497497002L;
 	public static final String DATE_FIELD_NAME = "dateTime";
+	public static final String UID_FIELD_NAME = "uid";
+	public static final String EXTYPE_FIELD_NAME = "exType";
 
 	@DatabaseField(generatedId = true)
 	private Integer id; // transactID()
 	@DatabaseField
-	private String uid;
+	private String uid; // Used as a filter for local data
 	@DatabaseField
-	private String name; // UserName is "" for local data
+	private String name; // UserName
 	@DatabaseField
 	private long timeStamp;
 	@DatabaseField
@@ -74,6 +76,7 @@ public class ExResult implements Serializable {
 	@DatabaseField
 	private float rmsd; // Root-mean-square deviation as a sign of stability & rhythm in exercises
 
+	public ExResult() {}
 	public ExResult(long numValue, int levelOfEmotion, int levelOfEnergy, String comment) {
 //		this.id = ((Long) Utils.transactID()).intValue(); //
 		// common exercise-defined fields
@@ -210,5 +213,17 @@ public class ExResult implements Serializable {
 
 	public void setRmsd(float rmsd) {
 		this.rmsd = rmsd;
+	}
+
+	@Override
+	public String toString() {
+		return "ExResult{" +
+				"id=" + id +
+				", dateTime='" + dateTime + '\'' +
+				", exType='" + exType + '\'' +
+				", numValue=" + numValue +
+				", comment='" + comment + '\'' +
+				", turns=" + turns +
+				'}';
 	}
 }

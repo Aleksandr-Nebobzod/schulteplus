@@ -38,6 +38,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private Dao<ClickGroup, Integer> groupDao = null;
 	private Dao<ClickCount, Integer> clickDao = null;
 	private Dao<Achievement, Integer> achievementDao = null;
+	private Dao<ExResult, Integer> exResultDao = null;
 
 	private static final AtomicInteger usageCounter = new AtomicInteger(0);
 
@@ -58,6 +59,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, ClickGroup.class);
 			TableUtils.createTable(connectionSource, ClickCount.class);
 			TableUtils.createTable(connectionSource, Achievement.class);
+			TableUtils.createTable(connectionSource, ExResult.class);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Unable to create datbases", e);
 		}
@@ -81,6 +83,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, ClickGroup.class, true);
 			TableUtils.dropTable(connectionSource, ClickCount.class, true);
 			TableUtils.dropTable(connectionSource, Achievement.class, true);
+			TableUtils.dropTable(connectionSource, ExResult.class, true);
 			onCreate(sqliteDatabase, connectionSource);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Unable to upgrade database from version " + oldVer + " to new "
@@ -109,6 +112,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return achievementDao;
 	}
 
+	public Dao<ExResult, Integer> getExResultDao() throws SQLException {
+		if (exResultDao == null) {
+			exResultDao = getDao(ExResult.class);
+		}
+		return exResultDao;
+	}
+
 	/**
 	 * Close the database connections and clear any cached DAOs. For each call to {@link #getHelper()}, there
 	 * should be 1 and only 1 call to this method. If there were 3 calls to {@link #getHelper()} then on the 3rd
@@ -121,6 +131,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			groupDao = null;
 			clickDao = null;
 			achievementDao = null;
+			exResultDao = null;
 			helper = null;
 		}
 	}

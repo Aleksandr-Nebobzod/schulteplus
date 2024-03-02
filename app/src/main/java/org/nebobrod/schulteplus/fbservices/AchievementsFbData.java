@@ -28,7 +28,7 @@ import static org.nebobrod.schulteplus.Const.*;
 /** Achievements datasource in Realtime Database Firestore */
 public class AchievementsFbData
 {
-	private static final String TAG = "UserData";
+	private static final String TAG = "AchievementsFbData";
 	private static final String DB_PATH = "achievements";
 	static FirebaseDatabase fbDatabase;
 	static DatabaseReference fbReference;

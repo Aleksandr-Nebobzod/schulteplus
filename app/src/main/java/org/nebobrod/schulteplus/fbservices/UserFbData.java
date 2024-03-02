@@ -27,7 +27,7 @@ import java.io.IOException;
  * Realtime Database's copy of FirebaseUser from Authentication db
  * */
 public final class UserFbData {
-	private static final String TAG = "UserData";
+	private static final String TAG = "UserFbData";
 	public static final String DB_URL = "https://schulte-plus-default-rtdb.europe-west1.firebasedatabase.app";
 	private static final String DB_PATH = "users";
 	static FirebaseDatabase fbDatabase;

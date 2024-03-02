@@ -7,6 +7,7 @@ import static org.nebobrod.schulteplus.Utils.timeStampTimeLocal;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +21,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.nebobrod.schulteplus.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.data.Achievement;
@@ -35,12 +38,15 @@ import org.nebobrod.schulteplus.fbservices.AchievementsFbData;
 import org.nebobrod.schulteplus.fbservices.AppExecutors;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DashboardFragment extends Fragment implements AchievementsFbData.DashboardCallback, OrmRepo.OrmGetCallback {
 	private static final String TAG = "Dashboard";
 
+	DashboardViewModel dashboardViewModel;
 	private FragmentDashboardBinding binding;
+	String[] exTypeValues, exTypeEntries; // Arrays for spinner exType
 	Spinner spDashboard;
 	RadioGroup rgSource;
 	ListView elvChart;
@@ -51,35 +57,42 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 
 	public View onCreateView(@NonNull LayoutInflater inflater,
 							 ViewGroup container, Bundle savedInstanceState) {
-		DashboardViewModel dashboardViewModel =
+		dashboardViewModel =
 				new ViewModelProvider(this).get(DashboardViewModel.class);
 
 		binding = FragmentDashboardBinding.inflate(inflater, container, false);
 		View root = binding.getRoot();
 
-/*		{
-			// Spinner to choose the dashboard
+		// Watch for LiveData and refresh ExResult UI
+		dashboardViewModel.getResultsLiveData().observe(getViewLifecycleOwner(), results -> {
+			adapter = new ArrayAdapter<>(
+					this.getActivity(), R.layout.layout_one_textview, exResultToSpanned(results));
+			elvChart.setAdapter(adapter);
+		});
+
+		{	// Spinner to choose the dashboard (Achievements or an ExType)
 			spDashboard = binding.spDashboard;
 			// Language independent values
-			String[] exTypeValues = getRes().getStringArray(R.array.ex_type);
+			exTypeValues = getRes().getStringArray(R.array.ex_type);
 			// Language-dependent entries based on spinner-entries array (which was values indeed)
 			int spLength = exTypeValues.length;
-			String[] exTypeEntries = new String[spLength];
+			exTypeEntries = new String[spLength];
 			for (int i = 0; i < spLength; i++) {
 				String newEntry = exTypeValues[i].replace("gcb_", "lbl_");
-				exTypeValues[i] = Utils.getString(newEntry);
+				exTypeEntries[i] = Utils.getString(newEntry);
 			}
+
 			// Create an ArrayAdapter using the string array and a default spinner layout
 			ArrayAdapter<CharSequence> spAdapter = new ArrayAdapter(
 					getAppContext(),
 					android.R.layout.simple_spinner_item,
 					exTypeEntries);
 			// set simple layout resource file for each item of spinner
-			spAdapter.setDropDownViewResource(
-					android.R.layout
-							.simple_spinner_dropdown_item);
+			// spAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
 			// Set the ArrayAdapter data on the Spinner which binds data to spinner
 			spDashboard.setAdapter(spAdapter);
+
 			// Set livedata Key when Dashboard spinner changed
 			spDashboard.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 				@Override
@@ -92,7 +105,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 					// do nothing
 				}
 			});
-		}*/
+		}
 
 
 		elvChart = binding.elvDashboard;
@@ -121,28 +134,62 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		return root;
 	}
 
+	private ArrayList<Spanned> exResultToSpanned(List<? extends ExResult> results) {
+		// get array from our LiveData
+		Object[] resList;
+		if (results == null) {
+			resList = new ExResult[1];
+			resList[0] = new ExResult(100, 0, 0, "no");
+		} else {
+			resList = results.stream().toArray();
+		}
+		ArrayList<Spanned> listSpanned = new ArrayList<>();
+		// collect list of Spanned
+		for (Object o:
+				resList) {
+			listSpanned.add(Html.fromHtml(o.toString()));
+		}
+		return listSpanned;
+	}
+
 	@Override
 	public void onResume() {
 		super.onResume();
+		// Set chosen Item in the spinner
+		for (int i = 0; i < exTypeValues.length; i++) {
+			if (ExerciseRunner.getExType().equals(exTypeValues[i])) {
+				spDashboard.setSelection(i);
+			}
+		}
 		updateListView(rgSource.getCheckedRadioButtonId());
 	}
 
-
 	private void updateListView(int checkedRadioButtonId) {
-		switch(checkedRadioButtonId)
-		{
-			case R.id.rb_local:
-				OrmRepo.achieveGet25(DashboardFragment.this::onComplete);
-				arrayAdapter = new AchievementsAdapter(getAppContext(), R.layout.fragment_dashboard_elv_item, listAchievement);
-				elvChart.setAdapter(arrayAdapter);
-				break;
-			case R.id.rb_www:
-				adapter = new ArrayAdapter<>(getAppContext(), R.layout.layout_one_textview, list);
-				elvChart.setAdapter(adapter);
-				AchievementsFbData.basicQueryValueListener(DashboardFragment.this::onCallback, list);
-				break;
-			default:
-				// do nothing
+		if (dashboardViewModel.getKey().getValue().equals("gcb_achievements")) {
+			// only for Achievements yet
+			switch(checkedRadioButtonId)
+			{
+				case R.id.rb_local:
+					OrmRepo.achieveGet25(DashboardFragment.this::onComplete);
+					arrayAdapter = new AchievementsAdapter(getAppContext(), R.layout.fragment_dashboard_elv_item, listAchievement);
+					elvChart.setAdapter(arrayAdapter);
+					break;
+				case R.id.rb_www:
+					adapter = new ArrayAdapter<>(getAppContext(), R.layout.layout_one_textview, list);
+					elvChart.setAdapter(adapter);
+					AchievementsFbData.basicQueryValueListener(DashboardFragment.this::onCallback, list);
+					break;
+				default:
+					// do nothing
+			}
+		} else {
+			// fetch from local DB
+			dashboardViewModel.fetchResultsLimited(ExResult.class);
+			adapter = new ArrayAdapter<>(
+					getAppContext(),
+					R.layout.layout_one_textview,
+					exResultToSpanned(dashboardViewModel.getResultsLiveData().getValue()));
+			elvChart.setAdapter(adapter);
 		}
 	}
 

@@ -1,6 +1,112 @@
 #
-# generated on 2023/12/22 07:09:27
+# generated on 2024/03/01 02:26:09
 #
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.ExResult
+tableName=exresult
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uid
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=dateTime
+# --field-end--
+# --field-start--
+fieldName=exType
+# --field-end--
+# --field-start--
+fieldName=exDescription
+# --field-end--
+# --field-start--
+fieldName=numValue
+# --field-end--
+# --field-start--
+fieldName=levelOfEmotion
+# --field-end--
+# --field-start--
+fieldName=levelOfEnergy
+# --field-end--
+# --field-start--
+fieldName=comment
+# --field-end--
+# --field-start--
+fieldName=turns
+# --field-end--
+# --field-start--
+fieldName=turnsMissed
+# --field-end--
+# --field-start--
+fieldName=average
+# --field-end--
+# --field-start--
+fieldName=rmsd
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.ExResultSchulte
+tableName=exresultschulte
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uid
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=dateTime
+# --field-end--
+# --field-start--
+fieldName=exType
+# --field-end--
+# --field-start--
+fieldName=exDescription
+# --field-end--
+# --field-start--
+fieldName=numValue
+# --field-end--
+# --field-start--
+fieldName=levelOfEmotion
+# --field-end--
+# --field-start--
+fieldName=levelOfEnergy
+# --field-end--
+# --field-start--
+fieldName=comment
+# --field-end--
+# --field-start--
+fieldName=turns
+# --field-end--
+# --field-start--
+fieldName=turnsMissed
+# --field-end--
+# --field-start--
+fieldName=average
+# --field-end--
+# --field-start--
+fieldName=rmsd
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
 # --table-start--
 dataClass=org.nebobrod.schulteplus.data.ClickCount
 tableName=clickcount
@@ -40,6 +146,59 @@ generatedId=true
 # --field-end--
 # --field-start--
 fieldName=name
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.ExResultBasics
+tableName=exresultbasics
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uid
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=dateTime
+# --field-end--
+# --field-start--
+fieldName=exType
+# --field-end--
+# --field-start--
+fieldName=exDescription
+# --field-end--
+# --field-start--
+fieldName=numValue
+# --field-end--
+# --field-start--
+fieldName=levelOfEmotion
+# --field-end--
+# --field-start--
+fieldName=levelOfEnergy
+# --field-end--
+# --field-start--
+fieldName=comment
+# --field-end--
+# --field-start--
+fieldName=turns
+# --field-end--
+# --field-start--
+fieldName=turnsMissed
+# --field-end--
+# --field-start--
+fieldName=average
+# --field-end--
+# --field-start--
+fieldName=rmsd
 # --field-end--
 # --table-fields-end--
 # --table-end--

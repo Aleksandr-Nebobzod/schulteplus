@@ -20,6 +20,6 @@ public interface DataRepository {
 	/** Gets from a DataRepository <p>
 	 * number of rows as defined in: {@link org.nebobrod.schulteplus.Const#QUERY_COMMON_LIMIT} <p>
 	 * way to call: <code>List< ExResultBasics > results = getResultsLimited(ExResultBasics.class);</code>*/
-	public<T> List<T> getResultsLimited(Class<T> clazz);
+	public<T> List<T> getResultsLimited(Class<T> clazz, String exType);
 }
 

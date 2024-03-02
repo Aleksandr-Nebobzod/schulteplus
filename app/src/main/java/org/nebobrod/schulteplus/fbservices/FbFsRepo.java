@@ -8,6 +8,9 @@
 
 package org.nebobrod.schulteplus.fbservices;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.nebobrod.schulteplus.Const;
 import org.nebobrod.schulteplus.data.DataRepository;
 
@@ -16,11 +19,10 @@ import java.util.List;
 /** Provides common CRUD methods working on external SchultePlus DB by FirebaseFirestore
  **/
 public class FbFsRepo implements DataRepository {
-
 	private static final String TAG = FbFsRepo.class.getSimpleName();
 
-	private static final AppExecutors appExecutors = new AppExecutors();
-
+	static FirebaseDatabase fbDatabase;
+	static DatabaseReference fbReference;
 
 
 	/**
@@ -38,7 +40,7 @@ public class FbFsRepo implements DataRepository {
 	 * number of rows as defined in: {@link Const#QUERY_COMMON_LIMIT}
 	 */
 	@Override
-	public<T> List<T> getResultsLimited(Class<T> clazz) {
+	public<T> List<T> getResultsLimited(Class<T> clazz, String exType) {
 		return null;
 	}
 }

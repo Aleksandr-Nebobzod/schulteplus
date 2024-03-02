@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class DataRepositories implements DataRepository {
 
-	private static final OrmRepo ormLiteDataHandler = new OrmRepo(DatabaseHelper.getHelper());
+	private static final OrmRepo ormLiteDataHandler = new OrmRepo();
 //	private static final FirestoreUtils firestoreDataHandler = new FirestoreUtils();
 
 
@@ -35,7 +35,7 @@ public class DataRepositories implements DataRepository {
 	 * number of rows as defined in: {@link Const#QUERY_COMMON_LIMIT}
 	 */
 	@Override
-	public<T> List<T> getResultsLimited(Class<T> clazz) {
+	public<T> List<T> getResultsLimited(Class<T> clazz, String exType) {
 		return null;
 	}
 }

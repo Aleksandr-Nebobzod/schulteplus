@@ -8,11 +8,27 @@
 
 package org.nebobrod.schulteplus.data;
 
+import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.Utils;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class ExResultBasics extends ExResult{
 	private static final String TAG = "ExResultBasics";
 	/** No fields yet only numValue & comment are used */
 
-	public ExResultBasics(long numValue, int levelOfEmotion, int levelOfEnergy, String comment) {
+	public ExResultBasics(long numValue, int events, int levelOfEmotion, int levelOfEnergy, String comment) {
 		super(numValue, levelOfEmotion, levelOfEnergy, comment);
+		this.setTurns(events);
+	}
+
+	@Override
+	public Map<String, String> toMap() {
+		Map<String, String> stringMap = new LinkedHashMap<>();
+		stringMap = super.toMap();
+		stringMap.put(Utils.getRes().getString(R.string.lbl_events), turns() + "");
+
+		return stringMap;
 	}
 }

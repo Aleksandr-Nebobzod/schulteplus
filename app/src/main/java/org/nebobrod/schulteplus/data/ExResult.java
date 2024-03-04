@@ -8,15 +8,18 @@
 
 package org.nebobrod.schulteplus.data;
 
-import static org.nebobrod.schulteplus.Utils.timeStamp;
 import static org.nebobrod.schulteplus.Utils.timeStampFormattedLocal;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import org.nebobrod.schulteplus.ExerciseRunner;
+import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.Utils;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Uniform class for Exercise Results of any exercise
@@ -63,12 +66,12 @@ public class ExResult implements Serializable {
 	@DatabaseField
 	private int levelOfEnergy;
 	@DatabaseField
-	private String comment;
+	private String note;
 
 
 	// section of Schulte-exercises data:
 	@DatabaseField
-	private int turns;
+	private int turns; // also use as number of events in Basics
 	@DatabaseField
 	private int turnsMissed;
 	@DatabaseField
@@ -77,7 +80,7 @@ public class ExResult implements Serializable {
 	private float rmsd; // Root-mean-square deviation as a sign of stability & rhythm in exercises
 
 	public ExResult() {}
-	public ExResult(long numValue, int levelOfEmotion, int levelOfEnergy, String comment) {
+	public ExResult(long numValue, int levelOfEmotion, int levelOfEnergy, String note) {
 //		this.id = ((Long) Utils.transactID()).intValue(); //
 		// common exercise-defined fields
 		this.uid = ExerciseRunner.getUserHelper().getUid();
@@ -91,7 +94,7 @@ public class ExResult implements Serializable {
 		this.numValue = numValue;
 		this.levelOfEmotion = levelOfEmotion;
 		this.levelOfEnergy = levelOfEnergy;
-		this.comment = comment;
+		this.note = note;
 	}
 
 	public Integer id() {
@@ -176,11 +179,11 @@ public class ExResult implements Serializable {
 	}
 
 	public String comment() {
-		return comment;
+		return note;
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	public void setNote(String note) {
+		this.note = note;
 	}
 
 	public int turns() {
@@ -222,8 +225,24 @@ public class ExResult implements Serializable {
 				", dateTime='" + dateTime + '\'' +
 				", exType='" + exType + '\'' +
 				", numValue=" + numValue +
-				", comment='" + comment + '\'' +
+				", comment='" + note + '\'' +
 				", turns=" + turns +
 				'}';
+	}
+
+	public Map<String, String> toMap() {
+		Map<String, String> stringMap = new LinkedHashMap<>();
+
+		stringMap.put(Utils.getRes().getString(R.string.lbl_time), String.format("%.2f", (numValue /1000F)));
+
+//		stringMap.put(Utils.getRes().getString(R.string.lbl_turns_missed), turnsMissed + "");
+//		stringMap.put(Utils.getRes().getString(R.string.lbl_average), String.format("%.2f", (average /1000F)));
+//		stringMap.put(Utils.getRes().getString(R.string.lbl_sd), String.format("%.2f", (rmsd /1000F)));
+
+//		stringMap.put(Utils.getRes().getString(R.string.lbl_level_of_emotion), levelOfEmotion + "");
+//		stringMap.put(Utils.getRes().getString(R.string.lbl_level_of_energy), levelOfEnergy + "");
+//		stringMap.put(Utils.getRes().getString(R.string.lbl_note), note + "");
+
+		return stringMap;
 	}
 }

@@ -21,13 +21,12 @@ public class DataRepositories implements DataRepository {
 
 
 	/**
-	 * Puts into a DataRepository
-	 *
+	 * Puts into a DataRepositories
 	 * @param result
 	 */
 	@Override
 	public void putResult(Object result) {
-
+		ormLiteDataHandler.putResult(result);
 	}
 
 	/**

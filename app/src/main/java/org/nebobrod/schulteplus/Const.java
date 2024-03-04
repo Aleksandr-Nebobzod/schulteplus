@@ -49,12 +49,14 @@ public interface Const {
 
 	/* PRFs for the schulte exercises */
 	/* gcb means Group Check Box  */
+	String KEY_PRF_EX_S0 = "gcb_sch";
 	String KEY_PRF_EX_S1 = "gcb_schulte_1_sequence";
 	String KEY_PRF_EX_S2 = "gcb_schulte_2_sequences";
 	String KEY_PRF_EX_S3 = "gcb_schulte_3_sequences";
 	String KEY_PRF_EX_S4 = "gcb_schulte_4_mishmash";
 
 	/* PRFs for the basic exercises */
+	String KEY_PRF_EX_B0 = "gcb_bas";
 	String KEY_PRF_EX_B1 = "gcb_bas_dot";
 	String KEY_PRF_EX_B2 = "gcb_bas_dbl_dot";
 	String KEY_PRF_EX_B3 = "gcb_bas_pyramidot";

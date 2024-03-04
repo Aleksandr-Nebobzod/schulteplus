@@ -66,8 +66,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	/**
-	 * Get the helper, possibly constructing it if necessary. For each call to this method, there should be 1 and only 1
-	 * call to {@link #close()}.
+	 * Get the helper, possibly constructing it if necessary. For each call to this method,
+	 * there should be 1 and only 1 call to {@link #close()}.
 	 */
 	public static synchronized DatabaseHelper getHelper() {
 		if (helper == null) {

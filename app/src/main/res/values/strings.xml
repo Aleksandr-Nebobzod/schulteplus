@@ -204,5 +204,9 @@
 	<string name="lbl_datasource_local">local</string>
 	<string name="lbl_datasource_www">www</string>
 	<string name="lbl_dashboard_report">Dashboard report</string>
+	<string name="lbl_events_num">Events</string>
+	<string name="lbl_level_of_emotion">Emotion</string>
+	<string name="lbl_level_of_energy">Energy</string>
+	<string name="lbl_note">Comment</string>
 
 </resources>

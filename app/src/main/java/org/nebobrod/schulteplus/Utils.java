@@ -10,8 +10,10 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Message;
 import android.provider.Settings;
 import android.text.Html;
 import android.text.SpannableString;
@@ -20,9 +22,12 @@ import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
@@ -31,6 +36,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -43,6 +50,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -316,49 +324,140 @@ public final class Utils extends Application {
 		View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
 
 		Snackbar snackbar = Snackbar.make(rootView, message, Snackbar.LENGTH_INDEFINITE);
+
+		// Ensure we have a listener
 		if (listener==null) { // It seems that this code is redundant
 			listener = new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
-					; //  nothing
+					//  nothing
+					snackbar.dismiss();
 				}
 			};
 		}
-
 		snackbar.setAction(getRes().getString(R.string.lbl_ok), listener);
 
-				View snackbarView = snackbar.getView();
+		// Set 7 rows allowed in snackbar
+		View snackbarView = snackbar.getView();
 		TextView tv= (TextView) snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
 		tv.setMaxLines(7);
 
+		// Show
 		snackbar.show();
 	}
 
-	public static void resultDialog(Context context, String s, @Nullable DialogInterface.OnClickListener okListener, @Nullable DialogInterface.OnClickListener cancelListener) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+	/**
+	 * <b>"OK"</b> means Continue or restart <p> when <b>"No"</b> means stop the parent Activity and exit.
+	 * @param context1 really necessary as SchulteActivity02.this
+	 * @param resultsMap set of key-value Pairs to fill internal result table
+	 * @param strMessage
+	 * @param okListener
+	 * @param cancelListener
+	 */
+	public static void resultDialog(Context context1,
+									@Nullable Map<String, String> resultsMap,
+									String strMessage,
+									@Nullable DialogInterface.OnClickListener okListener,
+									@Nullable DialogInterface.OnClickListener cancelListener) {
+		AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context1);
+//		, androidx.appcompat.R.style.Theme_AppCompat_Dialog
+//		, androidx.appcompat.R.attr.dialogTheme);
 
-		final FrameLayout frameView = new FrameLayout(context);
+		final FrameLayout frameView = new FrameLayout(context1);
 		builder.setView(frameView);
+		builder.setPositiveButton(getRes().getText(R.string.lbl_ok), null);
+
 		final AlertDialog alertDialog = builder.create();
+		alertDialog.setCancelable(false);
+		alertDialog.setCanceledOnTouchOutside(false);
+		alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		alertDialog.getWindow().setDimAmount(0.2F);
 
-		//alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-		alertDialog.getWindow().setDimAmount(0.5F);
+		// Put the dialog layout to bottom of the screen
+		Window window = alertDialog.getWindow();
+		WindowManager.LayoutParams wlp = window.getAttributes();
+		wlp.gravity = Gravity.BOTTOM;
+//		wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+		window.setAttributes(wlp);
 
+		// Variables
 		LayoutInflater inflater = alertDialog.getLayoutInflater();
-		View dialoglayout = inflater.inflate(R.layout.activity_schulte_result_df, frameView);
+		View layout = inflater.inflate(R.layout.activity_schulte_result_df, frameView);
 		TextView txtTitle, txtMessage;
-		Button btnOk, btnCancel;
+		TableLayout tb;
+		TextView txtKey, txtValue, txtKeyNew, txtValueNew;
+		TableRow tbRow, tbRowNew;
+		Button btnOk, btnCancel;	// These template buttons are invisible on  inflated layout
 
-		txtTitle = dialoglayout.findViewById(R.id.txtTitle);
-		txtMessage = dialoglayout.findViewById(R.id.txtMessage);
-		btnCancel = dialoglayout.findViewById(R.id.btnCancel);
-		btnOk = dialoglayout.findViewById(R.id.btnOK);
+		// Initiating controls
+		txtTitle = layout.findViewById(R.id.txtTitle);
+		tb = layout.findViewById(R.id.table_layout);
+		tbRow = layout.findViewById(R.id.table_row);
+		txtKey = layout.findViewById(R.id.tv_key1);
+		txtValue = layout.findViewById(R.id.tv_value1);
+		txtMessage = layout.findViewById(R.id.txtMessage);
+		btnCancel = layout.findViewById(R.id.btnCancel);
+		btnOk = layout.findViewById(R.id.btnOK);
 
 		txtTitle.setText(R.string.title_result);
-		txtMessage.setText(Html.fromHtml(s));
+		txtMessage.setText(Html.fromHtml(strMessage));
 
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getRes().getText(R.string.lbl_ok), okListener);
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,getRes().getText(R.string.lbl_no), cancelListener);
+		if (resultsMap != null) {
+			// Each result pair key-value put into texviews of new row
+			for (Map.Entry<String, String> entry : resultsMap.entrySet()) {
+				tbRowNew = new TableRow(context);
+				tbRowNew.setLayoutParams(tbRow.getLayoutParams());
+				// Add textviews to new table row
+				txtKeyNew = new TextView(context);
+					txtKeyNew.setLayoutParams(txtKey.getLayoutParams());
+					txtKeyNew.setText(entry.getKey());
+					tbRowNew.addView(txtKeyNew);
+				txtValueNew = new TextView(context);
+					txtValueNew.setLayoutParams(txtValue.getLayoutParams());
+					txtValueNew.setText(entry.getValue());
+					tbRowNew.addView(txtValueNew);
+				// Add new row
+				tb.addView(tbRowNew);
+			}
+		}
+		// hide template row of table
+		tbRow.setVisibility(View.GONE);
+
+		// Prepare listeners
+		DialogInterface.OnClickListener voidListener = (DialogInterface dialogInterface, int i) -> {
+			// Means continue ex i.e. do nothing
+			alertDialog.dismiss();
+		};
+
+		if (cancelListener == null) cancelListener = voidListener;
+		if (okListener == null) okListener = voidListener;
+
+
+//		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getRes().getText(R.string.lbl_ok), (Message) null);
+//		Button btnPositive = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getRes().getText(R.string.lbl_ok), (DialogInterface.OnClickListener) okListener);
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getRes().getText(R.string.lbl_no), (DialogInterface.OnClickListener)  cancelListener);
+
+		alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+			@Override
+			public void onShow(DialogInterface dialogInterface) {
+				// redesign OK by template
+				Button btnRedesign = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+				btnRedesign.setLayoutParams(btnOk.getLayoutParams());
+				btnRedesign.setBackground(getRes().getDrawable(R.drawable.bg_button));
+				btnRedesign.setTextAppearance(R.style.button3d);
+				btnRedesign.setAllCaps(false);
+				btnRedesign.setWidth(btnOk.getWidth()-10);
+				// redesign Cancel by template
+				btnRedesign = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+				btnRedesign.setLayoutParams(btnCancel.getLayoutParams());
+				btnRedesign.setBackground(getRes().getDrawable(R.drawable.bg_button));
+				btnRedesign.setTextAppearance(R.style.button3d);
+				btnRedesign.setAllCaps(false);
+				btnRedesign.setWidth(btnCancel.getWidth()-10);
+			}
+		});
 
 		alertDialog.show();
 	}

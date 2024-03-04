@@ -8,6 +8,13 @@
 
 package org.nebobrod.schulteplus.data;
 
+import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.Utils;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class ExResultSchulte  extends ExResult {
 	private static final String TAG = "ExResultBasics";
 
@@ -17,11 +24,28 @@ public class ExResultSchulte  extends ExResult {
 //	float average;
 //	float rmsd; // Root-mean-square deviation as a sign of stability & rhythm in exercises
 
-	public ExResultSchulte(long time, int levelOfEmotion, int levelOfEnergy, String comment, int turns, int turnsMissed, float average, float rmsd) {
+	public ExResultSchulte(long time, int turns, int turnsMissed, float average, float rmsd, int levelOfEmotion, int levelOfEnergy, String comment) {
 		super(time, levelOfEmotion, levelOfEnergy, comment);
 		this.setTurns(turns);
 		this.setTurnsMissed(turnsMissed);
 		this.setAverage(average);
 		this.setRmsd(rmsd);
+	}
+
+	@Override
+	public Map<String, String> toMap() {
+		Map<String, String> stringMap = new LinkedHashMap<>();
+		stringMap = super.toMap();
+
+		// Remove pair with wrong key
+//		stringMap.remove(Utils.getRes().getString(R.string.lbl_events));
+
+		// Add pairs in accordance with Class
+		stringMap.put(Utils.getRes().getString(R.string.lbl_turns), turns() + "");
+		stringMap.put(Utils.getRes().getString(R.string.lbl_turns_missed), turnsMissed() + "");
+		stringMap.put(Utils.getRes().getString(R.string.lbl_average), String.format("%.2f", (average() /1000F)));
+		stringMap.put(Utils.getRes().getString(R.string.lbl_sd), String.format("%.2f", (rmsd() /1000F)));
+
+		return stringMap;
 	}
 }

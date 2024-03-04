@@ -24,6 +24,9 @@ import com.j256.ormlite.dao.Dao;
 
 import org.nebobrod.schulteplus.data.ClickGroup;
 import org.nebobrod.schulteplus.data.DatabaseHelper;
+import org.nebobrod.schulteplus.data.ExResult;
+import org.nebobrod.schulteplus.data.ExResultBasics;
+import org.nebobrod.schulteplus.data.ExResultSchulte;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -186,11 +189,10 @@ public class STable {
 
 	/**
 	 * Gathering statistics of passed exercise
-	 * as formatted String
 	 */
-	// TODO: 25.12.2023 later return this as Map to display in ListView
-	public String getResults()
-	{
+	// TODOne 02.03.24: 25.12.2023 later return this as Map to display in ListView
+	public ExResult getResults() {
+		ExResult exResult;
 		int time = 0, turns = 0, turnsMissed = 0;	// time tends to milliseconds
 		float average = 0, rmsd = 0;
 		String results = "";	// this in seconds.00
@@ -225,7 +227,11 @@ public class STable {
 		Log.d(TAG, "getResults: "+ this.journal);
 		Log.d(TAG, "getResults: " + results);
 
-		return results;
+		exResult = (ExerciseRunner.getExType().contains(KEY_PRF_EX_S0) ?
+				new ExResultSchulte(time, turns, turnsMissed, average, rmsd, 0, 0, "" ) :
+				new ExResultBasics(time, turns, 0, 0, ""));
+
+		return exResult;
 	}
 
 	public boolean endChecked() {

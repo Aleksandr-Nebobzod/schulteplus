@@ -229,7 +229,6 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 				break;
 			}
 		}
-		(new OrmRepo()).putResult(new ExResult(timeStamp, 0, 0, "res"));
 	}
 
 	public static String getExType() {
@@ -357,7 +356,6 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 		} else {
 			loadFromDbPref();
 		}
-
 	}
 
 	private void loadFromDbPref() {

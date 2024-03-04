@@ -44,8 +44,11 @@ public class SchulteActivity02 extends AppCompatActivity {
 	private GridView mGrid;
 	private STable exercise;
 	private GridAdapter mAdapter;
-	ExerciseRunner runner;
+	private ExerciseRunner runner;
 	private ExToolbar exToolbar;
+
+	private DialogInterface.OnClickListener cancelListener;
+	private DialogInterface.OnClickListener restartListener;
 
 
 	class ExToolbar {
@@ -136,22 +139,39 @@ public class SchulteActivity02 extends AppCompatActivity {
 			finish();
 		}
 
+		// Dialog listeners
+
+		cancelListener = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialogInterface, int i) {
+				finish();
+			}
+		};
+		restartListener = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialogInterface, int i) {
+				exercise.reset();
+				exToolbar.init();
+				mAdapter.notifyDataSetChanged();
+			}
+		};
+
+		// Prepare exercise
 		mGrid = (GridView)findViewById(R.id.gvArea);
 		ExerciseRunner.loadPreference();
 		exercise = new STable(runner.getX(), runner.getY(), ExerciseRunner.probDx(), ExerciseRunner.probDy(), ExerciseRunner.probW());
 		ExerciseRunner.savePreferences(exercise);
 
+
 		// Toolbar for exercise initiation (if hints are chosen)
 		exToolbar = new ExToolbar(findViewById(R.id.tb_custom));
 
+
+		// Prepare exercise field
 		mGrid.setNumColumns(exercise.getX());
 		mGrid.setEnabled(true);
-
-
-
 		mAdapter = new GridAdapter(this, exercise);
 		mGrid.setAdapter(mAdapter);
-
 		mGrid.setLongClickable(true);
 
 		mGrid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -161,10 +181,8 @@ public class SchulteActivity02 extends AppCompatActivity {
 
 				View v = adapterView.getChildAt(expected);
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
 //					animThrob(v, Color.valueOf(getColor(R.color.light_grey_A_green)));
 					animThrob(v, null);
-
 				}
 				return true;
 			}
@@ -182,8 +200,12 @@ public class SchulteActivity02 extends AppCompatActivity {
 						exercise.shuffle();
 					} else { // of Fin if no next turn needed
 						ExerciseRunner.savePreferences(exercise);
-						newExerciseDialog(exercise.getResults() +
-								pHtml() + pHtml() + bHtml(getRes().getString(R.string.txt_one_more_q)));
+						Utils.resultDialog(SchulteActivity02.this,
+								exercise.getResults().toMap(),
+								getRes().getString(R.string.txt_continue_ex) + "?",
+								restartListener,
+								cancelListener);
+//						newExerciseDialog(exercise.getResults().toMap() + pHtml() + pHtml() + bHtml(getRes().getString(R.string.txt_one_more_q)));
 					}
 					mAdapter.notifyDataSetChanged();
 
@@ -212,21 +234,15 @@ public class SchulteActivity02 extends AppCompatActivity {
 
 	@Override
 	public void onBackPressed() {
-		Context context = this;
-		DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialogInterface, int i) {
-				finish();
-			}
-		};
-
-		Utils.resultDialog(context, getRes().getString(R.string.txt_continue_ex) + "?",
+		Utils.resultDialog(this,
+				null,
+				getRes().getString(R.string.txt_continue_ex) + "?",
 				null,
 				cancelListener);
 //		super.onBackPressed();
 	}
 
-	private void newExerciseDialog(String s) {
+/*	private void newExerciseDialog(String s) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
 		final FrameLayout frameView = new FrameLayout(this);
@@ -266,7 +282,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 		});
 
 		alertDialog.show();
-	}
+	}*/
 
 	@Override
 	public void onConfigurationChanged(@NonNull Configuration newConfig) {

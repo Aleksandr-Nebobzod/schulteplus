@@ -1,6 +1,7 @@
 package org.nebobrod.schulteplus.ui;
 
 import static org.nebobrod.schulteplus.Utils.bHtml;
+import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.pHtml;
 import static org.nebobrod.schulteplus.Utils.tHtml;
@@ -37,6 +38,7 @@ import android.widget.Toast;
 import org.nebobrod.schulteplus.ExerciseRunner;
 import org.nebobrod.schulteplus.STable;
 import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.data.DataRepositories;
 import org.nebobrod.schulteplus.databinding.ActivityBasicsBinding; // TODO: 01.10.2023 figure it out!
 import org.nebobrod.schulteplus.R;
 
@@ -46,6 +48,7 @@ import org.nebobrod.schulteplus.R;
  */
 public class BasicsActivity extends AppCompatActivity {
 	private static final String TAG = "BasicsActivity";
+	private DataRepositories repos;
 	private STable exercise;
 
 	/**
@@ -150,6 +153,7 @@ public class BasicsActivity extends AppCompatActivity {
 		binding = ActivityBasicsBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
+		repos = new DataRepositories();
 		exercise = new STable(1, 1);
 		ExerciseRunner.getInstance();
 		ExerciseRunner.savePreferences(exercise);
@@ -194,9 +198,29 @@ public class BasicsActivity extends AppCompatActivity {
 			@Override
 			public void onClick(View view) {
 				btDistraction.performClick();
-				newExerciseDialog(Utils.getRes().getString(R.string.lbl_time) + ":" + tHtml()  + bHtml(tvClock.getText().toString()) + pHtml()
+
+				DialogInterface.OnClickListener okListener = null;
+				DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialogInterface, int i) {
+						exercise.setFinished(true);
+						ExerciseRunner.savePreferences(exercise);
+						finish();
+					}
+				};
+
+				// Call Dialog
+				Utils.resultDialog(BasicsActivity.this,
+						exercise.getResults().toMap(),
+						getRes().getString(R.string.txt_continue_ex) + "?",
+						null,
+						cancelListener);
+
+
+
+/*				newExerciseDialog(Utils.getRes().getString(R.string.lbl_time) + ":" + tHtml()  + bHtml(tvClock.getText().toString()) + pHtml()
 									+ Utils.getRes().getString(R.string.lbl_events) + ":" + tHtml()  + bHtml(tvCounter.getText().toString()) + pHtml()
-									+ pHtml() + bHtml(getResources().getString(R.string.txt_continue_ex) + "?"));
+									+ pHtml() + bHtml(getResources().getString(R.string.txt_continue_ex) + "?"));*/
 			}
 		});
 		btDistraction.setOnClickListener(new View.OnClickListener() {
@@ -233,7 +257,7 @@ public class BasicsActivity extends AppCompatActivity {
 			}
 	}
 
-	private void newExerciseDialog(String s) {
+	private void z_newExerciseDialog(String s) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
 		final FrameLayout frameView = new FrameLayout(this);
@@ -339,25 +363,9 @@ public class BasicsActivity extends AppCompatActivity {
 
 	@Override
 	public void onBackPressed() {
-		Context context = this;
 
-		btDistraction.performClick();
+		btExit.performClick();
 
-		DialogInterface.OnClickListener okListener = (dialogInterface, i) -> {
-			// Means continue ex i.e. do nothing
-		};
-		DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialogInterface, int i) {
-				exercise.setFinished(true);
-				ExerciseRunner.savePreferences(exercise);
-				finish();
-			}
-		};
-
-		Utils.resultDialog(context, getRes().getString(R.string.txt_continue_ex) + "?",
-				okListener,
-				cancelListener);
 //		super.onBackPressed();
 	}
 

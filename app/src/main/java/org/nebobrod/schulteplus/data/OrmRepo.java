@@ -41,10 +41,17 @@ public class OrmRepo implements DataRepository {
 
 	private final DatabaseHelper helper;
 
+	/**
+	 * easy constructor
+	 */
 	public OrmRepo() {
 		this.helper = DatabaseHelper.getHelper();
 	}
 
+	/**
+	 * Get Dao-object <p> (like {@link DatabaseHelper#getExResultDao()}) for:
+	 * @param className defined as a String
+	 */
 	public<T> Dao<T, Integer>  getAnyDao(String className) {
 		Dao<T, Integer> dao;
 
@@ -65,7 +72,6 @@ public class OrmRepo implements DataRepository {
 
 	/**
 	 * Puts into a DataRepository
-	 *
 	 * @param result ExResult's child classes
 	 */
 	@Override
@@ -223,7 +229,4 @@ public class OrmRepo implements DataRepository {
 			return null;
 		}
 	}
-
-
-
 }

@@ -66,7 +66,8 @@
             android:name=".ui.SchulteActivity02"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
-            android:label="@string/title_activity_schulte" />
+            android:label="@string/title_activity_schulte"
+            android:theme="@style/Theme.SchultePlus.Fullscreen" />
         <activity
             android:name=".ui.BasicsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

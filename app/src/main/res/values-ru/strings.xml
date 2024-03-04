@@ -44,8 +44,8 @@
 	<string name="lbl_bas_double">Двойное изображение*</string>
 	<string name="lbl_bas_double_desc">Для упражнений отмеченных звёздочкой, изображение будет удвоено для параллельного стереопросмотра.</string>
 	<string name="lbl_bas_penrose_triangle" >Треугольник Пенроуза</string>
-	<string name="lbl_average">Среднее:</string>
-	<string name="lbl_sd">Отклонение:</string>
+	<string name="lbl_average">Среднее</string>
+	<string name="lbl_sd">Отклонение</string>
 	<string name="lbl_turns_missed">Ходы мимо</string>
 	<string name="title_activity_basics">Шульте+ Основа</string>
 	<string name="lbl_bas_khao_manee">Као мани</string>
@@ -183,4 +183,8 @@
 	<string name="lbl_datasource_www">Все</string>
 	<string name="lbl_datasource_local">Мои</string>
 	<string name="lbl_dashboard_report">Выбор отчёта</string>
+	<string name="lbl_events_num">Событий</string>
+	<string name="lbl_level_of_emotion">Эмоциональный уровень</string>
+	<string name="lbl_level_of_energy">Энергетический уровень</string>
+	<string name="lbl_note">Заметка</string>
 </resources>

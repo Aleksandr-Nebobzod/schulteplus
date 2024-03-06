@@ -1,6 +1,8 @@
 package org.nebobrod.schulteplus;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
@@ -13,11 +15,12 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Message;
 import android.provider.Settings;
+import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -25,31 +28,39 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
+import org.nebobrod.schulteplus.data.ExResult;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -349,19 +360,22 @@ public final class Utils extends Application {
 	/**
 	 * <b>"OK"</b> means Continue or restart <p> when <b>"No"</b> means stop the parent Activity and exit.
 	 * @param context1 really necessary as SchulteActivity02.this
-	 * @param resultsMap set of key-value Pairs to fill internal result table
+	 * @param resultLiveData ExResult (for set of key-value Pairs to fill internal result table)
 	 * @param strMessage
 	 * @param okListener
 	 * @param cancelListener
 	 */
 	public static void resultDialog(Context context1,
-									@Nullable Map<String, String> resultsMap,
+									MutableLiveData<ExResult> resultLiveData,
 									String strMessage,
 									@Nullable DialogInterface.OnClickListener okListener,
 									@Nullable DialogInterface.OnClickListener cancelListener) {
 		AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context1);
 //		, androidx.appcompat.R.style.Theme_AppCompat_Dialog
 //		, androidx.appcompat.R.attr.dialogTheme);
+
+		ExResult resultClone = resultLiveData.getValue();
+		Map<String, String> resultsMap = resultClone.toMap();
 
 		final FrameLayout frameView = new FrameLayout(context1);
 		builder.setView(frameView);
@@ -387,7 +401,13 @@ public final class Utils extends Application {
 		TableLayout tb;
 		TextView txtKey, txtValue, txtKeyNew, txtValueNew;
 		TableRow tbRow, tbRowNew;
+		SwitchCompat switchDataProvided;
+		EditText etNote;
+		final String[] etNoteText = {"-"};
+		SeekBar sbEmotionalLevel, sbEnergyLevel;
+		SeekBar.OnSeekBarChangeListener seekBarChangeListener;
 		Button btnOk, btnCancel;	// These template buttons are invisible on  inflated layout
+		final Button[] btnRedesign = new Button[1];
 
 		// Initiating controls
 		txtTitle = layout.findViewById(R.id.txtTitle);
@@ -396,6 +416,10 @@ public final class Utils extends Application {
 		txtKey = layout.findViewById(R.id.tv_key1);
 		txtValue = layout.findViewById(R.id.tv_value1);
 		txtMessage = layout.findViewById(R.id.txtMessage);
+		switchDataProvided = layout.findViewById(R.id.sw_data_provided);
+		etNote = layout.findViewById(R.id.et_note);
+		sbEmotionalLevel = layout.findViewById(R.id.sb_emotion);
+		sbEnergyLevel = layout.findViewById(R.id.sb_energy);
 		btnCancel = layout.findViewById(R.id.btnCancel);
 		btnOk = layout.findViewById(R.id.btnOK);
 
@@ -403,7 +427,7 @@ public final class Utils extends Application {
 		txtMessage.setText(Html.fromHtml(strMessage));
 
 		if (resultsMap != null) {
-			// Each result pair key-value put into texviews of new row
+			// Each result pair key-value put into textviews of new row
 			for (Map.Entry<String, String> entry : resultsMap.entrySet()) {
 				tbRowNew = new TableRow(context);
 				tbRowNew.setLayoutParams(tbRow.getLayoutParams());
@@ -443,21 +467,62 @@ public final class Utils extends Application {
 			@Override
 			public void onShow(DialogInterface dialogInterface) {
 				// redesign OK by template
-				Button btnRedesign = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-				btnRedesign.setLayoutParams(btnOk.getLayoutParams());
-				btnRedesign.setBackground(getRes().getDrawable(R.drawable.bg_button));
-				btnRedesign.setTextAppearance(R.style.button3d);
-				btnRedesign.setAllCaps(false);
-				btnRedesign.setWidth(btnOk.getWidth()-10);
+				btnRedesign[0] = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+				btnRedesign[0].setLayoutParams(btnOk.getLayoutParams());
+				btnRedesign[0].setBackground(getRes().getDrawable(R.drawable.bg_button));
+				btnRedesign[0].setTextAppearance(R.style.button3d);
+				btnRedesign[0].setAllCaps(false);
+				btnRedesign[0].setWidth(btnOk.getWidth()-10);
 				// redesign Cancel by template
-				btnRedesign = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-				btnRedesign.setLayoutParams(btnCancel.getLayoutParams());
-				btnRedesign.setBackground(getRes().getDrawable(R.drawable.bg_button));
-				btnRedesign.setTextAppearance(R.style.button3d);
-				btnRedesign.setAllCaps(false);
-				btnRedesign.setWidth(btnCancel.getWidth()-10);
+				btnRedesign[0] = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+				btnRedesign[0].setLayoutParams(btnCancel.getLayoutParams());
+				btnRedesign[0].setBackground(getRes().getDrawable(R.drawable.bg_button));
+				btnRedesign[0].setTextAppearance(R.style.button3d);
+				btnRedesign[0].setAllCaps(false);
+				btnRedesign[0].setWidth(btnCancel.getWidth()-10);
 			}
 		});
+
+		// check if notes entered manually
+		etNote.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void afterTextChanged(Editable editable) {
+				if (!editable.toString().equals("")) switchDataProvided.setChecked(true);
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+			@Override
+			public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+		});
+
+		switchDataProvided.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+				alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setText(R.string.lbl_no_ok);
+				resultClone.setNote(etNote.getText().toString());
+				resultClone.setLevelOfEmotion(sbEmotionalLevel.getProgress()-2);
+				resultClone.setLevelOfEnergy(sbEnergyLevel.getProgress()-1);
+				resultLiveData.setValue(resultClone);
+				switchDataProvided.setChecked(false);
+			}
+		});
+
+		seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+				switchDataProvided.setChecked(true);
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {}
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {}
+		};
+
+		sbEmotionalLevel.setOnSeekBarChangeListener(seekBarChangeListener);
+		sbEnergyLevel.setOnSeekBarChangeListener(seekBarChangeListener);
 
 		alertDialog.show();
 	}
@@ -513,8 +578,27 @@ public final class Utils extends Application {
 
 		AnimationSet aSet = new AnimationSet(true);
 
+
+
 		ScaleAnimation scaleAnimation1 = new ScaleAnimation(1.0f, 1.5f, 1.0f, 1.5f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 		scaleAnimation1.setDuration(200);
+
+		// TODO: 06.03.2024 tried to prevent clipping in gridView but it doesn't help
+		scaleAnimation1.setAnimationListener(new Animation.AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animation) {
+				animation.setZAdjustment(Animation.ZORDER_TOP);
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				animation.setZAdjustment(Animation.ZORDER_BOTTOM);
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {}
+		});
+
 		aSet.addAnimation(scaleAnimation1);
 		view.startAnimation(aSet);
 		view.setBackgroundTintList(colorBgBefore);
@@ -530,6 +614,89 @@ public final class Utils extends Application {
 			}, 1000L);
 		}*/
 //		if (color != null)  view = tvBefore;
+	}
+
+	/**
+	 * Rearrange Z value of the
+	 * @param view chosen element in the viewGroup
+	 * @param onTop if true (or sent back if false)
+	 */
+	public static void setViewZOrder(ViewGroup viewGroup, View view, boolean onTop) {
+		int count = viewGroup.getChildCount();
+		TextView child;
+
+		for(int i = 0; i < count; i++) {
+			child = (TextView) viewGroup.getChildAt(i);
+			child.setZ(0.5F);
+//			Log.d(TAG, i + ". animLayerTop: " + child.getText() +", Z: "+child.getZ());
+		}
+		view.setZ(onTop ? 1.0F : 0.0F);
+		viewGroup.invalidate();
+		// TODO: 06.03.2024 the first element still uncontrollable
+	}
+
+	/**
+	 * Visualise appearance with animation
+	 * @param myView  a previously invisible view.
+	 * @link <a href="https://developer.android.com/develop/ui/views/animations/reveal-or-hide-view#Reveal">Create a circular reveal animation</a>
+	 */
+	public static void animVisiblate(View myView){
+		// Check whether the runtime version is at least Android 5.0.
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			// Get the center for the clipping circle.
+			int cx = myView.getWidth() / 2;
+			int cy = myView.getHeight() / 2;
+
+			// Get the final radius for the clipping circle.
+			float finalRadius = (float) Math.hypot(cx, cy);
+
+			// Create the animator for this view. The start radius is 0.
+			Animator anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0f, finalRadius);
+
+			// Make the view visible and start the animation.
+			myView.setVisibility(View.VISIBLE);
+			anim.start();
+		} else {
+			// Set the view to invisible without a circular reveal animation below
+			// Android 5.0.
+			myView.setVisibility(View.INVISIBLE);
+		}
+	}
+
+	/**
+	 * Visualise disappearance with animation
+	 * @param myView  a previously invisible view.
+	 * @link <a href="https://developer.android.com/develop/ui/views/animations/reveal-or-hide-view#Reveal">Create a circular reveal animation</a>
+	 */
+	public static void animInvisiblate(View myView){
+		// Check whether the runtime version is at least Android 5.0.
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			// Get the center for the clipping circle.
+			int cx = myView.getWidth() / 2;
+			int cy = myView.getHeight() / 2;
+
+			// Get the initial radius for the clipping circle.
+			float initialRadius = (float) Math.hypot(cx, cy);
+
+			// Create the animation. The final radius is 0.
+			Animator anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0f);
+
+			// Make the view invisible when the animation is done.
+			anim.addListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					super.onAnimationEnd(animation);
+					myView.setVisibility(View.INVISIBLE);
+				}
+			});
+
+			// Start the animation.
+			anim.start();
+		} else {
+			// Set the view to visible without a circular reveal animation below Android
+			// 5.0.
+			myView.setVisibility(View.VISIBLE);
+		}
 	}
 
 

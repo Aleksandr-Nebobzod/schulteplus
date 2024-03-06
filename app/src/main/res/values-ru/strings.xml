@@ -187,4 +187,5 @@
 	<string name="lbl_level_of_emotion">Эмоциональный уровень</string>
 	<string name="lbl_level_of_energy">Энергетический уровень</string>
 	<string name="lbl_note">Заметка</string>
+	<string name="txt_note_hint">Ввести заметки, отметить эмоционально-энергетические уровни</string>
 </resources>

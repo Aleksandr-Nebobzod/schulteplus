@@ -208,5 +208,6 @@
 	<string name="lbl_level_of_emotion">Emotion</string>
 	<string name="lbl_level_of_energy">Energy</string>
 	<string name="lbl_note">Comment</string>
+	<string name="txt_note_hint">Enter notes, check you emotional and energy level</string>
 
 </resources>

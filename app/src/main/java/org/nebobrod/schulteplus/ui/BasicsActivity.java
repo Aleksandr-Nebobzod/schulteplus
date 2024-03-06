@@ -1,10 +1,6 @@
 package org.nebobrod.schulteplus.ui;
 
-import static org.nebobrod.schulteplus.Utils.bHtml;
-import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
-import static org.nebobrod.schulteplus.Utils.pHtml;
-import static org.nebobrod.schulteplus.Utils.tHtml;
 
 import android.annotation.SuppressLint;
 
@@ -12,8 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -39,6 +35,7 @@ import org.nebobrod.schulteplus.ExerciseRunner;
 import org.nebobrod.schulteplus.STable;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.data.DataRepositories;
+import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.databinding.ActivityBasicsBinding; // TODO: 01.10.2023 figure it out!
 import org.nebobrod.schulteplus.R;
 
@@ -50,6 +47,7 @@ public class BasicsActivity extends AppCompatActivity {
 	private static final String TAG = "BasicsActivity";
 	private DataRepositories repos;
 	private STable exercise;
+	private MutableLiveData<ExResult> resultLiveData = new MutableLiveData<>();
 
 	/**
 	 * Whether or not the system UI should be auto-hidden after
@@ -211,7 +209,7 @@ public class BasicsActivity extends AppCompatActivity {
 
 				// Call Dialog
 				Utils.resultDialog(BasicsActivity.this,
-						exercise.getResults().toMap(),
+						resultLiveData,
 						getRes().getString(R.string.txt_continue_ex) + "?",
 						null,
 						cancelListener);
@@ -227,7 +225,7 @@ public class BasicsActivity extends AppCompatActivity {
 			@Override
 			public void onClick(View view) {
 				Utils.feedbacks (view, feedbackHaptic, feedbackSound);
-				exercise.checkTurn(0);
+				exercise.isCorrectTurn(0);
 				String s = String.valueOf(exercise.journal.size() - 1);
 				tvCounter.setText(s);
 				long time = (System.nanoTime()-timeStarted)/1000000000;

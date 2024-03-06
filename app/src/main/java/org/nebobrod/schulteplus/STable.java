@@ -227,14 +227,24 @@ public class STable {
 		Log.d(TAG, "getResults: "+ this.journal);
 		Log.d(TAG, "getResults: " + results);
 
-		exResult = (ExerciseRunner.getExType().contains(KEY_PRF_EX_S0) ?
+/*		exResult = (ExerciseRunner.getExType().contains(KEY_PRF_EX_S0) ?
 				new ExResultSchulte(time, turns, turnsMissed, average, rmsd, 0, 0, "" ) :
-				new ExResultBasics(time, turns, 0, 0, ""));
+				new ExResultBasics(time, turns, 0, 0, ""));*/
+		switch (ExerciseRunner.getExType().substring(0, 7)) {
+			case KEY_PRF_EX_S0:
+				exResult = new ExResultSchulte(time, turns, turnsMissed, average, rmsd, 0, 0, "" );
+				break;
+			case KEY_PRF_EX_B0:
+				exResult = new ExResultBasics(time, turns, 0, 0, "");
+				break;
+			default:
+				exResult = new ExResult(time, 0, 0, "");
+		}
 
 		return exResult;
 	}
 
-	public boolean endChecked() {
+	public boolean checkIsFinished() {
 		return (expectedValue > xSize*ySize? isFinished = true: false);
 /*		if (turnNumber > xSize*ySize) {
 			isFinished = true;
@@ -243,7 +253,7 @@ public class STable {
 	}
 
 	/**
-	 * Subclass keeps what user send as a turn
+	 * Subclass keeps what user sends as a turn
 	 */
 	class Turn {
 		Long timeStamp, time;
@@ -281,7 +291,7 @@ public class STable {
 	 * Answers was it correct cell? puts turn-data into journal
 	 * @param position number of clicked Cell
 	 */
-	public boolean checkTurn (int position)
+	public boolean isCorrectTurn(int position)
 	{
 		int attemptNumber = journal.size();
 		int turnY = (position) / xSize + 1;

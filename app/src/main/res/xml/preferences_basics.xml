@@ -7,7 +7,7 @@
 		
 <!--	gcb means Group Check Box -->
 		<CheckBoxPreference app:title="@string/lbl_bas_dot" app:key="gcb_bas_dot" app:defaultValue="true" app:icon="@drawable/ic_basics_dot" app:allowDividerAbove="true"/>
-		<CheckBoxPreference app:title="@string/lbl_bas_dbl_dot" app:key="gcb_bas_dbl_dot" app:defaultValue="false" app:icon="@drawable/ic_bsics_double_dot" />
+		<CheckBoxPreference app:title="@string/lbl_bas_dbl_dot" app:key="gcb_bas_dbl_dot" app:defaultValue="false" app:icon="@drawable/ic_basics_double_dot" />
 		<CheckBoxPreference app:title="@string/lbl_bas_pyramidot" app:key="gcb_bas_pyramidot" app:defaultValue="false" app:enabled="true"/>
 
 		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb" app:key="gcb_bas_circles_rb" app:defaultValue="false" app:icon="@drawable/ic_circles_rb"  app:allowDividerAbove="true"/>

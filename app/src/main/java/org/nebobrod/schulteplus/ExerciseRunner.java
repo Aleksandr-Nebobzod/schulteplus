@@ -12,8 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
-import org.nebobrod.schulteplus.data.ExResult;
-import org.nebobrod.schulteplus.data.ExResultBasics;
 import org.nebobrod.schulteplus.data.OrmRepo;
 import org.nebobrod.schulteplus.fbservices.AchievementsFbData;
 import org.nebobrod.schulteplus.fbservices.UserDbPref;

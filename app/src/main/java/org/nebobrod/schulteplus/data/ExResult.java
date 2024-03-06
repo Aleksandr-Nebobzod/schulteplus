@@ -178,7 +178,7 @@ public class ExResult implements Serializable {
 		this.levelOfEnergy = levelOfEnergy;
 	}
 
-	public String comment() {
+	public String note() {
 		return note;
 	}
 

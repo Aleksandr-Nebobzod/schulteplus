@@ -5,7 +5,7 @@
 	android:id="@+id/loResultDialog"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:layout_gravity="bottom"
+	
 	android:background="@drawable/ic_border_thick">
 	
 	
@@ -16,7 +16,7 @@
 		android:letterSpacing=".5"
 		android:text="Title text"
 		android:textAlignment="center"
-		android:textColor="@color/design_default_color_primary"
+		android:textColor="@color/colorPrimary"
 		android:textSize="20sp"
 		android:textStyle="bold"
 		app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +32,6 @@
 		app:layout_constraintTop_toTopOf="@id/txtTitle"
 		app:layout_constraintBottom_toBottomOf="@id/txtTitle"
 		app:srcCompat="@android:drawable/ic_dialog_info" />
-
 	
 	<TableLayout
 		android:id="@+id/table_layout"
@@ -94,67 +93,121 @@
 		app:layout_constraintStart_toStartOf="@+id/imageView"
 		/>
 	
-	<com.google.android.material.textfield.TextInputLayout
-		android:id="@+id/til_note"
+	<EditText
+		android:id="@+id/et_note"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:hint="@string/lbl_note"
-		app:endIconMode="clear_text"
+		android:hint="@string/txt_note_hint"
+		android:focusableInTouchMode="true"
+		android:textColorHint="@color/light_grey_D"
+		android:layout_marginVertical="8dp"
+		android:minHeight="48dp"
+		android:minLines="2"
+		android:textSize="12sp"
+		android:typeface="monospace"
+		android:background="@drawable/border008"
+		android:backgroundTint="@color/semi_white"
+		
+		android:scrollbarAlwaysDrawVerticalTrack="true"
+		android:inputType="textMultiLine"
+		android:padding="4dp"
+		android:textColor="@color/black"
 		app:layout_constraintTop_toBottomOf="@+id/sv_psychometrics"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="@+id/imageView">
-		
-		<EditText
-			android:id="@+id/et_note"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
-			android:minHeight="48dp"
-			android:background="@drawable/border02"
-			android:backgroundTint="@color/semi_white"
-			android:drawablePadding="4dp"
-			android:inputType="textShortMessage"
-			android:padding="8dp"
-			android:textColor="@color/black" />
-	
-	</com.google.android.material.textfield.TextInputLayout>
+		app:layout_constraintStart_toStartOf="@+id/imageView"/>
 	
 	<TableLayout
 		android:id="@+id/table_psychometry"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:padding="0dp"
+		android:layout_marginTop="8dp"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/til_note">
+		app:layout_constraintTop_toBottomOf="@+id/et_note">
+		<TableRow
+			android:id="@+id/table_row_psy_header"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:background="@drawable/ic_border">
+			<TextView
+				android:id="@+id/tv_psy_header_1"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:lines="1"
+				android:padding="0dp"
+				android:text="@string/lbl_level_of_emotion"
+				android:textAlignment="center"
+				android:textColor="@color/light_grey_D"
+				android:textSize="10sp"
+				android:typeface="monospace"
+				android:layout_weight="2"
+				android:ellipsize="end"
+				/>
+			
+			<androidx.appcompat.widget.SwitchCompat
+				android:id="@+id/sw_data_provided"
+				android:layout_width="10dp"
+				android:layout_height="wrap_content"
+				android:checked="false"
+				android:text=""
+				android:visibility="visible"/>
+			
+			<TextView
+				android:id="@+id/tv_psy_header_2"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:lines="1"
+				android:padding="0dp"
+				android:text="@string/lbl_level_of_energy"
+				android:textAlignment="center"
+				android:textColor="@color/light_grey_D"
+				android:textSize="10sp"
+				android:typeface="monospace"
+				android:layout_weight="1"
+				android:ellipsize="end"
+				/>
+		</TableRow>
 		<TableRow
 			android:id="@+id/table_row_psy"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:background="@drawable/ic_border">
-			<androidx.appcompat.widget.AppCompatSeekBar
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
+			<SeekBar
 				android:id="@+id/sb_emotion"
-				android:layout_weight="2"
-				android:max="5"
-				android:min="1"
-				android:progress="1"
-				android:layout_margin="8dp"
-				android:tickMarkTint="@color/light_grey_A_blue"
-				android:thumb="@drawable/ic_basics_dot"
-				android:thumbTint="@color/light_grey_A_yellow"
+				android:layout_width="match_parent"
+				android:layout_height="28dp"
+				android:layout_weight="3"
+				android:max="4"
+				android:progress="2"
+				android:min="0"
+				android:focusable="true"
+				android:focusableInTouchMode="true"
+				android:layout_margin="2dp"
+				android:thumb="@drawable/ic_baseline_heart_broken_24"
+				android:thumbTint="@color/light_grey_A_red"
+				android:progressDrawable="@drawable/bg_seek_progress_colored"
+				android:secondaryProgress="2"
 				android:splitTrack="true"
 				android:tooltipText="@string/lbl_level_of_emotion"
+				android:contentDescription="@string/lbl_level_of_emotion"
 				/>
-			<androidx.appcompat.widget.AppCompatSeekBar
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
+			<SeekBar
 				android:id="@+id/sb_energy"
+				android:layout_width="match_parent"
+				android:layout_height="28dp"
 				android:layout_weight="1"
-				android:max="3"
-				android:min="1"
+				android:max="2"
 				android:progress="1"
+				android:min="0"
+				android:focusable="true"
+				android:focusableInTouchMode="true"
+				android:layout_margin="2dp"
+				android:thumb="@drawable/ic_baseline_local_fire_department_24"
+				android:thumbTint="@color/light_grey_A_red"
+				android:progressDrawable="@drawable/bg_seek_progress_bw"
+				android:splitTrack="true"
+				android:tooltipText="@string/lbl_level_of_energy"
+				android:contentDescription="@string/lbl_level_of_energy"
 				/>
 		</TableRow>
 	</TableLayout>
@@ -167,7 +220,7 @@
 		android:padding="5dp"
 		android:text="Here is some custom message"
 		android:textAlignment="textEnd"
-		android:textColor="@color/cardview_light_background"
+		android:textColor="@color/light_grey_D"
 		android:textSize="16sp"
 		android:typeface="monospace"
 		android:ellipsize="marquee"
@@ -177,7 +230,7 @@
 		 />
 	
 	<LinearLayout
-		android:id="@+id/llButtons"
+		android:id="@+id/ll_buttons"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
@@ -211,8 +264,20 @@
 			android:elevation="5dp"
 			android:background="@drawable/bg_button"
 			/>
-
-	
+		
 	</LinearLayout>
+	
+	<SeekBar
+		android:id="@+id/seekbar_dummy"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:visibility="gone"
+		android:max="4"
+		android:progress="2"
+		android:progressDrawable="@drawable/custom_seekbar"
+		android:thumb="@drawable/thumb"
+		app:layout_constraintTop_toBottomOf="@+id/ll_buttons"
+		/>
+		
 
 </androidx.constraintlayout.widget.ConstraintLayout>

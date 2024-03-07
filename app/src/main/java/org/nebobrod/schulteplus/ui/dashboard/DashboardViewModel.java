@@ -19,7 +19,7 @@ import java.util.List;
 public class DashboardViewModel extends ViewModel {
 	private static final String TAG = "DashboardViewModel";
 
-	private final MutableLiveData<String> dashboardKey = new MutableLiveData<>();
+	private final MutableLiveData<String> dashboardKey = new MutableLiveData<>("gcb_achievements");
 	private final MutableLiveData<List<? extends ExResult>> resultsLiveData = new MutableLiveData<>();
 
 	// Getting data from DB
@@ -29,6 +29,7 @@ public class DashboardViewModel extends ViewModel {
 			Log.d(TAG, "fetchResultsLimited, is MainLooper1?: " + (Looper.myLooper() == Looper.getMainLooper()));
 			Log.d(TAG, "fetchResultsLimited, is MainLooper2?: " + (Looper.getMainLooper().getThread() == Thread.currentThread()));
 			List<? extends ExResult> results = (new OrmRepo()).getResultsLimited(clazz, dashboardKey.getValue());
+//			Log.d(TAG, "fetchResultsLimited: " + results);
 			resultsLiveData.postValue(results);
 		});
 	}

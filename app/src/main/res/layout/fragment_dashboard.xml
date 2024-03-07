@@ -61,7 +61,7 @@
 		android:layout_height="0dp"
 		android:layout_margin="8dp"
 		android:layout_marginBottom="100dp"
-		tools:listitem="@layout/fragment_dashboard_elv_item"
+		tools:listitem="@layout/fragment_dashboard_elv_achievement"
 		app:layout_constraintBottom_toBottomOf="@id/guideline"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"

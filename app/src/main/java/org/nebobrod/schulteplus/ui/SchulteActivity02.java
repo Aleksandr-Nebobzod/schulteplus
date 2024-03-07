@@ -206,7 +206,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 					if (exercise.checkIsFinished()) {
 						ExerciseRunner.savePreferences(exercise);
 						resultLiveData.setValue(exercise.getResults());
-						Utils.resultDialog(SchulteActivity02.this,
+						ExResult.feedbackDialog(SchulteActivity02.this,
 								resultLiveData,
 								getRes().getString(R.string.txt_ex_done_1) + "! " + getRes().getString(R.string.txt_continue_ex) + "?",
 								restartListener,
@@ -242,7 +242,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 
 	@Override
 	public void onBackPressed() {
-		Utils.resultDialog(this,
+		ExResult.feedbackDialog(this,
 				null,
 				getRes().getString(R.string.txt_ex_not_done) + "! " + getRes().getString(R.string.txt_continue_ex) + "?",
 				null,

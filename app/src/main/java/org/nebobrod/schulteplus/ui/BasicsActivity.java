@@ -6,7 +6,6 @@ import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
@@ -18,14 +17,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.Html;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -210,7 +205,7 @@ public class BasicsActivity extends AppCompatActivity {
 				};
 
 				// Call Dialog
-				Utils.resultDialog(BasicsActivity.this,
+				ExResult.feedbackDialog(BasicsActivity.this,
 						resultLiveData,
 						getRes().getString(R.string.txt_continue_ex) + "?",
 						null,

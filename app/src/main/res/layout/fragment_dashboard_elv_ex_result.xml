@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2023. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:textSize="14sp"
+	android:layout_gravity="fill_horizontal"
+	android:layout_margin="2dp"
+	android:orientation="horizontal"
+	android:scrollbarAlwaysDrawHorizontalTrack="true"
+	>
+<!--	android:background="@color/light_grey_A_green"-->
+	
+	<TextView
+		android:id="@+id/tv_num"
+		android:layout_width="30dp"
+		android:layout_height="wrap_content"
+		android:gravity="end"
+		android:soundEffectsEnabled="true"
+		android:padding="2sp"
+		android:text="|#"
+		android:typeface="monospace" />
+	
+	<TextView
+		android:id="@+id/tv_date"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="fill_horizontal"
+		android:layout_margin="1dp"
+		android:background="@color/light_grey_D"
+		android:padding="2sp"
+		android:text="2023.12.24"
+		android:typeface="monospace" />
+	
+	<TextView
+		android:id="@+id/tv_time"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="fill_horizontal"
+		android:layout_margin="1dp"
+		android:background="@color/light_grey_D"
+		android:padding="2sp"
+		android:text="19:08"
+		android:typeface="monospace" />
+	<TextView
+		android:id="@+id/tv_duration"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="fill_horizontal"
+		android:layout_margin="1dp"
+		android:background="@color/light_grey_D"
+		android:padding="2sp"
+		android:text="00:08:31"
+		android:typeface="monospace" />
+	
+	<TextView
+		android:id="@+id/tv_events"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_gravity="fill_horizontal"
+		android:gravity="end"
+		android:layout_margin="1dp"
+		android:layout_weight="1"
+		android:background="@color/light_grey_D"
+		android:padding="2sp"
+		android:text="4012"
+		android:typeface="monospace" />
+	
+	<TextView
+		android:id="@+id/tv_note"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_gravity="fill_horizontal"
+		android:layout_margin="1dp"
+		android:layout_weight="1"
+		android:background="@color/light_grey_D"
+		android:padding="2sp"
+		android:ellipsize="end"
+		android:text="impressions"
+		android:typeface="monospace"/>
+	
+	<TextView
+		android:id="@+id/tv_emotion"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="fill_horizontal"
+		android:layout_margin="1dp"
+		android:background="@color/light_grey_D"
+		android:padding="2sp"
+		android:text="1"
+		android:typeface="monospace" />
+	
+	<TextView
+		android:id="@+id/tv_energy"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="fill_horizontal"
+		android:layout_margin="1dp"
+		android:background="@color/light_grey_D"
+		android:padding="2sp"
+		android:text="1"
+		android:typeface="monospace" />
+	
+	<TextView
+		android:id="@+id/tv_special_mark"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_gravity="fill_horizontal"
+		android:gravity="center"
+		android:layout_margin="1dp"
+		android:layout_weight="1"
+		android:padding="2sp"
+		android:text=" * "
+		android:typeface="monospace"/>
+<!--		android:background="@color/light_grey_D"-->
+</LinearLayout>
+
+<!--	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/tv_record_text" />-->
+<!--	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"  android:id="@+id/tv_record_value" />-->
+<!--	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"  android:id="@+id/tv_special_mark" />-->
+

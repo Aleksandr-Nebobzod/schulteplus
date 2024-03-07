@@ -12,21 +12,28 @@ import static org.nebobrod.schulteplus.Utils.bHtml;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.iHtml;
 import static org.nebobrod.schulteplus.Utils.pHtml;
+import static org.nebobrod.schulteplus.Utils.timeStampDateLocal;
+import static org.nebobrod.schulteplus.Utils.timeStampTimeLocal;
 
-import android.database.SQLException;
+import android.content.Context;
 import android.text.Html;
 import android.text.Spanned;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import org.nebobrod.schulteplus.STable;
+import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Achievement information object saved to the local database through ormlite.
@@ -41,6 +48,7 @@ public class Achievement implements Serializable {
 	public static final String DATE_FIELD_NAME = "dateTime";
 
 	static Achievement achievement;
+	static AchievementArrayAdapter achievementArrayAdapter;
 
 	@DatabaseField(generatedId = true)
 	private Integer id;
@@ -106,6 +114,15 @@ public class Achievement implements Serializable {
 
 	public void setSpecialMark(String specialMark) {this.specialMark = specialMark;}
 
+	/**
+	 * Provides a List adapter in accordance with declared layout {@link AchievementArrayAdapter#textViewResourceId}
+	 * @return
+	 */
+	public static AchievementArrayAdapter getArrayAdapter(Context context, List<Achievement> items) {
+		achievementArrayAdapter = new AchievementArrayAdapter(context, items);
+		return achievementArrayAdapter;
+	}
+
 	@Override
 	public String toString() {
 		return name == null ? "<None>" : name + "\t| " + bHtml(this.getRecordValue()) + "\t " + this.getRecordText() + "|";
@@ -126,5 +143,53 @@ public class Achievement implements Serializable {
 		this.specialMark = specialMark;
 
 		return this;
+	}
+
+	private static class AchievementArrayAdapter extends ArrayAdapter<Achievement> {
+		static int textViewResourceId  = R.layout.fragment_dashboard_elv_achievement;
+
+		public AchievementArrayAdapter(Context context, List<Achievement> items) {
+			super(context, textViewResourceId, items);
+		}
+
+		@Override
+		public int getCount() {
+			return super.getCount();
+		}
+
+		@Nullable
+		@Override
+		public Achievement getItem(int position) {
+			return super.getItem(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return super.getItemId(position);
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View v = convertView;
+			if (v == null) {
+				LayoutInflater li = (LayoutInflater) getAppContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				v = li.inflate(R.layout.fragment_dashboard_elv_achievement, null);
+			}
+			Achievement achievement = getItem(position);
+
+			fillText(v, R.id.tv_name, "" + (position + 1)); // achievement.getName() -- not needed in personal list
+			fillText(v, R.id.tv_date, timeStampDateLocal(achievement.getTimeStamp()));
+			fillText(v, R.id.tv_time, timeStampTimeLocal(achievement.getTimeStamp()));
+			fillText(v, R.id.tv_record_text, achievement.getRecordText());
+			fillText(v, R.id.tv_record_value, achievement.getRecordValue());
+			fillText(v, R.id.tv_special_mark, achievement.getSpecialMark());
+
+			return v;
+		}
+
+		private <T> void fillText(View v, int id, T text) {
+			TextView textView = (TextView) v.findViewById(id);
+			textView.setText((CharSequence) text);
+		}
 	}
 }

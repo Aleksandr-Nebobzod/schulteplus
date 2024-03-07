@@ -155,6 +155,7 @@ public class BasicsActivity extends AppCompatActivity {
 		exercise = new STable(1, 1);
 		ExerciseRunner.getInstance();
 		ExerciseRunner.savePreferences(exercise);
+		resultLiveData.setValue(exercise.getResults());
 
 
 		mVisible = true;
@@ -203,6 +204,7 @@ public class BasicsActivity extends AppCompatActivity {
 					public void onClick(DialogInterface dialogInterface, int i) {
 						exercise.setFinished(true);
 						ExerciseRunner.savePreferences(exercise);
+						repos.putResult(resultLiveData.getValue());
 						finish();
 					}
 				};
@@ -231,6 +233,7 @@ public class BasicsActivity extends AppCompatActivity {
 				long time = (System.nanoTime()-timeStarted)/1000000000;
 				s = String.format("%1$d:%2$02d", time/60,time%60);
 				tvClock.setText(s);
+				resultLiveData.setValue(exercise.getResults());
 			}
 		});
 
@@ -255,6 +258,7 @@ public class BasicsActivity extends AppCompatActivity {
 			}
 	}
 
+/*
 	private void z_newExerciseDialog(String s) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -294,6 +298,7 @@ public class BasicsActivity extends AppCompatActivity {
 
 		alertDialog.show();
 	}
+*/
 
 	@Override
 	public void onConfigurationChanged(@NonNull Configuration newConfig) {

@@ -70,43 +70,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 			elvChart.setAdapter(adapter);
 		});
 
-		{	// Spinner to choose the dashboard (Achievements or an ExType)
-			spDashboard = binding.spDashboard;
-			// Language independent values
-			exTypeValues = getRes().getStringArray(R.array.ex_type);
-			// Language-dependent entries based on spinner-entries array (which was values indeed)
-			int spLength = exTypeValues.length;
-			exTypeEntries = new String[spLength];
-			for (int i = 0; i < spLength; i++) {
-				String newEntry = exTypeValues[i].replace("gcb_", "lbl_");
-				exTypeEntries[i] = Utils.getString(newEntry);
-			}
-
-			// Create an ArrayAdapter using the string array and a default spinner layout
-			ArrayAdapter<CharSequence> spAdapter = new ArrayAdapter(
-					getAppContext(),
-					android.R.layout.simple_spinner_item,
-					exTypeEntries);
-			// set simple layout resource file for each item of spinner
-			// spAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-			// Set the ArrayAdapter data on the Spinner which binds data to spinner
-			spDashboard.setAdapter(spAdapter);
-
-			// Set livedata Key when Dashboard spinner changed
-			spDashboard.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-				@Override
-				public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-					dashboardViewModel.setKey(exTypeValues[position]);
-				}
-
-				@Override
-				public void onNothingSelected(AdapterView<?> adapterView) {
-					// do nothing
-				}
-			});
-		}
-
+		setDashboardSpinner();
 
 		elvChart = binding.elvDashboard;
 		rgSource = binding.rgSource;
@@ -134,6 +98,46 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		return root;
 	}
 
+	/**
+	 * Spinner to choose the dashboard (Achievements or an ExType)
+	 */
+	private void setDashboardSpinner() {
+		spDashboard = binding.spDashboard;
+		// Language independent values
+		exTypeValues = getRes().getStringArray(R.array.ex_type);
+		// Language-dependent entries based on spinner-entries array (which was values indeed)
+		int spLength = exTypeValues.length;
+		exTypeEntries = new String[spLength];
+		for (int i = 0; i < spLength; i++) {
+			String newEntry = exTypeValues[i].replace("gcb_", "lbl_");
+			exTypeEntries[i] = Utils.getString(newEntry);
+		}
+
+		// Create an ArrayAdapter using the string array and a default spinner layout
+		ArrayAdapter<CharSequence> spAdapter = new ArrayAdapter(
+				getAppContext(),
+				android.R.layout.simple_spinner_item,
+				exTypeEntries);
+		// set simple layout resource file for each item of spinner
+		// spAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		// Set the ArrayAdapter data on the Spinner which binds data to spinner
+		spDashboard.setAdapter(spAdapter);
+
+		// Set livedata Key when Dashboard spinner changed
+		spDashboard.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+				dashboardViewModel.setKey(exTypeValues[position]);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> adapterView) {
+				// do nothing
+			}
+		});
+	}
+
 	private ArrayList<Spanned> exResultToSpanned(List<? extends ExResult> results) {
 		// get array from our LiveData
 		Object[] resList;
@@ -150,18 +154,6 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 			listSpanned.add(Html.fromHtml(o.toString()));
 		}
 		return listSpanned;
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		// Set chosen Item in the spinner
-		for (int i = 0; i < exTypeValues.length; i++) {
-			if (ExerciseRunner.getExType().equals(exTypeValues[i])) {
-				spDashboard.setSelection(i);
-			}
-		}
-		updateListView(rgSource.getCheckedRadioButtonId());
 	}
 
 	private void updateListView(int checkedRadioButtonId) {
@@ -193,27 +185,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		}
 	}
 
-	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
-		binding = null;
-	}
-
-	@Override
-	public void onCallback(ArrayList<Spanned> lst) {
-		list = (ArrayList<Spanned>) lst.clone();
-		adapter.notifyDataSetChanged();
-//		Html.fromHtml("");
-	}
-
-	@Override
-	public void onComplete(Object result) {
-		listAchievement = (ArrayList<Achievement>) result;
-		arrayAdapter.notifyDataSetChanged();
-	}
-
-
-	private static class AchievementsAdapter extends ArrayAdapter<Achievement> {
+	private class AchievementsAdapter extends ArrayAdapter<Achievement> {
 
 		public AchievementsAdapter(Context context, int textViewResourceId, List<Achievement> items) {
 			super(context, textViewResourceId, items);
@@ -223,8 +195,8 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View v = convertView;
 			if (v == null) {
-				LayoutInflater vi = (LayoutInflater) getAppContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				v = vi.inflate(R.layout.fragment_dashboard_elv_item, null);
+				LayoutInflater li = (LayoutInflater) getAppContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				v = li.inflate(R.layout.fragment_dashboard_elv_item, null);
 			}
 			Achievement achievement = getItem(position);
 
@@ -242,5 +214,35 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 			TextView textView = (TextView) v.findViewById(id);
 			textView.setText((CharSequence) text);
 		}
+	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		// Set chosen Item in the spinner
+		for (int i = 0; i < exTypeValues.length; i++) {
+			if (ExerciseRunner.getExType().equals(exTypeValues[i])) {
+				spDashboard.setSelection(i);
+			}
+		}
+		updateListView(rgSource.getCheckedRadioButtonId());
+	}
+
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		binding = null;
+	}
+
+	@Override
+	public void onCallback(ArrayList<Spanned> lst) {
+		list = (ArrayList<Spanned>) lst.clone();
+		adapter.notifyDataSetChanged();
+//		Html.fromHtml("");
+	}
+
+	@Override
+	public void onComplete(Object result) {
+		listAchievement = (ArrayList<Achievement>) result;
+		arrayAdapter.notifyDataSetChanged();
 	}
 }

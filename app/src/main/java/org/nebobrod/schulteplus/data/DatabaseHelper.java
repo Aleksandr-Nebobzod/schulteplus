@@ -118,6 +118,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return exResultDao;
 	}
+	public Dao<ExResultBasics, Integer> getExResultBasicsDao() throws SQLException {
+		return (Dao<ExResultBasics, Integer>) getDao(ExResultBasics.class);
+	}
+	public Dao<ExResultSchulte, Integer> getExResultSchulteDao() throws SQLException {
+		return (Dao<ExResultSchulte, Integer>) getDao(ExResultSchulte.class);
+	}
 
 	/**
 	 * Close the database connections and clear any cached DAOs. For each call to {@link #getHelper()}, there

@@ -209,5 +209,7 @@
 	<string name="lbl_level_of_energy">Energy</string>
 	<string name="lbl_note">Comment</string>
 	<string name="txt_note_hint">Enter notes, check you emotional and energy level</string>
+	<string name="txt_ex_not_done">Exercise not done</string>
+	<string name="txt_ex_done_1">Well done</string>
 
 </resources>

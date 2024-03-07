@@ -8,6 +8,8 @@
 
 package org.nebobrod.schulteplus.data;
 
+import com.j256.ormlite.table.DatabaseTable;
+
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 
@@ -15,8 +17,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@DatabaseTable(tableName = "exresult")
 public class ExResultSchulte  extends ExResult {
-	private static final String TAG = "ExResultBasics";
+	private static final String TAG = "ExResultSchulte";
 
 	/* numValue is used as number of milliseconds, spent */
 //	private int turns;
@@ -24,8 +27,9 @@ public class ExResultSchulte  extends ExResult {
 //	float average;
 //	float rmsd; // Root-mean-square deviation as a sign of stability & rhythm in exercises
 
-	public ExResultSchulte(long time, int turns, int turnsMissed, float average, float rmsd, int levelOfEmotion, int levelOfEnergy, String comment) {
-		super(time, levelOfEmotion, levelOfEnergy, comment);
+	public ExResultSchulte(){};
+	public ExResultSchulte(long time, int turns, int turnsMissed, float average, float rmsd, int levelOfEmotion, int levelOfEnergy, String note) {
+		super(time, levelOfEmotion, levelOfEnergy, note);
 		this.setTurns(turns);
 		this.setTurnsMissed(turnsMissed);
 		this.setAverage(average);

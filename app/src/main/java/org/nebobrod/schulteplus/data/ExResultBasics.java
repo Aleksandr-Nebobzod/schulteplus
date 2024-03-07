@@ -8,18 +8,23 @@
 
 package org.nebobrod.schulteplus.data;
 
+import com.j256.ormlite.table.DatabaseTable;
+
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@DatabaseTable(tableName = "exresult")
 public class ExResultBasics extends ExResult{
 	private static final String TAG = "ExResultBasics";
 	/** No fields yet only numValue & comment are used */
 
-	public ExResultBasics(long numValue, int events, int levelOfEmotion, int levelOfEnergy, String comment) {
-		super(numValue, levelOfEmotion, levelOfEnergy, comment);
+	public ExResultBasics(){};
+
+	public ExResultBasics(long numValue, int events, int levelOfEmotion, int levelOfEnergy, String note) {
+		super(numValue, levelOfEmotion, levelOfEnergy, note);
 		this.setTurns(events);
 	}
 

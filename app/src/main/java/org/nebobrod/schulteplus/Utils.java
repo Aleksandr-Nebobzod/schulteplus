@@ -28,7 +28,6 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -163,7 +162,7 @@ public final class Utils extends Application {
 		}
 	}
 
-	public static  long timeStamp(){
+	public static  long timeStampU(){
 		return (long) (Instant.now().getEpochSecond());
 	}
 
@@ -374,8 +373,16 @@ public final class Utils extends Application {
 //		, androidx.appcompat.R.style.Theme_AppCompat_Dialog
 //		, androidx.appcompat.R.attr.dialogTheme);
 
-		ExResult resultClone = resultLiveData.getValue();
-		Map<String, String> resultsMap = resultClone.toMap();
+		ExResult resultClone;
+		Map<String, String> resultsMap = null;
+
+		if (resultLiveData != null) {
+			resultClone = resultLiveData.getValue();
+			resultsMap = resultClone.toMap();
+		} else {
+			resultClone =  new ExResult();
+		}
+
 
 		final FrameLayout frameView = new FrameLayout(context1);
 		builder.setView(frameView);
@@ -401,9 +408,9 @@ public final class Utils extends Application {
 		TableLayout tb;
 		TextView txtKey, txtValue, txtKeyNew, txtValueNew;
 		TableRow tbRow, tbRowNew;
-		SwitchCompat switchDataProvided;
+		TableLayout tbPsychometry;
 		EditText etNote;
-		final String[] etNoteText = {"-"};
+		SwitchCompat switchDataProvided;
 		SeekBar sbEmotionalLevel, sbEnergyLevel;
 		SeekBar.OnSeekBarChangeListener seekBarChangeListener;
 		Button btnOk, btnCancel;	// These template buttons are invisible on  inflated layout
@@ -416,8 +423,9 @@ public final class Utils extends Application {
 		txtKey = layout.findViewById(R.id.tv_key1);
 		txtValue = layout.findViewById(R.id.tv_value1);
 		txtMessage = layout.findViewById(R.id.txtMessage);
-		switchDataProvided = layout.findViewById(R.id.sw_data_provided);
+		tbPsychometry = layout.findViewById(R.id.table_psychometry);
 		etNote = layout.findViewById(R.id.et_note);
+		switchDataProvided = layout.findViewById(R.id.sw_data_provided);
 		sbEmotionalLevel = layout.findViewById(R.id.sb_emotion);
 		sbEnergyLevel = layout.findViewById(R.id.sb_energy);
 		btnCancel = layout.findViewById(R.id.btnCancel);
@@ -443,6 +451,8 @@ public final class Utils extends Application {
 				// Add new row
 				tb.addView(tbRowNew);
 			}
+		} else {
+			tbPsychometry.setVisibility(View.GONE);
 		}
 		// hide template row of table
 		tbRow.setVisibility(View.GONE);
@@ -499,6 +509,11 @@ public final class Utils extends Application {
 		switchDataProvided.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+				if (tbPsychometry.getVisibility() == View.GONE) return;
+
+				// Update Views and LiveData
+				sbEmotionalLevel.setThumbTintList(context1.getColorStateList(R.color.light_grey_A_green));
+				sbEnergyLevel.setThumbTintList(context1.getColorStateList(R.color.light_grey_A_green));
 				alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setText(R.string.lbl_no_ok);
 				resultClone.setNote(etNote.getText().toString());
 				resultClone.setLevelOfEmotion(sbEmotionalLevel.getProgress()-2);
@@ -509,19 +524,18 @@ public final class Utils extends Application {
 		});
 
 		seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
-
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 				switchDataProvided.setChecked(true);
 			}
-
+			// Not used:
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {}
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {}
 		};
 
-		sbEmotionalLevel.setOnSeekBarChangeListener(seekBarChangeListener);
+		sbEmotionalLevel.setOnSeekBarChangeListener(seekBarChangeListener); // Same listener
 		sbEnergyLevel.setOnSeekBarChangeListener(seekBarChangeListener);
 
 		alertDialog.show();

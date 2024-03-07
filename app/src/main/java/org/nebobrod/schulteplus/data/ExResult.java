@@ -9,6 +9,7 @@
 package org.nebobrod.schulteplus.data;
 
 import static org.nebobrod.schulteplus.Utils.timeStampFormattedLocal;
+import static org.nebobrod.schulteplus.Utils.timeStampU;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -24,7 +25,7 @@ import java.util.Map;
 /**
  * Uniform class for Exercise Results of any exercise
  */
-@DatabaseTable
+@DatabaseTable(tableName = "exresult")
 public class ExResult implements Serializable {
 	public static final String TAG = "ExResult";
 
@@ -66,7 +67,7 @@ public class ExResult implements Serializable {
 	@DatabaseField
 	private int levelOfEnergy;
 	@DatabaseField
-	private String note;
+	protected String note;
 
 
 	// section of Schulte-exercises data:
@@ -85,7 +86,7 @@ public class ExResult implements Serializable {
 		// common exercise-defined fields
 		this.uid = ExerciseRunner.getUserHelper().getUid();
 		this.name = ExerciseRunner.getUserHelper().getName();
-		this.timeStamp = timeStamp();
+		this.timeStamp = timeStampU();
 		this.dateTime = timeStampFormattedLocal(this.timeStamp);
 		this.exType = ExerciseRunner.getExType();
 		this.exDescription = ""; // TODO: 26.02.2024 gather settings & screen width in String

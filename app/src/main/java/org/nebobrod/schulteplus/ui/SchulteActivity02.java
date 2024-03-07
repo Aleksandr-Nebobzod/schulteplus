@@ -27,6 +27,7 @@ import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.SCell;
 import org.nebobrod.schulteplus.STable;
 import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.data.DataRepositories;
 import org.nebobrod.schulteplus.data.ExResult;
 
 import static org.nebobrod.schulteplus.Utils.*;
@@ -44,13 +45,10 @@ public class SchulteActivity02 extends AppCompatActivity {
 	private ExerciseRunner runner;
 	private ExToolbar exToolbar;
 
+	private DataRepositories repos;
 	private MutableLiveData<ExResult> resultLiveData = new MutableLiveData<>();
 	private DialogInterface.OnClickListener cancelListener;
 	private DialogInterface.OnClickListener restartListener;
-
-	public MutableLiveData<ExResult> resultLiveData() {
-		return resultLiveData;
-	}
 
 	class ExToolbar {
 		 androidx.appcompat.widget.Toolbar toolbar;
@@ -143,11 +141,11 @@ public class SchulteActivity02 extends AppCompatActivity {
 			finish();
 		}
 
-		// Dialog listeners
-
+		// Dialog buttons listeners
 		cancelListener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialogInterface, int i) {
+				repos.putResult(resultLiveData.getValue());
 				finish();
 			}
 		};
@@ -158,6 +156,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 				Log.d(TAG, "onClick: " + "note: " + resultLiveData.getValue().note() +
 						" levelOfEmotion: " + resultLiveData.getValue().levelOfEmotion() +
 						" sbEnergyLevel: " + resultLiveData.getValue().levelOfEnergy());
+				repos.putResult(resultLiveData.getValue());
 				exercise.reset();
 				exToolbar.init();
 				mAdapter.notifyDataSetChanged();
@@ -169,11 +168,10 @@ public class SchulteActivity02 extends AppCompatActivity {
 		ExerciseRunner.loadPreference();
 		exercise = new STable(runner.getX(), runner.getY(), ExerciseRunner.probDx(), ExerciseRunner.probDy(), ExerciseRunner.probW());
 		ExerciseRunner.savePreferences(exercise);
-
+		repos = new DataRepositories();
 
 		// Toolbar for exercise initiation (if hints are chosen)
 		exToolbar = new ExToolbar(findViewById(R.id.tb_custom));
-
 
 		// Prepare exercise field
 		mGrid.setNumColumns(exercise.getX());
@@ -196,6 +194,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 			}
 		});
 
+		// Turn-click
 		mGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -209,9 +208,10 @@ public class SchulteActivity02 extends AppCompatActivity {
 						resultLiveData.setValue(exercise.getResults());
 						Utils.resultDialog(SchulteActivity02.this,
 								resultLiveData,
-								getRes().getString(R.string.txt_continue_ex) + "?",
+								getRes().getString(R.string.txt_ex_done_1) + "! " + getRes().getString(R.string.txt_continue_ex) + "?",
 								restartListener,
 								cancelListener);
+
 //						newExerciseDialog(exercise.getResults().toMap() + pHtml() + pHtml() + bHtml(getRes().getString(R.string.txt_one_more_q)));
 					} else { // continue ex
 						exercise.shuffle();
@@ -244,9 +244,9 @@ public class SchulteActivity02 extends AppCompatActivity {
 	public void onBackPressed() {
 		Utils.resultDialog(this,
 				null,
-				getRes().getString(R.string.txt_continue_ex) + "?",
+				getRes().getString(R.string.txt_ex_not_done) + "! " + getRes().getString(R.string.txt_continue_ex) + "?",
 				null,
-				cancelListener);
+				(dialogInterface, i) -> finish());
 //		super.onBackPressed();
 	}
 

@@ -8,7 +8,7 @@
 
 package org.nebobrod.schulteplus.fbservices;
 
-import static org.nebobrod.schulteplus.Utils.timeStamp;
+import static org.nebobrod.schulteplus.Utils.timeStampU;
 import static org.nebobrod.schulteplus.Utils.timeStampFormattedLocal;
 
 import android.os.Build;
@@ -35,7 +35,7 @@ public class UserHelper implements Parcelable {
 		this.password = String.valueOf(password.hashCode()+password.hashCode());
 		this.uid = uid;
 		this.deviceId = deviceId;
-		this.dateCreated = timeStampFormattedLocal(timeStamp());
+		this.dateCreated = timeStampFormattedLocal(timeStampU());
 		this.dateChanged = this.dateCreated;
 		this.verified = verified;
 	}
@@ -115,7 +115,7 @@ public class UserHelper implements Parcelable {
 	{
 		if (this == null) return null;
 
-		return "FbUserHelper{at: " + timeStampFormattedLocal(timeStamp()) + '\n' + '\'' +
+		return "FbUserHelper{at: " + timeStampFormattedLocal(timeStampU()) + '\n' + '\'' +
 				"email='" + email + '\'' +
 				", name='" + name + '\'' +
 				", password='" + password + '\'' +

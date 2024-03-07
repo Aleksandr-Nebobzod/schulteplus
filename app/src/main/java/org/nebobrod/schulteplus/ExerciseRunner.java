@@ -145,7 +145,7 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 			}
 
 			fontScale = sharedPreferences.getInt(KEY_PRF_FONT_SCALE, 0);
-			tsUpdated = sharedPreferences.getLong(KEY_TS_UPDATED, timeStamp());
+			tsUpdated = sharedPreferences.getLong(KEY_TS_UPDATED, timeStampU());
 		}
 			catch (Exception e){
 			Log.d(TAG, "ExerciseRunner: noContext");
@@ -162,7 +162,7 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 		editor.putBoolean(	KEY_PRF_ONLINE, online);
 
 
-		tsUpdated = timeStamp();
+		tsUpdated = timeStampU();
 		editor.putLong(		KEY_TS_UPDATED, tsUpdated);
 
 		if(null != exercise){
@@ -200,7 +200,7 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 
 		if (result) {
 			editor.commit();
-			achievedToBothDb(achieved, uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, " ");
+			achievedToBothDb(achieved, uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, " ");
 		} else {
 			editor.clear();
 
@@ -218,12 +218,12 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 		for (AchievementFlags flag: achieved) {
 			switch (flag) {
 				case SECONDS:
-					OrmRepo.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
-					if (sharedData) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
+					OrmRepo.achievePut( uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
+					if (sharedData) AchievementsFbData.achievePut( uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
 				break;
 				case HOURS:
-					OrmRepo.achievePut(  uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
-					if (sharedData) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
+					OrmRepo.achievePut(  uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
+					if (sharedData) AchievementsFbData.achievePut( uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
 				break;
 			}
 		}

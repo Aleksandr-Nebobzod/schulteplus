@@ -64,7 +64,7 @@ public class Achievement implements Serializable {
 	private String recordValue;
 
 	/**
-	 * May be for example: 1st achievement of day, one done 3 at once, selfrecords
+	 * for example: 1st achievement of day, one done 3 at once, selfrecords
 	 * (if I got today most point than the best day before, or for week), duels wins, etc...
 	 */
 	@DatabaseField

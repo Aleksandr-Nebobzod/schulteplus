@@ -123,10 +123,14 @@ public class OrmRepo implements DataRepository {
 			where.eq(fieldName, exType);
 
 //			PreparedQuery<T> preparedQuery = qb.prepare();
+//			return dao.queryBuilder().limit(QUERY_COMMON_LIMIT).query();
+
+			// timeStamp field must be ordered
+			field = clazz.getDeclaredField("TIMESTAMP_FIELD_NAME");
+			fieldName = (String) field.get(null);
 
 			// return result of query
-//			return dao.queryBuilder().limit(QUERY_COMMON_LIMIT).query();
-			return qb.limit(QUERY_COMMON_LIMIT).query();
+			return qb.limit(QUERY_COMMON_LIMIT).orderBy(fieldName, true).query();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

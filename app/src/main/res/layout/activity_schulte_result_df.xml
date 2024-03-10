@@ -145,7 +145,7 @@
 				android:layout_height="wrap_content"
 				android:lines="1"
 				android:padding="0dp"
-				android:text="@string/lbl_level_of_emotion"
+				android:text="@string/lbl_level_of_feels"
 				android:textAlignment="center"
 				android:textColor="@color/light_grey_D"
 				android:textSize="10sp"
@@ -189,8 +189,8 @@
 				android:progressDrawable="@drawable/bg_seek_progress_colored"
 				android:secondaryProgress="2"
 				android:splitTrack="true"
-				android:tooltipText="@string/lbl_level_of_emotion"
-				android:contentDescription="@string/lbl_level_of_emotion"
+				android:tooltipText="@string/lbl_level_of_feels"
+				android:contentDescription="@string/lbl_level_of_feels"
 				/>
 			<SeekBar
 				android:id="@+id/sb_energy"

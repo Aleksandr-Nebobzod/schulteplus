@@ -12,8 +12,8 @@ import static org.nebobrod.schulteplus.Utils.bHtml;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.iHtml;
 import static org.nebobrod.schulteplus.Utils.pHtml;
-import static org.nebobrod.schulteplus.Utils.timeStampDateLocal;
-import static org.nebobrod.schulteplus.Utils.timeStampTimeLocal;
+import static org.nebobrod.schulteplus.Utils.timeStampToDateLocal;
+import static org.nebobrod.schulteplus.Utils.timeStampToTimeLocal;
 
 import android.content.Context;
 import android.text.Html;
@@ -23,8 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
-import androidx.annotation.Nullable;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -128,6 +126,18 @@ public class Achievement implements Serializable {
 		return name == null ? "<None>" : name + "\t| " + bHtml(this.getRecordValue()) + "\t " + this.getRecordText() + "|";
 	}
 	///////////////////////////////////////////////////////////////
+	/**
+	 * Tab Separated Values
+	 */
+	public String toTabSeparatedString() {
+		return TAG +
+				"\t" + id +
+				"\t" + dateTime +
+				"\t" + name +
+				"\t" + recordText +
+				"\t" + recordValue +
+				"\t" + specialMark;
+	}
 	public Spanned toSpanned() {
 		return Html.fromHtml("| \t" + this.getSpecialMark() + "\t| " + Utils.timeStampFormattedLocal(this.getTimeStamp()) + " | " + iHtml(this.getName()) + pHtml()
 				+ "|\t." + "\t| " + bHtml(this.getRecordValue()) + "\t " + this.getRecordText() + "|");
@@ -147,10 +157,12 @@ public class Achievement implements Serializable {
 
 	private static class AchievementArrayAdapter extends ArrayAdapter<Achievement> {
 		static int textViewResourceId  = R.layout.fragment_dashboard_elv_achievement;
+		private String previousDate = "";
 
 		public AchievementArrayAdapter(Context context, List<Achievement> items) {
 			super(context, textViewResourceId, items);
 		}
+/*
 
 		@Override
 		public int getCount() {
@@ -167,6 +179,7 @@ public class Achievement implements Serializable {
 		public long getItemId(int position) {
 			return super.getItemId(position);
 		}
+*/
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
@@ -177,9 +190,10 @@ public class Achievement implements Serializable {
 			}
 			Achievement achievement = getItem(position);
 
-			fillText(v, R.id.tv_name, "" + (position + 1)); // achievement.getName() -- not needed in personal list
-			fillText(v, R.id.tv_date, timeStampDateLocal(achievement.getTimeStamp()));
-			fillText(v, R.id.tv_time, timeStampTimeLocal(achievement.getTimeStamp()));
+
+			//the other fields
+			fillText(v, R.id.tv_num, "" + (position + 1)); // achievement.getName() -- not needed in personal list
+			fillText(v, R.id.tv_time, timeStampToTimeLocal(achievement.getTimeStamp()));
 			fillText(v, R.id.tv_record_text, achievement.getRecordText());
 			fillText(v, R.id.tv_record_value, achievement.getRecordValue());
 			fillText(v, R.id.tv_special_mark, achievement.getSpecialMark());

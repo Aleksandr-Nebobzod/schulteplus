@@ -184,10 +184,18 @@
 	<string name="lbl_datasource_local">Мои</string>
 	<string name="lbl_dashboard_report">Выбор отчёта</string>
 	<string name="lbl_events_num">Событий</string>
-	<string name="lbl_level_of_emotion">Эмоциональный уровень</string>
-	<string name="lbl_level_of_energy">Энергетический уровень</string>
+	<string name="lbl_level_of_feels">Чувства</string>
+	<string name="lbl_level_of_energy">Энергия</string>
 	<string name="lbl_note">Заметка</string>
 	<string name="txt_note_hint">Ввести заметки, отметить эмоционально-энергетические уровни</string>
 	<string name="txt_ex_not_done">Упражнение не завершено</string>
 	<string name="txt_ex_done_1">Отлично</string>
+	<string name="lbl_date_time">Дата, время</string>
+	<string name="lbl_user_name">Адепт</string>
+	<string name="lbl_record_text">Достиг</string>
+	<string name="lbl_record_value">знач</string>
+	<string name="lbl_special_mark">_*_</string>
+	<string name="lbl_duration">Длительность</string>
+	<string name="lbl_level_of_feels_cut">Ч.</string>
+	<string name="lbl_level_of_energy_cut">Э.</string>
 </resources>

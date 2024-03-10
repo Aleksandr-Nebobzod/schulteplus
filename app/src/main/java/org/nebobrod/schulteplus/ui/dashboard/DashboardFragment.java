@@ -2,9 +2,11 @@ package org.nebobrod.schulteplus.ui.dashboard;
 
 import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
-import static org.nebobrod.schulteplus.Utils.timeStampDateLocal;
-import static org.nebobrod.schulteplus.Utils.timeStampTimeLocal;
+import static org.nebobrod.schulteplus.data.ExResult.TIMESTAMP_FIELD_NAME;
 
+
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Html;
@@ -14,10 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,6 +36,8 @@ import org.nebobrod.schulteplus.data.OrmRepo;
 import org.nebobrod.schulteplus.databinding.FragmentDashboardBinding;
 import org.nebobrod.schulteplus.fbservices.AchievementsFbData;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +70,42 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		setDashboardSpinner();
 
 		elvChart = binding.elvDashboard;
+		elvChart.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+				ListAdapter _adapter = ((ListView) adapterView).getAdapter();
+				int count = _adapter.getCount();
+				if (count == 0) {
+					return false; // if empty
+				}
+				// Define item's Class
+				Object item = _adapter.getItem(0);
+				Class<?> itemClass = item.getClass();
+
+				// Create StringBuilder to gather text
+				StringBuilder stringBuilder = new StringBuilder();
+
+				for (int j = 0; j < count; j++) {
+					item = _adapter.getItem(j);
+					try {
+						Method method = itemClass.getDeclaredMethod("toTabSeparatedString");
+						String result = (String) method.invoke(item);
+						stringBuilder.append(result).append("\n");
+					} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+						// If toTabSeparatedString() doesn't exist
+						stringBuilder.append(item.toString()).append("\n");
+					}
+				}
+				// Copy text to clipboard
+				ClipboardManager clipboard = (ClipboardManager) getAppContext().getSystemService(Context.CLIPBOARD_SERVICE);
+				ClipData clip = ClipData.newPlainText("label", stringBuilder.toString());
+				clipboard.setPrimaryClip(clip);
+
+				Toast.makeText(getAppContext(), "Table copied to clipboard", Toast.LENGTH_SHORT).show();
+				return true;
+			}
+		});
 		rgSource = binding.rgSource;
 
 //		local achievement datasource
@@ -82,7 +123,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 
 //		ExResult adapter
 		listExResult = new ArrayList<ExResult>(); //(ArrayList<ExResult>) dashboardViewModel.getResultsLiveData().getValue();
-		exResultAdapter = ExResult.getArrayAdapter(getAppContext(), (List<ExResult>) listExResult);
+		exResultAdapter = ExResult.getArrayAdapter(getAppContext(), (List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME));
 		elvChart.setAdapter(exResultAdapter);
 		exResultAdapter.notifyDataSetChanged();
 
@@ -95,6 +136,24 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 
 		return root;
 	}
+
+	private View.OnLongClickListener copyData = view -> {
+		ListAdapter _adapter = ((ListView) view).getAdapter();
+		int count = _adapter.getCount();
+		// Create StringBuilder to gather text
+		StringBuilder stringBuilder = new StringBuilder();
+
+		for (int i = 0; i < count; i++) {
+			stringBuilder.append(_adapter.getItem(i).toString()).append("\n");
+		}
+		// Copy text to clipboard
+		ClipboardManager clipboard = (ClipboardManager) getAppContext().getSystemService(Context.CLIPBOARD_SERVICE);
+		ClipData clip = ClipData.newPlainText("label", stringBuilder.toString());
+		clipboard.setPrimaryClip(clip);
+
+		Toast.makeText(getAppContext(), "Table copied to clipboard", Toast.LENGTH_SHORT).show();
+		return true;
+	};
 
 	/**
 	 * Spinner to choose the dashboard (Achievements or an ExType)
@@ -156,7 +215,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 	}
 
 	private void updateListView(int checkedRadioButtonId) {
-/*		String _key = (dashboardViewModel.getKey().getValue() == null ? "gcb_achievements" : dashboardViewModel.getKey().getValue());
+		String _key = (dashboardViewModel.getKey().getValue() == null ? "gcb_achievements" : dashboardViewModel.getKey().getValue());
 		if (_key.equals("gcb_achievements")) {
 			// only for Achievements yet
 			switch(checkedRadioButtonId)
@@ -174,9 +233,9 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 				default:
 					// do nothing
 			}
-		} else*/ {
+		} else {
 			// fetch from local DB
-			exResultAdapter = ExResult.getArrayAdapter(getAppContext(), (List<ExResult>) listExResult);
+			exResultAdapter = ExResult.getArrayAdapter(getAppContext(), (List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME));
 			dashboardViewModel.fetchResultsLimited(ExResult.class);
 
 //			exResultAdapter = ExResult.getArrayAdapter(getAppContext(), listExResult);
@@ -205,11 +264,9 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		super.onViewCreated(view, savedInstanceState);
 		// Watch for LiveData and refresh ExResult UI
 		dashboardViewModel.getResultsLiveData().observe(getViewLifecycleOwner(), results -> {
-/*			adapter = new ArrayAdapter<>(
-					this.getActivity(), R.layout.layout_one_textview, exResultToSpanned(results));
-			elvChart.setAdapter(adapter);*/
-			listExResult = (ArrayList<ExResult>) results; // Update the listExResult
-			exResultAdapter = ExResult.getArrayAdapter(getAppContext(), (List<ExResult>) listExResult);
+			// Update the listExResult with fresh data
+			listExResult = (ArrayList<ExResult>) results;
+			exResultAdapter = ExResult.getArrayAdapter(getAppContext(), (List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME));
 			elvChart.setAdapter(exResultAdapter);
 			exResultAdapter.notifyDataSetChanged();
 		});

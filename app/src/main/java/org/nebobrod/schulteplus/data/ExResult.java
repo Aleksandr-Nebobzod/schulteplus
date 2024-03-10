@@ -9,10 +9,11 @@
 package org.nebobrod.schulteplus.data;
 
 import static org.nebobrod.schulteplus.Utils.duration;
+import static org.nebobrod.schulteplus.Utils.durationCut;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
-import static org.nebobrod.schulteplus.Utils.timeStampDateLocal;
+import static org.nebobrod.schulteplus.Utils.timeStampToDateLocal;
 import static org.nebobrod.schulteplus.Utils.timeStampFormattedLocal;
-import static org.nebobrod.schulteplus.Utils.timeStampTimeLocal;
+import static org.nebobrod.schulteplus.Utils.timeStampToTimeLocal;
 import static org.nebobrod.schulteplus.Utils.timeStampU;
 
 import android.content.Context;
@@ -67,6 +68,9 @@ public class ExResult implements Serializable {
 	public static final String DATE_FIELD_NAME = "dateTime";
 	public static final String UID_FIELD_NAME = "uid";
 	public static final String EXTYPE_FIELD_NAME = "exType";
+	public static final String TIMESTAMP_FIELD_NAME = "timeStamp";
+	public static final String LAYOUT_HEADER_FLAG = "H";
+	public static final String LAYOUT_GROUP_FLAG = "G";
 	static ExResultArrayAdapter exResultArrayAdapter;
 
 
@@ -115,6 +119,17 @@ public class ExResult implements Serializable {
 	private float average;
 	@DatabaseField
 	private float rmsd; // Root-mean-square deviation as a sign of stability & rhythm in exercises
+
+	private String layoutFlag = "";
+
+	public String layoutFlag() {
+		return layoutFlag;
+	}
+
+	public ExResult setLayoutFlag(String layoutFlag) {
+		this.layoutFlag = layoutFlag;
+		return this;
+	}
 
 	public ExResult() {}
 	public ExResult(long numValue, int levelOfEmotion, int levelOfEnergy, String note) {
@@ -265,6 +280,19 @@ public class ExResult implements Serializable {
 				", comment='" + note + '\'' +
 				", turns=" + turns +
 				'}';
+	}
+
+	/**
+	 * Tab Separated Values
+	 */
+	public String toTabSeparatedString() {
+		return TAG +
+				"\t" + id +
+				"\t" + dateTime +
+				"\t" + exType +
+				"\t" + numValue +
+				"\t" + note +
+				"\t" + turns;
 	}
 
 	public Map<String, String> toMap() {
@@ -483,7 +511,7 @@ public class ExResult implements Serializable {
 
 		public ExResultArrayAdapter(Context context, List<ExResult> items) {
 			super(context, textViewResourceId, items);
-			this.items = items;
+//			this.items = items;
 		}
 
 //		public static ArrayAdapter<List<ExResult>> getExResultArrayAdapter() { return exResultArrayAdapter;}
@@ -512,15 +540,38 @@ public class ExResult implements Serializable {
 			}
 			ExResult exResult = getItem(position);
 
+			// Manage header and grouping
+			switch (exResult.layoutFlag()) {
+				case LAYOUT_HEADER_FLAG:
+					v.findViewById(R.id.ll_header).setVisibility(View.VISIBLE);
+				case LAYOUT_GROUP_FLAG:
+					v.findViewById(R.id.tv_group_header).setVisibility(View.VISIBLE);
+					fillText(v, R.id.tv_group_header, timeStampToDateLocal(exResult.timeStamp()));
+					break;
+				default:
+					break;
+			}
+
+			fillText(v, R.id.tv_flag, exResult.layoutFlag());
 			fillText(v, R.id.tv_num, "" + (position + 1)); // achievement.getName() -- not needed in personal list
-			fillText(v, R.id.tv_date, timeStampDateLocal(exResult.timeStamp()));
-			fillText(v, R.id.tv_time, timeStampTimeLocal(exResult.timeStamp()));
-			fillText(v, R.id.tv_duration, duration(exResult.numValue()));
+			fillText(v, R.id.tv_time, timeStampToTimeLocal(exResult.timeStamp()));
+			fillText(v, R.id.tv_duration, durationCut(exResult.numValue()));
 			fillText(v, R.id.tv_events, exResult.turns() + "");
 			fillText(v, R.id.tv_note, exResult.note());
+			fillText(v, R.id.tv_note_full, exResult.note());
 			fillText(v, R.id.tv_emotion, exResult.levelOfEmotion() + "");
 			fillText(v, R.id.tv_energy, exResult.levelOfEnergy() + "");
 			fillText(v, R.id.tv_special_mark, "*");
+
+			// Make Note an expandable
+			TextView clickableTextView = (TextView) v.findViewById(R.id.tv_note);
+			TextView expandableTextView = (TextView) v.findViewById(R.id.tv_note_full);
+			clickableTextView.setOnClickListener(view -> {
+				expandableTextView.setVisibility(View.VISIBLE);
+			});
+			expandableTextView.setOnClickListener(view -> {
+				expandableTextView.setVisibility(View.GONE);
+			});
 
 			return v;
 		}

@@ -47,4 +47,27 @@
 		<item name="android:textAllCaps">false</item>
 		<item name="android:background">@drawable/bg_button</item>
 	</style>
+	
+
+	<style name="tv_list_item" parent="GreyTheme">
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_gravity">fill_horizontal</item>
+		<item name="android:layout_margin">1dp</item>
+		<item name="android:padding">2sp</item>
+		<item name="android:background">@color/light_grey_D</item>
+		<item name="android:typeface">monospace</item>
+		<item name="android:ellipsize">end</item>
+		<item name="android:textSize">13sp</item>
+		<item name="android:soundEffectsEnabled">true</item>
+	</style>
+	<style name="tv_list_header" parent="tv_list_item">
+		<item name="android:padding">4sp</item>
+		<item name="android:background">@color/light_grey_8</item>
+		<item name="android:textColor">@color/semi_white</item>
+		<item name="android:textAllCaps">true</item>
+		<item name="android:textStyle">bold</item>
+		<item name="android:textSize">10sp</item>
+	</style>
+	
 </resources>

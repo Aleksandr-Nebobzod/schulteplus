@@ -6,65 +6,44 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.text.Editable;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.TextWatcher;
 import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
-import org.nebobrod.schulteplus.data.ExResult;
-
+import java.lang.reflect.Field;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-
-import kotlin.time.Duration;
 
 public final class Utils extends Application {
 	private static final String TAG = "Utils";
@@ -176,11 +155,11 @@ public final class Utils extends Application {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy.MM.dd HH:mm");
 		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter)  ;
 	}
-	public static  String timeStampDateLocal(long ts) {
+	public static  String timeStampToDateLocal(long ts) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd"); // use correct format ('S' for milliseconds)
 		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter)  ;
 	}
-	public static  String timeStampTimeLocal(long ts) {
+	public static  String timeStampToTimeLocal(long ts) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss"); // use correct format ('S' for milliseconds)
 		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter)  ;
 	}
@@ -194,6 +173,10 @@ public final class Utils extends Application {
 	public static String duration (long millis) {
 		int s = (int) (millis / 1000);
 		return String.format("%d:%02d:%02d.%03d", s / 3600, (s % 3600) / 60, (s % 60), millis % 1000);
+	}
+	public static String durationCut (long millis) {
+		int s = (int) (millis / 1000);
+		return String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
 	}
 
 
@@ -574,5 +557,76 @@ public final class Utils extends Application {
 	 */
 	public static void exceptionFbCrash(Exception e) {
 		FirebaseCrashlytics.getInstance().recordException(e);
+	}
+
+	/**
+	 * Modifies
+	 * @param input List of an Object
+	 * @param groupFieldName grouping by Date of TIMESTAMP_FIELD_NAME
+	 * @return marked layoutFlag-field with G or H
+	 */
+	public static <T> List<T> markupListAsGroupedBy(List<T> input, String groupFieldName) {
+		final String LAYOUT_FLAG_FIELD_NAME = "layoutFlag";
+		final String LAYOUT_HEADER_FLAG = "H";
+		final String LAYOUT_GROUP_FLAG = "G";
+
+		// Define List-item's Class
+		if (input.size() <= 0) {
+			return input;
+		}
+		T item = input.get(0);
+		Class<?> itemClass = item.getClass();
+		Field groupField, layoutFlagField;
+
+		// Check presence of a groupField and char layoutFlag field
+		try {
+			groupField = itemClass.getDeclaredField(groupFieldName);
+			groupField.setAccessible(true); // Make the field accessible
+			layoutFlagField = itemClass.getDeclaredField(LAYOUT_FLAG_FIELD_NAME);
+			layoutFlagField.setAccessible(true); // Make the field accessible
+		} catch (NoSuchFieldException e) {
+			FirebaseCrashlytics.getInstance().recordException(e);
+			e.printStackTrace();
+			return input;
+		}
+
+		// Handle input collection sorting it by groupFieldName
+		input.sort((o1, o2) -> {
+			try {
+//				Comparable fieldValue1 = (Comparable) groupField.get(o1);
+//				Comparable fieldValue2 = (Comparable) groupField.get(o2);
+//				return fieldValue1.compareTo(fieldValue2);
+				String date1 = timeStampToDateLocal((Long) groupField.get(o1));
+				String date2 = timeStampToDateLocal((Long) groupField.get(o2));
+				return date2.compareTo(date1); // reverse sorting
+			} catch (IllegalAccessException | NullPointerException e) {
+				e.printStackTrace();
+				return 0;
+			}
+		});
+
+		// Manage Date grouping
+		String previousValue = "";
+		String currentValue;
+		for (int i = 0; i < input.size(); i++) {
+			try {
+				currentValue = timeStampToDateLocal((Long) groupField.get(input.get(i)));
+				if (!String.valueOf(currentValue).equals(previousValue)) {
+					layoutFlagField.set(input.get(i), LAYOUT_GROUP_FLAG);
+					previousValue = String.valueOf(currentValue);
+				}
+			} catch (IllegalAccessException | NullPointerException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Manage header
+		try {
+			layoutFlagField.set(input.get(0), LAYOUT_HEADER_FLAG);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+
+		return input;
 	}
 }

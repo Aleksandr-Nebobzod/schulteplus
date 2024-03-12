@@ -90,4 +90,10 @@ public interface Const {
 		AIM
 	}
 
+	/**
+	 * Shared constants for data classes {@link org.nebobrod.schulteplus.data.ExResult}
+	 */
+	String LAYOUT_HEADER_FLAG = "H";
+	String LAYOUT_GROUP_FLAG = "G";
+
 }

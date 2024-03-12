@@ -8,6 +8,8 @@
 
 package org.nebobrod.schulteplus.data;
 
+import static org.nebobrod.schulteplus.Const.LAYOUT_GROUP_FLAG;
+import static org.nebobrod.schulteplus.Const.LAYOUT_HEADER_FLAG;
 import static org.nebobrod.schulteplus.Utils.duration;
 import static org.nebobrod.schulteplus.Utils.durationCut;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
@@ -69,8 +71,6 @@ public class ExResult implements Serializable {
 	public static final String UID_FIELD_NAME = "uid";
 	public static final String EXTYPE_FIELD_NAME = "exType";
 	public static final String TIMESTAMP_FIELD_NAME = "timeStamp";
-	public static final String LAYOUT_HEADER_FLAG = "H";
-	public static final String LAYOUT_GROUP_FLAG = "G";
 	static ExResultArrayAdapter exResultArrayAdapter;
 
 
@@ -119,17 +119,9 @@ public class ExResult implements Serializable {
 	private float average;
 	@DatabaseField
 	private float rmsd; // Root-mean-square deviation as a sign of stability & rhythm in exercises
-
+	// Non-database field for layout elements' visibility control
 	private String layoutFlag = "";
 
-	public String layoutFlag() {
-		return layoutFlag;
-	}
-
-	public ExResult setLayoutFlag(String layoutFlag) {
-		this.layoutFlag = layoutFlag;
-		return this;
-	}
 
 	public ExResult() {}
 	public ExResult(long numValue, int levelOfEmotion, int levelOfEnergy, String note) {
@@ -270,6 +262,16 @@ public class ExResult implements Serializable {
 		this.rmsd = rmsd;
 	}
 
+	public String layoutFlag() {
+		return layoutFlag;
+	}
+
+	public ExResult setLayoutFlag(String layoutFlag) {
+		this.layoutFlag = layoutFlag;
+		return this;
+	}
+
+
 	@Override
 	public String toString() {
 		return "ExResult{" +
@@ -315,9 +317,7 @@ public class ExResult implements Serializable {
 	 * <b>"OK"</b> means Continue or restart <p> when <b>"No"</b> means stop the parent Activity and exit.
 	 * @param context1 really necessary as SchulteActivity02.this
 	 * @param resultLiveData ExResult (for set of key-value Pairs to fill internal result table)
-	 * @param strMessage
-	 * @param okListener
-	 * @param cancelListener
+	 * @param strMessage Output below results and feedback elements
 	 */
 	public static void feedbackDialog(Context context1,
 									  MutableLiveData<ExResult> resultLiveData,
@@ -325,9 +325,6 @@ public class ExResult implements Serializable {
 									  @Nullable DialogInterface.OnClickListener okListener,
 									  @Nullable DialogInterface.OnClickListener cancelListener) {
 		AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context1);
-//		, androidx.appcompat.R.style.Theme_AppCompat_Dialog
-//		, androidx.appcompat.R.attr.dialogTheme);
-
 		ExResult resultClone;
 		Map<String, String> resultsMap = null;
 
@@ -421,13 +418,11 @@ public class ExResult implements Serializable {
 		if (cancelListener == null) cancelListener = voidListener;
 		if (okListener == null) okListener = voidListener;
 
-
-//		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getRes().getText(R.string.lbl_ok), (Message) null);
-//		Button btnPositive = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-
+		// Set the buttons
 		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, Utils.getRes().getText(R.string.lbl_ok), (DialogInterface.OnClickListener) okListener);
 		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, Utils.getRes().getText(R.string.lbl_no), (DialogInterface.OnClickListener)  cancelListener);
 
+		// Copy design from templates
 		alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
 			@Override
 			public void onShow(DialogInterface dialogInterface) {
@@ -461,6 +456,7 @@ public class ExResult implements Serializable {
 			public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 		});
 
+		// Switcher is the Flag for gathering entered data
 		switchDataProvided.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -473,11 +469,14 @@ public class ExResult implements Serializable {
 				resultClone.setNote(etNote.getText().toString());
 				resultClone.setLevelOfEmotion(sbEmotionalLevel.getProgress()-2);
 				resultClone.setLevelOfEnergy(sbEnergyLevel.getProgress()-1);
+				// Plus Description:
+				resultClone.setExDescription(ExerciseRunner.exDescription());
 				resultLiveData.setValue(resultClone);
 				switchDataProvided.setChecked(false);
 			}
 		});
 
+		// Listener for any seekBar changes
 		seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -489,10 +488,10 @@ public class ExResult implements Serializable {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {}
 		};
-
 		sbEmotionalLevel.setOnSeekBarChangeListener(seekBarChangeListener); // Same listener
-		sbEnergyLevel.setOnSeekBarChangeListener(seekBarChangeListener);
+		sbEnergyLevel.setOnSeekBarChangeListener(seekBarChangeListener); // Same listener
 
+		alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		alertDialog.show();
 	}
 
@@ -514,7 +513,6 @@ public class ExResult implements Serializable {
 //			this.items = items;
 		}
 
-//		public static ArrayAdapter<List<ExResult>> getExResultArrayAdapter() { return exResultArrayAdapter;}
 /*
 		@Override
 		public int getCount() {
@@ -540,6 +538,10 @@ public class ExResult implements Serializable {
 			}
 			ExResult exResult = getItem(position);
 
+			// Reset visibility for header and group header
+			v.findViewById(R.id.ll_header).setVisibility(View.GONE);
+			v.findViewById(R.id.tv_group_header).setVisibility(View.GONE);
+
 			// Manage header and grouping
 			switch (exResult.layoutFlag()) {
 				case LAYOUT_HEADER_FLAG:
@@ -552,7 +554,7 @@ public class ExResult implements Serializable {
 					break;
 			}
 
-			fillText(v, R.id.tv_flag, exResult.layoutFlag());
+//			fillText(v, R.id.tv_flag, exResult.layoutFlag()); // for debug
 			fillText(v, R.id.tv_num, "" + (position + 1)); // achievement.getName() -- not needed in personal list
 			fillText(v, R.id.tv_time, timeStampToTimeLocal(exResult.timeStamp()));
 			fillText(v, R.id.tv_duration, durationCut(exResult.numValue()));
@@ -567,7 +569,12 @@ public class ExResult implements Serializable {
 			TextView clickableTextView = (TextView) v.findViewById(R.id.tv_note);
 			TextView expandableTextView = (TextView) v.findViewById(R.id.tv_note_full);
 			clickableTextView.setOnClickListener(view -> {
-				expandableTextView.setVisibility(View.VISIBLE);
+				if (expandableTextView.getVisibility() == View.GONE) {
+					expandableTextView.setVisibility(View.VISIBLE);
+				} else {
+					expandableTextView.setVisibility(View.GONE);
+				}
+
 			});
 			expandableTextView.setOnClickListener(view -> {
 				expandableTextView.setVisibility(View.GONE);

@@ -207,7 +207,7 @@
 	<string name="lbl_events_num">Events</string>
 	<string name="lbl_level_of_feels">Feeling</string>
 	<string name="lbl_level_of_energy">Energy</string>
-	<string name="lbl_note">Comment</string>
+	<string name="lbl_note">Note</string>
 	<string name="txt_note_hint">Enter notes, check you emotional and energy level</string>
 	<string name="txt_ex_not_done">Exercise not done</string>
 	<string name="txt_ex_done_1">Well done</string>
@@ -219,5 +219,7 @@
 	<string name="lbl_duration">Duration</string>
 	<string name="lbl_level_of_energy_cut">E.</string>
 	<string name="lbl_level_of_feels_cut">F.</string>
+	<string name="code_rating" translatable="false">R</string>
+	<string name="code_common" translatable="false">C</string>
 
 </resources>

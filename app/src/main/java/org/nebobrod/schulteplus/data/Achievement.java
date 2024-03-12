@@ -8,6 +8,8 @@
 
 package org.nebobrod.schulteplus.data;
 
+import static org.nebobrod.schulteplus.Const.LAYOUT_GROUP_FLAG;
+import static org.nebobrod.schulteplus.Const.LAYOUT_HEADER_FLAG;
 import static org.nebobrod.schulteplus.Utils.bHtml;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.iHtml;
@@ -34,7 +36,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Achievement information object saved to the local database through ormlite.
+ * Achievement data object saved to the local database through ormlite.
  *
  * @author nebobzod
  */
@@ -44,6 +46,7 @@ public class Achievement implements Serializable {
 
 	private static final long serialVersionUID = -7874823823497497001L;
 	public static final String DATE_FIELD_NAME = "dateTime";
+	public static final String TIMESTAMP_FIELD_NAME = "timeStamp";
 
 	static Achievement achievement;
 	static AchievementArrayAdapter achievementArrayAdapter;
@@ -75,6 +78,10 @@ public class Achievement implements Serializable {
 	 */
 	@DatabaseField
 	private String specialMark;
+
+
+	private String layoutFlag = "";
+
 
 	public Integer getId() {
 		return id;
@@ -112,13 +119,13 @@ public class Achievement implements Serializable {
 
 	public void setSpecialMark(String specialMark) {this.specialMark = specialMark;}
 
-	/**
-	 * Provides a List adapter in accordance with declared layout {@link AchievementArrayAdapter#textViewResourceId}
-	 * @return
-	 */
-	public static AchievementArrayAdapter getArrayAdapter(Context context, List<Achievement> items) {
-		achievementArrayAdapter = new AchievementArrayAdapter(context, items);
-		return achievementArrayAdapter;
+	public String layoutFlag() {
+		return layoutFlag;
+	}
+
+	public Achievement setLayoutFlag(String layoutFlag) {
+		this.layoutFlag = layoutFlag;
+		return this;
 	}
 
 	@Override
@@ -155,9 +162,17 @@ public class Achievement implements Serializable {
 		return this;
 	}
 
+	/**
+	 * Provides a List adapter in accordance with declared layout {@link AchievementArrayAdapter#textViewResourceId}
+	 * @return
+	 */
+	public static AchievementArrayAdapter getArrayAdapter(Context context, List<Achievement> items) {
+		achievementArrayAdapter = new AchievementArrayAdapter(context, items);
+		return achievementArrayAdapter;
+	}
+
 	private static class AchievementArrayAdapter extends ArrayAdapter<Achievement> {
 		static int textViewResourceId  = R.layout.fragment_dashboard_elv_achievement;
-		private String previousDate = "";
 
 		public AchievementArrayAdapter(Context context, List<Achievement> items) {
 			super(context, textViewResourceId, items);
@@ -190,6 +205,21 @@ public class Achievement implements Serializable {
 			}
 			Achievement achievement = getItem(position);
 
+			// Reset visibility for header and group header
+			v.findViewById(R.id.ll_header).setVisibility(View.GONE);
+			v.findViewById(R.id.tv_group_header).setVisibility(View.GONE);
+
+			// Manage header and grouping
+			switch (achievement.layoutFlag()) {
+				case LAYOUT_HEADER_FLAG:
+					v.findViewById(R.id.ll_header).setVisibility(View.VISIBLE);
+				case LAYOUT_GROUP_FLAG:
+					v.findViewById(R.id.tv_group_header).setVisibility(View.VISIBLE);
+					fillText(v, R.id.tv_group_header, timeStampToDateLocal(achievement.getTimeStamp()));
+					break;
+				default:
+					break;
+			}
 
 			//the other fields
 			fillText(v, R.id.tv_num, "" + (position + 1)); // achievement.getName() -- not needed in personal list
@@ -206,4 +236,5 @@ public class Achievement implements Serializable {
 			textView.setText((CharSequence) text);
 		}
 	}
+
 }

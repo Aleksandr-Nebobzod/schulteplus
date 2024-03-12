@@ -18,12 +18,15 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
@@ -570,10 +573,11 @@ public final class Utils extends Application {
 		final String LAYOUT_HEADER_FLAG = "H";
 		final String LAYOUT_GROUP_FLAG = "G";
 
+		// data source checks
+		if (input == null) return input;
+		if (input.size() <= 0) return input;
+
 		// Define List-item's Class
-		if (input.size() <= 0) {
-			return input;
-		}
 		T item = input.get(0);
 		Class<?> itemClass = item.getClass();
 		Field groupField, layoutFlagField;
@@ -628,5 +632,55 @@ public final class Utils extends Application {
 		}
 
 		return input;
+	}
+
+	public static int getScreenFactor() {
+		WindowManager windowManager = (WindowManager) getAppContext().getSystemService(Context.WINDOW_SERVICE);
+		Display display = windowManager.getDefaultDisplay();
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		display.getRealMetrics(displayMetrics);
+
+		float screenWidthPx = displayMetrics.widthPixels;
+		float screenDensity = displayMetrics.density;
+
+		// Screen width
+		float screenWidthInches = screenWidthPx / (screenDensity * 160);
+
+		// Screen width category
+		int screenCategory;
+		if (screenWidthInches >= 9.0F) {
+			// Очень большие устройства (Extra Large)
+			screenCategory = 4;
+		} else if (screenWidthInches >= 6.0F) {
+			// Большие устройства (Large)
+			screenCategory = 3;
+		} else if (screenWidthInches >= 4.0F) {
+			// Средние устройства (Medium)
+			screenCategory = 2;
+		} else if (screenWidthInches >= 2.0F) {
+			// Малые устройства (Small)
+			screenCategory = 1;
+		} else {
+			// Сомнительные устройства (Doubtful)
+			screenCategory = 0;
+		}
+
+		// Эмулированные устройства (Emulated)
+		if (isEmulator()) {
+			// screenCategory = 9;
+		}
+
+		return screenCategory;
+	}
+
+	public static boolean isEmulator() {
+		return Build.FINGERPRINT.startsWith("generic")
+				|| Build.FINGERPRINT.startsWith("unknown")
+				|| Build.MODEL.contains("google_sdk")
+				|| Build.MODEL.contains("Emulator")
+				|| Build.MODEL.contains("Android SDK built for x86")
+				|| Build.MANUFACTURER.contains("Genymotion")
+				|| (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+				|| "google_sdk".equals(Build.PRODUCT);
 	}
 }

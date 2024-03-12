@@ -61,7 +61,7 @@ public class UserDbPref {
 	private UserDbPref(ExerciseRunner exerciseRunner) {
 		this.runner = exerciseRunner;
 
-		this.uid = runner.GetUid();
+		this.uid = ExerciseRunner.GetUid();
 		this.name = runner.getName();
 		this.email = runner.getEmail();
 		this.psyCoins = runner.getPoints();

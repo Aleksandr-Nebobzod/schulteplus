@@ -187,7 +187,7 @@
 	<string name="lbl_level_of_feels">Чувства</string>
 	<string name="lbl_level_of_energy">Энергия</string>
 	<string name="lbl_note">Заметка</string>
-	<string name="txt_note_hint">Ввести заметки, отметить эмоционально-энергетические уровни</string>
+	<string name="txt_note_hint">Ввести заметки, отметить чувственно-эмоциональные и энергетические уровни</string>
 	<string name="txt_ex_not_done">Упражнение не завершено</string>
 	<string name="txt_ex_done_1">Отлично</string>
 	<string name="lbl_date_time">Дата, время</string>

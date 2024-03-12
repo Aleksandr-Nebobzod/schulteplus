@@ -22,8 +22,6 @@
 		app:layout_constraintEnd_toStartOf="@+id/rg_source"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
-	<!--		android:textSize="22sp"-->
-	
 	
 	<RadioGroup
 		android:id="@+id/rg_source"

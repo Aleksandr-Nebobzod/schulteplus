@@ -57,21 +57,19 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 	ArrayAdapter<ExResult> exResultAdapter;
 	ArrayAdapter<Achievement> arrayAdapter;
 
-	public View onCreateView(@NonNull LayoutInflater inflater,
-							 ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		dashboardViewModel =
 				new ViewModelProvider(this).get(DashboardViewModel.class);
 
+		// Binding and initiating
 		binding = FragmentDashboardBinding.inflate(inflater, container, false);
 		View root = binding.getRoot();
-
-
-
-		setDashboardSpinner();
-
+		spDashboard = binding.spDashboard;
+		setDashboardSpinner(spDashboard);
+		rgSource = binding.rgSource;
 		elvChart = binding.elvDashboard;
+		// Copy data to clipboard
 		elvChart.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
 				ListAdapter _adapter = ((ListView) adapterView).getAdapter();
@@ -106,11 +104,10 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 				return true;
 			}
 		});
-		rgSource = binding.rgSource;
 
 //		local achievement datasource
-		listAchievement = OrmRepo.getAchievementList();
-		arrayAdapter = Achievement.getArrayAdapter(getAppContext(), listAchievement);
+		listAchievement = new ArrayList<>(); // OrmRepo.getAchievementList();
+		arrayAdapter = Achievement.getArrayAdapter(getAppContext(), (List<Achievement>) Utils.markupListAsGroupedBy(listAchievement, TIMESTAMP_FIELD_NAME));
 		elvChart.setAdapter(arrayAdapter);
 		arrayAdapter.notifyDataSetChanged();
 
@@ -158,8 +155,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 	/**
 	 * Spinner to choose the dashboard (Achievements or an ExType)
 	 */
-	private void setDashboardSpinner() {
-		spDashboard = binding.spDashboard;
+	private void setDashboardSpinner(Spinner spinner) {
 		// Language independent values
 		exTypeValues = getRes().getStringArray(R.array.ex_type);
 		// Language-dependent entries based on spinner-entries array (which was values indeed)
@@ -179,11 +175,11 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		// spAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 		// Set the ArrayAdapter data on the Spinner which binds data to spinner
-		spDashboard.setAdapter(spAdapter);
+		spinner.setAdapter(spAdapter);
 		spAdapter.notifyDataSetChanged();
 
 		// Set livedata Key when Dashboard spinner changed
-		spDashboard.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
 				dashboardViewModel.setKey(exTypeValues[position]);
@@ -222,7 +218,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 			{
 				case R.id.rb_local:
 					OrmRepo.achieveGet25(DashboardFragment.this::onComplete);
-					arrayAdapter = Achievement.getArrayAdapter(getAppContext(), listAchievement);
+					arrayAdapter = Achievement.getArrayAdapter(getAppContext(), (List<Achievement>) Utils.markupListAsGroupedBy(listAchievement, TIMESTAMP_FIELD_NAME));
 					elvChart.setAdapter(arrayAdapter);
 					break;
 				case R.id.rb_www:
@@ -299,7 +295,8 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 
 	@Override
 	public void onComplete(Object result) {
-		listAchievement = (ArrayList<Achievement>) result;
+//		listAchievement = (ArrayList<Achievement>) result;
+		listAchievement = (ArrayList<Achievement>) Utils.markupListAsGroupedBy((ArrayList<Achievement>) result, TIMESTAMP_FIELD_NAME);
 		arrayAdapter.notifyDataSetChanged();
 	}
 }

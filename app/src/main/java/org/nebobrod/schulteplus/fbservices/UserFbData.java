@@ -106,7 +106,8 @@ public final class UserFbData {
 			@Override
 			public void onCancelled(DatabaseError databaseError) {
 				myCallback.onCallback(null);
-				throw databaseError.toException();
+//				throw databaseError.toException();
+				System.err.println("getUserFromFirebase: " + databaseError.getMessage());
 			}
 		});
 	}
@@ -226,7 +227,8 @@ public final class UserFbData {
 			public void onCancelled(DatabaseError databaseError) {
 
 				userHelperCallback.onCallback(null);
-				throw databaseError.toException();
+//				throw databaseError.toException();
+				System.err.println("getByUid: " + databaseError.getMessage());
 			}
 		});
 	}
@@ -246,7 +248,8 @@ public final class UserFbData {
 				@Override
 				public void onCancelled(DatabaseError databaseError) {
 					userHelperCallback.onCallback(null);
-					throw databaseError.toException();
+//					throw databaseError.toException();
+					System.err.println("isExist: " + databaseError.getMessage());
 				}
 			});
 		} catch (Exception e) {

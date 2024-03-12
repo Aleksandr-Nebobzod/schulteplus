@@ -41,9 +41,6 @@ public class ExResultSchulte  extends ExResult {
 		Map<String, String> stringMap = new LinkedHashMap<>();
 		stringMap = super.toMap();
 
-		// Remove pair with wrong key
-//		stringMap.remove(Utils.getRes().getString(R.string.lbl_events));
-
 		// Add pairs in accordance with Class
 		stringMap.put(Utils.getRes().getString(R.string.lbl_turns), turns() + "");
 		stringMap.put(Utils.getRes().getString(R.string.lbl_turns_missed), turnsMissed() + "");

@@ -6,6 +6,7 @@ import static org.nebobrod.schulteplus.Const.*;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -158,10 +159,7 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 		List<AchievementFlags> achieved = new ArrayList<>();
 		editor.putString(	KEY_USER_NAME, userName);
 		editor.putString(	KEY_USER_EMAIL, userEmail);
-
 		editor.putBoolean(	KEY_PRF_ONLINE, online);
-
-
 		tsUpdated = timeStampU();
 		editor.putLong(		KEY_TS_UPDATED, tsUpdated);
 
@@ -211,9 +209,24 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 		return result;
 	}
 
+	public static String exDescription() {
+		// template is: "R/C-L-exType-X*Y-w-screen size factor-P/L"
+		String result = "";
+
+		result += (ratings ? Utils.getRes().getString(R.string.code_rating) : Utils.getRes().getString(R.string.code_common));
+		result += "-L" + level;
+		result += "-" + exType;
+		result += "-" + xSize + "*" + ySize;
+		result += "-P" + (probEnabled ? "1" : "0");
+		result += "-SW" + getScreenFactor();
+		result += "-O" + (getRes().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? "L" : "P");
+
+		return result;
+	}
+
 	/**Checks @achieved and put records to Local & Server db */
-	private static void achievedToBothDb
-	(List<AchievementFlags> achieved, String uid, String userName, long timeStamp, String timeStampFormattedLocal, String string, String s, String s1) {
+	private static void achievedToBothDb (List<AchievementFlags> achieved, String uid, String userName, long timeStamp,
+										  String timeStampFormattedLocal, String string, String s, String exDescription) {
 
 		for (AchievementFlags flag: achieved) {
 			switch (flag) {
@@ -344,8 +357,9 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 			UserDbPref.getInstance(instance).save();
 			return;
 		}
-		// check which source is more fresh (local or srv)
+		// check which source is more fresh, server's
 		long sumPointsDb = ((Number)  objectMap.get("hours")).longValue() * 3600 + ((Number) objectMap.get("hours")).longValue();
+		// ... or local
 		long sumPointsLocal = getHours() * 3600 + this.getPoints();
 		if (sumPointsLocal == sumPointsDb) {
 			// do nothing

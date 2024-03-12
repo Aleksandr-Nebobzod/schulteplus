@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -131,15 +132,17 @@ public class SchulteActivity02 extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_schulte02);
+		// lock orientation
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
 		Intent intent = getIntent();
-		runner = ExerciseRunner.getInstance();
-		boolean feedbackHaptic = runner.getPrefHaptic();
-		boolean feedbackSound = runner.getPrefSound();
-
 		if (null == intent) {
 			Toast.makeText(this, "" + this.getString(R.string.err_no_data), Toast.LENGTH_SHORT).show();
 			finish();
 		}
+
+		runner = ExerciseRunner.getInstance();
+		boolean feedbackHaptic = runner.getPrefHaptic();
+		boolean feedbackSound = runner.getPrefSound();
 
 		// Dialog buttons listeners
 		cancelListener = new DialogInterface.OnClickListener() {

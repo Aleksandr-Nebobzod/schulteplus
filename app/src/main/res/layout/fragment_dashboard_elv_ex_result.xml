@@ -53,6 +53,8 @@
 		<TextView
 			android:id="@+id/tv_h_note"
 			style="@style/tv_list_header"
+			android:layout_width="0dp"
+			android:layout_weight="1"
 			android:text="@string/lbl_note"
 			/>
 		
@@ -88,7 +90,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/ll_header" />
 	
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	<LinearLayout
 		android:id="@+id/ll_item"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -98,7 +100,6 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/tv_group_header"
 		>
-		<!--	android:background="@color/light_grey_A_green"-->
 		
 		<TextView
 			android:id="@+id/tv_flag"
@@ -115,6 +116,7 @@
 			android:layout_width="24dp"
 			android:gravity="end"
 			style="@style/tv_list_item"
+			android:background="@color/transparent"
 			android:text="#"
 			/>
 		
@@ -130,6 +132,7 @@
 			style="@style/tv_list_item"
 			android:text="19:08"
 			/>
+		
 		<TextView
 			android:id="@+id/tv_duration"
 			style="@style/tv_list_item"
@@ -138,8 +141,9 @@
 		
 		<TextView
 			android:id="@+id/tv_events"
-			android:gravity="end"
 			style="@style/tv_list_item"
+			android:gravity="end"
+			android:layout_width="24dp"
 			android:text="4012"
 			/>
 		
@@ -182,15 +186,18 @@
 	<TextView
 		android:id="@+id/tv_note_full"
 		android:layout_width="match_parent"
-		android:clickable="true"
-		android:visibility="gone"
-		android:textStyle="italic"
 		style="@style/tv_list_item"
+		android:lines="0"
+		android:maxLines="5"
+		android:visibility="gone"
+		android:background="@color/transparent"
+		android:textStyle="italic"
 		android:text="impressions"
-		android:gravity="start"
+		android:gravity="end"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/ll_item"
 		/>
+<!--	android:clickable="true"-->
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

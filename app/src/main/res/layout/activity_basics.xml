@@ -46,7 +46,9 @@
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				style="?android:attr/buttonBarButtonStyle"
-				android:textSize="32sp"
+				android:textColor="@color/colorPrimary"
+				android:textSize="36sp"
+				android:textStyle="bold"
 				android:layout_weight="2"
 				android:text="@string/lbl_back" />
 			<LinearLayout
@@ -87,6 +89,7 @@
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				style="?android:attr/buttonBarButtonStyle"
+				android:textColor="@color/colorPrimary"
 				android:textSize="32sp"
 				android:layout_weight="2"
 				android:text="@string/lbl_distraction" />

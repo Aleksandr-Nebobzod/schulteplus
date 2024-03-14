@@ -204,12 +204,9 @@ public class MainActivity extends AppCompatActivity implements UserFbData.UserHe
 
 	@Override
 	public void onBackPressed() {
-
-//		finishAndRemoveTask();
 		finishAffinity();
+//		finishAndRemoveTask();
 //		finish();
-
-
 //		super.onBackPressed();
 	}
 

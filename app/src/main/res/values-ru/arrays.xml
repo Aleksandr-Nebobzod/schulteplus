@@ -22,4 +22,18 @@
 		<item>Определённо</item>
 	</string-array>
 	
+	<string-array name="level_of_emotion_entries" translatable="true">
+		<item>Отвращение</item>
+		<item>Раздражение</item>
+		<item>Спокойствие</item>
+		<item>Интерес</item>
+		<item>Азарт</item>
+	</string-array>
+	
+
+	<string-array name="level_of_energy_entries" translatable="true">
+		<item>Высокий</item>
+		<item>Норма</item>
+		<item>Низкий</item>
+	</string-array>
 </resources>

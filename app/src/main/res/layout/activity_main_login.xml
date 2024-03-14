@@ -55,6 +55,8 @@
 					android:drawableStart="@drawable/ic_baseline_perm_identity_24"
 					android:drawablePadding="4dp"
 					android:hint="@string/hint_email"
+					android:autofillHints="emailAddress"
+					android:importantForAutofill="auto"
 					android:padding="8dp"
 					android:textColor="@color/black"
 					android:visibility="visible" />
@@ -93,6 +95,8 @@
 						android:drawablePadding="4dp"
 						android:inputType="textPassword"
 						android:contentDescription="@string/hint_pass"
+						android:autofillHints="password"
+						android:importantForAutofill="auto"
 						android:padding="8dp"
 						android:textColor="@color/black" />
 					

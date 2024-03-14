@@ -8,8 +8,9 @@
 	<color name="teal_700">#FF018786</color>
 	<color name="black">#FF000000</color>
 	<color name="white">#FFFFFFFF</color>
-	<color name="light_blue_600">#FF039BE5</color>
-	<color name="light_blue_900">#FF01579B</color>
+	<color name="light_blue_4">#005C88</color>
+	<color name="light_blue_600">#005C88</color>
+	<color name="light_blue_900">#0275AE</color>
 	<color name="light_blue_A200">#FF40C4FF</color>
 	<color name="semi_grey_6">#66666666</color>
 	<color name="semi_white">#66FFFFFF</color>
@@ -19,6 +20,7 @@
 	<color name="light_grey_2_blue">#224292</color>
 	<color name="light_grey_4">#444444</color>
 	<color name="light_grey_6">#666666</color>
+	<color name="light_grey_6_blue">#2A5CDA</color>
 	<color name="light_grey_8">#888888</color>
 	<color name="light_grey_A">#AAAAAA</color>
 	<color name="light_grey_A_red">#DAAAAA</color>
@@ -40,5 +42,6 @@
 	<color name="prob_color75">#95FE01</color>
 	<color name="prob_color99">#30FFAC</color>
 	<color name="prob_color11">#FFFFFF</color>
+	
 
 </resources>

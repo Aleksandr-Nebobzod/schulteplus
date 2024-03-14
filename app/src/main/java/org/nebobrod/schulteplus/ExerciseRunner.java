@@ -6,13 +6,14 @@ import static org.nebobrod.schulteplus.Const.*;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
-import org.nebobrod.schulteplus.data.OrmUtils;
+import org.nebobrod.schulteplus.data.OrmRepo;
 import org.nebobrod.schulteplus.fbservices.AchievementsFbData;
 import org.nebobrod.schulteplus.fbservices.UserDbPref;
 import org.nebobrod.schulteplus.fbservices.UserHelper;
@@ -60,6 +61,7 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 			userName = userHelper.getName();
 			userEmail = userHelper.getEmail();
 			if (uid.isEmpty()) uid = KEY_DEFAULT_USER_PREF;
+			userFbCrash(uid);
 		}
 		catch (Exception e){
 			Log.d(TAG, "ExerciseRunner: not enough data");
@@ -144,7 +146,7 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 			}
 
 			fontScale = sharedPreferences.getInt(KEY_PRF_FONT_SCALE, 0);
-			tsUpdated = sharedPreferences.getLong(KEY_TS_UPDATED, timeStamp());
+			tsUpdated = sharedPreferences.getLong(KEY_TS_UPDATED, timeStampU());
 		}
 			catch (Exception e){
 			Log.d(TAG, "ExerciseRunner: noContext");
@@ -157,11 +159,8 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 		List<AchievementFlags> achieved = new ArrayList<>();
 		editor.putString(	KEY_USER_NAME, userName);
 		editor.putString(	KEY_USER_EMAIL, userEmail);
-
 		editor.putBoolean(	KEY_PRF_ONLINE, online);
-
-
-		tsUpdated = timeStamp();
+		tsUpdated = timeStampU();
 		editor.putLong(		KEY_TS_UPDATED, tsUpdated);
 
 		if(null != exercise){
@@ -199,7 +198,7 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 
 		if (result) {
 			editor.commit();
-			achievedToBothDb(achieved, uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, " ");
+			achievedToBothDb(achieved, uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, " ");
 		} else {
 			editor.clear();
 
@@ -210,19 +209,34 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 		return result;
 	}
 
+	public static String exDescription() {
+		// template is: "R/C-L-exType-X*Y-w-screen size factor-P/L"
+		String result = "";
+
+		result += (ratings ? Utils.getRes().getString(R.string.code_rating) : Utils.getRes().getString(R.string.code_common));
+		result += "-L" + level;
+		result += "-" + exType;
+		result += "-" + xSize + "*" + ySize;
+		result += "-P" + (probEnabled ? "1" : "0");
+		result += "-SW" + getScreenFactor();
+		result += "-O" + (getRes().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? "L" : "P");
+
+		return result;
+	}
+
 	/**Checks @achieved and put records to Local & Server db */
-	private static void achievedToBothDb
-	(List<AchievementFlags> achieved, String uid, String userName, long timeStamp, String timeStampFormattedLocal, String string, String s, String s1) {
+	private static void achievedToBothDb (List<AchievementFlags> achieved, String uid, String userName, long timeStamp,
+										  String timeStampFormattedLocal, String string, String s, String exDescription) {
 
 		for (AchievementFlags flag: achieved) {
 			switch (flag) {
 				case SECONDS:
-					OrmUtils.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
-					if (sharedData) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
+					OrmRepo.achievePut( uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
+					if (sharedData) AchievementsFbData.achievePut( uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
 				break;
 				case HOURS:
-					OrmUtils.achievePut(  uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
-					if (sharedData) AchievementsFbData.achievePut( uid, userName, timeStamp(), timeStampFormattedLocal(timeStamp()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
+					OrmRepo.achievePut(  uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
+					if (sharedData) AchievementsFbData.achievePut( uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
 				break;
 			}
 		}
@@ -343,8 +357,9 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 			UserDbPref.getInstance(instance).save();
 			return;
 		}
-		// check which source is more fresh (local or srv)
+		// check which source is more fresh, server's
 		long sumPointsDb = ((Number)  objectMap.get("hours")).longValue() * 3600 + ((Number) objectMap.get("hours")).longValue();
+		// ... or local
 		long sumPointsLocal = getHours() * 3600 + this.getPoints();
 		if (sumPointsLocal == sumPointsDb) {
 			// do nothing
@@ -353,7 +368,6 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 		} else {
 			loadFromDbPref();
 		}
-
 	}
 
 	private void loadFromDbPref() {

@@ -21,7 +21,7 @@ import org.nebobrod.schulteplus.fbservices.UserFbData;
 import org.nebobrod.schulteplus.fbservices.UserHelper;
 
 /**
- * Custom Preference which allows set values by touching SurfaceView on layout/fragment_probabilities
+ * Custom Preference which allows set values by touching SurfaceView on {@link R.layout#fragment_probabilities}
  */
 public class DrawerPreference extends androidx.preference.Preference {
 	SurfaceView surfaceView;
@@ -65,8 +65,4 @@ public class DrawerPreference extends androidx.preference.Preference {
 		surfaceView = (SurfaceView) holder.findViewById(R.id.surface_view);
 		if (dsvCallback != null) dsvCallback.onCallback(surfaceView);
 	}
-
-
-
-
 }

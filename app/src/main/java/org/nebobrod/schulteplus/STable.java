@@ -24,6 +24,9 @@ import com.j256.ormlite.dao.Dao;
 
 import org.nebobrod.schulteplus.data.ClickGroup;
 import org.nebobrod.schulteplus.data.DatabaseHelper;
+import org.nebobrod.schulteplus.data.ExResult;
+import org.nebobrod.schulteplus.data.ExResultBasics;
+import org.nebobrod.schulteplus.data.ExResultSchulte;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -186,16 +189,15 @@ public class STable {
 
 	/**
 	 * Gathering statistics of passed exercise
-	 * as formatted String
 	 */
-	// TODO: 25.12.2023 later return this as Map to display in ListView
-	public String getResults()
-	{
+	// TODOne 02.03.24: 25.12.2023 later return this as Map to display in ListView
+	public ExResult getResults() {
+		ExResult exResult;
 		int time = 0, turns = 0, turnsMissed = 0;	// time tends to milliseconds
 		float average = 0, rmsd = 0;
 		String results = "";	// this in seconds.00
 
-		turns = this.journal.size()-1;
+		turns = this.journal.size()-1; // 'cos 1-st position journal[0] means no turns (start record)
 		results += getRes().getString(R.string.lbl_turns) + ":" + tHtml()  + bHtml(""+ turns);
 
 		// time spent & average deviation
@@ -203,7 +205,8 @@ public class STable {
 			time += this.journal.get(i).time;
 			if (!this.journal.get(i).isCorrect) turnsMissed++;
 		}
-		if (turnsMissed != 0) { // if there are no missed turns do not show it
+		// if there are no missed turns do not show it
+		if (turnsMissed != 0) {
 			results += pHtml() + getRes().getString(R.string.lbl_turns_missed) + ":" + tHtml()  + cHtml( bHtml(""+ turnsMissed));
 		}
 		results += pHtml() + getRes().getString(R.string.lbl_time) + ":" + tHtml()  + bHtml(String.format("%.2f", (time /1000F)))
@@ -213,7 +216,7 @@ public class STable {
 		// root mean square deviation
 		for (int i=1; i<=turns; i++) {
 			rmsd += Math.pow ((average - this.journal.get(i).time), 2);
-//			Log.d(TAG, "getResults: RMSD " +i+ "_" + String.format("%.2f", rmsd) );
+//			Log.d(TAG, "getResults: RMSD " + i + "_" + String.format("%.2f", rmsd) );
 		}
 		rmsd = (float) Math.sqrt((float) (rmsd / turns));
 
@@ -224,10 +227,24 @@ public class STable {
 		Log.d(TAG, "getResults: "+ this.journal);
 		Log.d(TAG, "getResults: " + results);
 
-		return results;
+/*		exResult = (ExerciseRunner.getExType().contains(KEY_PRF_EX_S0) ?
+				new ExResultSchulte(time, turns, turnsMissed, average, rmsd, 0, 0, "" ) :
+				new ExResultBasics(time, turns, 0, 0, ""));*/
+		switch (ExerciseRunner.getExType().substring(0, 7)) {
+			case KEY_PRF_EX_S0:
+				exResult = new ExResultSchulte(time, turns, turnsMissed, average, rmsd, 0, 0, "" );
+				break;
+			case KEY_PRF_EX_B0:
+				exResult = new ExResultBasics(time, turns, 0, 0, "");
+				break;
+			default:
+				exResult = new ExResult(time, 0, 0, "");
+		}
+
+		return exResult;
 	}
 
-	public boolean endChecked() {
+	public boolean checkIsFinished() {
 		return (expectedValue > xSize*ySize? isFinished = true: false);
 /*		if (turnNumber > xSize*ySize) {
 			isFinished = true;
@@ -236,7 +253,7 @@ public class STable {
 	}
 
 	/**
-	 * Subclass keeps what user send as a turn
+	 * Subclass keeps what user sends as a turn
 	 */
 	class Turn {
 		Long timeStamp, time;
@@ -246,7 +263,7 @@ public class STable {
 
 		public Turn(Long timeStamp, Long time, int expected, int x, int y, int position, boolean isCorrect) {
 			this.timeStamp = timeStamp;
-			this.time = time;
+			this.time = time; // num of nanoseconds since previous turn
 			this.expected = expected;
 			this.x = x;
 			this.y = y;
@@ -268,13 +285,13 @@ public class STable {
 					'}';
 		}
 	}
-	public List<Turn> journal = new ArrayList<Turn>();
+	public List<Turn> journal = new ArrayList<>();
 
 	/**
 	 * Answers was it correct cell? puts turn-data into journal
 	 * @param position number of clicked Cell
 	 */
-	public boolean checkTurn (int position)
+	public boolean isCorrectTurn(int position)
 	{
 		int attemptNumber = journal.size();
 		int turnY = (position) / xSize + 1;
@@ -293,7 +310,7 @@ public class STable {
 	}
 
 	/**
-	 * This writes turn-data to local db (just extra)
+	 * This writes turn-data to local db (just for extra history assurance)
 	 * @param turn
 	 */
 	public void writeTurn (@NonNull Turn turn) {
@@ -302,7 +319,7 @@ public class STable {
 		try {
 			DatabaseHelper helper = new DatabaseHelper();
 			Dao<ClickGroup, Integer> dao = helper.getGroupDao();
-			dao.create(group);
+			dao.create(group); // TODO: 29.01.2024 move into ClickGroup with "this" as put-method 
 		} catch (SQLException | java.sql.SQLException e) {
 			throw new RuntimeException(e);
 		}

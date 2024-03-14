@@ -7,13 +7,34 @@
  */
 
 package org.nebobrod.schulteplus.data;
+
+import org.nebobrod.schulteplus.Const;
+
+import java.util.List;
+
 /** Makes one entry point for different places to maintain data
  */
 public class DataRepositories implements DataRepository {
 
+	private static final OrmRepo ormLiteDataHandler = new OrmRepo();
+//	private static final FirestoreUtils firestoreDataHandler = new FirestoreUtils();
 
+
+	/**
+	 * Puts into a DataRepositories
+	 * @param result
+	 */
 	@Override
-	public void exResultPut(ExResult exResult) {
-		
+	public void putResult(Object result) {
+		ormLiteDataHandler.putResult(result);
+	}
+
+	/**
+	 * Gets from a DataRepository <p>
+	 * number of rows as defined in: {@link Const#QUERY_COMMON_LIMIT}
+	 */
+	@Override
+	public<T> List<T> getResultsLimited(Class<T> clazz, String exType) {
+		return null;
 	}
 }

@@ -26,6 +26,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.net.ssl.HttpsURLConnection;
 
+/**
+ * provides checks for splash-screen
+ */
 @Singleton
 public class NetworkConnectivity {
 	private String TAG = getClass().getSimpleName(); // TODONE: 23.11.2023 check for others

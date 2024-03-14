@@ -61,7 +61,7 @@ public class UserDbPref {
 	private UserDbPref(ExerciseRunner exerciseRunner) {
 		this.runner = exerciseRunner;
 
-		this.uid = runner.GetUid();
+		this.uid = ExerciseRunner.GetUid();
 		this.name = runner.getName();
 		this.email = runner.getEmail();
 		this.psyCoins = runner.getPoints();
@@ -71,8 +71,6 @@ public class UserDbPref {
 
 		this.objectMap = new HashMap<>();
 
-//		dbRead(null,this.uid);
-//		objectMap = getSubCollectionDocumentRef().get().getResult().getData();
 		getSubCollectionDocumentRef(null, exerciseRunner.getUid());
 	}
 

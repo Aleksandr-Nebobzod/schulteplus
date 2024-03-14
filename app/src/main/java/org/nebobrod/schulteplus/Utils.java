@@ -1,10 +1,11 @@
 package org.nebobrod.schulteplus;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -13,35 +14,37 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.HapticFeedbackConstants;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
+import java.lang.reflect.Field;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.Locale;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -143,7 +146,7 @@ public final class Utils extends Application {
 		}
 	}
 
-	public static  long timeStamp(){
+	public static  long timeStampU(){
 		return (long) (Instant.now().getEpochSecond());
 	}
 
@@ -155,11 +158,11 @@ public final class Utils extends Application {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy.MM.dd HH:mm");
 		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter)  ;
 	}
-	public static  String timeStampDateLocal(long ts) {
+	public static  String timeStampToDateLocal(long ts) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd"); // use correct format ('S' for milliseconds)
 		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter)  ;
 	}
-	public static  String timeStampTimeLocal(long ts) {
+	public static  String timeStampToTimeLocal(long ts) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss"); // use correct format ('S' for milliseconds)
 		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter)  ;
 	}
@@ -170,6 +173,14 @@ public final class Utils extends Application {
 		return Instant.ofEpochSecond(ts).toString(); // TODO: 20.12.2023 is it UTC? 
 	}
 
+	public static String duration (long millis) {
+		int s = (int) (millis / 1000);
+		return String.format("%d:%02d:%02d.%03d", s / 3600, (s % 3600) / 60, (s % 60), millis % 1000);
+	}
+	public static String durationCut (long millis) {
+		int s = (int) (millis / 1000);
+		return String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
+	}
 
 
 	public static  long transactID(){
@@ -315,53 +326,27 @@ public final class Utils extends Application {
 		View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
 
 		Snackbar snackbar = Snackbar.make(rootView, message, Snackbar.LENGTH_INDEFINITE);
+
+		// Ensure we have a listener
 		if (listener==null) { // It seems that this code is redundant
 			listener = new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
-					; //  nothing
+					//  nothing
+					snackbar.dismiss();
 				}
 			};
 		}
-
 		snackbar.setAction(getRes().getString(R.string.lbl_ok), listener);
 
-				View snackbarView = snackbar.getView();
+		// Set 7 rows allowed in snackbar
+		View snackbarView = snackbar.getView();
 		TextView tv= (TextView) snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
 		tv.setMaxLines(7);
 
+		// Show
 		snackbar.show();
 	}
-
-	public static void resultDialog(Context context, String s, @Nullable DialogInterface.OnClickListener okListener, @Nullable DialogInterface.OnClickListener cancelListener) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-		final FrameLayout frameView = new FrameLayout(context);
-		builder.setView(frameView);
-		final AlertDialog alertDialog = builder.create();
-
-		//alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-		alertDialog.getWindow().setDimAmount(0.5F);
-
-		LayoutInflater inflater = alertDialog.getLayoutInflater();
-		View dialoglayout = inflater.inflate(R.layout.activity_schulte_result_df, frameView);
-		TextView txtTitle, txtMessage;
-		Button btnOk, btnCancel;
-
-		txtTitle = dialoglayout.findViewById(R.id.txtTitle);
-		txtMessage = dialoglayout.findViewById(R.id.txtMessage);
-		btnCancel = dialoglayout.findViewById(R.id.btnCancel);
-		btnOk = dialoglayout.findViewById(R.id.btnOK);
-
-		txtTitle.setText(R.string.title_result);
-		txtMessage.setText(Html.fromHtml(s));
-
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getRes().getText(R.string.lbl_ok), okListener);
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,getRes().getText(R.string.lbl_no), cancelListener);
-
-		alertDialog.show();
-	}
-
 
 	//Current Android version data
 	public static String currentVersion(){
@@ -413,8 +398,27 @@ public final class Utils extends Application {
 
 		AnimationSet aSet = new AnimationSet(true);
 
+
+
 		ScaleAnimation scaleAnimation1 = new ScaleAnimation(1.0f, 1.5f, 1.0f, 1.5f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 		scaleAnimation1.setDuration(200);
+
+		// TODO: 06.03.2024 tried to prevent clipping in gridView but it doesn't help
+		scaleAnimation1.setAnimationListener(new Animation.AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animation) {
+				animation.setZAdjustment(Animation.ZORDER_TOP);
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				animation.setZAdjustment(Animation.ZORDER_BOTTOM);
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {}
+		});
+
 		aSet.addAnimation(scaleAnimation1);
 		view.startAnimation(aSet);
 		view.setBackgroundTintList(colorBgBefore);
@@ -432,11 +436,251 @@ public final class Utils extends Application {
 //		if (color != null)  view = tvBefore;
 	}
 
+	/**
+	 * Rearrange Z value of the
+	 * @param view chosen element in the viewGroup
+	 * @param onTop if true (or sent back if false)
+	 */
+	public static void setViewZOrder(ViewGroup viewGroup, View view, boolean onTop) {
+		int count = viewGroup.getChildCount();
+		TextView child;
+
+		for(int i = 0; i < count; i++) {
+			child = (TextView) viewGroup.getChildAt(i);
+			child.setZ(0.5F);
+//			Log.d(TAG, i + ". animLayerTop: " + child.getText() +", Z: "+child.getZ());
+		}
+		view.setZ(onTop ? 1.0F : 0.0F);
+		viewGroup.invalidate();
+		// TODO: 06.03.2024 the first element still uncontrollable
+	}
+
+	/**
+	 * Visualise appearance with animation
+	 * @param myView  a previously invisible view.
+	 * @link <a href="https://developer.android.com/develop/ui/views/animations/reveal-or-hide-view#Reveal">Create a circular reveal animation</a>
+	 */
+	public static void animVisiblate(View myView){
+		// Check whether the runtime version is at least Android 5.0.
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			// Get the center for the clipping circle.
+			int cx = myView.getWidth() / 2;
+			int cy = myView.getHeight() / 2;
+
+			// Get the final radius for the clipping circle.
+			float finalRadius = (float) Math.hypot(cx, cy);
+
+			// Create the animator for this view. The start radius is 0.
+			Animator anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0f, finalRadius);
+
+			// Make the view visible and start the animation.
+			myView.setVisibility(View.VISIBLE);
+			anim.start();
+		} else {
+			// Set the view to invisible without a circular reveal animation below
+			// Android 5.0.
+			myView.setVisibility(View.INVISIBLE);
+		}
+	}
+
+	/**
+	 * Visualise disappearance with animation
+	 * @param myView  a previously invisible view.
+	 * @link <a href="https://developer.android.com/develop/ui/views/animations/reveal-or-hide-view#Reveal">Create a circular reveal animation</a>
+	 */
+	public static void animInvisiblate(View myView){
+		// Check whether the runtime version is at least Android 5.0.
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			// Get the center for the clipping circle.
+			int cx = myView.getWidth() / 2;
+			int cy = myView.getHeight() / 2;
+
+			// Get the initial radius for the clipping circle.
+			float initialRadius = (float) Math.hypot(cx, cy);
+
+			// Create the animation. The final radius is 0.
+			Animator anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0f);
+
+			// Make the view invisible when the animation is done.
+			anim.addListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					super.onAnimationEnd(animation);
+					myView.setVisibility(View.INVISIBLE);
+				}
+			});
+
+			// Start the animation.
+			anim.start();
+		} else {
+			// Set the view to visible without a circular reveal animation below Android
+			// 5.0.
+			myView.setVisibility(View.VISIBLE);
+		}
+	}
+
 
 	public static Context getAppContext() {
 		return Utils.context;
 	}
 
+	// TODO: 28.02.2024 check author
+	public static int getStringId(String stringId) {
+		return getAppContext().getResources().getIdentifier(stringId, "string", getAppContext().getPackageName());
+	}
+	
+	public static String getString(String stringId) {
+		int sid = getStringId(stringId);
+		if (sid > 0) {
+			return getAppContext().getResources().getString(sid);
+		} else {
+			return "-";
+		}
+	}
 
+	/**
+	 * Puts into FirebaseCrashlytics
+	 * @param message log-record
+	 */
+	public static void logFbCrash(String message) {
+		FirebaseCrashlytics.getInstance().log(message);
+	}
 
+	/**
+	 * Puts into FirebaseCrashlytics
+	 * @param uid user identifier
+	 */
+	public static void userFbCrash(String uid) {
+		FirebaseCrashlytics.getInstance().setUserId(uid);
+	}
+
+	/**
+	 * Puts into FirebaseCrashlytics
+	 * @param e recorded Exception
+	 */
+	public static void exceptionFbCrash(Exception e) {
+		FirebaseCrashlytics.getInstance().recordException(e);
+	}
+
+	/**
+	 * Modifies
+	 * @param input List of an Object
+	 * @param groupFieldName grouping by Date of TIMESTAMP_FIELD_NAME
+	 * @return marked layoutFlag-field with G or H
+	 */
+	public static <T> List<T> markupListAsGroupedBy(List<T> input, String groupFieldName) {
+		final String LAYOUT_FLAG_FIELD_NAME = "layoutFlag";
+		final String LAYOUT_HEADER_FLAG = "H";
+		final String LAYOUT_GROUP_FLAG = "G";
+
+		// data source checks
+		if (input == null) return input;
+		if (input.size() <= 0) return input;
+
+		// Define List-item's Class
+		T item = input.get(0);
+		Class<?> itemClass = item.getClass();
+		Field groupField, layoutFlagField;
+
+		// Check presence of a groupField and char layoutFlag field
+		try {
+			groupField = itemClass.getDeclaredField(groupFieldName);
+			groupField.setAccessible(true); // Make the field accessible
+			layoutFlagField = itemClass.getDeclaredField(LAYOUT_FLAG_FIELD_NAME);
+			layoutFlagField.setAccessible(true); // Make the field accessible
+		} catch (NoSuchFieldException e) {
+			FirebaseCrashlytics.getInstance().recordException(e);
+			e.printStackTrace();
+			return input;
+		}
+
+		// Handle input collection sorting it by groupFieldName
+		input.sort((o1, o2) -> {
+			try {
+//				Comparable fieldValue1 = (Comparable) groupField.get(o1);
+//				Comparable fieldValue2 = (Comparable) groupField.get(o2);
+//				return fieldValue1.compareTo(fieldValue2);
+				String date1 = timeStampToDateLocal((Long) groupField.get(o1));
+				String date2 = timeStampToDateLocal((Long) groupField.get(o2));
+				return date2.compareTo(date1); // reverse sorting
+			} catch (IllegalAccessException | NullPointerException e) {
+				e.printStackTrace();
+				return 0;
+			}
+		});
+
+		// Manage Date grouping
+		String previousValue = "";
+		String currentValue;
+		for (int i = 0; i < input.size(); i++) {
+			try {
+				currentValue = timeStampToDateLocal((Long) groupField.get(input.get(i)));
+				if (!String.valueOf(currentValue).equals(previousValue)) {
+					layoutFlagField.set(input.get(i), LAYOUT_GROUP_FLAG);
+					previousValue = String.valueOf(currentValue);
+				}
+			} catch (IllegalAccessException | NullPointerException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Manage header
+		try {
+			layoutFlagField.set(input.get(0), LAYOUT_HEADER_FLAG);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+
+		return input;
+	}
+
+	public static int getScreenFactor() {
+		WindowManager windowManager = (WindowManager) getAppContext().getSystemService(Context.WINDOW_SERVICE);
+		Display display = windowManager.getDefaultDisplay();
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		display.getRealMetrics(displayMetrics);
+
+		float screenWidthPx = displayMetrics.widthPixels;
+		float screenDensity = displayMetrics.density;
+
+		// Screen width
+		float screenWidthInches = screenWidthPx / (screenDensity * 160);
+
+		// Screen width category
+		int screenCategory;
+		if (screenWidthInches >= 9.0F) {
+			// Очень большие устройства (Extra Large)
+			screenCategory = 4;
+		} else if (screenWidthInches >= 6.0F) {
+			// Большие устройства (Large)
+			screenCategory = 3;
+		} else if (screenWidthInches >= 4.0F) {
+			// Средние устройства (Medium)
+			screenCategory = 2;
+		} else if (screenWidthInches >= 2.0F) {
+			// Малые устройства (Small)
+			screenCategory = 1;
+		} else {
+			// Сомнительные устройства (Doubtful)
+			screenCategory = 0;
+		}
+
+		// Эмулированные устройства (Emulated)
+		if (isEmulator()) {
+			// screenCategory = 9;
+		}
+
+		return screenCategory;
+	}
+
+	public static boolean isEmulator() {
+		return Build.FINGERPRINT.startsWith("generic")
+				|| Build.FINGERPRINT.startsWith("unknown")
+				|| Build.MODEL.contains("google_sdk")
+				|| Build.MODEL.contains("Emulator")
+				|| Build.MODEL.contains("Android SDK built for x86")
+				|| Build.MANUFACTURER.contains("Genymotion")
+				|| (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+				|| "google_sdk".equals(Build.PRODUCT);
+	}
 }

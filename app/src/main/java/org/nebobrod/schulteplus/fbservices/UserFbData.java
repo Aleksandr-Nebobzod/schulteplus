@@ -27,7 +27,7 @@ import java.io.IOException;
  * Realtime Database's copy of FirebaseUser from Authentication db
  * */
 public final class UserFbData {
-	private static final String TAG = "UserData";
+	private static final String TAG = "UserFbData";
 	public static final String DB_URL = "https://schulte-plus-default-rtdb.europe-west1.firebasedatabase.app";
 	private static final String DB_PATH = "users";
 	static FirebaseDatabase fbDatabase;
@@ -41,12 +41,6 @@ public final class UserFbData {
 
 	public interface UserHelperCallback {
 		void onCallback(@Nullable UserHelper fbDbUser);
-	}
-
-	public static void main(String[] args) throws IOException {
-		System.out.println("hello from test");
-		//println(Log.DEBUG, "main: run!", "main: run!");
-		//Log.d(TAG, "main: run!");
 	}
 
 	private  static void init () {
@@ -112,7 +106,8 @@ public final class UserFbData {
 			@Override
 			public void onCancelled(DatabaseError databaseError) {
 				myCallback.onCallback(null);
-				throw databaseError.toException();
+//				throw databaseError.toException();
+				System.err.println("getUserFromFirebase: " + databaseError.getMessage());
 			}
 		});
 	}
@@ -232,7 +227,8 @@ public final class UserFbData {
 			public void onCancelled(DatabaseError databaseError) {
 
 				userHelperCallback.onCallback(null);
-				throw databaseError.toException();
+//				throw databaseError.toException();
+				System.err.println("getByUid: " + databaseError.getMessage());
 			}
 		});
 	}
@@ -252,7 +248,8 @@ public final class UserFbData {
 				@Override
 				public void onCancelled(DatabaseError databaseError) {
 					userHelperCallback.onCallback(null);
-					throw databaseError.toException();
+//					throw databaseError.toException();
+					System.err.println("isExist: " + databaseError.getMessage());
 				}
 			});
 		} catch (Exception e) {

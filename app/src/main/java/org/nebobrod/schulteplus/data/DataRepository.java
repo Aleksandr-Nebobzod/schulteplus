@@ -8,13 +8,18 @@
 
 package org.nebobrod.schulteplus.data;
 
+import java.util.List;
+
 /** Provides necessary methods for stored data
  */
 public interface DataRepository {
 
-	 void exResultPut(ExResult exResult);
+	/** Puts into a DataRepository */
+	public<T> void putResult(T result);
 
-//	List<ExResult> getGameResults();
-
+	/** Gets from a DataRepository <p>
+	 * number of rows as defined in: {@link org.nebobrod.schulteplus.Const#QUERY_COMMON_LIMIT} <p>
+	 * way to call: <code>List< ExResultBasics > results = getResultsLimited(ExResultBasics.class);</code>*/
+	public<T> List<T> getResultsLimited(Class<T> clazz, String exType);
 }
 

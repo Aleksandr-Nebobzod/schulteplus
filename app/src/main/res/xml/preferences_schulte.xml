@@ -7,10 +7,10 @@
 	<PreferenceCategory app:title="@string/title_schulte" >
 		<Preference app:key="prf_cat_schulte_description" app:summary="@string/txt_schulte_description"/>
 	
-		<CheckBoxPreference app:key="gcb_schulte_1_sequence" app:title="@string/lbl_sch_1_sequence" app:summary="@string/lbl_sch_1_sequence_sum" app:defaultValue="true"  app:icon="@drawable/ic_schulte_black_24dp"/>
-		<CheckBoxPreference app:key="gcb_schulte_2_sequences" app:title="@string/lbl_sch_2_sequence" android:summary="@string/lbl_sch_2_sequence_sum" app:defaultValue="false" app:enabled="true" />
-		<CheckBoxPreference app:key="gcb_schulte_3_sequences"  app:title="@string/lbl_sch_3_sequence" android:summary="@string/lbl_sch_3_sequence_sum" app:defaultValue="false" app:enabled="true"/>
-		<CheckBoxPreference app:key="gcb_schulte_4_mishmash"  app:title="@string/lbl_sch_4_sequence" android:summary="@string/lbl_sch_4_sequence_sum" app:defaultValue="false" app:enabled="false"/>
+		<CheckBoxPreference app:key="gcb_schulte_1_sequence" app:title="@string/lbl_schulte_1_sequence" app:summary="@string/lbl_schulte_1_sequence_sum" app:defaultValue="true"  app:icon="@drawable/ic_schulte_black_24dp"/>
+		<CheckBoxPreference app:key="gcb_schulte_2_sequences" app:title="@string/lbl_schulte_2_sequence" android:summary="@string/lbl_schulte_2_sequence_sum" app:defaultValue="false" app:enabled="true" />
+		<CheckBoxPreference app:key="gcb_schulte_3_sequences"  app:title="@string/lbl_schulte_3_sequence" android:summary="@string/lbl_schulte_3_sequence_sum" app:defaultValue="false" app:enabled="true"/>
+		<CheckBoxPreference app:key="gcb_schulte_4_mishmash"  app:title="@string/lbl_schulte_4_sequence" android:summary="@string/lbl_schulte_4_sequence_sum" app:defaultValue="false" app:enabled="false"/>
 		
 		<!--		Ratings make off all the other settings-->
 		<SwitchPreference app:key="prf_sw_ratings" app:title="@string/lbl_rating" app:summaryOn="@string/lbl_rating_sum_on" android:summaryOff="@string/lbl_rating_sum_off" app:defaultValue="false" app:enabled="true" app:dependency="gcb_schulte_1_sequence" />

@@ -12,7 +12,7 @@ import static org.nebobrod.schulteplus.Utils.tHtml;
 import android.database.SQLException;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
+import org.nebobrod.schulteplus.Log;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;

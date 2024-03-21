@@ -17,7 +17,7 @@ import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import org.nebobrod.schulteplus.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;

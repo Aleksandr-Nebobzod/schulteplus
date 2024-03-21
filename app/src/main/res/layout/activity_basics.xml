@@ -45,12 +45,12 @@
 				android:id="@+id/bt_exit"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				style="?android:attr/buttonBarButtonStyle"
-				android:textColor="@color/colorPrimary"
+				style="@style/SchultePlus.Button.TextButton.Dialog"
 				android:textSize="36sp"
 				android:textStyle="bold"
 				android:layout_weight="2"
 				android:text="@string/lbl_back" />
+<!--				style="?android:attr/buttonBarButtonStyle"-->
 			<LinearLayout
 				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
@@ -88,8 +88,8 @@
 				android:id="@+id/bt_distraction"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				style="?android:attr/buttonBarButtonStyle"
-				android:textColor="@color/colorPrimary"
+				style="@style/SchultePlus.Button.TextButton.Dialog"
+				
 				android:textSize="32sp"
 				android:layout_weight="2"
 				android:text="@string/lbl_distraction" />

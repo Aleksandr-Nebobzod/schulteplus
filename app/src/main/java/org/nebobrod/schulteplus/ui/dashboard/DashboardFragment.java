@@ -18,8 +18,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,6 +51,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 	String[] exTypeValues, exTypeEntries; // Arrays for spinner exType
 	Spinner spDashboard;
 	RadioGroup rgSource;
+	TextView tvTitle;
 	ListView elvChart;
 	ArrayList<Spanned> list;
 	ArrayList<Achievement> listAchievement;
@@ -67,42 +70,41 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		spDashboard = binding.spDashboard;
 		setDashboardSpinner(spDashboard);
 		rgSource = binding.rgSource;
+		tvTitle = binding.tvTitle;
 		elvChart = binding.elvDashboard;
+
 		// Copy data to clipboard
-		elvChart.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-				ListAdapter _adapter = ((ListView) adapterView).getAdapter();
-				int count = _adapter.getCount();
-				if (count == 0) {
-					return false; // if empty
-				}
-				// Define item's Class
-				Object item = _adapter.getItem(0);
-				Class<?> itemClass = item.getClass();
-
-				// Create StringBuilder to gather text
-				StringBuilder stringBuilder = new StringBuilder();
-
-				for (int j = 0; j < count; j++) {
-					item = _adapter.getItem(j);
-					try {
-						Method method = itemClass.getDeclaredMethod("toTabSeparatedString");
-						String result = (String) method.invoke(item);
-						stringBuilder.append(result).append("\n");
-					} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-						// If toTabSeparatedString() doesn't exist
-						stringBuilder.append(item.toString()).append("\n");
-					}
-				}
-				// Copy text to clipboard
-				ClipboardManager clipboard = (ClipboardManager) getAppContext().getSystemService(Context.CLIPBOARD_SERVICE);
-				ClipData clip = ClipData.newPlainText("label", stringBuilder.toString());
-				clipboard.setPrimaryClip(clip);
-
-				Toast.makeText(getAppContext(), "Table copied to clipboard", Toast.LENGTH_SHORT).show();
-				return true;
+		elvChart.setOnItemLongClickListener((adapterView, view, i, l) -> {
+			ListAdapter _adapter = ((ListView) adapterView).getAdapter();
+			int count = _adapter.getCount();
+			if (count == 0) {
+				return false; // if empty
 			}
+			// Define item's Class
+			Object item = _adapter.getItem(0);
+			Class<?> itemClass = item.getClass();
+
+			// Create StringBuilder to gather text
+			StringBuilder stringBuilder = new StringBuilder();
+
+			for (int j = 0; j < count; j++) {
+				item = _adapter.getItem(j);
+				try {
+					Method method = itemClass.getDeclaredMethod("toTabSeparatedString");
+					String result = (String) method.invoke(item);
+					stringBuilder.append(result).append("\n");
+				} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+					// If toTabSeparatedString() doesn't exist
+					stringBuilder.append(item.toString()).append("\n");
+				}
+			}
+			// Copy text to clipboard
+			ClipboardManager clipboard = (ClipboardManager) getAppContext().getSystemService(Context.CLIPBOARD_SERVICE);
+			ClipData clip = ClipData.newPlainText("label", stringBuilder.toString());
+			clipboard.setPrimaryClip(clip);
+
+			Toast.makeText(getAppContext(), "Table copied to clipboard", Toast.LENGTH_SHORT).show();
+			return true;
 		});
 
 //		local achievement datasource
@@ -113,7 +115,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 
 //		firebase achievement datasource (Spanned yet)
 		list = new ArrayList<>();
-		adapter = new ArrayAdapter<>(this.getActivity(), R.layout.layout_one_textview, list);
+		adapter = new ArrayAdapter<>(this.getActivity(), R.layout.item_one_textview, list);
 		elvChart.setAdapter(adapter);
 		AchievementsFbData.basicQueryValueListener(DashboardFragment.this::onCallback, list);
 		adapter.notifyDataSetChanged();
@@ -124,17 +126,34 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		elvChart.setAdapter(exResultAdapter);
 		exResultAdapter.notifyDataSetChanged();
 
-		rgSource.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-				updateListView(checkedId);
-			}
+		//Change Local or WWW datasource & www-Filters
+		rgSource.setOnCheckedChangeListener((radioGroup, checkedId) -> {
+			updateListView(checkedId);
 		});
+
+/*
+		//Change table datasource Achievements or ExResults & ExType
+		spDashboard.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				if (view == null) return;
+				Log.d(TAG, "onItemSelected: " + position + " id: " + id + " View: " + view.toString());
+				dashboardViewModel.setKey(((TextView) view).getText().toString());
+
+//				dashboardViewModel.setKey(view.getText());
+			}
+			@Override
+			public void onNothingSelected(AdapterView<?> adapterView) {}
+		});
+*/
 
 		return root;
 	}
 
-	private View.OnLongClickListener copyData = view -> {
+	/**
+	 * Copy listView's data to clipboard NOT used
+	 */
+/*	private View.OnLongClickListener copyData = view -> {
 		ListAdapter _adapter = ((ListView) view).getAdapter();
 		int count = _adapter.getCount();
 		// Create StringBuilder to gather text
@@ -151,6 +170,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		Toast.makeText(getAppContext(), "Table copied to clipboard", Toast.LENGTH_SHORT).show();
 		return true;
 	};
+	*/
 
 	/**
 	 * Spinner to choose the dashboard (Achievements or an ExType)
@@ -158,6 +178,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 	private void setDashboardSpinner(Spinner spinner) {
 		// Language independent values
 		exTypeValues = getRes().getStringArray(R.array.ex_type);
+
 		// Language-dependent entries based on spinner-entries array (which was values indeed)
 		int spLength = exTypeValues.length;
 		exTypeEntries = new String[spLength];
@@ -169,10 +190,10 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		// Create an ArrayAdapter using the string array and a default spinner layout
 		ArrayAdapter<CharSequence> spAdapter = new ArrayAdapter(
 				getAppContext(),
-				android.R.layout.simple_spinner_item,
+				R.layout.item_one_textview, // android.R.layout.simple_spinner_item
 				exTypeEntries);
 		// set simple layout resource file for each item of spinner
-		// spAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		 spAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
 
 		// Set the ArrayAdapter data on the Spinner which binds data to spinner
 		spinner.setAdapter(spAdapter);
@@ -183,6 +204,20 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 			@Override
 			public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
 				dashboardViewModel.setKey(exTypeValues[position]);
+				if (position == 0) {
+					// Achievements allow only two filters and "www" is default
+					getView().findViewById(R.id.rb_top_m).setEnabled(false);
+					getView().findViewById(R.id.rb_top_progress).setEnabled(false);
+					if (rgSource.getCheckedRadioButtonId() != R.id.rb_local) {
+						RadioButton _rb = getView().findViewById(R.id.rb_www);
+						_rb.setChecked(true);
+						dashboardViewModel.setFilter(_rb.getText().toString());
+					}
+				} else {
+					// for non Achievement other radio-buttons are enabled
+					getView().findViewById(R.id.rb_top_m).setEnabled(true);
+					getView().findViewById(R.id.rb_top_progress).setEnabled(true);
+				}
 			}
 
 			@Override
@@ -211,9 +246,12 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 	}
 
 	private void updateListView(int checkedRadioButtonId) {
+		RadioButton checkedRadioButton;
+		checkedRadioButton = getView().findViewById(checkedRadioButtonId);
+		tvTitle.setText(checkedRadioButton.getHint());
 		String _key = (dashboardViewModel.getKey().getValue() == null ? "gcb_achievements" : dashboardViewModel.getKey().getValue());
+		// choose table Achievements vs. ExResult
 		if (_key.equals("gcb_achievements")) {
-			// only for Achievements yet
 			switch(checkedRadioButtonId)
 			{
 				case R.id.rb_local:
@@ -222,7 +260,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 					elvChart.setAdapter(arrayAdapter);
 					break;
 				case R.id.rb_www:
-					adapter = new ArrayAdapter<>(getAppContext(), R.layout.layout_one_textview, list);
+					adapter = new ArrayAdapter<>(getAppContext(), R.layout.item_one_textview, list);
 					elvChart.setAdapter(adapter);
 					AchievementsFbData.basicQueryValueListener(DashboardFragment.this::onCallback, list);
 					break;
@@ -275,6 +313,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		for (int i = 0; i < exTypeValues.length; i++) {
 			if (ExerciseRunner.getExType().equals(exTypeValues[i])) {
 				spDashboard.setSelection(i);
+				break;
 			}
 		}
 		updateListView(rgSource.getCheckedRadioButtonId());

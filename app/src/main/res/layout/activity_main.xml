@@ -45,20 +45,21 @@
 		android:id="@+id/fabLaunch"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		app:elevation="12dp"
+		app:elevation="10dp"
 		android:layout_marginBottom="32dp"
-		android:backgroundTint="@color/white"
-		android:foregroundTint="@color/purple_200"
 		android:contentDescription="Launch"
 		android:src="@drawable/ic_rocket_launch_24"
-		android:tint="@color/material_on_background_emphasis_medium"
+		android:background="@color/colorPrimary"
 		android:tooltipText="Launch"
 		app:labelVisibilityMode="labeled"
 		app:layout_constraintBottom_toBottomOf="@id/nav_view"
 		app:layout_constraintLeft_toLeftOf="parent"
 		app:layout_constraintRight_toRightOf="parent"
 		app:maxImageSize="40dp" />
-	
+<!--	android:tint="@color/colorPrimary"-->
+<!--	android:backgroundTint="@color/white"-->
+<!--	android:foregroundTint="@color/colorPrimary"-->
+<!--	app:rippleColor="@color/colorPrimaryVariant"-->
 	
 	<fragment
 		android:id="@+id/nav_host_fragment_activity_main"

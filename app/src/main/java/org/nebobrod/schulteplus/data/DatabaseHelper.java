@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+import org.nebobrod.schulteplus.Log;
 
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;

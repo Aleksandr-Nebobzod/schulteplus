@@ -198,4 +198,10 @@
 	<string name="lbl_duration">Длительность</string>
 	<string name="lbl_level_of_feels_cut">Ч.</string>
 	<string name="lbl_level_of_energy_cut">Э.</string>
+	<string name="lbl_top_in_month">Топ</string>
+	<string name="txt_datasource_local_hint">Актуальные локальные записи</string>
+	<string name="txt_datasource_www_hint">Актуальные в сети</string>
+	<string name="txt_top_in_month_hint">Работа: Лучшие за месяц</string>
+	<string name="lbl_top_in_month_progress">Прог.</string>
+	<string name="txt_top_in_month_progress">Прогресс: Лучшие за месяц</string>
 </resources>

@@ -1,7 +1,7 @@
 package org.nebobrod.schulteplus.ui.dashboard;
 
 import android.os.Looper;
-import android.util.Log;
+import org.nebobrod.schulteplus.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
@@ -19,15 +19,16 @@ import java.util.List;
 public class DashboardViewModel extends ViewModel {
 	private static final String TAG = "DashboardViewModel";
 
-	private final MutableLiveData<String> dashboardKey = new MutableLiveData<>("gcb_achievements");
+	private final MutableLiveData<String> dashboardKey = new MutableLiveData<>();
+	private final MutableLiveData<String> dashboardFilter = new MutableLiveData<>();
 	private final MutableLiveData<List<? extends ExResult>> resultsLiveData = new MutableLiveData<>();
 
 	// Getting data from DB
 	public void fetchResultsLimited(Class<? extends ExResult> clazz) {
 		AppExecutors appExecutors = new AppExecutors();
 		appExecutors.getDiskIO().execute(() -> {
-			Log.d(TAG, "fetchResultsLimited, is MainLooper1?: " + (Looper.myLooper() == Looper.getMainLooper()));
-			Log.d(TAG, "fetchResultsLimited, is MainLooper2?: " + (Looper.getMainLooper().getThread() == Thread.currentThread()));
+//			Log.d(TAG, "fetchResultsLimited, is MainLooper1?: " + (Looper.myLooper() == Looper.getMainLooper()));
+//			Log.d(TAG, "fetchResultsLimited, is MainLooper2?: " + (Looper.getMainLooper().getThread() == Thread.currentThread()));
 			List<? extends ExResult> results = (new OrmRepo()).getResultsLimited(clazz, dashboardKey.getValue());
 //			Log.d(TAG, "fetchResultsLimited: " + results);
 			resultsLiveData.postValue(results);
@@ -39,12 +40,20 @@ public class DashboardViewModel extends ViewModel {
 		return resultsLiveData;
 	}
 
-
+	// Other getters & setters
 	public LiveData<String> getKey() {
 		return dashboardKey;
 	}
 	public void setKey(String s) {
 		dashboardKey.setValue(s);
+		Toast.makeText(Utils.getAppContext(), s, Toast.LENGTH_SHORT).show();
+	}
+
+	public LiveData<String> getFilter() {
+		return dashboardFilter;
+	}
+	public void setFilter(String s) {
+		dashboardFilter.setValue(s);
 		Toast.makeText(Utils.getAppContext(), s, Toast.LENGTH_SHORT).show();
 	}
 }

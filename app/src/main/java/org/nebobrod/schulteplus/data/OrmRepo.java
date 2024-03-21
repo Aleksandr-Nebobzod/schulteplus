@@ -14,7 +14,7 @@ import static org.nebobrod.schulteplus.data.DatabaseHelper.getHelper;
 
 import android.database.SQLException;
 import android.media.MediaPlayer;
-import android.util.Log;
+import org.nebobrod.schulteplus.Log;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
@@ -182,7 +182,7 @@ public class OrmRepo implements DataRepository {
 					}
 				});
 			} catch (Exception e) {
-				Log.e(TAG, "achieveGet25: " + e.getMessage());
+				Log.e(TAG, "achieveGet25: ", e);
 				throw new RuntimeException(e);
 			}
 			appExecutors.mainThread().execute(() -> {

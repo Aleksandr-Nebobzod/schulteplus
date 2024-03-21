@@ -8,7 +8,7 @@
 
 package org.nebobrod.schulteplus.fbservices;
 
-import android.util.Log;
+import org.nebobrod.schulteplus.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -129,7 +129,7 @@ public final class UserFbData {
 			@Override
 			public void onCancelled(@NonNull DatabaseError error) {
 				// Failed to read value
-				Log.w(TAG,"Failed to read value.", error.toException());
+				Log.w(TAG + " Failed to read value.", error.toException().toString());
 			}
 		});
 /*

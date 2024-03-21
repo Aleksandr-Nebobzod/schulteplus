@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2024. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+  ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+  ~ Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+  ~ Vestibulum commodo. Ut rhoncus gravida arcu.
+  -->
+
+<resources>
+	<!-- Primary brand colors -->
+	<color name="colorPrimary">@color/light_grey_2_blue</color>
+	<color name="colorPrimaryVariant">@color/black</color>
+	<color name="colorOnPrimary">@color/light_grey_A_yellow</color>
+	<!-- Secondary brand colors -->
+	<color name="colorSecondary">@color/light_grey_A_blue</color>
+	<color name="colorSecondaryVariant">@color/light_blue_600</color>
+	<color name="colorOnSecondary">@color/light_grey_D</color>
+	
+	
+	<color name="colorOnSecondary2">#ffe6e1e5</color>
+	
+	
+
+</resources>

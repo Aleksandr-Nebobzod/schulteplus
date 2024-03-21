@@ -9,7 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.util.Log;
+import org.nebobrod.schulteplus.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -211,7 +211,7 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 				canvas.drawColor(Color.DKGRAY);
 				surfaceView.getHolder().unlockCanvasAndPost(canvas);
 			} catch (Exception e) {
-				Log.e(TAG, "enableProbability: " + e.getMessage(), null);
+				Log.e(TAG, "enableProbability: " + e.getMessage(), e);
 			}
 //			canvas = null;
 //			surfaceView = null;
@@ -278,7 +278,7 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 			canvas = surfaceView.getHolder().lockCanvas();
 			canvas.drawColor(Color.GRAY);
 		} catch (Exception e){
-			Log.e(TAG, "drawProbabilities: " + e.getMessage());
+			Log.e(TAG, "drawProbabilities: ", e);
 			return;
 		}
 //						Random r = new Random();

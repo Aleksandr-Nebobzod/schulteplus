@@ -9,7 +9,7 @@
 package org.nebobrod.schulteplus.fbservices;
 
 import android.text.Spanned;
-import android.util.Log;
+import org.nebobrod.schulteplus.Log;
 
 import androidx.annotation.NonNull;
 
@@ -121,11 +121,10 @@ public class AchievementsFbData
 			@Override
 			public void onCancelled(@NonNull DatabaseError databaseError) {
 				// Getting Post failed, log a message
-				Log.w(TAG, "onCancelled: ", databaseError.toException());
+				Log.w(TAG +" onCancelled: ", databaseError.toException().toString());
 				// ...
 			}
 		});
-
 		// [END basic_query_value_listener]
 
 	}

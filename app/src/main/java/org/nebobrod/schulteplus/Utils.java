@@ -19,7 +19,7 @@ import android.text.Spanned;
 import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
-import android.util.Log;
+import org.nebobrod.schulteplus.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
@@ -683,4 +683,5 @@ public final class Utils extends Application {
 				|| (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
 				|| "google_sdk".equals(Build.PRODUCT);
 	}
+
 }

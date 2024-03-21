@@ -221,5 +221,11 @@
 	<string name="lbl_level_of_feels_cut">F.</string>
 	<string name="code_rating" translatable="false">R</string>
 	<string name="code_common" translatable="false">C</string>
+	<string name="lbl_top_in_month">Top</string>
+	<string name="txt_top_in_month_hint">Top in month</string>
+	<string name="lbl_top_in_month_progress">Prog</string>
+	<string name="txt_top_in_month_progress">Top progress in month</string>
+	<string name="txt_datasource_www_hint">Actual in www</string>
+	<string name="txt_datasource_local_hint">Actual on local</string>
 
 </resources>

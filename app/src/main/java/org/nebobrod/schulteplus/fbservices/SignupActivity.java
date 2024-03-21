@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import org.nebobrod.schulteplus.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
@@ -372,7 +372,7 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 
 						} else {
 							// If sign in fails, display a message to the user.
-							Log.w(TAG, getString(R.string.msg_signin_anonymously_failure), task.getException());
+							Log.w(TAG + getString(R.string.msg_signin_anonymously_failure), task.getException().toString());
 							Toast.makeText(SignupActivity.this, getString(R.string.msg_signin_anonymously_failure),
 									Toast.LENGTH_LONG).show();
 						}

@@ -7,7 +7,7 @@ import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
+import org.nebobrod.schulteplus.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;

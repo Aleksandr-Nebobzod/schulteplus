@@ -13,7 +13,7 @@ package org.nebobrod.schulteplus.fbservices;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
+import org.nebobrod.schulteplus.Log;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;

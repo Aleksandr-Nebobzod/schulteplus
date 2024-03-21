@@ -74,14 +74,25 @@
 	
 <!--	BUTTONS-->
 	<style name="SchultePlus.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
-	<item name="android:textColor">@drawable/schulteplus_mtrl_text_btn_text_color_selector</item>
-	<item name="android:paddingLeft">@dimen/mtrl_btn_text_btn_padding_left</item>
-	<item name="android:paddingRight">@dimen/mtrl_btn_text_btn_padding_right</item>
-	<item name="iconTint">@drawable/schulteplus_mtrl_text_btn_text_color_selector</item>
-	<item name="iconPadding">@dimen/mtrl_btn_text_btn_icon_padding</item>
-	<item name="backgroundTint">@drawable/schulteplus_mtrl_btn_text_btn_bg_color_selector</item>
-	<item name="rippleColor">@drawable/schulteplus_mtrl_btn_text_btn_ripple_color</item>
+	<item name="android:textColor">@color/schulteplus_mtrl_text_btn_text_color_selector</item>
+	<item name="iconTint">@color/schulteplus_mtrl_text_btn_text_color_selector</item>
+	<item name="backgroundTint">@color/schulteplus_mtrl_btn_text_btn_bg_color_selector</item>
+	<item name="rippleColor">@color/schulteplus_mtrl_btn_text_btn_ripple_color</item>
 	</style>
+	
+	<!--Widget.MaterialComponents.Button.TextButton (выше) &#45;&#45; не кликается
+	ThemeOverlay.Material3.Dialog.Alert: кривой квадратик
+	Widget.Material3.Button.TextButton.Dialog: не кликается
+	Widget.MaterialComponents.Button.TextButton.Dialog.Flush: не кликается
+	-->
+	<style name="SchultePlus.Button.TextButton.Dialog" parent="ThemeOverlay.Material3.Dialog.Alert">
+	<item name="android:textColor">@color/schulteplus_mtrl_text_btn_text_color_selector</item>
+	<item name="iconTint">@color/schulteplus_mtrl_text_btn_text_color_selector</item>
+	<item name="backgroundTint">@color/schulteplus_mtrl_btn_text_btn_bg_color_selector</item>
+	<item name="rippleColor">@color/schulteplus_mtrl_btn_text_btn_ripple_color</item>
+	</style>
+	
+	
 	<!-- Стиль кнопки с иконкой, заполненной, тоновая -->
 	<style name="SchultePlus.ThemeOverlay.Material3.Button.IconButton.Filled.Tonal" parent="ThemeOverlay.Material3.Button.IconButton.Filled.Tonal">
 <!--		m3_comp_filled_tonal_icon_button_toggle_selected_icon_color-->
@@ -93,13 +104,6 @@
 	</style>
 	<style name="SchultePlus.Button.TextButtonPlus" parent="SchultePlus.Button.TextButton">
 		<item name="enforceTextAppearance">false</item>
-		<item name="android:maxWidth">@dimen/m3_btn_max_width</item>
-		<item name="android:paddingLeft">@dimen/m3_btn_text_btn_padding_left</item>
-		<item name="android:paddingRight">@dimen/m3_btn_text_btn_padding_right</item>
-		<item name="android:paddingTop">@dimen/m3_btn_padding_top</item>
-		<item name="android:paddingBottom">@dimen/m3_btn_padding_bottom</item>
-		<item name="android:insetTop">@dimen/m3_btn_inset</item>
-		<item name="android:insetBottom">@dimen/m3_btn_inset</item>
 		<item name="android:textAppearance">@macro/m3_comp_text_button_label_text_type</item>
 		<item name="shapeAppearance">@style/ShapeAppearance.M3.Comp.TextButton.Container.Shape</item>
 		<item name="materialThemeOverlay">@style/ThemeOverlay.Material3.Button.TextButton</item>
@@ -109,9 +113,20 @@
 		<item name="rippleColor">@color/m3_text_button_ripple_color_selector</item>
 	</style>
 	<style name="SchultePlus.Button.OutlinedButton" parent="SchultePlus.Button.TextButtonPlus">
-		<item name="android:paddingLeft">@dimen/m3_btn_padding_left</item>
-		<item name="android:paddingRight">@dimen/m3_btn_padding_right</item>
 		<item name="strokeColor">@color/m3_button_outline_color_selector</item>
 		<item name="strokeWidth">@dimen/m3_comp_outlined_button_outline_width</item>
+	</style>
+	
+	
+	<style name="spinnerItemStyle">
+		<item name="android:textSize">23sp</item>
+		<item name="android:textColor">#000000</item>
+		<item name="android:background">#008080</item>
+	</style>
+	
+	<style name="spinnerDropDownItemStyle">
+		<item name="android:padding">2sp</item>
+		<item name="android:textSize">16sp</item>
+		<item name="android:textColor">#3949AB</item>
 	</style>
 </resources>

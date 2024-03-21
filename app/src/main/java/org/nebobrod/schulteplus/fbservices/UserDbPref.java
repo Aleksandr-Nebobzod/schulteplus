@@ -36,7 +36,7 @@ import com.google.firestore.v1.WriteResult;
 
 import java.util.HashMap;
 import java.util.Map;
-import android.util.Log;
+import org.nebobrod.schulteplus.Log;
 
 import javax.inject.Singleton;
 

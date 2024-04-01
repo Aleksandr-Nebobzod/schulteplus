@@ -37,7 +37,7 @@ import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.fbservices.AppExecutors;
 import org.nebobrod.schulteplus.fbservices.NetworkConnectivity;
 import org.nebobrod.schulteplus.fbservices.SignupActivity;
-import org.nebobrod.schulteplus.fbservices.UserDbPref;
+import org.nebobrod.schulteplus.fbservices.UserDbPreferences;
 import org.nebobrod.schulteplus.fbservices.UserFbData;
 import org.nebobrod.schulteplus.fbservices.UserHelper;
 
@@ -191,7 +191,7 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 //									if (thread.isAlive()) thread.interrupt(); // No need run by time anymore...
 									// <- this changed: threaded runnable looks for flag USER_VERIF_MESSAGE_SHOWN ->
 									Log.d(TAG, "run NO verified, user: " + userHelper);
-									Log.d(TAG, "run NO verified, dbPref: " + UserDbPref.getInstance(ExerciseRunner.getInstance()).getObjectMap().toString() );
+									Log.d(TAG, "run NO verified, dbPref: " + UserDbPreferences.getInstance(ExerciseRunner.getInstance()).getObjectMap().toString() );
 									String strMessage = userHelper.getName() + ", "
 											+ getString(R.string.msg_user_unverified);
 									if (0 == (testResFlags & TEST_RES_USER_VERIF_MESSAGE_SHOWN)) {

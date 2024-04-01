@@ -31,7 +31,8 @@ android {
         targetSdkVersion 34
         versionCode 12
         versionName "Entada"
-
+        buildConfigField 'boolean', 'ENABLE_CRASHLYTICS', 'true'
+        buildConfigField 'boolean', 'DEBUGGING', 'false'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -44,6 +45,7 @@ android {
         release {
             debuggable false
             minifyEnabled false
+            resValue "string", "firestore_root", "spdbs/test/"
             versionNameSuffix ""
             resValue "string", "app_version_num", "${defaultConfig.versionCode}"
             resValue "string", "app_version_full", "${defaultConfig.versionCode}${"_"}${defaultConfig.versionName}${versionNameSuffix}"
@@ -52,11 +54,14 @@ android {
         debug {
             debuggable true
             minifyEnabled false
+            resValue "string", "firestore_root", "spdbs/dev/"
             versionNameSuffix "_alpha"
             resValue "string", "app_version_num", "${defaultConfig.versionCode}"
             resValue "string", "app_version_full", "${""}${defaultConfig.versionCode}${"_"}${defaultConfig.versionName}${versionNameSuffix}"
+            buildConfigField 'boolean', 'ENABLE_CRASHLYTICS', 'false'
+            buildConfigField 'boolean', 'DEBUGGING', 'true'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-                }
+        }
         applicationVariants.all { variant ->
             variant.outputs.each {
                 output -> String projectName = getRootProject().name

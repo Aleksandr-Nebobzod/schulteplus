@@ -21,5 +21,12 @@ public interface DataRepository {
 	 * number of rows as defined in: {@link org.nebobrod.schulteplus.Const#QUERY_COMMON_LIMIT} <p>
 	 * way to call: <code>List< ExResultBasics > results = getResultsLimited(ExResultBasics.class);</code>*/
 	public<T> List<T> getResultsLimited(Class<T> clazz, String exType);
+
+	/**
+	 * Clean user personal data (after account removal)
+	 * @param uid user id
+	 * @param unpersonalisedName new dummy name for keep ExResults' history
+	 */
+	void unpersonalise(String uid, String unpersonalisedName);
 }
 

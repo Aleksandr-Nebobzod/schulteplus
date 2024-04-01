@@ -1,14 +1,9 @@
 package org.nebobrod.schulteplus.ui;
 
-import static android.preference.PreferenceManager.getDefaultSharedPreferencesName;
-import static androidx.core.app.ActivityCompat.finishAffinity;
-import static org.nebobrod.schulteplus.Const.*;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,22 +12,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
-import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
-import androidx.preference.PreferenceManager;
 import androidx.preference.SeekBarPreference;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 
+import static org.nebobrod.schulteplus.Const.*;
 import org.nebobrod.schulteplus.ExerciseRunner;
-import org.nebobrod.schulteplus.MainActivity;
 import org.nebobrod.schulteplus.R;
-import org.nebobrod.schulteplus.Utils;
 
 public class PopupSettingsFragment extends AppCompatDialogFragment
 {
@@ -162,8 +153,6 @@ public class PopupSettingsFragment extends AppCompatDialogFragment
 					break;
 			}
 		}
-
-
 	}
 
 }

@@ -1,6 +1,10 @@
 package org.nebobrod.schulteplus;
 
-import static org.nebobrod.schulteplus.Const.*;
+import static org.nebobrod.schulteplus.Const.KEY_PRF_EX_B0;
+import static org.nebobrod.schulteplus.Const.KEY_PRF_EX_S0;
+import static org.nebobrod.schulteplus.Const.KEY_PRF_EX_S1;
+import static org.nebobrod.schulteplus.Const.KEY_PRF_EX_S2;
+import static org.nebobrod.schulteplus.Const.KEY_PRF_EX_S3;
 import static org.nebobrod.schulteplus.Utils.bHtml;
 import static org.nebobrod.schulteplus.Utils.cHtml;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
@@ -8,11 +12,9 @@ import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.pHtml;
 import static org.nebobrod.schulteplus.Utils.tHtml;
 
-
 import android.database.SQLException;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import org.nebobrod.schulteplus.Log;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
@@ -303,8 +305,10 @@ public class STable {
 			expectedValue++;
 		}
 		this.journal.add(new Turn(
-				System.nanoTime(), (System.nanoTime() - journal.get(attemptNumber - 1).timeStamp) / 1000000,
-				(result ? expectedValue : expectedValue -1), turnX, turnY, position, result));
+				System.nanoTime(),
+				(System.nanoTime() - journal.get(attemptNumber - 1).timeStamp) / 1000000,
+				(result ? expectedValue : expectedValue -1),
+				turnX, turnY, position, result));
 		writeTurn(this.journal.get(this.journal.size()-1));
 		return result;
 	}

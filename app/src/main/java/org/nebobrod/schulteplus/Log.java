@@ -11,33 +11,40 @@ package org.nebobrod.schulteplus;
 import static org.nebobrod.schulteplus.Utils.exceptionFbCrash;
 import static org.nebobrod.schulteplus.Utils.logFbCrash;
 
-import androidx.viewbinding.BuildConfig;
+import org.nebobrod.schulteplus.BuildConfig;
 
 public class Log {
-	static final boolean LOG = BuildConfig.DEBUG;
+	static final boolean LOG = BuildConfig.DEBUGGING;
+	// static final boolean LOG2 = (boolean) getBuildConfigValue("DEBUGGING"); // this attempt was until correct import
+	static final String PREFIX = ("MyLog ");
+	static final boolean DB = BuildConfig.ENABLE_CRASHLYTICS;
 
 	public static void i(String tag, String string) {
-		if (LOG) android.util.Log.i(tag, string);
+		if (LOG) android.util.Log.i(PREFIX + tag, string);
 	}
 
 	public static void d(String tag, String string) {
-		if (LOG) android.util.Log.d(tag, string);
+		if (LOG) android.util.Log.d(PREFIX + tag, string);
 	}
 	public static void v(String tag, String string) {
-		if (LOG) android.util.Log.v(tag, string);
+		if (LOG) {
+			android.util.Log.v(PREFIX + tag, string);
+		} else {
+			logFbCrash("V." + PREFIX + tag +": " + string);
+		}
 	}
 	public static void w(String tag, String string) {
 		if (LOG) {
-			android.util.Log.w(tag, string);
+			android.util.Log.w(PREFIX + tag, string);
 		} else {
-			logFbCrash(tag +": " + string);
+			logFbCrash("W." + PREFIX + tag +": " + string);
 		}
 	}
 	public static void e(String tag, String string, Exception e) {
 		if (LOG) {
-			android.util.Log.e(tag, string, e);
+			android.util.Log.e(PREFIX + tag, string, e);
 		} else {
-			logFbCrash(tag +": " + string);
+			logFbCrash(PREFIX + tag +": " + string);
 			exceptionFbCrash(e);
 		}
 	}

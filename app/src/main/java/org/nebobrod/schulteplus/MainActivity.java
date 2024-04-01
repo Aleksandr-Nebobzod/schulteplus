@@ -7,7 +7,6 @@ import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import org.nebobrod.schulteplus.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +29,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import org.nebobrod.schulteplus.databinding.ActivityMainBinding;
+import org.nebobrod.schulteplus.Log;
 //import org.nebobrod.schulteplus.ui.BasicsActivity;
 import org.nebobrod.schulteplus.fbservices.LoginActivity;
 import org.nebobrod.schulteplus.fbservices.SignupActivity;

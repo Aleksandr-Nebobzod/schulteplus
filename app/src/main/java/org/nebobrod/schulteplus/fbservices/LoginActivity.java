@@ -1,6 +1,9 @@
 package org.nebobrod.schulteplus.fbservices;
 
 
+import static org.nebobrod.schulteplus.Utils.getRes;
+import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,16 +21,22 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.nebobrod.schulteplus.MainActivity;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.data.DataRepositories;
 
 public class LoginActivity extends AppCompatActivity implements UserFbData.UserHelperCallback {
 	private static final String TAG = "Login";
@@ -43,7 +52,7 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 
 	ImageView btUnwrapExtra, btWrapExtra;
 	LinearLayout llExtras;
-	TextView tvResendVerEmail, tvResetPassword;
+	TextView tvResendVerEmail, tvResetPassword, tvDeleteAccount;
 	ProgressBar progressBar;
 	ProgressDialog progressDialog;
 	boolean nameExists = true;
@@ -72,8 +81,7 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 		}*/
 
 		// Started with credentials?...
-		if (getIntent() != null & getIntent().hasExtra("email"))
-		{
+		if (getIntent() != null & getIntent().hasExtra("email"))	{
 //			fbUser = getIntent().getExtras().getParcelable("user");
 			etEmail.setText(getIntent().getExtras().getString("email",""));
 			etName.setText(getIntent().getExtras().getString("name", ""));
@@ -85,10 +93,10 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 		llExtras = findViewById(R.id.ll_extras);
 		tvResendVerEmail = findViewById(R.id.tv_resend_verification_email);
 		tvResetPassword = findViewById(R.id.tv_reset_password);
+		tvDeleteAccount = findViewById(R.id.tv_delete_account);
 
 		btGoOn.setOnClickListener(view -> {
 			String email = etEmail.getText().toString().trim();
-			String name = etName.getText().toString().trim();
 			String password = etPassword.getText().toString().trim();
 
 			// Check name & pass, extract user data from db,
@@ -105,7 +113,6 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 //						Toast.makeText(LoginActivity.this, fbDbUser.toString(), Toast.LENGTH_SHORT).show();
 					}
 				}, email);
-
 
 				fbAuth.signInWithEmailAndPassword(email, password)
 					.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -126,8 +133,7 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 			}
 		});
 
-		tvGoOff.setOnClickListener(new View.OnClickListener()
-		{
+		tvGoOff.setOnClickListener(new View.OnClickListener()	{
 			@Override
 			public void onClick(View view) {
 				Log.d(TAG, "Go off proceeded for registration" );
@@ -137,8 +143,7 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 			}
 		});
 
-		btUnwrapExtra.setOnClickListener(new View.OnClickListener()
-		{
+		btUnwrapExtra.setOnClickListener(new View.OnClickListener()	{
 			@Override
 			public void onClick(View view) {
 				llExtras.setVisibility(View.VISIBLE);
@@ -146,15 +151,64 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 			}
 		});
 
-		btWrapExtra.setOnClickListener(new View.OnClickListener()
-		{
+		tvResendVerEmail.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				String email = etEmail.getText().toString().trim();
+
+				if (!validateEmail()){
+					// do nothing (input errors are handled in validation functions
+				} else {
+					// TODOne: 25.03.2024  can't resend Email for non-authorised users
+				}
+			}
+		});
+		tvResetPassword.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				String email = etEmail.getText().toString().trim();
+
+				if (!validateEmail()){
+					// do nothing (input errors are handled in validation functions
+				} else {
+					fbAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+						@Override
+						public void onComplete(@NonNull Task<Void> task) {
+							if (task.isSuccessful()) {
+								String _message = getRes().getString(R.string.msg_password_reset_email_sent);
+								showSnackBarConfirmation(LoginActivity.this, _message, null);
+								Log.v(TAG, _message);
+							}
+							else {
+								showSnackBarConfirmation(LoginActivity.this, task.getException().getLocalizedMessage(), null);
+							}
+						}
+					});
+				}
+			}
+		});
+
+		tvDeleteAccount.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				String email = etEmail.getText().toString().trim();
+				String password = etPassword.getText().toString().trim();
+
+				if (!validateEmail()  | !validatePassword()){
+					// do nothing (input errors are handled in validation functions
+				} else {
+					deleteUser(email, password);
+				}
+			}
+		});
+
+		btWrapExtra.setOnClickListener(new View.OnClickListener()	{
 			@Override
 			public void onClick(View view) {
 				btUnwrapExtra.setVisibility(View.VISIBLE);
 				llExtras.setVisibility(View.GONE);
 			}
 		});
-
 	}
 
 	private void isLoginAuthorized(FirebaseUser user) {
@@ -183,8 +237,6 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 				}
 			}
 		}*/
-
-
 	}
 
 /*	private UserFbData.UserCallback loginCallback = new UserFbData.UserCallback()
@@ -194,8 +246,7 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 	};*/
 
 
-	private boolean validateEmail()
-	{
+	private boolean validateEmail()	{
 		String val = etEmail.getText().toString().trim();
 		if (val.isEmpty()) {
 			etEmail.setError(getString(R.string.msg_email_empty));
@@ -209,8 +260,7 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 		}
 	}
 
-	private boolean validateName()
-	{
+	private boolean validateName()	{
 		/*String val = etName.getText().toString().trim();
 
 		if (!val.matches(NAME_REG_EXP)) {
@@ -227,8 +277,7 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 
 	}
 
-	private boolean validatePassword()
-	{
+	private boolean validatePassword()	{
 		String val = etPassword.getText().toString().trim();
 		if (val.isEmpty()) {
 			etPassword.setError(getString(R.string.msg_password_empty));
@@ -239,14 +288,34 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 		}
 	}
 
-	private void runMainActivity(UserHelper user)
-	{
+	private void runMainActivity(UserHelper user)	{
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.putExtra("user", user);
 		startActivity(intent);
 		finish();
 	}
 
+	private void deleteUser(String email, String password) {
+		FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+		String _uid = firebaseUser.getUid();
+		AuthCredential authCredential = EmailAuthProvider.getCredential(email, password);
+
+		firebaseUser.reauthenticate(authCredential)
+				.addOnCompleteListener(task -> firebaseUser.delete()
+						.addOnCompleteListener(task1 -> {
+							String _message;
+							String dummyName = Utils.getRandomName();
+							// Inform user
+							if (task1.isSuccessful()) {
+								new DataRepositories().unpersonalise(_uid, dummyName);
+								_message = getRes().getString(R.string.msg_delete_account_success)  + dummyName;
+							} else {
+								_message = getRes().getString(R.string.msg_delete_account_failed);
+							};
+							Log.v(TAG, _message);
+							showSnackBarConfirmation(this, _message, null);
+		}));
+	}
 
 
 /*	@Override

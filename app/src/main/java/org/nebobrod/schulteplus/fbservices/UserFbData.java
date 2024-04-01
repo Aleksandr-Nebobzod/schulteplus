@@ -232,12 +232,10 @@ public final class UserFbData {
 			}
 		});
 	}
-	public static boolean isExist(final UserHelperCallback userHelperCallback, String key)
-	{
+	public static boolean isExist(final UserHelperCallback userHelperCallback, String key)	{
 		init();
 		try {
 			fbReference.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
-
 				@Override
 				public void onDataChange(DataSnapshot dataSnapshot) {
 					userHelper = dataSnapshot.getValue(UserHelper.class);

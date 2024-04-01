@@ -320,19 +320,24 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 		canvas = null;
 	}
 
-	private void enableOptions(boolean action) {
-		//		Action is true if ratings off
-		((PreferenceCategory) findPreference(KEY_PRF_OPTIONS)).setVisible(action);
-		((PreferenceCategory) findPreference(KEY_PRF_OPTIONS)).setEnabled(action);
+	private void enableOptions(boolean allowed) {
+		//		allowed is true if ratings is off
+		((PreferenceCategory) findPreference(KEY_PRF_OPTIONS)).setVisible(allowed);
+		((PreferenceCategory) findPreference(KEY_PRF_OPTIONS)).setEnabled(allowed);
 
-		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setVisible(action);
-		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setEnabled(action);
+		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setVisible(allowed);
+		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setEnabled(allowed);
+
+		((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(!allowed);
+		((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(allowed);
+		((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setChecked(!allowed);
+		((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setEnabled(allowed);
 
 //		((SeekBarPreference) findPreference(KEY_PRF_PROB_SURFACE)).setEnabled(action);
 //		((SwitchPreference) findPreference(KEY_PRF_PROB_ZERO)).setEnabled(action);
 //		((SeekBarPreference) findPreference(KEY_PRF_PROB_X)).setEnabled(action);
 //		((SeekBarPreference) findPreference(KEY_PRF_PROB_Y)).setEnabled(action);
-		if (action) {
+		if (allowed) {
 			// do nothing
 		} else {
 			// actually prob settings are get 0 in ExerciseRunner
@@ -345,7 +350,7 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 
 	private void updatePrefScreen(){
 //		runner.loadPreference();
-		EditTextPreference exType = findPreference("prf_ex_type");
+		EditTextPreference exType = findPreference(KEY_TYPE_OF_EXERCISE);
 
 		// Find which checkbox of "group" is selected on the screen:
 		for (Preference p: exerciseTypeCheckBoxes) {
@@ -359,15 +364,14 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 			chosen.setChecked(true);
 		}
 		exType.setText(chosen.getKey());
-		runner.setExType(exType.getText().toString()); // set exType into the runner from invisible pref et
+		runner.setExType(exType.getText().toString()); // set exType into the runner from invisible EditTextPreference field
 		runner.setRatings(((SwitchPreference) findPreference(KEY_PRF_RATINGS)).isChecked());
 
 		// set X & Y to runner
 		switch (chosen.getKey()){
 			case KEY_PRF_EX_S1:
-
 				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(true);
-//				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
+				((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setEnabled(true);
 				// check if is Ratings
 				if (runner.isRatings()) {
 					enableOptions(false);
@@ -385,24 +389,20 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 				runner.setX((byte) 7);
 				runner.setY((byte) 7);
 				// disable options PreferenceCategory for hard levels
-				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
-				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(false);
+//				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
+//				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(false);
+//				((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setChecked(true);
+//				((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setEnabled(false);
 				enableOptions(false);
 				break;
 			case KEY_PRF_EX_S3:
 				runner.setX((byte) 10);
 				runner.setY((byte) 10);
 				// disable options PreferenceCategory for hard levels
-				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
-				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(false);
 				enableOptions(false);
 				break;
 			case KEY_PRF_EX_S4:
-//				runner.setX((byte) 10);
-//				runner.setY((byte) 10);
 				// disable options PreferenceCategory for hard levels
-				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
-				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(false);
 				enableOptions(false);
 				break;
 			default:

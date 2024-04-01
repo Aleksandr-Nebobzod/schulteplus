@@ -7,7 +7,6 @@ import static org.nebobrod.schulteplus.Const.*;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import org.nebobrod.schulteplus.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,14 +14,14 @@ import androidx.preference.PreferenceManager;
 
 import org.nebobrod.schulteplus.data.OrmRepo;
 import org.nebobrod.schulteplus.fbservices.AchievementsFbData;
-import org.nebobrod.schulteplus.fbservices.UserDbPref;
+import org.nebobrod.schulteplus.fbservices.UserDbPreferences;
 import org.nebobrod.schulteplus.fbservices.UserHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
+public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 	private static final String TAG = "ExerciseRunner";
 	public static final String KEY_RUNNER = "runner"; //?
 	public static final String KEY_DEFAULT_USER_PREF = "TFKBiTdd7OVYUaplfzDHrXSCixr1";
@@ -46,6 +45,7 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 	private static String symbolType = "number"; // See string-array name="symbol_type_values"
 	private static int fontScale = 0; // {-1, 0, 1}
 	private static boolean probEnabled = false; // Probabilities control
+	private static boolean squared = false; // active screen height==width
 	private static boolean probZero = false; // Probabilities can be 0
 	private static double probDx = .0, probDy = .0, probW = .0;
 	private static boolean online = true; // False if no connection to the Internet
@@ -61,10 +61,10 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 			userName = userHelper.getName();
 			userEmail = userHelper.getEmail();
 			if (uid.isEmpty()) uid = KEY_DEFAULT_USER_PREF;
-			userFbCrash(uid);
+			setFbCrashlyticsUser(uid);
 		}
 		catch (Exception e){
-			Log.d(TAG, "ExerciseRunner: not enough data");
+			Log.e(TAG, "ExerciseRunner: not enough data", e);
 			online = false;
 			uid = KEY_DEFAULT_USER_PREF;
 		}
@@ -89,12 +89,12 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 		}*/
 		if (null == instance) {
 			instance = new ExerciseRunner(userHelper);
-			UserDbPref.getInstance(instance);
+			UserDbPreferences.getInstance(instance);
 			Log.i(TAG, "getInstance: applied");
 		}
 		if (!uid.equals(userHelper.getUid())) {
 			instance = new ExerciseRunner(userHelper);
-			UserDbPref.getInstance(instance);
+			UserDbPreferences.getInstance(instance);
 		}
 		return instance;
 	}
@@ -111,6 +111,7 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 			currentLevel = sharedPreferences.getInt(KEY_PRF_CURRENT_LEVEL, 1);
 			ratings = sharedPreferences.getBoolean(KEY_PRF_RATINGS, false);
 			probEnabled = sharedPreferences.getBoolean(KEY_PRF_PROB_ENABLED, false);
+			squared = sharedPreferences.getBoolean(KEY_PRF_SQUARED, false);
 			exType = sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, KEY_PRF_EX_S1);
 			if (exType.equals(KEY_PRF_EX_S2)
 				| exType.equals(KEY_PRF_EX_S3)
@@ -203,14 +204,14 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 			editor.clear();
 
 		}
-		if (null != instance) UserDbPref.getInstance(instance).save();
+		if (null != instance) UserDbPreferences.getInstance(getInstance()).save();
 
 		Log.d(TAG, "save " + result + " in Preferences: " + instance);
 		return result;
 	}
 
 	public static String exDescription() {
-		// template is: "R/C-L-exType-X*Y-w-screen size factor-P/L"
+		// template is: "R/C-L-exType-X*Y-w-screen size Factor-Squared-P/L"
 		String result = "";
 
 		result += (ratings ? Utils.getRes().getString(R.string.code_rating) : Utils.getRes().getString(R.string.code_common));
@@ -218,7 +219,8 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 		result += "-" + exType;
 		result += "-" + xSize + "*" + ySize;
 		result += "-P" + (probEnabled ? "1" : "0");
-		result += "-SW" + getScreenFactor();
+		result += "-F" + getScreenFactor();
+		result += "-S" + (squared ? "1" : "0");
 		result += "-O" + (getRes().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? "L" : "P");
 
 		return result;
@@ -354,17 +356,17 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 	public void onCallback(Map<String, Object> objectMap) {
 		if (objectMap == null & uid != null) {
 			// Seems a new user
-			UserDbPref.getInstance(instance).save();
+			UserDbPreferences.getInstance(instance).save();
 			return;
 		}
 		// check which source is more fresh, server's
-		long sumPointsDb = ((Number)  objectMap.get("hours")).longValue() * 3600 + ((Number) objectMap.get("hours")).longValue();
+		long sumPointsDb = ((Number)  objectMap.get("hours")).longValue() * 3600 + ((Number) objectMap.get("psyCoins")).longValue();
 		// ... or local
 		long sumPointsLocal = getHours() * 3600 + this.getPoints();
 		if (sumPointsLocal == sumPointsDb) {
 			// do nothing
 		} else if (sumPointsLocal > sumPointsDb) {
-			UserDbPref.getInstance(instance).save();
+			UserDbPreferences.getInstance(instance).save();
 		} else {
 			loadFromDbPref();
 		}
@@ -372,7 +374,7 @@ public class ExerciseRunner implements UserDbPref.UserDbPrefCallback {
 
 	private void loadFromDbPref() {
 
-		Map<String, Object> objectMap = UserDbPref.getInstance(instance).getObjectMap();
+		Map<String, Object> objectMap = UserDbPreferences.getInstance(instance).getObjectMap();
 
 		uid = objectMap.get("uid").toString();
 		userName = objectMap.get("name").toString();

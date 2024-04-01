@@ -19,7 +19,6 @@ import android.text.Spanned;
 import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
-import org.nebobrod.schulteplus.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
@@ -43,7 +42,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import java.lang.reflect.Field;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -550,7 +548,7 @@ public final class Utils extends Application {
 	 * Puts into FirebaseCrashlytics
 	 * @param uid user identifier
 	 */
-	public static void userFbCrash(String uid) {
+	public static void setFbCrashlyticsUser(String uid) {
 		FirebaseCrashlytics.getInstance().setUserId(uid);
 	}
 
@@ -634,6 +632,9 @@ public final class Utils extends Application {
 		return input;
 	}
 
+	/**
+	 * @return screen wideness category from 1.small to 5.extra large<p> (0 and 9 are non-real)
+	 */
 	public static int getScreenFactor() {
 		WindowManager windowManager = (WindowManager) getAppContext().getSystemService(Context.WINDOW_SERVICE);
 		Display display = windowManager.getDefaultDisplay();
@@ -669,10 +670,13 @@ public final class Utils extends Application {
 		if (isEmulator()) {
 			// screenCategory = 9;
 		}
-
 		return screenCategory;
 	}
 
+	/**
+	 * Check if not physical device runs the App (and exclude cheating data from Statistics)
+	 * @return
+	 */
 	public static boolean isEmulator() {
 		return Build.FINGERPRINT.startsWith("generic")
 				|| Build.FINGERPRINT.startsWith("unknown")
@@ -684,4 +688,20 @@ public final class Utils extends Application {
 				|| "google_sdk".equals(Build.PRODUCT);
 	}
 
+	/**
+	 * Gets a field from the project's BuildConfig. This is useful when, for example, flavors
+	 * are used at the project level to set custom fields.
+	 * @param fieldName     The name of the field-to-access
+	 * @return              The value of the field, or {@code null} if the field is not found.
+	 */
+	public static Object getBuildConfigValue(String fieldName) {
+		try {
+			Class<?> clazz = Class.forName(context.getPackageName() + ".BuildConfig");
+			Field field = clazz.getField(fieldName);
+			return field.get(null);
+		} catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

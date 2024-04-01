@@ -17,8 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.preference.PreferenceViewHolder;
 
 import org.nebobrod.schulteplus.R;
-import org.nebobrod.schulteplus.fbservices.UserFbData;
-import org.nebobrod.schulteplus.fbservices.UserHelper;
+
 
 /**
  * Custom Preference which allows set values by touching SurfaceView on {@link R.layout#fragment_probabilities}

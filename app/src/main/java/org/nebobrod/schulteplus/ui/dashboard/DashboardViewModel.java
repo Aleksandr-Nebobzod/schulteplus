@@ -1,7 +1,6 @@
 package org.nebobrod.schulteplus.ui.dashboard;
 
 import android.os.Looper;
-import org.nebobrod.schulteplus.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
@@ -9,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.Log;
 import org.nebobrod.schulteplus.data.DatabaseHelper;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.OrmRepo;

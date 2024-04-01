@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.nebobrod.schulteplus.ExerciseRunner;
+import org.nebobrod.schulteplus.Log;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.data.Achievement;
@@ -63,10 +64,11 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		dashboardViewModel =
 				new ViewModelProvider(this).get(DashboardViewModel.class);
-
 		// Binding and initiating
 		binding = FragmentDashboardBinding.inflate(inflater, container, false);
 		View root = binding.getRoot();
+			// This prevents the bug#27 of App's backgrounding due to mis-click
+			root.setOnClickListener(view -> {});
 		spDashboard = binding.spDashboard;
 		setDashboardSpinner(spDashboard);
 		rgSource = binding.rgSource;
@@ -172,9 +174,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 	};
 	*/
 
-	/**
-	 * Spinner to choose the dashboard (Achievements or an ExType)
-	 */
+	/** Spinner to choose the dashboard (Achievements or an ExType) */
 	private void setDashboardSpinner(Spinner spinner) {
 		// Language independent values
 		exTypeValues = getRes().getStringArray(R.array.ex_type);
@@ -190,7 +190,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		// Create an ArrayAdapter using the string array and a default spinner layout
 		ArrayAdapter<CharSequence> spAdapter = new ArrayAdapter(
 				getAppContext(),
-				R.layout.item_one_textview, // android.R.layout.simple_spinner_item
+				android.R.layout.simple_spinner_item, // R.layout.item_one_textview, //
 				exTypeEntries);
 		// set simple layout resource file for each item of spinner
 		 spAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
@@ -204,20 +204,23 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 			@Override
 			public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
 				dashboardViewModel.setKey(exTypeValues[position]);
+				RadioButton _rb = getView().findViewById(R.id.rb_www);
 				if (position == 0) {
 					// Achievements allow only two filters and "www" is default
-					getView().findViewById(R.id.rb_top_m).setEnabled(false);
-					getView().findViewById(R.id.rb_top_progress).setEnabled(false);
-					if (rgSource.getCheckedRadioButtonId() != R.id.rb_local) {
-						RadioButton _rb = getView().findViewById(R.id.rb_www);
+					getView().findViewById(R.id.rb_ex_top_m).setEnabled(false);
+					getView().findViewById(R.id.rb_ac_top_progress).setEnabled(false);
+					if (rgSource.getCheckedRadioButtonId() == R.id.rb_ex_top_m) {
 						_rb.setChecked(true);
-						dashboardViewModel.setFilter(_rb.getText().toString());
+//						dashboardViewModel.setFilter(_rb.getText().toString());
 					}
 				} else {
 					// for non Achievement other radio-buttons are enabled
-					getView().findViewById(R.id.rb_top_m).setEnabled(true);
-					getView().findViewById(R.id.rb_top_progress).setEnabled(true);
+					getView().findViewById(R.id.rb_ex_top_m).setEnabled(true);
+//					getView().findViewById(R.id.rb_ac_top_progress).setEnabled(true);
 				}
+				// Pass checked radioButton to viewModel
+				_rb = getView().findViewById(rgSource.getCheckedRadioButtonId());
+				dashboardViewModel.setFilter(_rb.getText().toString());
 			}
 
 			@Override
@@ -225,24 +228,6 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 				// do nothing
 			}
 		});
-	}
-
-	private ArrayList<Spanned> exResultToSpanned(List<? extends ExResult> results) {
-		// get array from our LiveData
-		Object[] resList;
-		if (results == null) {
-			resList = new ExResult[1];
-			resList[0] = new ExResult(100, 0, 0, "no");
-		} else {
-			resList = results.stream().toArray();
-		}
-		ArrayList<Spanned> listSpanned = new ArrayList<>();
-		// collect list of Spanned
-		for (Object o:
-				resList) {
-			listSpanned.add(Html.fromHtml(o.toString()));
-		}
-		return listSpanned;
 	}
 
 	private void updateListView(int checkedRadioButtonId) {
@@ -268,9 +253,26 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 					// do nothing
 			}
 		} else {
-			// fetch from local DB
-			exResultAdapter = ExResult.getArrayAdapter(getAppContext(), (List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME));
-			dashboardViewModel.fetchResultsLimited(ExResult.class);
+			// ExResults
+			switch(checkedRadioButtonId)
+			{
+				case R.id.rb_local: // fetch from local DB
+					exResultAdapter = ExResult.getArrayAdapter(getAppContext(),
+							(List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME));
+					dashboardViewModel.fetchResultsLimited(ExResult.class);
+					break;
+				case R.id.rb_www: // fetch common users' results from server DB
+					exResultAdapter = ExResult.getArrayAdapter(getAppContext(),
+							(List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME));
+					dashboardViewModel.fetchResultsLimited(ExResult.class);
+					break;
+				case R.id.rb_ex_top_m: // fetch users' results from server DB sorted by speed
+
+					break;
+				default:
+					// do nothing
+			}
+
 
 //			exResultAdapter = ExResult.getArrayAdapter(getAppContext(), listExResult);
 /*			adapter = new ArrayAdapter<>(
@@ -296,6 +298,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+
 		// Watch for LiveData and refresh ExResult UI
 		dashboardViewModel.getResultsLiveData().observe(getViewLifecycleOwner(), results -> {
 			// Update the listExResult with fresh data
@@ -309,10 +312,12 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 	@Override
 	public void onResume() {
 		super.onResume();
-		// Set chosen Item in the spinner
+		Log.d(TAG, "onResume: Called");
+		// Set chosen Item in the spinner in accordance with userPreferences
 		for (int i = 0; i < exTypeValues.length; i++) {
 			if (ExerciseRunner.getExType().equals(exTypeValues[i])) {
 				spDashboard.setSelection(i);
+				dashboardViewModel.setKey(exTypeValues[i]);
 				break;
 			}
 		}
@@ -322,19 +327,22 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
+		Log.d(TAG, "onDestroyView: Called");
 		binding = null;
 	}
 
+	// Backend's Achievements
 	@Override
 	public void onCallback(ArrayList<Spanned> lst) {
+
 		list = (ArrayList<Spanned>) lst.clone();
 		adapter.notifyDataSetChanged();
 //		Html.fromHtml("");
 	}
 
+	// Local Achievements
 	@Override
 	public void onComplete(Object result) {
-//		listAchievement = (ArrayList<Achievement>) result;
 		listAchievement = (ArrayList<Achievement>) Utils.markupListAsGroupedBy((ArrayList<Achievement>) result, TIMESTAMP_FIELD_NAME);
 		arrayAdapter.notifyDataSetChanged();
 	}

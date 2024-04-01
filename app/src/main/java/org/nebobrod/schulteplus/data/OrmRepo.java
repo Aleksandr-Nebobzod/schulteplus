@@ -71,7 +71,7 @@ public class OrmRepo implements DataRepository {
 	}
 
 	/**
-	 * Puts into a DataRepository
+	 * Put into a DataRepository
 	 * @param result ExResult's child classes
 	 */
 	@Override

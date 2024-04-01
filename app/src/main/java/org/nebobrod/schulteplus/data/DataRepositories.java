@@ -9,6 +9,7 @@
 package org.nebobrod.schulteplus.data;
 
 import org.nebobrod.schulteplus.Const;
+import org.nebobrod.schulteplus.fbservices.UserDbPreferences;
 
 import java.util.List;
 
@@ -37,4 +38,17 @@ public class DataRepositories implements DataRepository {
 	public<T> List<T> getResultsLimited(Class<T> clazz, String exType) {
 		return null;
 	}
+
+	/**
+	 * Clean user personal data (after account removal)
+	 *
+	 * @param uid                user id
+	 * @param unpersonalisedName new dummy name for keep ExResults' history
+	 */
+	@Override
+	public void unpersonalise(String uid, String unpersonalisedName) {
+		// TODO: 25.03.2024 provide checks to all tables using  name & email
+		UserDbPreferences.getInstance()
+	}
+
 }

@@ -20,6 +20,7 @@
 			<SwitchPreference app:key="prf_sw_shuffle" app:title="@string/lbl_shuffle" app:summaryOn="@string/lbl_shuffle_sum_on" android:summaryOff="@string/lbl_shuffle_sum_off" app:defaultValue="true" app:enabled="true" />
 			<SeekBarPreference app:key="prf_x_size" app:title="@string/x_size" app:defaultValue="5" app:min="1" android:max="10" app:showSeekBarValue="true" />
 			<SeekBarPreference app:key="prf_y_size" app:title="@string/y_size" app:defaultValue="5" app:min="1" android:max="10" app:showSeekBarValue="true" />
+			<SwitchPreference app:key="prf_squared" app:title="@string/lbl_squared" app:defaultValue="false" app:enabled="true" />
 			<DropDownPreference app:key="prf_symbol_type" app:title="@string/lbl_symbol_type" app:entries="@array/symbol_type_entries" app:entryValues="@array/symbol_type_values" app:defaultValue="@string/str_number" app:useSimpleSummaryProvider="true" app:enabled="false" />
 			
 			<PreferenceCategory app:key="prf_cat_prob" android:title="@string/lbl_Probabilities"  app:initialExpandedChildrenCount="0">

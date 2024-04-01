@@ -33,6 +33,7 @@ public interface Const {
 	String KEY_PRF_SHUFFLE = "prf_sw_shuffle";
 	String KEY_X_SIZE = "prf_x_size";
 	String KEY_Y_SIZE = "prf_y_size";
+	String KEY_PRF_SQUARED = "prf_squared";
 	String KEY_PRF_SYMBOLS = "prf_symbol_type";
 	String KEY_PRF_FONT_SCALE = "prf_font_scale";
 	String KEY_PRF_HAPTIC = "prf_vibration";

@@ -8,6 +8,8 @@
 
 package org.nebobrod.schulteplus.fbservices;
 
+import static org.nebobrod.schulteplus.Utils.getRes;
+
 import org.nebobrod.schulteplus.ExerciseRunner;
 
 import androidx.annotation.NonNull;
@@ -22,7 +24,6 @@ import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;*/
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -30,13 +31,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.WriteBatch;
-import com.google.firestore.v1.WriteResult;
 
 import java.util.HashMap;
 import java.util.Map;
 import org.nebobrod.schulteplus.Log;
+import org.nebobrod.schulteplus.R;
 
 import javax.inject.Singleton;
 
@@ -44,21 +45,27 @@ import javax.inject.Singleton;
 /** Provides  user Preference copy in FirebaseFirestore
  * (ExerciseRunner is used as helper) */
 @Singleton
-public class UserDbPref {
-	private static final String TAG = "UserDbPref";
+public class UserDbPreferences {
+	private static final String TAG = "UserDbPreferences";
 //	public static final String DB_URL = "https://schulte-plus-default-rtdb.europe-west1.firebasedatabase.app";
 	private static final String DB_PROJECT_ID = "schulte-plus";
-	private static final String DB_PATH = "spdbs/dev/userDbPreferences"; // TODO: 18.12.2023 about "prod"...
+	private static final String DB_ROOT = getRes().getString(R.string.firestore_root);
+	private static final String PATH = DB_ROOT + "userDbPreferences"; // TODOne 21.03.2024: 18.12.2023 about "prod"...
 
-	private static UserDbPref instance = null;
-	ExerciseRunner runner;
-	Map<String, Object> objectMap;
-	public String uid, name, email;
-	public long tsUpdated;
-	public int psyCoins, hours, level;
-	static FirebaseFirestore db;
+	private static UserDbPreferences instance = null;
+	private FirebaseFirestore db;
+	private CollectionReference dbRef;
+	private DocumentReference docRef;
+	private ListenerRegistration currentDoc;
 
-	private UserDbPref(ExerciseRunner exerciseRunner) {
+	private ExerciseRunner runner;
+	private Map<String, Object> objectMap;
+	private String uid, name, email;
+	private long tsUpdated;
+	private int psyCoins, hours, level;
+
+
+	private UserDbPreferences(ExerciseRunner exerciseRunner) {
 		this.runner = exerciseRunner;
 
 		this.uid = ExerciseRunner.GetUid();
@@ -68,15 +75,31 @@ public class UserDbPref {
 		this.hours = runner.getHours();
 		this.level = runner.getLevel();
 		this.tsUpdated = runner.getTsUpdated();
-
 		this.objectMap = new HashMap<>();
 
-		getSubCollectionDocumentRef(null, exerciseRunner.getUid());
+		init();
+
+		currentDoc = getSubCollectionDocumentRef(null, uid);
 	}
 
+	private void init () {
+		db = FirebaseFirestore.getInstance();
+		// Set the value of doc
+		dbRef = db.collection(PATH);
+		docRef = db.document(PATH + "/" + uid);
+	}
 
-	public static UserDbPref getInstance(ExerciseRunner exerciseRunner) {
-		return (instance == null ? instance = new UserDbPref(exerciseRunner) : instance);
+	public static UserDbPreferences getInstance(String newUid) {
+		if (instance == null) {
+			if (ExerciseRunner == null)
+		} else if (runner.getUid().equals(newUid)) {
+			
+		}
+		if (ExerciseRunner.getUserHelper().getUid().equals(newUid))
+		return instance;
+	}
+	public static UserDbPreferences getInstance(ExerciseRunner exerciseRunner) {
+		return (instance == null ? instance = new UserDbPreferences(exerciseRunner) : instance);
 	}
 
 /*	private  static void init (String projectId) throws IOException {
@@ -90,7 +113,7 @@ public class UserDbPref {
 								.setProjectId(projectId)
 								.setCredentials(GoogleCredentials.getApplicationDefault())
 								.build();
-				UserDbPref.db = (Firestore) firestoreOptions.getService();
+				UserDbPreferences.db = (Firestore) firestoreOptions.getService();
 			} catch (Exception e) {
 				e.printStackTrace();
 				Log.e(TAG, "dbRead Error: " + e.getLocalizedMessage().toString(), null);
@@ -99,9 +122,7 @@ public class UserDbPref {
 			// [END firestore_setup_client_create]
 	}
 	*/
-	private static void init () {
-		db = FirebaseFirestore.getInstance();
-	}
+
 
 	public  void save() {
 		objectMap = new HashMap<>();
@@ -115,9 +136,6 @@ public class UserDbPref {
 // Get a new write batch
 		WriteBatch batch = db.batch();
 
-// Set the value of doc
-		CollectionReference dbRef = db.collection(DB_PATH);
-		DocumentReference docRef = db.document(DB_PATH + "/" + runner.getUid());
 		batch.set(docRef, objectMap);
 
 /* EXAMPLES of other actionsL:
@@ -140,8 +158,7 @@ public class UserDbPref {
 			public void onFailure(@NonNull Exception e) {
 				Log.d(TAG, "save onFailure: " + e.getMessage());
 			}
-		})
-		;
+		});
 
 
 /* // ...one more strange attempt from doc: https://cloud.google.com/firestore/docs/samples/firestore-data-set-doc-upsert
@@ -214,14 +231,15 @@ public class UserDbPref {
 		}
 	}
 */
-	public void getSubCollectionDocumentRef(@Nullable UserDbPrefCallback cb, String docKey) {
+	// TODO: 26.03.2024 redundant? check & optimize
+	public ListenerRegistration getSubCollectionDocumentRef(@Nullable UserDbPrefCallback cb, String docKey) {
 		// [START firestore_data_reference_subcollection]
 		// Reference to a document in subcollection "userDbPreferences" /spdbs/dev/userDbPreferences
-		init();
+//		DocumentReference document1 = db.collection("spdbs").document("dev").collection("userDbPreferences").document(docKey);
 		DocumentReference document =
-				db.collection("spdbs").document("dev").collection("userDbPreferences").document(docKey);
+				db.collection(PATH).document(docKey);
 
-		document.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+		return document.addSnapshotListener(new EventListener<DocumentSnapshot>() {
 			@Override
 			public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
 				try {
@@ -237,5 +255,24 @@ public class UserDbPref {
 			}
 		});
 		// [END firestore_data_reference_subcollection]
+	}
+
+	// removes user name and email, put dummy neName into DB
+	public void depersonalise(String uid, String newName) {
+		DocumentReference docRef = db.document(PATH + "/" + uid);
+		docRef.update(
+				"name", newName,
+				"email", newName+"@mail.com"
+		).addOnCompleteListener(new OnCompleteListener<Void>() {
+			@Override
+			public void onComplete(@NonNull Task<Void> task) {
+				android.util.Log.v(TAG, "onComplete: depersonalised");
+			}
+		}).addOnFailureListener(new OnFailureListener() {
+			@Override
+			public void onFailure(@NonNull Exception e) {
+				android.util.Log.v(TAG, "onFailure: depersonalisation failed");
+			}
+		});
 	}
 }

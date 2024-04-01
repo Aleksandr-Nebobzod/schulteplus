@@ -201,7 +201,13 @@
 	<string name="lbl_top_in_month">Топ</string>
 	<string name="txt_datasource_local_hint">Актуальные локальные записи</string>
 	<string name="txt_datasource_www_hint">Актуальные в сети</string>
-	<string name="txt_top_in_month_hint">Работа: Лучшие за месяц</string>
+	<string name="txt_top_in_month_hint">Лучшие на уровне за месяц</string>
 	<string name="lbl_top_in_month_progress">Прог.</string>
-	<string name="txt_top_in_month_progress">Прогресс: Лучшие за месяц</string>
+	<string name="txt_top_in_month_progress">Достижения: Прогресс за месяц</string>
+	<string name="lbl_delete_account">Удалить аккаунт</string>
+	<string name="txt_delete_account_description">Ваша учётная запись и все персональные данные будут удалены. Данные тренировок будут деперсанолизированы. Продолжить?</string>
+	<string name="msg_delete_account_success">Данные учётной записи удалены. Результаты Ваших упражнений помещены под имя: </string>
+	<string name="msg_delete_account_failed">Не удалось удалить учётную запись</string>
+	<string name="msg_password_reset_email_sent">Электронное письмо сброса пароля направлено!</string>
+	<string name="lbl_squared">Квадрат</string>
 </resources>

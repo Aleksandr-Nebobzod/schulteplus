@@ -1,4 +1,12 @@
-package org.nebobrod.schulteplus.fbservices;
+/*
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
+package org.nebobrod.schulteplus.ui;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
@@ -6,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import org.nebobrod.schulteplus.Log;
+import org.nebobrod.schulteplus.common.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
@@ -26,11 +34,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-import org.nebobrod.schulteplus.ExerciseRunner;
-import org.nebobrod.schulteplus.MainActivity;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
+import org.nebobrod.schulteplus.data.fbservices.UserFbData;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
-import static org.nebobrod.schulteplus.Const.NAME_REG_EXP;
+import org.nebobrod.schulteplus.data.UserHelper;
+
+import static org.nebobrod.schulteplus.common.Const.NAME_REG_EXP;
 
 import java.util.Arrays;
 import java.util.List;
@@ -149,7 +159,7 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 								// Create the fbDB copy of User
 								FirebaseUser user = fbAuth.getCurrentUser();
 								fbDbUser = new UserFbData();
-								fbDbUser.addUser(email, name, password, user.getUid(), Utils.getDeviceId(SignupActivity.this) , false);
+								fbDbUser.addUser(user.getUid(), email, name, password, Utils.getDeviceId(SignupActivity.this) , false);
 //								updateUI(user);
 
 								Toast.makeText(SignupActivity.this, resMessage[0], Toast.LENGTH_SHORT).show();
@@ -249,6 +259,10 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 		{
 			@Override
 			public void onClick(View view) {
+
+				// TODO: 21.04.2024 remove toast & update this & signInAnonymously() function with repository approach in Firestore
+				Toast.makeText(SignupActivity.this, "TODO anonymous signup", Toast.LENGTH_LONG).show();
+/*
 				String val = Utils.getRandomName();
 				etName.setText(val);
 
@@ -271,7 +285,7 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 							}, 1000);
 						}
 					}
-				}, val);
+				}, val);*/
 			}
 		});
 
@@ -337,7 +351,10 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 	public void signInAnonymously() {
 //		signInPressed = true;
 		// [START sign_in_anonymously]
-		fbAuth.signInAnonymously()
+
+		// TODO: 21.04.2024 remove toast & update this & signInAnonymously() function with repository approach in Firestore
+		Toast.makeText(SignupActivity.this, "TODO anonymous signup", Toast.LENGTH_LONG).show();
+/*		fbAuth.signInAnonymously()
 				.addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>()
 				{
 					@Override
@@ -357,7 +374,7 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 								String _name = etName.getText().toString().trim();
 								String _device = Utils.getDeviceId(SignupActivity.this);
 
-								fbDbUser.addUser(_name +  "@email.com", _name, "password", user.getUid(), _device, false);
+								fbDbUser.addUser(user.getUid(), _name +  "@email.com", _name, "password", _device, false);
 								Log.d(TAG, "onComplete signIn Anon: " + fbDbUser);
 //							Toast.makeText(LoginActivity.this, _name +  "@email.com" + getString(R.string.msg_signin_anonymously_credentials), Toast.LENGTH_LONG).show();
 								Snackbar.make(tvContinueAnonymously,
@@ -378,7 +395,7 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 						}
 					}
 
-				});
+				});*/
 		// [END sign_in_anonymously]
 
 	}

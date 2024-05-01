@@ -1,4 +1,12 @@
-package org.nebobrod.schulteplus;
+/*
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
+package org.nebobrod.schulteplus.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -18,7 +26,7 @@ import java.util.Map;
  * @author Andrius Baruckis http://www.baruckis.com
  *
  */
-public final class AlertDialogFragment extends DialogFragment {
+public final class z_AlertDialogFragment extends DialogFragment {
 
 	public static final String TAG = "dialog_fragment_tag";
 	public static final String ALERT_DIALOG_ICON_KEY = "alert_dialog_icon_key";
@@ -31,14 +39,14 @@ public final class AlertDialogFragment extends DialogFragment {
 	static DialogInterface.OnClickListener cancelListener;
 
 
-	public static AlertDialogFragment newInstance(int iconResourceId,
-												  CharSequence titleText,
-												  @Nullable Map<String, String> stringMap,
-												  CharSequence messageText,
-												  CharSequence buttonText,
-												  @Nullable DialogInterface.OnClickListener okListener,
-												  @Nullable DialogInterface.OnClickListener cancelListener) {
-		AlertDialogFragment alertDialogFragment = new AlertDialogFragment();
+	public static z_AlertDialogFragment newInstance(int iconResourceId,
+													CharSequence titleText,
+													@Nullable Map<String, String> stringMap,
+													CharSequence messageText,
+													CharSequence buttonText,
+													@Nullable DialogInterface.OnClickListener okListener,
+													@Nullable DialogInterface.OnClickListener cancelListener) {
+		z_AlertDialogFragment alertDialogFragment = new z_AlertDialogFragment();
 		Bundle arguments = new Bundle();
 		arguments.putInt(ALERT_DIALOG_ICON_KEY, iconResourceId);
 		arguments.putCharSequence(ALERT_DIALOG_TITLE_KEY, titleText);

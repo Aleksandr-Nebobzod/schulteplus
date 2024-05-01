@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
 package org.nebobrod.schulteplus.data;
 
 import static org.nebobrod.schulteplus.Utils.getAppContext;
@@ -7,14 +15,12 @@ import static org.nebobrod.schulteplus.Utils.getVersionCode;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import org.nebobrod.schulteplus.Log;
+import org.nebobrod.schulteplus.common.Log;
 
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.Dao.*;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import org.nebobrod.schulteplus.R;
@@ -39,6 +45,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private Dao<ClickCount, Integer> clickDao = null;
 	private Dao<Achievement, Integer> achievementDao = null;
 	private Dao<ExResult, Integer> exResultDao = null;
+	private Dao<Turn, Integer> turnDao = null;
+	private Dao<UserHelper, Integer> userHelperDao = null;
 
 	private static final AtomicInteger usageCounter = new AtomicInteger(0);
 
@@ -60,6 +68,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, ClickCount.class);
 			TableUtils.createTable(connectionSource, Achievement.class);
 			TableUtils.createTable(connectionSource, ExResult.class);
+			TableUtils.createTable(connectionSource, Turn.class);
+			TableUtils.createTable(connectionSource, UserHelper.class);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Unable to create datbases", e);
 		}
@@ -84,6 +94,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, ClickCount.class, true);
 			TableUtils.dropTable(connectionSource, Achievement.class, true);
 			TableUtils.dropTable(connectionSource, ExResult.class, true);
+			TableUtils.dropTable(connectionSource, Turn.class, true);
+			TableUtils.dropTable(connectionSource, UserHelper.class, true);
 			onCreate(sqliteDatabase, connectionSource);
 		} catch (SQLException e) {
 			Log.e(
@@ -127,6 +139,20 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return (Dao<ExResultSchulte, Integer>) getDao(ExResultSchulte.class);
 	}
 
+	public Dao<Turn, Integer> getTurnDao() throws SQLException {
+		if (turnDao == null) {
+			turnDao = getDao(Turn.class);
+		}
+		return turnDao;
+	}
+	public Dao<UserHelper, Integer> getUserHelperDao() throws SQLException {
+		if (userHelperDao == null) {
+			userHelperDao = getDao(UserHelper.class);
+		}
+		return userHelperDao;
+	}
+
+
 	/**
 	 * Close the database connections and clear any cached DAOs. For each call to {@link #getHelper()}, there
 	 * should be 1 and only 1 call to this method. If there were 3 calls to {@link #getHelper()} then on the 3rd
@@ -140,6 +166,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			clickDao = null;
 			achievementDao = null;
 			exResultDao = null;
+			turnDao = null;
+			userHelperDao = null;
+			// and finally the DatabaseHelper itself
 			helper = null;
 		}
 	}

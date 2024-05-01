@@ -1,6 +1,81 @@
 #
-# generated on 2024/03/07 10:39:32
+# generated on 2024/04/30 12:46:31
 #
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.Achievement
+tableName=achievement
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uid
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=dateTime
+# --field-end--
+# --field-start--
+fieldName=recordText
+# --field-end--
+# --field-start--
+fieldName=recordValue
+# --field-end--
+# --field-start--
+fieldName=specialMark
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.ClickCount
+tableName=clickcount
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=lastClickDate
+columnName=lastClickDate
+# --field-end--
+# --field-start--
+fieldName=name
+indexName=clickcount_name_idx
+# --field-end--
+# --field-start--
+fieldName=description
+# --field-end--
+# --field-start--
+fieldName=value
+# --field-end--
+# --field-start--
+fieldName=group
+foreign=true
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.ClickGroup
+tableName=clickgroup
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
 # --table-start--
 dataClass=org.nebobrod.schulteplus.data.ExResult
 tableName=exresult
@@ -26,6 +101,65 @@ fieldName=exType
 # --field-end--
 # --field-start--
 fieldName=exDescription
+# --field-end--
+# --field-start--
+fieldName=timeStampFinish
+# --field-end--
+# --field-start--
+fieldName=numValue
+# --field-end--
+# --field-start--
+fieldName=levelOfEmotion
+# --field-end--
+# --field-start--
+fieldName=levelOfEnergy
+# --field-end--
+# --field-start--
+fieldName=note
+# --field-end--
+# --field-start--
+fieldName=turns
+# --field-end--
+# --field-start--
+fieldName=turnsMissed
+# --field-end--
+# --field-start--
+fieldName=average
+# --field-end--
+# --field-start--
+fieldName=rmsd
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.ExResultBasics
+tableName=exresult
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uid
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=dateTime
+# --field-end--
+# --field-start--
+fieldName=exType
+# --field-end--
+# --field-start--
+fieldName=exDescription
+# --field-end--
+# --field-start--
+fieldName=timeStampFinish
 # --field-end--
 # --field-start--
 fieldName=numValue
@@ -81,6 +215,9 @@ fieldName=exType
 fieldName=exDescription
 # --field-end--
 # --field-start--
+fieldName=timeStampFinish
+# --field-end--
+# --field-start--
 fieldName=numValue
 # --field-end--
 # --field-start--
@@ -108,56 +245,45 @@ fieldName=rmsd
 # --table-end--
 #################################
 # --table-start--
-dataClass=org.nebobrod.schulteplus.data.ClickCount
-tableName=clickcount
+dataClass=org.nebobrod.schulteplus.data.Turn
+tableName=turn
 # --table-fields-start--
 # --field-start--
 fieldName=id
 generatedId=true
 # --field-end--
 # --field-start--
-fieldName=lastClickDate
-columnName=lastClickDate
-# --field-end--
-# --field-start--
-fieldName=name
-indexName=clickcount_name_idx
-# --field-end--
-# --field-start--
-fieldName=description
-# --field-end--
-# --field-start--
-fieldName=value
-# --field-end--
-# --field-start--
-fieldName=group
+fieldName=exResult
 foreign=true
 # --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=time
+# --field-end--
+# --field-start--
+fieldName=expected
+# --field-end--
+# --field-start--
+fieldName=x
+# --field-end--
+# --field-start--
+fieldName=y
+# --field-end--
+# --field-start--
+fieldName=position
+# --field-end--
+# --field-start--
+fieldName=isCorrect
+# --field-end--
 # --table-fields-end--
 # --table-end--
 #################################
 # --table-start--
-dataClass=org.nebobrod.schulteplus.data.ClickGroup
-tableName=clickgroup
+dataClass=org.nebobrod.schulteplus.data.UserHelper
+tableName=userhelper
 # --table-fields-start--
-# --field-start--
-fieldName=id
-generatedId=true
-# --field-end--
-# --field-start--
-fieldName=name
-# --field-end--
-# --table-fields-end--
-# --table-end--
-#################################
-# --table-start--
-dataClass=org.nebobrod.schulteplus.data.ExResultBasics
-tableName=exresult
-# --table-fields-start--
-# --field-start--
-fieldName=id
-generatedId=true
-# --field-end--
 # --field-start--
 fieldName=uid
 # --field-end--
@@ -165,72 +291,34 @@ fieldName=uid
 fieldName=name
 # --field-end--
 # --field-start--
-fieldName=timeStamp
+fieldName=email
 # --field-end--
 # --field-start--
-fieldName=dateTime
+fieldName=password
 # --field-end--
 # --field-start--
-fieldName=exType
+fieldName=deviceId
 # --field-end--
 # --field-start--
-fieldName=exDescription
+fieldName=verified
 # --field-end--
 # --field-start--
-fieldName=numValue
+fieldName=psyCoins
 # --field-end--
 # --field-start--
-fieldName=levelOfEmotion
+fieldName=hours
 # --field-end--
 # --field-start--
-fieldName=levelOfEnergy
+fieldName=level
 # --field-end--
 # --field-start--
-fieldName=note
+fieldName=tsUpdated
 # --field-end--
 # --field-start--
-fieldName=turns
+fieldName=dateCreated
 # --field-end--
 # --field-start--
-fieldName=turnsMissed
-# --field-end--
-# --field-start--
-fieldName=average
-# --field-end--
-# --field-start--
-fieldName=rmsd
-# --field-end--
-# --table-fields-end--
-# --table-end--
-#################################
-# --table-start--
-dataClass=org.nebobrod.schulteplus.data.Achievement
-tableName=achievement
-# --table-fields-start--
-# --field-start--
-fieldName=id
-generatedId=true
-# --field-end--
-# --field-start--
-fieldName=uid
-# --field-end--
-# --field-start--
-fieldName=name
-# --field-end--
-# --field-start--
-fieldName=timeStamp
-# --field-end--
-# --field-start--
-fieldName=dateTime
-# --field-end--
-# --field-start--
-fieldName=recordText
-# --field-end--
-# --field-start--
-fieldName=recordValue
-# --field-end--
-# --field-start--
-fieldName=specialMark
+fieldName=dateChanged
 # --field-end--
 # --table-fields-end--
 # --table-end--

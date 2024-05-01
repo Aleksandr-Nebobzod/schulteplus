@@ -1,16 +1,16 @@
 /*
- * Copyright (c) 2023. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package org.nebobrod.schulteplus.fbservices;
+package org.nebobrod.schulteplus.data.fbservices;
 
 import static org.nebobrod.schulteplus.Utils.getRes;
 
-import org.nebobrod.schulteplus.ExerciseRunner;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,8 +36,9 @@ import com.google.firebase.firestore.WriteBatch;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.nebobrod.schulteplus.Log;
+import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.data.UserHelper;
 
 import javax.inject.Singleton;
 
@@ -58,11 +59,11 @@ public class UserDbPreferences {
 	private DocumentReference docRef;
 	private ListenerRegistration currentDoc;
 
-	private ExerciseRunner runner;
+	private static ExerciseRunner runner;
 	private Map<String, Object> objectMap;
 	private String uid, name, email;
-	private long tsUpdated;
 	private int psyCoins, hours, level;
+	private long tsUpdated;
 
 
 	private UserDbPreferences(ExerciseRunner exerciseRunner) {
@@ -90,12 +91,16 @@ public class UserDbPreferences {
 	}
 
 	public static UserDbPreferences getInstance(String newUid) {
+		// TODO: 06.04.2024 make uid and email reasonable
 		if (instance == null) {
-			if (ExerciseRunner == null)
-		} else if (runner.getUid().equals(newUid)) {
-			
+			instance = new UserDbPreferences(ExerciseRunner.getInstance(
+					new UserHelper(newUid, "email", "name", "pass", "devId", false)));
+		} else {
+			if (!runner.getUid().equals(newUid)) {
+				instance = new UserDbPreferences(ExerciseRunner.getInstance(
+						new UserHelper(newUid, "email", "name", "pass", "devId", false)));
+			}
 		}
-		if (ExerciseRunner.getUserHelper().getUid().equals(newUid))
 		return instance;
 	}
 	public static UserDbPreferences getInstance(ExerciseRunner exerciseRunner) {

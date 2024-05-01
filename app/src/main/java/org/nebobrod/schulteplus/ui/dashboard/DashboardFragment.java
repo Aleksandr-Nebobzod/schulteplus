@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
 package org.nebobrod.schulteplus.ui.dashboard;
 
 import static org.nebobrod.schulteplus.Utils.getAppContext;
@@ -9,7 +17,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,15 +36,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import org.nebobrod.schulteplus.ExerciseRunner;
-import org.nebobrod.schulteplus.Log;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
+import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.data.Achievement;
+import org.nebobrod.schulteplus.data.AchievementArrayAdapter;
 import org.nebobrod.schulteplus.data.ExResult;
+import org.nebobrod.schulteplus.data.ExResultArrayAdapter;
 import org.nebobrod.schulteplus.data.OrmRepo;
 import org.nebobrod.schulteplus.databinding.FragmentDashboardBinding;
-import org.nebobrod.schulteplus.fbservices.AchievementsFbData;
+import org.nebobrod.schulteplus.data.fbservices.AchievementsFbData;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -111,7 +120,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 
 //		local achievement datasource
 		listAchievement = new ArrayList<>(); // OrmRepo.getAchievementList();
-		arrayAdapter = Achievement.getArrayAdapter(getAppContext(), (List<Achievement>) Utils.markupListAsGroupedBy(listAchievement, TIMESTAMP_FIELD_NAME));
+		arrayAdapter = new AchievementArrayAdapter(getAppContext(), (List<Achievement>) Utils.markupListAsGroupedBy(listAchievement, TIMESTAMP_FIELD_NAME));
 		elvChart.setAdapter(arrayAdapter);
 		arrayAdapter.notifyDataSetChanged();
 
@@ -124,7 +133,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 
 //		ExResult adapter
 		listExResult = new ArrayList<ExResult>(); //(ArrayList<ExResult>) dashboardViewModel.getResultsLiveData().getValue();
-		exResultAdapter = ExResult.getArrayAdapter(getAppContext(), (List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME));
+		exResultAdapter = new ExResultArrayAdapter(getAppContext(), (List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME));
 		elvChart.setAdapter(exResultAdapter);
 		exResultAdapter.notifyDataSetChanged();
 
@@ -241,7 +250,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 			{
 				case R.id.rb_local:
 					OrmRepo.achieveGet25(DashboardFragment.this::onComplete);
-					arrayAdapter = Achievement.getArrayAdapter(getAppContext(), (List<Achievement>) Utils.markupListAsGroupedBy(listAchievement, TIMESTAMP_FIELD_NAME));
+					arrayAdapter = new AchievementArrayAdapter(getAppContext(), (List<Achievement>) Utils.markupListAsGroupedBy(listAchievement, TIMESTAMP_FIELD_NAME));
 					elvChart.setAdapter(arrayAdapter);
 					break;
 				case R.id.rb_www:
@@ -257,12 +266,12 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 			switch(checkedRadioButtonId)
 			{
 				case R.id.rb_local: // fetch from local DB
-					exResultAdapter = ExResult.getArrayAdapter(getAppContext(),
+					exResultAdapter = new ExResultArrayAdapter(getAppContext(),
 							(List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME));
 					dashboardViewModel.fetchResultsLimited(ExResult.class);
 					break;
 				case R.id.rb_www: // fetch common users' results from server DB
-					exResultAdapter = ExResult.getArrayAdapter(getAppContext(),
+					exResultAdapter = new ExResultArrayAdapter(getAppContext(),
 							(List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME));
 					dashboardViewModel.fetchResultsLimited(ExResult.class);
 					break;
@@ -303,7 +312,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		dashboardViewModel.getResultsLiveData().observe(getViewLifecycleOwner(), results -> {
 			// Update the listExResult with fresh data
 			listExResult = (ArrayList<ExResult>) results;
-			exResultAdapter = ExResult.getArrayAdapter(getAppContext(), (List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME));
+			exResultAdapter = new ExResultArrayAdapter(getAppContext(), (List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME));
 			elvChart.setAdapter(exResultAdapter);
 			exResultAdapter.notifyDataSetChanged();
 		});

@@ -1,5 +1,24 @@
+/*
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
 package org.nebobrod.schulteplus.ui;
 
+import org.nebobrod.schulteplus.common.Log;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
+import org.nebobrod.schulteplus.common.GridAdapter;
+import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.common.SCell;
+import org.nebobrod.schulteplus.common.STable;
+import org.nebobrod.schulteplus.data.DataRepositories;
+import org.nebobrod.schulteplus.data.ExResult;
+import org.nebobrod.schulteplus.data.ExResultArrayAdapter;
+
+import static org.nebobrod.schulteplus.Utils.*;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +32,6 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
-import org.nebobrod.schulteplus.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,19 +40,6 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.nebobrod.schulteplus.ExerciseRunner;
-import org.nebobrod.schulteplus.GridAdapter;
-import org.nebobrod.schulteplus.R;
-import org.nebobrod.schulteplus.SCell;
-import org.nebobrod.schulteplus.STable;
-import org.nebobrod.schulteplus.Utils;
-import org.nebobrod.schulteplus.data.DataRepositories;
-import org.nebobrod.schulteplus.data.ExResult;
-
-import static org.nebobrod.schulteplus.Utils.*;
-//import static org.nebobrod.schulteplus.Utils.bHtml;
-//import static org.nebobrod.schulteplus.Utils.getRes;
-//import static org.nebobrod.schulteplus.Utils.pHtml;
 
 import java.util.Objects;
 
@@ -50,82 +55,6 @@ public class SchulteActivity02 extends AppCompatActivity {
 	private MutableLiveData<ExResult> resultLiveData = new MutableLiveData<>();
 	private DialogInterface.OnClickListener cancelListener;
 	private DialogInterface.OnClickListener restartListener;
-
-	class ExToolbar {
-		 androidx.appcompat.widget.Toolbar toolbar;
-		 TextView tvExpectedTurn, tvCounter, tvMistakes;
-		 int hintExpectedTurn, hintCounter, hintMistakes;
-		 Chronometer chmTime;
-
-		public ExToolbar(Toolbar toolbar) {
-			this.toolbar = toolbar;
-			this.init();
-		}
-
-		private void init() {
-			hintCounter = hintMistakes = 0;
-			hintExpectedTurn = exercise.getExpectedValue();
-
-			tvExpectedTurn = toolbar.findViewById(R.id.tv_expected_turn);
-			tvExpectedTurn.setText("" + hintExpectedTurn);
-			tvCounter = toolbar.findViewById(R.id.tv_counter);
-			tvCounter.setText("0");
-			tvMistakes = toolbar.findViewById(R.id.tv_mistakes);
-			tvMistakes.setText("0");
-			chmTime = toolbar.findViewById(R.id.chm_time);
-			chmTime.setBase(SystemClock.elapsedRealtime());
-			chmTime.start();
-
-			if (runner.isHinted()) {
-				toolbar.setVisibility(View.VISIBLE);
-			} else {
-				toolbar.setVisibility(View.GONE);
-			}
-		}
-
-		private void refresh() {
-			tvExpectedTurn.setText("" + exercise.getExpectedValue());
-			tvCounter.setText("" + hintCounter);
-			tvMistakes.setText("" + hintMistakes);
-//			chmTime.setBase(SystemClock.elapsedRealtime());
-			chmTime.start();
-		}
-
-		public int getHintExpectedTurn() {
-			return hintExpectedTurn;
-		}
-
-		public int getHintCounter() {
-			return hintCounter;
-		}
-
-		public int getHintMistakes() {
-			return hintMistakes;
-		}
-
-		public Chronometer getChmTime() {
-			return chmTime;
-		}
-
-		public void setHintExpectedTurn(int hintExpectedTurn) {
-			this.hintExpectedTurn = hintExpectedTurn;
-			tvExpectedTurn.setText("" + hintExpectedTurn);
-		}
-
-		public void setHintCounter(int hintCounter) {
-			this.hintCounter = hintCounter;
-			tvCounter.setText("" + hintCounter);
-		}
-
-		public void setHintMistakes(int hintMistakes) {
-			this.hintMistakes = hintMistakes;
-			tvMistakes.setText("" + hintMistakes);
-		}
-
-		public void plusMistake() {
-			tvMistakes.setText("" + ++hintMistakes);
-		}
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -156,9 +85,9 @@ public class SchulteActivity02 extends AppCompatActivity {
 			@Override
 			public void onClick(DialogInterface dialogInterface, int i) {
 
-				Log.d(TAG, "onClick: " + "note: " + resultLiveData.getValue().note() +
-						" levelOfEmotion: " + resultLiveData.getValue().levelOfEmotion() +
-						" sbEnergyLevel: " + resultLiveData.getValue().levelOfEnergy());
+				Log.d(TAG, "onClick: " + "note: " + resultLiveData.getValue().getNote() +
+						" levelOfEmotion: " + resultLiveData.getValue().getLevelOfEmotion() +
+						" sbEnergyLevel: " + resultLiveData.getValue().getLevelOfEnergy());
 				repos.putResult(resultLiveData.getValue());
 				exercise.reset();
 				exToolbar.init();
@@ -209,7 +138,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 					if (exercise.checkIsFinished()) {
 						ExerciseRunner.savePreferences(exercise);
 						resultLiveData.setValue(exercise.getResults());
-						ExResult.feedbackDialog(SchulteActivity02.this,
+						ExResultArrayAdapter.feedbackDialog(SchulteActivity02.this,
 								resultLiveData,
 								getRes().getString(R.string.txt_ex_done_1) + "! " + getRes().getString(R.string.txt_continue_ex) + "?",
 								restartListener,
@@ -233,8 +162,6 @@ public class SchulteActivity02 extends AppCompatActivity {
 		});
 	}
 
-
-
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -245,55 +172,14 @@ public class SchulteActivity02 extends AppCompatActivity {
 
 	@Override
 	public void onBackPressed() {
-		ExResult.feedbackDialog(this,
+		ExResultArrayAdapter.feedbackDialog(this,
 				null,
 				getRes().getString(R.string.txt_ex_not_done) + "! " + getRes().getString(R.string.txt_continue_ex) + "?",
 				null,
 				(dialogInterface, i) -> finish());
-//		super.onBackPressed();
+		// TODO: 29.04.2024 check what to change for deprecated:
+		super.onBackPressed();
 	}
-
-/*	private void newExerciseDialog(String s) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-		final FrameLayout frameView = new FrameLayout(this);
-		builder.setView(frameView);
-		final AlertDialog alertDialog = builder.create();
-
-		//alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-		alertDialog.getWindow().setDimAmount(0);
-
-		LayoutInflater inflater = alertDialog.getLayoutInflater();
-		View dialoglayout = inflater.inflate(R.layout.activity_schulte_result_df, frameView);
-		TextView txtTitle, txtMessage;
-		Button btnOk, btnCancel;
-
-		txtTitle = dialoglayout.findViewById(R.id.txtTitle);
-		txtMessage = dialoglayout.findViewById(R.id.txtMessage);
-		btnCancel = dialoglayout.findViewById(R.id.btnCancel);
-		btnOk = dialoglayout.findViewById(R.id.btnOK);
-
-		txtTitle.setText(R.string.title_result);
-		txtMessage.setText(Html.fromHtml(s));
-
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getResources().getText(R.string.lbl_ok), new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialogInterface, int i) {
-				exercise.reset();
-				exToolbar.init();
-				mAdapter.notifyDataSetChanged();
-			}
-		});
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,getResources().getText(R.string.lbl_no), new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialogInterface, int i) {
-				//dialogInterface.dismiss();
-				finish();
-			}
-		});
-
-		alertDialog.show();
-	}*/
 
 	@Override
 	public void onConfigurationChanged(@NonNull Configuration newConfig) {
@@ -312,5 +198,81 @@ public class SchulteActivity02 extends AppCompatActivity {
 	protected void onSaveInstanceState(Bundle outState) {
 		// Save the values you need from your textview into "outState"-object
 		super.onSaveInstanceState(outState);
+	}
+
+	class ExToolbar {
+		 androidx.appcompat.widget.Toolbar toolbar;
+		 TextView tvExpectedTurn, tvCounter, tvMistakes;
+		 int hintExpectedTurn, hintCounter, hintMistakes;
+		 Chronometer chmTime;
+
+		public ExToolbar(Toolbar toolbar) {
+			this.toolbar = toolbar;
+			this.init();
+		}
+
+		private void init() {
+			hintCounter = hintMistakes = 0;
+			hintExpectedTurn = exercise.getExpectedValue();
+
+			tvExpectedTurn = toolbar.findViewById(R.id.tv_expected_turn);
+			tvExpectedTurn.setText("" + hintExpectedTurn);
+			tvCounter = toolbar.findViewById(R.id.tv_counter);
+			tvCounter.setText("0");
+			tvMistakes = toolbar.findViewById(R.id.tv_mistakes);
+			tvMistakes.setText("0");
+			chmTime = toolbar.findViewById(R.id.chm_time);
+			chmTime.setBase(SystemClock.elapsedRealtime());
+			chmTime.start();
+
+			if (runner.isHinted()) {
+				toolbar.setVisibility(View.VISIBLE);
+			} else {
+				toolbar.setVisibility(View.GONE);
+			}
+		}
+
+		private void refresh() {
+			tvExpectedTurn.setText("" + exercise.getExpectedValue());
+			tvCounter.setText("" + hintCounter);
+			tvMistakes.setText("" + hintMistakes);
+//			chmTime.setBase(SystemClock.elapsedRealtime());
+			chmTime.start();
+		}
+
+		public int getHintExpectedTurn() {
+			return hintExpectedTurn;
+		}
+
+		public void setHintExpectedTurn(int hintExpectedTurn) {
+			this.hintExpectedTurn = hintExpectedTurn;
+			tvExpectedTurn.setText("" + hintExpectedTurn);
+		}
+
+		public int getHintCounter() {
+			return hintCounter;
+		}
+
+		public void setHintCounter(int hintCounter) {
+			this.hintCounter = hintCounter;
+			tvCounter.setText("" + hintCounter);
+		}
+
+		public int getHintMistakes() {
+			return hintMistakes;
+		}
+
+		public void setHintMistakes(int hintMistakes) {
+			this.hintMistakes = hintMistakes;
+			tvMistakes.setText("" + hintMistakes);
+		}
+
+		public Chronometer getChmTime() {
+			return chmTime;
+		}
+
+		public void plusMistake() {
+			tvMistakes.setText("" + ++hintMistakes);
+		}
 	}
 }

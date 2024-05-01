@@ -1,4 +1,12 @@
-package org.nebobrod.schulteplus.fbservices;
+/*
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
+package org.nebobrod.schulteplus.ui;
 
 
 import static org.nebobrod.schulteplus.Utils.getRes;
@@ -8,10 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import org.nebobrod.schulteplus.Log;
+import org.nebobrod.schulteplus.common.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
@@ -26,17 +33,17 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.nebobrod.schulteplus.MainActivity;
+import org.nebobrod.schulteplus.data.fbservices.UserFbData;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.data.DataRepositories;
+import org.nebobrod.schulteplus.data.UserHelper;
 
 public class LoginActivity extends AppCompatActivity implements UserFbData.UserHelperCallback {
 	private static final String TAG = "Login";
@@ -54,9 +61,7 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 	LinearLayout llExtras;
 	TextView tvResendVerEmail, tvResetPassword, tvDeleteAccount;
 	ProgressBar progressBar;
-	ProgressDialog progressDialog;
-	boolean nameExists = true;
-	boolean signInPressed = false; // this is to prevent Instant Verification of FB
+	boolean signInPressed = false; // this is to prevent Instant Verification of FirebaseAuth
 
 
 	@Override
@@ -71,14 +76,8 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 		tvGoOff = findViewById(R.id.tv_go_off);
 		progressBar = findViewById(R.id.progress_bar);
 
-
 		fbAuth = FirebaseAuth.getInstance();
 		user = fbAuth.getCurrentUser();
-
-/*		if (user != null) {
-			isLoginAuthorized(user);
-			finish();
-		}*/
 
 		// Started with credentials?...
 		if (getIntent() != null & getIntent().hasExtra("email"))	{
@@ -118,8 +117,9 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 					.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
 						@Override
 						public void onSuccess(AuthResult authResult) {
-
-							isLoginAuthorized(authResult.getUser());
+							// check an account for complete registration (repo copies)
+							String email = authResult.getUser().getEmail();
+							UserFbData.isExist(LoginActivity.this::onCallback, email.replace(".", "_"));
 						}
 					}).addOnFailureListener(new OnFailureListener() {
 						@Override
@@ -209,14 +209,6 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 				llExtras.setVisibility(View.GONE);
 			}
 		});
-	}
-
-	private void isLoginAuthorized(FirebaseUser user) {
-		String strMessage, email = user.getEmail();
-
-		UserFbData.isExist(LoginActivity.this::onCallback, email.replace(".", "_"));
-
-//		finish();
 	}
 
 	@Override

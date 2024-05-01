@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) "Smart Rovers" 2024.
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
 <resources>
 	<string name="app_name">Внимание Шульте Плюс</string>
 	<string name="title_home">Что нового</string>
@@ -210,4 +218,13 @@
 	<string name="msg_delete_account_failed">Не удалось удалить учётную запись</string>
 	<string name="msg_password_reset_email_sent">Электронное письмо сброса пароля направлено!</string>
 	<string name="lbl_squared">Квадрат</string>
+	<string name="src_menu_about_url">https://telegra.ph/ATTENTION-SHULTE-PLUS-04-02</string>
+	<string name="msg_proceed_to_password_reentry">Выйти из системы и продолжить с подтверждением пароля?</string>
+	<string name="lbl_about_oss">Уведомления об открытом исходном коде</string>
+	<string name="lbl_about_license">Лицензионное соглашение</string>
+	<string name="str_about_license_html_source">licenses-ru.html</string>
+	<string name="lbl_about_user_data_policy">Политика пользовательских данных</string>
+	<string name="str_about_user_data_policy">user_data_policy-ru.html</string>
+	<string name="str_logoff_caution">Вы сможете выйти из системы и удалить аккаунт в главном меню</string>
+
 </resources>

@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
 package org.nebobrod.schulteplus;
 
 
@@ -22,6 +30,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -29,20 +38,26 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
+import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
+import org.nebobrod.schulteplus.common.Log;
 
 import java.lang.reflect.Field;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 
@@ -173,11 +188,11 @@ public final class Utils extends Application {
 
 	public static String duration (long millis) {
 		int s = (int) (millis / 1000);
-		return String.format("%d:%02d:%02d.%03d", s / 3600, (s % 3600) / 60, (s % 60), millis % 1000);
+		return String.format(Locale.ENGLISH, "%d:%02d:%02d.%03d", s / 3600, (s % 3600) / 60, (s % 60), millis % 1000);
 	}
 	public static String durationCut (long millis) {
 		int s = (int) (millis / 1000);
-		return String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
+		return String.format(Locale.ENGLISH, "%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
 	}
 
 
@@ -244,8 +259,7 @@ public final class Utils extends Application {
 	}
 
 	private static android.app.AlertDialog newProgressBar_AlertDialog(
-			Context context, String title, String message)
-	{
+			Context context, String title, String message) {
 		progressBar =
 				new ProgressBar(
 						context,
@@ -703,5 +717,21 @@ public final class Utils extends Application {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * Shows content of html-file
+	 * @param htmlSourceName string that keeps name of html-file for multi language purpose (like R.string.str_about_license_html_source)
+	 */
+	public static void displayHtmlAlertDialog(@StringRes int htmlSourceName) {
+		WebView view = (WebView) LayoutInflater.from(getAppContext()).inflate(R.layout.dialog_one_webview, null);
+		String fileName = getRes().getString(htmlSourceName);
+		view.loadUrl("file:///android_asset/" + fileName);
+
+		androidx.appcompat.app.AlertDialog alertDialog =
+				new AlertDialog.Builder(getAppContext(), androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert)
+				.setView(view)
+				.setPositiveButton(android.R.string.ok, null)
+				.show();
 	}
 }

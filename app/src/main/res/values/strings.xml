@@ -1,3 +1,11 @@
+<!--
+  ~ Copyright (c) "Smart Rovers" 2024.
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
 <resources>
 	<string name="app_name">Schulte Plus</string>
 	<string name="title_home">What\'s up</string>
@@ -127,7 +135,7 @@
 	<string name="str_number" translatable="false">number</string>
 	<string name="prf_menu_about_url_sum">Visit and get additional resources</string>
 	<string name="src_home_ipir_vk_url" translatable="false">https://vk.com/public216345855</string>
-	<string name="src_menu_about_url" translatable="false">https://tinyurl.com/2untjbs8</string>
+	<string name="src_menu_about_url" translatable="true">https://tinyurl.com/2untjbs8</string>
 	<string name="src_menu_about_email" translatable="false">"mailto:nebobzod@gmail.com"</string>
 	<string name="title_activity_schulte">Schulte+ Tables</string>
 	<string name="lbl_distraction">✓</string>
@@ -233,5 +241,12 @@
 	<string name="msg_delete_account_failed">Can not remove account</string>
 	<string name="msg_password_reset_email_sent">Password Reset Email Sent!</string>
 	<string name="lbl_squared">Squared</string>
+	<string name="msg_proceed_to_password_reentry">You\'ll be signed off and asked to reenter your password. Proceed?</string>
+	<string name="lbl_about_oss">Open source notices</string>
+	<string name="lbl_about_license">License</string>
+	<string name="str_about_license_html_source">licenses-en.html</string>
+	<string name="lbl_about_user_data_policy">User data policy</string>
+	<string name="str_about_user_data_policy">user_data_policy-en.html</string>
+	<string name="str_logoff_caution">You are able to log off and delete your account on main preferences menu</string>
 
 </resources>

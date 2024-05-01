@@ -1,15 +1,16 @@
 /*
- * Copyright (c) 2024. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package org.nebobrod.schulteplus.data;
 
-import org.nebobrod.schulteplus.Const;
-import org.nebobrod.schulteplus.fbservices.UserDbPreferences;
+import org.nebobrod.schulteplus.common.Const;
+import org.nebobrod.schulteplus.data.fbservices.FirestoreRepository;
+import org.nebobrod.schulteplus.data.fbservices.UserDbPreferences;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class DataRepositories implements DataRepository {
 
 	private static final OrmRepo ormLiteDataHandler = new OrmRepo();
 //	private static final FirestoreUtils firestoreDataHandler = new FirestoreUtils();
+	private static final FirestoreRepository<ExResult> exResultFsRepo = new FirestoreRepository<>(ExResult.class);
 
 
 	/**
@@ -48,7 +50,7 @@ public class DataRepositories implements DataRepository {
 	@Override
 	public void unpersonalise(String uid, String unpersonalisedName) {
 		// TODO: 25.03.2024 provide checks to all tables using  name & email
-		UserDbPreferences.getInstance()
+		UserDbPreferences.getInstance(uid);
 	}
 
 }

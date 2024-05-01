@@ -1,29 +1,28 @@
 /*
- * Copyright (c) 2023. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package org.nebobrod.schulteplus.data;
 
-import static org.nebobrod.schulteplus.Const.QUERY_COMMON_LIMIT;
+import static org.nebobrod.schulteplus.common.Const.QUERY_COMMON_LIMIT;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.data.DatabaseHelper.getHelper;
 
 import android.database.SQLException;
 import android.media.MediaPlayer;
-import org.nebobrod.schulteplus.Log;
+import org.nebobrod.schulteplus.common.Log;
 
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 
-import org.nebobrod.schulteplus.Const;
-import org.nebobrod.schulteplus.ExerciseRunner;
-import org.nebobrod.schulteplus.fbservices.AppExecutors;
+import org.nebobrod.schulteplus.common.Const;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
+import org.nebobrod.schulteplus.common.AppExecutors;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -34,11 +33,9 @@ import java.util.List;
 /** Provides common CRUD methods working on local SchultePlus SQLite DB by ORMLite
  **/
 public class OrmRepo implements DataRepository {
-//	private static final String TAG = getClass().getSimpleName();
 	private static final String TAG = OrmRepo.class.getSimpleName();
 
 	private static final AppExecutors appExecutors = new AppExecutors();
-
 	private final DatabaseHelper helper;
 
 	/**
@@ -136,6 +133,17 @@ public class OrmRepo implements DataRepository {
 			return null;
 		}
 
+	}
+
+	/**
+	 * Clean user personal data (after account removal)
+	 *
+	 * @param uid                user id
+	 * @param unpersonalisedName new dummy name for keep ExResults' history
+	 */
+	@Override
+	public void unpersonalise(String uid, String unpersonalisedName) {
+		; // not need for local data
 	}
 
 

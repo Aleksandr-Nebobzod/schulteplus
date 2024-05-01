@@ -1,7 +1,16 @@
+/*
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
 package org.nebobrod.schulteplus.ui;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,13 +30,12 @@ import androidx.preference.SeekBarPreference;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 
-import static org.nebobrod.schulteplus.Const.*;
-import org.nebobrod.schulteplus.ExerciseRunner;
+import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
+import static org.nebobrod.schulteplus.common.Const.*;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
 
-public class PopupSettingsFragment extends AppCompatDialogFragment
-{
-
+public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,12 +58,9 @@ public class PopupSettingsFragment extends AppCompatDialogFragment
 					.add(R.id.content, fragment)
 					.commit();
 		}
-
-
 	}
 
-	public static class PreferenceFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener
-	{
+	public static class PreferenceFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 		@Override
 		public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
 			SeekBarPreference sbPrfCurrentLevel;
@@ -76,7 +81,6 @@ public class PopupSettingsFragment extends AppCompatDialogFragment
 			}
 			sbPrfCurrentLevel.setMax(currentLevel);
 			sbPrfCurrentLevel.setTitle(R.string.prf_current_level_title );
-
 		}
 
 		@Override
@@ -86,10 +90,22 @@ public class PopupSettingsFragment extends AppCompatDialogFragment
 					FirebaseAuth.getInstance().signOut();
 					getActivity().finishAndRemoveTask();
 					return true; // makes not necessary of break;
+				case "prf_user_delete":
+					showSnackBarConfirmation(getActivity(), String.valueOf(R.string.msg_proceed_to_password_reentry), new View.OnClickListener() {
+						@Override
+						public void onClick(View view) {
+							// fill with extras to avoid retyping on Login
+							Intent intent = new Intent(getActivity(), LoginActivity.class);
+							intent.putExtra("email", ExerciseRunner.getUserHelper().getEmail());
+							FirebaseAuth.getInstance().signOut();
+							startActivity(intent);
+						}
+					});
+					getActivity().finishAndRemoveTask();
+					return true; // makes not necessary of break;
 				default:
 					return super.onPreferenceTreeClick(preference);
 			}
-
 		}
 
 		@Override
@@ -154,6 +170,5 @@ public class PopupSettingsFragment extends AppCompatDialogFragment
 			}
 		}
 	}
-
 }
 

@@ -1,10 +1,18 @@
-package org.nebobrod.schulteplus;
+/*
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
 
-import static org.nebobrod.schulteplus.Const.KEY_PRF_EX_B0;
-import static org.nebobrod.schulteplus.Const.KEY_PRF_EX_S0;
-import static org.nebobrod.schulteplus.Const.KEY_PRF_EX_S1;
-import static org.nebobrod.schulteplus.Const.KEY_PRF_EX_S2;
-import static org.nebobrod.schulteplus.Const.KEY_PRF_EX_S3;
+package org.nebobrod.schulteplus.common;
+
+import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_B0;
+import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S0;
+import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S1;
+import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S2;
+import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S3;
 import static org.nebobrod.schulteplus.Utils.bHtml;
 import static org.nebobrod.schulteplus.Utils.cHtml;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
@@ -24,15 +32,18 @@ import androidx.core.content.ContextCompat;
 
 import com.j256.ormlite.dao.Dao;
 
+import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.data.ClickGroup;
 import org.nebobrod.schulteplus.data.DatabaseHelper;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.ExResultBasics;
 import org.nebobrod.schulteplus.data.ExResultSchulte;
+import org.nebobrod.schulteplus.data.Turn;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -204,27 +215,27 @@ public class STable {
 
 		// time spent & average deviation
 		for (int i=1; i<=turns; i++) {
-			time += this.journal.get(i).time;
-			if (!this.journal.get(i).isCorrect) turnsMissed++;
+			time += this.journal.get(i).getTime();
+			if (!this.journal.get(i).isCorrect()) turnsMissed++;
 		}
 		// if there are no missed turns do not show it
 		if (turnsMissed != 0) {
 			results += pHtml() + getRes().getString(R.string.lbl_turns_missed) + ":" + tHtml()  + cHtml( bHtml(""+ turnsMissed));
 		}
-		results += pHtml() + getRes().getString(R.string.lbl_time) + ":" + tHtml()  + bHtml(String.format("%.2f", (time /1000F)))
+		results += pHtml() + getRes().getString(R.string.lbl_time) + ":" + tHtml()  + bHtml(String.format(Locale.ENGLISH, "%.2f", (time /1000F)))
 				+ " " + getRes().getString(R.string.lbl_mu_second);
 		average = (float) time / turns;
 
 		// root mean square deviation
 		for (int i=1; i<=turns; i++) {
-			rmsd += Math.pow ((average - this.journal.get(i).time), 2);
-//			Log.d(TAG, "getResults: RMSD " + i + "_" + String.format("%.2f", rmsd) );
+			rmsd += Math.pow ((average - this.journal.get(i).getTime()), 2);
+//			Log.d(TAG, "getResults: RMSD " + i + "_" + String.format(Locale.ENGLISH, "%.2f", rmsd) );
 		}
 		rmsd = (float) Math.sqrt((float) (rmsd / turns));
 
-		results +=  pHtml() + getRes().getString(R.string.lbl_average) + tHtml()  +  bHtml(String.format("%.2f", (average / 1000)))
+		results +=  pHtml() + getRes().getString(R.string.lbl_average) + tHtml()  +  bHtml(String.format(Locale.ENGLISH, "%.2f", (average / 1000)))
 				+ " " + getRes().getString(R.string.lbl_mu_second)
-				+ pHtml() + getRes().getString(R.string.lbl_sd) + tHtml() + bHtml(String.format("%.2f", (rmsd / 1000)))
+				+ pHtml() + getRes().getString(R.string.lbl_sd) + tHtml() + bHtml(String.format(Locale.ENGLISH, "%.2f", (rmsd / 1000)))
 				+ " " + getRes().getString(R.string.lbl_mu_second);
 		Log.d(TAG, "getResults: "+ this.journal);
 		Log.d(TAG, "getResults: " + results);
@@ -254,39 +265,6 @@ public class STable {
 		return isFinished;*/
 	}
 
-	/**
-	 * Subclass keeps what user sends as a turn
-	 */
-	class Turn {
-		Long timeStamp, time;
-		int expected;
-		int x, y, position;
-		boolean isCorrect;
-
-		public Turn(Long timeStamp, Long time, int expected, int x, int y, int position, boolean isCorrect) {
-			this.timeStamp = timeStamp;
-			this.time = time; // num of nanoseconds since previous turn
-			this.expected = expected;
-			this.x = x;
-			this.y = y;
-			this.position = position;
-			this.isCorrect = isCorrect;
-		}
-
-
-		@Override
-		public String toString() {
-			return "\nTurn{" +
-					"stamp=" + timeStamp +
-					", time=" + time +
-					", exp=" + expected +
-					", x=" + x +
-					", y=" + y +
-					", pos=" + position +
-					", isCorrect=" + isCorrect +
-					'}';
-		}
-	}
 	public List<Turn> journal = new ArrayList<>();
 
 	/**
@@ -306,7 +284,7 @@ public class STable {
 		}
 		this.journal.add(new Turn(
 				System.nanoTime(),
-				(System.nanoTime() - journal.get(attemptNumber - 1).timeStamp) / 1000000,
+				(System.nanoTime() - journal.get(attemptNumber - 1).getTimeStamp()) / 1000000,
 				(result ? expectedValue : expectedValue -1),
 				turnX, turnY, position, result));
 		writeTurn(this.journal.get(this.journal.size()-1));

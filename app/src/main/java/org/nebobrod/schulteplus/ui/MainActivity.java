@@ -1,4 +1,12 @@
-package org.nebobrod.schulteplus;
+/*
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
+package org.nebobrod.schulteplus.ui;
 
 
 import static org.nebobrod.schulteplus.Utils.getRes;
@@ -28,25 +36,18 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import org.nebobrod.schulteplus.common.ExerciseRunner;
+import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.databinding.ActivityMainBinding;
-import org.nebobrod.schulteplus.Log;
-//import org.nebobrod.schulteplus.ui.BasicsActivity;
-import org.nebobrod.schulteplus.fbservices.LoginActivity;
-import org.nebobrod.schulteplus.fbservices.SignupActivity;
-import org.nebobrod.schulteplus.fbservices.UserFbData;
-import org.nebobrod.schulteplus.fbservices.UserHelper;
-import org.nebobrod.schulteplus.ui.BasicsActivity;
-import org.nebobrod.schulteplus.ui.PopupSettingsFragment;
-import org.nebobrod.schulteplus.ui.SchulteActivity02;
+import org.nebobrod.schulteplus.data.UserHelper;
 
-public class MainActivity extends AppCompatActivity implements UserFbData.UserHelperCallback {
+public class MainActivity extends AppCompatActivity {
 	public static final String TAG = "MainActivity";
 //	private static MainActivity instance;
 
 	FirebaseAuth fbAuth;
 	FirebaseUser user = null;
 	UserHelper userHelper;
-	UserFbData userFbData;
 
 	private ActivityMainBinding binding;
 	ExerciseRunner runner;
@@ -75,8 +76,8 @@ public class MainActivity extends AppCompatActivity implements UserFbData.UserHe
 	{
 		switch (item.getItemId()) {
 			case R.id.menu_settings:
-				((AppCompatDialogFragment) Fragment.instantiate(this, PopupSettingsFragment.class.getName()))
-						.show(getSupportFragmentManager(), PopupSettingsFragment.class.getName());
+				((AppCompatDialogFragment) Fragment.instantiate(this, PrefsPopupSettingsFragment.class.getName()))
+						.show(getSupportFragmentManager(), PrefsPopupSettingsFragment.class.getName());
 				return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -208,17 +209,5 @@ public class MainActivity extends AppCompatActivity implements UserFbData.UserHe
 //		finishAndRemoveTask();
 //		finish();
 //		super.onBackPressed();
-	}
-
-	@Override
-	public void onCallback(@Nullable UserHelper fbDbUser) {
-		if (fbDbUser == null) {
-			showSnackBarConfirmation(this, getRes().getString(R.string.err_unknown) + " ", null);
-		} else {
-			// TODO: 19.11.2023 load profile from server
-
-			Toast.makeText(this, getRes().getString(R.string.txt_welcome_back)
-					+ ", " + fbDbUser.getName() + "!", Toast.LENGTH_SHORT).show();
-		}
 	}
 }

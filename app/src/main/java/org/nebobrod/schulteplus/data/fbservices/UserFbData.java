@@ -1,14 +1,12 @@
 /*
- * Copyright (c) 2023. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package org.nebobrod.schulteplus.fbservices;
-
-import org.nebobrod.schulteplus.Log;
+package org.nebobrod.schulteplus.data.fbservices;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +19,8 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
+import org.nebobrod.schulteplus.common.Log;
+import org.nebobrod.schulteplus.data.UserHelper;
 
 /**
  * Realtime Database's copy of FirebaseUser from Authentication db
@@ -50,10 +49,11 @@ public final class UserFbData {
 		fbReference = fbDatabase.getReference(DB_PATH);
 	}
 
-	void addUser(String email, String name, String password, String uid, String deviceId, boolean verified){
+	public void addUser(
+			String uid, String email, String name, String password, String deviceId, boolean verified){
 		init ();
 
-		userHelper = new UserHelper(email, name, password, uid, deviceId, verified);
+		userHelper = new UserHelper(uid, email, name, password, deviceId, verified);
 		// Firebase Database paths must not contain '.', '#', '$', '[', or ']', so email:
 		fbReference.child(email.replace(".", "_")).setValue(userHelper);
 	}
@@ -61,7 +61,13 @@ public final class UserFbData {
 	public interface NameFreeCallback {
 		void onCallback(boolean isFree);
 	}
-	public static void isNameFree(NameFreeCallback callback, String name) // To check anonymous sign in
+
+	/**
+	 * To check anonymous sign in
+	 * @param callback
+	 * @param name
+	 */
+	public static void isNameFree(NameFreeCallback callback, String name)
 	{
 //		FirebaseDatabase.getInstance().getReference().child("users").orderByChild("name").equalTo(name).addValueEventListener(new ValueEventListener() {
 		init();

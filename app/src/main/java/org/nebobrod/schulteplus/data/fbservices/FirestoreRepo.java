@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2024. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package org.nebobrod.schulteplus.fbservices;
+package org.nebobrod.schulteplus.data.fbservices;
 
 import static org.nebobrod.schulteplus.Utils.getRes;
 
@@ -14,7 +14,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.nebobrod.schulteplus.Const;
+import org.nebobrod.schulteplus.common.Const;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.data.DataRepository;
 
@@ -53,5 +53,17 @@ public class FirestoreRepo implements DataRepository {
 	@Override
 	public<T> List<T> getResultsLimited(Class<T> clazz, String exType) {
 		return null;
+	}
+
+	/**
+	 * Clean user personal data (after account removal)
+	 *
+	 * @param uid                user id
+	 * @param unpersonalisedName new dummy name for keep ExResults' history
+	 */
+	@Override
+	public void unpersonalise(String uid, String unpersonalisedName) {
+		// TODO: 06.04.2024 implement 
+		;
 	}
 }

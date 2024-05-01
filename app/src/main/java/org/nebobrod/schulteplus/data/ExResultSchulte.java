@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2024. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package org.nebobrod.schulteplus.data;
@@ -13,8 +13,8 @@ import com.j256.ormlite.table.DatabaseTable;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @DatabaseTable(tableName = "exresult")
@@ -27,7 +27,7 @@ public class ExResultSchulte  extends ExResult {
 //	float average;
 //	float rmsd; // Root-mean-square deviation as a sign of stability & rhythm in exercises
 
-	public ExResultSchulte(){};
+	public ExResultSchulte(){}
 	public ExResultSchulte(long time, int turns, int turnsMissed, float average, float rmsd, int levelOfEmotion, int levelOfEnergy, String note) {
 		super(time, levelOfEmotion, levelOfEnergy, note);
 		this.setTurns(turns);
@@ -42,10 +42,10 @@ public class ExResultSchulte  extends ExResult {
 		stringMap = super.toMap();
 
 		// Add pairs in accordance with Class
-		stringMap.put(Utils.getRes().getString(R.string.lbl_turns), turns() + "");
-		stringMap.put(Utils.getRes().getString(R.string.lbl_turns_missed), turnsMissed() + "");
-		stringMap.put(Utils.getRes().getString(R.string.lbl_average), String.format("%.2f", (average() /1000F)));
-		stringMap.put(Utils.getRes().getString(R.string.lbl_sd), String.format("%.2f", (rmsd() /1000F)));
+		stringMap.put(Utils.getRes().getString(R.string.lbl_turns), getTurns() + "");
+		stringMap.put(Utils.getRes().getString(R.string.lbl_turns_missed), getTurnsMissed() + "");
+		stringMap.put(Utils.getRes().getString(R.string.lbl_average), String.format(Locale.ENGLISH, "%.2f", (getAverage() /1000F)));
+		stringMap.put(Utils.getRes().getString(R.string.lbl_sd), String.format(Locale.ENGLISH,"%.2f", (getRmsd() /1000F)));
 
 		return stringMap;
 	}

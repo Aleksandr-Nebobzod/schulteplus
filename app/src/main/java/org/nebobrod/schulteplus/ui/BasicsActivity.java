@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
 package org.nebobrod.schulteplus.ui;
 
 import static org.nebobrod.schulteplus.Utils.getRes;
@@ -17,7 +25,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import org.nebobrod.schulteplus.Log;
+import org.nebobrod.schulteplus.common.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
@@ -26,13 +34,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import org.nebobrod.schulteplus.ExerciseRunner;
-import org.nebobrod.schulteplus.STable;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
+import org.nebobrod.schulteplus.common.STable;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.data.DataRepositories;
 import org.nebobrod.schulteplus.data.ExResult;
+import org.nebobrod.schulteplus.data.ExResultArrayAdapter;
 import org.nebobrod.schulteplus.databinding.ActivityBasicsBinding; // TODO: 01.10.2023 figure it out!
 import org.nebobrod.schulteplus.R;
+
+import java.util.Locale;
 
 /**
  * A full-screen activity that shows and hides the system UI (i.e.
@@ -205,7 +216,7 @@ public class BasicsActivity extends AppCompatActivity {
 				};
 
 				// Call Dialog
-				ExResult.feedbackDialog(BasicsActivity.this,
+				ExResultArrayAdapter.feedbackDialog(BasicsActivity.this,
 						resultLiveData,
 						getRes().getString(R.string.txt_continue_ex) + "?",
 						null,
@@ -226,7 +237,7 @@ public class BasicsActivity extends AppCompatActivity {
 				String s = String.valueOf(exercise.journal.size() - 1);
 				tvCounter.setText(s);
 				long time = (System.nanoTime()-timeStarted)/1000000000;
-				s = String.format("%1$d:%2$02d", time/60,time%60);
+				s = String.format(Locale.ENGLISH, "%1$d:%2$02d", time/60,time%60);
 				tvClock.setText(s);
 				resultLiveData.setValue(exercise.getResults());
 			}

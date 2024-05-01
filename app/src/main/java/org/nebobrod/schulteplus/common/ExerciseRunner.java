@@ -1,8 +1,16 @@
-package org.nebobrod.schulteplus;
+/*
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
+package org.nebobrod.schulteplus.common;
 
 import static org.nebobrod.schulteplus.Utils.*;
 
-import static org.nebobrod.schulteplus.Const.*;
+import static org.nebobrod.schulteplus.common.Const.*;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,10 +20,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
+import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.data.OrmRepo;
-import org.nebobrod.schulteplus.fbservices.AchievementsFbData;
-import org.nebobrod.schulteplus.fbservices.UserDbPreferences;
-import org.nebobrod.schulteplus.fbservices.UserHelper;
+import org.nebobrod.schulteplus.data.fbservices.AchievementsFbData;
+import org.nebobrod.schulteplus.data.fbservices.UserDbPreferences;
+import org.nebobrod.schulteplus.data.UserHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +89,7 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 
 	public static ExerciseRunner getInstance() 	{
 
-		if (userHelper == null) userHelper = new UserHelper("nebobzod@gmail.com", "all", "password", "TFKBiTdd7OVYUaplfzDHrXSCixr1", "65ed474536cced3a", false);
+		if (userHelper == null) userHelper = new UserHelper("TFKBiTdd7OVYUaplfzDHrXSCixr1", "nebobzod@gmail.com", "all", "password", "65ed474536cced3a", false);
 		return  getInstance(userHelper);
 	}
 	public static ExerciseRunner getInstance(@NonNull UserHelper userHelper) {
@@ -169,7 +179,7 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 			if (exercise.isFinished()) {
 				// Spent ms During the exercise
 				int events = exercise.journal.size()-1;
-				long spent = ((exercise.journal.get(events).timeStamp - exercise.journal.get(0).timeStamp)/1000000000) ;
+				long spent = ((exercise.journal.get(events).getTimeStamp() - exercise.journal.get(0).getTimeStamp())/1000000000) ;
 
 				// if an average turn duration exceeds 5 minutes
 				if ((spent / events) > 300) {
@@ -234,11 +244,11 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 			switch (flag) {
 				case SECONDS:
 					OrmRepo.achievePut( uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
-					if (sharedData) AchievementsFbData.achievePut( uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
+					if (sharedData) AchievementsFbData.achievePut(null, uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
 				break;
 				case HOURS:
 					OrmRepo.achievePut(  uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
-					if (sharedData) AchievementsFbData.achievePut( uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
+					if (sharedData) AchievementsFbData.achievePut(null, uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
 				break;
 			}
 		}

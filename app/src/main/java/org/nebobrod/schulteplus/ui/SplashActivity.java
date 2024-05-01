@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2023. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package org.nebobrod.schulteplus.ui;
@@ -17,7 +17,7 @@ import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import org.nebobrod.schulteplus.Log;
+import org.nebobrod.schulteplus.common.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
@@ -30,23 +30,21 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.nebobrod.schulteplus.ExerciseRunner;
-import org.nebobrod.schulteplus.MainActivity;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
-import org.nebobrod.schulteplus.fbservices.AppExecutors;
-import org.nebobrod.schulteplus.fbservices.NetworkConnectivity;
-import org.nebobrod.schulteplus.fbservices.SignupActivity;
-import org.nebobrod.schulteplus.fbservices.UserDbPreferences;
-import org.nebobrod.schulteplus.fbservices.UserFbData;
-import org.nebobrod.schulteplus.fbservices.UserHelper;
+import org.nebobrod.schulteplus.common.AppExecutors;
+import org.nebobrod.schulteplus.common.NetworkConnectivity;
+import org.nebobrod.schulteplus.data.fbservices.UserDbPreferences;
+import org.nebobrod.schulteplus.data.fbservices.UserFbData;
+import org.nebobrod.schulteplus.data.UserHelper;
 
 import java.util.Random;
 
 import javax.inject.Inject;
 
 /**
- * This class a bit obfuscated.
+ * This class is a bit obfuscated.
  * Checks the environment, shows animation and routes user to
  * Signup or Login or Main
  */
@@ -94,7 +92,6 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 	FirebaseAuth fbAuth;
 	FirebaseUser user = null;
 	UserHelper userHelper = null;
-	UserFbData userFbData = null;
 
 	final Handler splashMainHandler = new Handler();
 	Thread thread;
@@ -109,8 +106,10 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 					// no flag is needed
 					break;
 				case 4:		// Self-test
-					tvStatus.setText(Utils.getRes().getText(R.string.msg_app_consistency)+ "...");
+					tvStatus.setText(Utils.getRes().getText(R.string.msg_app_consistency) + "...");
 					Random rnd = new Random(System.currentTimeMillis());
+
+					// couple seconds later (not a real check yet)
 					splashMainHandler.postDelayed(this, rnd.nextInt(5 * (int) SPLASH_STEP_TIME));
 					iv01App.setImageTintList(true ? cstGreen : cstRed);
 					animThrob(iv01App,null);
@@ -129,7 +128,8 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 						iv03Verified.setImageTintList(cstRed);
 						tvStatus.setText(Utils.getRes().getText(R.string.str_empty));
 					} else {
-						String strMessage, email = user.getEmail();
+						String strMessage;
+						String email = user.getEmail();
 
 						UserFbData.getByUid(splashUfbCallback, user.getUid());
 //						UserFbData.isExist(splashUfbCallback, email.replace(".", "_"));
@@ -331,8 +331,7 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 	@Override
 	public void onCallback(UserHelper value) { }
 	// This strange construction allow avoid error: Non-static method cannot be referenced...
-	private final UserFbData.UserHelperCallback splashUfbCallback = new UserFbData.UserHelperCallback()
-	{
+	private final UserFbData.UserHelperCallback splashUfbCallback = new UserFbData.UserHelperCallback() {
 		@Override
 		public void onCallback(UserHelper value)
 		{

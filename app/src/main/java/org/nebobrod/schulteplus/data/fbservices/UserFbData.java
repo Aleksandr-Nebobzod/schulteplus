@@ -8,6 +8,7 @@
 
 package org.nebobrod.schulteplus.data.fbservices;
 
+/*
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -21,10 +22,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.data.UserHelper;
+*/
 
 /**
  * Realtime Database's copy of FirebaseUser from Authentication db
  * */
+/*
+
 public final class UserFbData {
 	private static final String TAG = "UserFbData";
 	public static final String DB_URL = "https://schulte-plus-default-rtdb.europe-west1.firebasedatabase.app";
@@ -62,11 +66,13 @@ public final class UserFbData {
 		void onCallback(boolean isFree);
 	}
 
-	/**
+	*/
+/**
 	 * To check anonymous sign in
 	 * @param callback
 	 * @param name
-	 */
+	 *//*
+
 	public static void isNameFree(NameFreeCallback callback, String name)
 	{
 //		FirebaseDatabase.getInstance().getReference().child("users").orderByChild("name").equalTo(name).addValueEventListener(new ValueEventListener() {
@@ -99,6 +105,7 @@ public final class UserFbData {
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				userHelper = dataSnapshot.getValue(UserHelper.class);
 
+*/
 /*				for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 					UserHelper user = snapshot.getValue(UserHelper.class);
 					assert user != null;
@@ -106,7 +113,8 @@ public final class UserFbData {
 					mContactsFromFirebase.add(contact_found);
 					userHelper = user;
 					System.out.println("Loaded " + userHelper.toString() + " user");
-				}*/
+				}*//*
+
 				myCallback.onCallback(userHelper);
 			}
 			@Override
@@ -138,6 +146,7 @@ public final class UserFbData {
 				Log.w(TAG + " Failed to read value.", error.toException().toString());
 			}
 		});
+*/
 /*
 		final String[] s = new String[1]; // AS just required: Cannot assign a value to final variable 's'
 		reference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -156,11 +165,13 @@ public final class UserFbData {
 
 			}
 		});
-		*/
+		*//*
+
 		return fbUser[0].getName();
 	}
 
 	String getPassword (String name) {
+*/
 /*		String passwordFromDB = snapshot.child(name).child("password").getValue(String.class);
 
 		if (!passwordFromDB.equals(name)) {
@@ -171,12 +182,14 @@ public final class UserFbData {
 		} else {
 			s[0] = (Utils.getRes().getString(R.string.msg_password_wrong));
 			Log.d(TAG, s[0]);
-		}*/
+		}*//*
+
 		return "";
 	};
 
 	public static boolean z_checkUserNamePass(String name, String password){
 		final boolean[] res = {false};
+*/
 /*		DatabaseReference reference = FirebaseDatabase.getInstance("https://schulte-plus-default-rtdb.europe-west1.firebasedatabase.app").getReference(DB_PATH);
 		reference.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -202,7 +215,8 @@ public final class UserFbData {
 			public void onCancelled(@NonNull DatabaseError error) {
 				Log.d("TAG", error.getMessage());
 			}
-		});*/
+		});*//*
+
 		return res[0];
 	}
 
@@ -271,6 +285,7 @@ public final class UserFbData {
 
 	public static void isNameExist(final UserHelperCallback myCallback, String name)
 	{
+*/
 /*		init();
 
 //		fbReference.orderByChild("name").equalTo(name).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -296,11 +311,13 @@ public final class UserFbData {
 			public void onCancelled(DatabaseError databaseError) {
 				throw databaseError.toException();
 			}
-		});*/
+		});*//*
+
 
 	}
 
 	public static void printQuery (final UserHelperCallback myCallback, String name) {
+*/
 /*
 		DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
 		DatabaseReference userRef = rootRef.child(DB_PATH);
@@ -327,9 +344,11 @@ public final class UserFbData {
 		};
 		userRef.addListenerForSingleValueEvent(eventListener);
 
-*/
+*//*
+
 	}
 
+*/
 /*	static ValueEventListener userListener = new ValueEventListener() {
 		@Override
 		public void onDataChange(DataSnapshot dataSnapshot) {
@@ -343,10 +362,12 @@ public final class UserFbData {
 			// Getting user failed, log a message
 			Log.w(TAG, "loadUser:onCancelled", databaseError.toException());
 		}
-	};*/
+	};*//*
+
 
 	// TODO: 30.10.2023 maybe -- this method is about to refresh users-data-structure
 	private static void refreshUserDb(){
+*/
 /*		final String DB_NEW_PATH = "users_" + timeStamp();
 		DatabaseReference fbReferenceNew = fbDatabase.getReference(DB_NEW_PATH);
 
@@ -361,8 +382,10 @@ public final class UserFbData {
 
 		//delete data from DB_PATH
 
-		// copy and enrich data to DB_PATH*/
+		// copy and enrich data to DB_PATH*//*
+
 
 	}
 
 }
+*/

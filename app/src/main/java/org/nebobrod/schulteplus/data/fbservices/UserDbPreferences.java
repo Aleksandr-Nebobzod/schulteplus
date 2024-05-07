@@ -66,6 +66,10 @@ public class UserDbPreferences {
 	private long tsUpdated;
 
 
+	public interface UserDbPrefCallback {
+		void onCallback(Map<String, Object> objectMap);
+	}
+
 	private UserDbPreferences(ExerciseRunner exerciseRunner) {
 		this.runner = exerciseRunner;
 
@@ -94,15 +98,16 @@ public class UserDbPreferences {
 		// TODO: 06.04.2024 make uid and email reasonable
 		if (instance == null) {
 			instance = new UserDbPreferences(ExerciseRunner.getInstance(
-					new UserHelper(newUid, "email", "name", "pass", "devId", false)));
+					new UserHelper(newUid, "email", "name", "pass", "devId", "uak", false)));
 		} else {
 			if (!runner.getUid().equals(newUid)) {
 				instance = new UserDbPreferences(ExerciseRunner.getInstance(
-						new UserHelper(newUid, "email", "name", "pass", "devId", false)));
+						new UserHelper(newUid, "email", "name", "pass", "devId", "uak", false)));
 			}
 		}
 		return instance;
 	}
+
 	public static UserDbPreferences getInstance(ExerciseRunner exerciseRunner) {
 		return (instance == null ? instance = new UserDbPreferences(exerciseRunner) : instance);
 	}
@@ -127,7 +132,6 @@ public class UserDbPreferences {
 			// [END firestore_setup_client_create]
 	}
 	*/
-
 
 	public  void save() {
 		objectMap = new HashMap<>();
@@ -164,78 +168,10 @@ public class UserDbPreferences {
 				Log.d(TAG, "save onFailure: " + e.getMessage());
 			}
 		});
-
-
-/* // ...one more strange attempt from doc: https://cloud.google.com/firestore/docs/samples/firestore-data-set-doc-upsert
-		// asynchronously update doc, create the document if missing
-		ApiFuture<WriteResult> writeResult =
-				db.collection("cities").document("BJ").set(objectMap, SetOptions.merge());
-// ...
-		System.out.println("Update time : " + writeResult.get().getUpdateTime());
-
-		docRef.set(objectMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-			@Override
-			public void onSuccess(Void unused) {
-
-			}
-		})*/
-
-/* That's generates autoId, unacceptable yet:
-		dbRef.add(objectMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-			@Override
-			public void onSuccess(DocumentReference documentReference) {
-				Log.d(TAG, "onSuccess: " + documentReference.toString());
-				runner.onCallback(objectMap);
-			}
-		}).addOnFailureListener(new OnFailureListener() {
-			@Override
-			public void onFailure(@NonNull Exception e) {
-				Log.d(TAG, "onFailure: " + e.getMessage());
-			}
-		});*/
 	}
 
 	public Map<String, Object> getObjectMap() {return objectMap;}
 
-	public interface UserDbPrefCallback {
-		void onCallback(Map<String, Object> objectMap);
-	}
-
-	/*
-	 * method applies to DB an updates the objectMap
-	 * @param cb callback
-	 * @param uid user id
-	 * @throws Exception -- was in docs <a href="https://github.com/googleapis/java-firestore/blob/9693c7b46dcb63b0348217ecb7c29b95ecd04191/samples/snippets/src/main/java/com/example/firestore/Quickstart.java#L47-L52">official</a>
-	 */
-	/*private void dbRead(UserDbPrefCallback cb, String uid) {
-		try {
-		init(DB_PROJECT_ID);
-		DocumentReference docRef = db.collection("cities").document("SF");
-			docRef.get().addOnCompleteListener(new OnCompleteListener<com.google.firebase.firestore.DocumentSnapshot>() {
-				@Override
-				public void onComplete(@NonNull Task<com.google.firebase.firestore.DocumentSnapshot> task) {
-					if (task.isSuccessful()) {
-						DocumentSnapshot document = task.getResult();
-						if (document.exists()) {
-							Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-							objectMap = document.getData();
-						} else {
-							Log.d(TAG, "No such document");
-							objectMap = null;
-						}
-					} else {
-						Log.d(TAG, "get failed with ", task.getException());
-						objectMap = null;
-					}
-					cb.onCallback(objectMap);
-				}
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-			Log.e(TAG, "dbRead Error: " + e.getLocalizedMessage().toString(), null);
-		}
-	}
-*/
 	// TODO: 26.03.2024 redundant? check & optimize
 	public ListenerRegistration getSubCollectionDocumentRef(@Nullable UserDbPrefCallback cb, String docKey) {
 		// [START firestore_data_reference_subcollection]

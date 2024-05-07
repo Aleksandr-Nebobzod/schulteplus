@@ -37,7 +37,7 @@ import android.widget.Toast;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.common.STable;
 import org.nebobrod.schulteplus.Utils;
-import org.nebobrod.schulteplus.data.DataRepositories;
+import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.ExResultArrayAdapter;
 import org.nebobrod.schulteplus.databinding.ActivityBasicsBinding; // TODO: 01.10.2023 figure it out!
@@ -51,7 +51,7 @@ import java.util.Locale;
  */
 public class BasicsActivity extends AppCompatActivity {
 	private static final String TAG = "BasicsActivity";
-	private DataRepositories repos;
+	private DataRepos repos;
 	private STable exercise;
 	private MutableLiveData<ExResult> resultLiveData = new MutableLiveData<>();
 
@@ -157,9 +157,9 @@ public class BasicsActivity extends AppCompatActivity {
 		binding = ActivityBasicsBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
-		repos = new DataRepositories();
-		exercise = new STable(1, 1);
+		repos = new DataRepos();
 		ExerciseRunner.getInstance();
+		exercise = new STable(1, 1);
 		ExerciseRunner.savePreferences(exercise);
 		resultLiveData.setValue(exercise.getResults());
 
@@ -210,7 +210,7 @@ public class BasicsActivity extends AppCompatActivity {
 					public void onClick(DialogInterface dialogInterface, int i) {
 						exercise.setFinished(true);
 						ExerciseRunner.savePreferences(exercise);
-						repos.putResult(resultLiveData.getValue());
+						repos.create(resultLiveData.getValue());
 						finish();
 					}
 				};
@@ -375,7 +375,7 @@ public class BasicsActivity extends AppCompatActivity {
 
 		btExit.performClick();
 
-//		super.onBackPressed();
+		super.onBackPressed();
 	}
 
 	private void toggle() {

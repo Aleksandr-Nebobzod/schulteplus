@@ -8,6 +8,8 @@
 
 package org.nebobrod.schulteplus.data;
 
+import static org.nebobrod.schulteplus.Utils.timeStampU;
+
 import com.j256.ormlite.table.DatabaseTable;
 
 import org.nebobrod.schulteplus.R;
@@ -23,8 +25,14 @@ public class ExResultBasics extends ExResult{
 
 	public ExResultBasics(){}
 
-	public ExResultBasics(long numValue, int events, int levelOfEmotion, int levelOfEnergy, String note) {
-		super(numValue, levelOfEmotion, levelOfEnergy, note);
+	public ExResultBasics(long seed, long numValue, int events, int levelOfEmotion, int levelOfEnergy, String note) {
+		super(seed, numValue, levelOfEmotion, levelOfEnergy, note);
+		this.setTurns(events);
+	}
+
+	/** minimum update */
+	public void update(long numValue, int events, int levelOfEmotion, int levelOfEnergy, String note) {
+		super.update(numValue, levelOfEmotion, levelOfEnergy, note);
 		this.setTurns(events);
 	}
 

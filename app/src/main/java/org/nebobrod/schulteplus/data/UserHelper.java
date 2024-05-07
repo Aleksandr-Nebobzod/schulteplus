@@ -11,8 +11,7 @@ package org.nebobrod.schulteplus.data;
 import static org.nebobrod.schulteplus.Utils.timeStampU;
 import static org.nebobrod.schulteplus.Utils.timeStampFormattedLocal;
 
-import org.nebobrod.schulteplus.data.fbservices.Identifiable;
-
+import com.google.firebase.firestore.Exclude;
 import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.field.DatabaseField;
 
@@ -29,7 +28,6 @@ public class UserHelper implements Serializable, Identifiable<String> {
 
 	private static final long serialVersionUID = -7874823823497497003L; // after ExResult
 	public static final String DATE_FIELD_NAME = "dateCreated";
-	public static final String TIMESTAMP_FIELD_NAME = "tsUpdated";
 
 	@DatabaseField
 	private String uid;
@@ -41,6 +39,9 @@ public class UserHelper implements Serializable, Identifiable<String> {
 	private String password;
 	@DatabaseField
 	private String deviceId;
+	/** uak (user app key) -- value which is unique for 1 active user record on the device (after delete user it is inactive, after the same user sign-on the same device this value regenerated)	 */
+	@DatabaseField
+	private String uak;
 	@DatabaseField
 	private boolean verified=false;
 	@DatabaseField
@@ -50,7 +51,7 @@ public class UserHelper implements Serializable, Identifiable<String> {
 	@DatabaseField
 	private int level;
 	@DatabaseField
-	private long tsUpdated;
+	private long timeStamp;
 	@DatabaseField
 	private String dateCreated;
 	@DatabaseField
@@ -58,19 +59,20 @@ public class UserHelper implements Serializable, Identifiable<String> {
 
 	public UserHelper() {	}
 
-	public UserHelper(String uid, String email, String name, String password, String deviceId, boolean verified) {
+	public UserHelper(String uid, String email, String name, String password, String deviceId, String uak, boolean verified) {
 		this.uid = uid;
 		this.name = name;
 		this.email = email;
 		this.password = String.valueOf(password.hashCode()+password.hashCode());
 		this.deviceId = deviceId;
+		this.uak = uak;
 		this.verified = verified;
 		this.psyCoins = 0;
 		this.hours = 0;
 		this.level = 1;
-		this.tsUpdated = timeStampU();
+		this.timeStamp = timeStampU();
 
-		this.dateCreated = timeStampFormattedLocal(this.tsUpdated);
+		this.dateCreated = timeStampFormattedLocal(this.timeStamp);
 		this.dateChanged = this.dateCreated;
 	}
 
@@ -112,6 +114,14 @@ public class UserHelper implements Serializable, Identifiable<String> {
 	public String getDeviceId() {		return deviceId;	}
 
 	public void setDeviceId(String deviceId) {		this.deviceId = deviceId;	}
+
+	public String getUak() {
+		return uak;
+	}
+
+	public void setUak(String uak) {
+		this.uak = uak;
+	}
 
 	public String getDateCreated() {		return dateCreated;	}
 
@@ -155,12 +165,12 @@ public class UserHelper implements Serializable, Identifiable<String> {
 		this.level = level;
 	}
 
-	public long getTsUpdated() {
-		return tsUpdated;
+	public long getTimeStamp() {
+		return timeStamp;
 	}
 
-	public void setTsUpdated(long tsUpdated) {
-		this.tsUpdated = tsUpdated;
+	public void setTimeStamp(long timeStamp) {
+		this.timeStamp = timeStamp;
 	}
 
 	@Override
@@ -180,6 +190,7 @@ public class UserHelper implements Serializable, Identifiable<String> {
 				'}';
 	}
 
+	@Exclude
 	@Override
 	public String getEntityKey() {
 		return String.valueOf(uid);

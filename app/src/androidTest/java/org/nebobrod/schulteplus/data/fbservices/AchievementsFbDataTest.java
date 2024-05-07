@@ -7,6 +7,7 @@
  */
 
 package org.nebobrod.schulteplus.data.fbservices;
+/*
 
 import static org.junit.Assert.*;
 
@@ -58,9 +59,11 @@ public class AchievementsFbDataTest {
 					public void onComplete(@NonNull Task<AuthResult> task) {
 						if (task.isSuccessful()) {
 							authResult = task.getResult();
+*/
 /*							GetTokenResult token = authResult.getUser().getIdToken(true).getResult();
 							// Сохранение токена для дальнейшего использования
-							authToken = token.getToken();*/
+							authToken = token.getToken();*//*
+
 							Log.d(TAG, "onComplete authToken: " + authToken);
 							// как подождать и только отсюда начать следующее тестирование?
 						} else {
@@ -146,4 +149,4 @@ public class AchievementsFbDataTest {
 			e.printStackTrace();
 		}
 	}
-}
+}*/

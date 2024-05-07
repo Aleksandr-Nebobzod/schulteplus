@@ -1,5 +1,3 @@
-
-
 /*
  * Copyright (c) 2024  "Smart Rovers"
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
@@ -10,46 +8,56 @@
 
 package org.nebobrod.schulteplus.data.fbservices;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
+import android.os.Looper;
+
 import org.nebobrod.schulteplus.common.AppExecutors;
 import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.data.Achievement;
-import org.nebobrod.schulteplus.data.DataRepositories;
+import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
+import org.nebobrod.schulteplus.data.Identifiable;
+import org.nebobrod.schulteplus.data.DataRepository;
 import org.nebobrod.schulteplus.data.Turn;
 import org.nebobrod.schulteplus.data.UserHelper;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Exclude;
 import com.j256.ormlite.table.DatabaseTable;
 
-import junit.framework.TestCase;
+import org.mockito.Mockito;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 
 
 public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 	public static final String TAG = "FirestoreRepositoryTest";
 
 
-	Repository repository;
+	DataRepository repository;
 //	Repository<? extends Identifiable<String>, String> repository;
 //	repository = new FirestoreRepository<Achievement>(Achievement.class);
 
-	FirestoreRepository repoExResult;
+	DataFirestoreRepo fsRepo;
 
 
 
@@ -80,7 +88,7 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 		TestUtils.performAuthorization();
 
 		// starting init of repo (with "testCollection" from TestEntity)
-		repository = new FirestoreRepository<>(FirestoreRepositoryTest.TestEntity.class);
+		repository = new DataFirestoreRepo<>(FirestoreRepositoryTest.TestEntity.class);
 	}
 
 /*	@Test
@@ -122,24 +130,24 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 	@Test
 	public void testPrintFields(){
 		// Testing object
-		ExResult exResult = new ExResult(3L, 3, 3, "3 means 3x3");
+		ExResult exResult = new ExResult(3L, 3L, 3, 3, "3 means 3x3");
 		Log.d(TAG, exResult.toTabSeparatedString());
 	}
 
 	@Test
 	public void testCreateExResult(){
-		DataRepositories repos;
-		repos = new DataRepositories();
+		DataRepos repos;
+		repos = new DataRepos();
 
 		// Создаем объект ExResult
-		ExResult exResult = new ExResult(3L, 3, 3, "3 means 3x3");
-		repos.putResult(exResult);
+		ExResult exResult = new ExResult(3L,3L, 3, 3, "3 means 3x3");
+		repos.create(exResult);
 		android.util.Log.d(TAG, "testCreateExResult: exResult" + exResult);
 
-		repoExResult = new FirestoreRepository<>(ExResult.class);
+		fsRepo = new DataFirestoreRepo<>(ExResult.class);
 
 		// Пытаемся записать объект в Firestore
-		Task<Void> createTask = repoExResult.create(exResult)
+		Task<Void> createTask = fsRepo.create(exResult)
 				.addOnSuccessListener(new OnSuccessListener<Void>() {
 					@Override
 					public void onSuccess(Void aVoid) {
@@ -151,7 +159,6 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 				.addOnFailureListener(new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
-						// Произошла ошибка при записи объекта в Firestore
 						Log.e(TAG, "Error writing ExResult to Firestore", e);
 						Assert.assertTrue(false); // Помечаем тест как проваленный
 					}
@@ -164,7 +171,7 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 	public void testExistsCallback(){
 
 		new AppExecutors().getNetworkIO().execute(() -> {
-			repoExResult.exists("001", new Repository.RepoCallback<Boolean>() {
+			fsRepo.exists("001", new DataRepository.RepoCallback<Boolean>() {
 				@Override
 				public void onSuccess(Boolean result) {
 					Assert.assertTrue(result);                    // Here we check is our value equal true
@@ -184,7 +191,7 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 		CompletableFuture<Boolean> future = new CompletableFuture<>();
 
 		// Проверяем существование сущности в базе данных по уникальному ключу
-		repoExResult.exists("2").addOnSuccessListener(new OnSuccessListener<Boolean>() {
+		fsRepo.exists("2").addOnSuccessListener(new OnSuccessListener<Boolean>() {
 			@Override
 			public void onSuccess(Boolean result) {
 				// Обработка успешной проверки существования сущности
@@ -203,18 +210,18 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 
 	@Test
 	public void testCreateAchievement(){
-		DataRepositories repos;
-		repos = new DataRepositories();
+		DataRepos repos;
+		repos = new DataRepos();
 
-		Achievement achievement = new Achievement().setAchievement("2", "n2", 1711556006L, "05.05.05", "r2", "v2", "m2");
-		repos.putResult(achievement);
+		Achievement achievement = new Achievement().setAchievement("uid2", "uak2", "n2", 1711556006L, "05.05.05", "r2", "v2", "m2");
+		repos.create(achievement);
 		android.util.Log.d(TAG, "testCreateAchievement: achievement" + achievement);
 
 		Identifiable<String> ach;
 
 		ach =  achievement;
 
-		this.repository = new FirestoreRepository<>(achievement.getClass());
+		this.repository = new DataFirestoreRepo<>(achievement.getClass());
 
 		// Try to put a data-object into Firestore
 		Task<Void> createTask = repository.create(ach)
@@ -240,16 +247,42 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 	}
 
 	@Test
+	public void testGetListAchievement() {
+		new DataFirestoreRepo<>(Achievement.class).getListLimited(new DataRepository.RepoCallback<List<Achievement>>() {
+			@Override
+			public void onSuccess(List<Achievement> result) {
+				android.util.Log.d(TAG, "onSuccess testGetListAchievement: " + result);
+			}
+
+			@Override
+			public void onError(Exception e) {
+				android.util.Log.e(TAG, "onError testGetListAchievement: " + e.getMessage(), e);
+			}
+		});
+	}
+
+	@Test
 	public void testCreateTurn() {
 
-		Identifiable<String> data = new Turn(1711556007L, 10L, 1, 1, 1, 1, false);
+		// Provide mocking id from parent-object to ORMLite dependant objects
+		ExResult exResult = new ExResult(3L, 3L, 3, 3, "3 means 3x3");
+
+		DataRepos mockRepos = Mockito.mock(DataRepos.class);
+
+		mockRepos.create(exResult);
+		exResult.setId(-1000001); //like if it generated id
+
+		Identifiable<String> data = new Turn(exResult, 1711556007L, 10L, 1, 1, 1, 1, false);
+
+
+		((Turn)data).setExResult(exResult);
 
 		// Provide an id for ORMLite dependant objects
-		DataRepositories repos = new DataRepositories();
-		repos.putResult(data);
+		DataRepos repos = new DataRepos();
+		repos.create(data);
 		android.util.Log.d(TAG, "testCreateTurn: data " + data);
 
-		this.repository = new FirestoreRepository<>(data.getClass());
+		this.repository = new DataFirestoreRepo<>(data.getClass());
 
 		// Try to put a data-object into Firestore
 		Task<Void> createTask = repository.create(data)
@@ -264,7 +297,6 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 				.addOnFailureListener(new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
-						// Произошла ошибка при записи объекта в Firestore
 						Log.e(TAG, "Error writing Data-Object to Firestore", e);
 						Assert.assertTrue(false); // Помечаем тест как проваленный
 					}
@@ -277,14 +309,16 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 	@Test
 	public void testCreateUserHelper(){
 
-		Identifiable<String> data = new UserHelper("TFKBiTdd7OVYUaplfzDHrXSCixr1", "nebobzod@gmail.com", "all", "password", "65ed474536cced3a", false);
+		Identifiable<String> data = new UserHelper("TFKBiTdd7OVYUaplfzDHrXSCixr1", "nebobzod@gmail.com", "all", "password", "65ed474536cced3a", "65ed474536cced3a", false);
 
 		// Provide an id for ORMLite dependant objects
-		DataRepositories repos = new DataRepositories();
-		repos.putResult(data);
+		DataRepos repos = new DataRepos();
+		repos.create(data);
+
+
 		android.util.Log.d(TAG, "testCreateIdentifiable: data " + data);
 
-		this.repository = new FirestoreRepository<>(data.getClass());
+		this.repository = new DataFirestoreRepo<>(data.getClass());
 
 		// Try to put a data-object into Firestore
 		Task<Void> createTask = repository.create(data)
@@ -310,20 +344,114 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 	}
 
 	@Test
-	public void createVariousObjects() {
-		Achievement achievement = new Achievement().setAchievement("2", "n2", 1711556006L, "05.05.05", "r2", "v2", "m2");
-//		testCreateIdentifiable(achievement);
+	public void testGetListLimited() throws ExecutionException, InterruptedException {
+		List<Identifiable<String>> data = new ArrayList<>();
+		CompletableFuture<List> future = new CompletableFuture<>();
 
+		this.fsRepo = new DataFirestoreRepo<>(Turn.class);
 
-		Assert.assertTrue("All objects successfully written to Firestore", true);
+		fsRepo.getListLimited(new DataRepository.RepoCallback<List>() {
+			@Override
+			public void onSuccess(List result) {
+				future.complete(result);
+			}
+
+			@Override
+			public void onError(Exception e) {
+				android.util.Log.w(TAG, "onError in: getListLimited", e);
+				future.completeExceptionally(e);
+			}
+		});
+
+		data = future.get();
+		assertFalse(data.isEmpty());
 	}
-/*		UserHelper userHelper = new UserHelper("TFKBiTdd7OVYUaplfzDHrXSCixr1", "nebobzod@gmail.com", "all", "password", "65ed474536cced3a", false);
-		testCreateIdentifiableInFirestore(userHelper);
 
-		ExResult exResult = new ExResult(3L, 3, 3, "3 means 3x3");
-		testCreateIdentifiableInFirestore(exResult);
+	@Test
+	public void z_testReadBackGround() {
+		this.fsRepo = new DataFirestoreRepo<>(Turn.class);
+		final Task<TEntity> task;
 
-		ExResultSchulte exResultSchulte = new ExResultSchulte(0L, 3, 3, 3F, 0.3F, 3, 3, "note3");
+		Executor bgRunner = new AppExecutors().getNetworkIO();
+		task = fsRepo.read("10").addOnSuccessListener(bgRunner, new OnSuccessListener() {
+			@Override
+			public void onSuccess(Object o) {
+				android.util.Log.d(TAG, "onSuccess: " + o);
+			}
+		});
 
-		testCreateIdentifiableInFirestore(exResultSchulte);*/
+		bgRunner.execute(new Runnable() {
+			@Override
+			public void run() {
+				// wait for finishing the task and
+				try {
+					Tasks.await(task);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		// Confirm success
+		assertTrue(task.isSuccessful());
+	}
+
+	@Test
+	public void testReadBackGround() {
+		this.fsRepo = new DataFirestoreRepo<>(Turn.class);
+		Log.d(TAG,  " test starts at: main " + Looper.getMainLooper().isCurrentThread() + Thread.currentThread());
+
+		final Task<TEntity> task = fsRepo.read("110").addOnSuccessListener( new OnSuccessListener() {
+			@Override
+			public void onSuccess(Object o) {
+				Log.d(TAG," OnSuccessListener Object o: " + o.toString());
+				Log.d(TAG," OnSuccessListener main " + Looper.getMainLooper().isCurrentThread() + Thread.currentThread());
+			}
+		});
+
+		// wait for finishing the task and
+		try {
+			Tasks.await(task);
+			Log.d(TAG,  " after Wait: main " + Looper.getMainLooper().isCurrentThread() + Thread.currentThread().toString());
+			assertNotNull("Must be not null", task.getResult().getEntityKey());
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+
+/*		final Task<TEntity> task = fsRepo.read("110").continueWithTask(bgRunner, new Continuation<DocumentSnapshot, TEntity>() {
+			@Override
+			public TEntity then(@NonNull Task task) throws Exception {
+				android.util.Log.d(TAG, "then: " + task.getResult());;
+				return null;
+			}
+		});*/ // Continuation doesn't work (exception)
+
+/*		final Task<TEntity> task = fsRepo.read("110").addOnCompleteListener(bgRunner, new OnCompleteListener<TEntity>() {
+			@Override
+			public void onComplete(@NonNull Task<TEntity> task) {
+				if (task.isSuccessful()) {
+					TEntity result = task.getResult();
+					new AppExecutors().mainThread().execute(new Runnable() {
+						@Override
+						public void run() {
+							android.util.Log.d(TAG, Thread.currentThread() + " onSuccess: " + result);
+						}
+					});
+
+
+					// Confirm success
+					assertTrue(true);
+				} else {
+					Exception e = task.getException();
+					android.util.Log.e(TAG, "Error reading document", e);
+					// Confirm failure
+					assertFalse(true);
+				}
+			}
+		});*/ // OnComplete doesn't work (lies)
+	}
 }

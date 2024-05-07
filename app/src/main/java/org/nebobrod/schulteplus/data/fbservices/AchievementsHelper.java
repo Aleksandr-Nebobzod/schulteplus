@@ -8,6 +8,7 @@
 
 package org.nebobrod.schulteplus.data.fbservices;
 
+/*
 
 import android.text.Html;
 import android.text.Spanned;
@@ -121,3 +122,4 @@ public class AchievementsHelper {
 	}
 
 }
+*/

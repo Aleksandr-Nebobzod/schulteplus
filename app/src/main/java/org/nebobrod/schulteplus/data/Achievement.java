@@ -13,7 +13,6 @@ import static org.nebobrod.schulteplus.Utils.iHtml;
 import static org.nebobrod.schulteplus.Utils.pHtml;
 
 import org.nebobrod.schulteplus.Utils;
-import org.nebobrod.schulteplus.data.fbservices.Identifiable;
 
 import android.text.Html;
 import android.text.Spanned;
@@ -36,12 +35,14 @@ public class Achievement implements Serializable, Identifiable<String> {
 
 	private static final long serialVersionUID = -7874823823497497001L;
 	public static final String DATE_FIELD_NAME = "dateTime";
-	public static final String TIMESTAMP_FIELD_NAME = "timeStamp";
 
 	static Achievement achievement;
 
 	@DatabaseField(generatedId = true)
 	private Integer id;
+
+	@DatabaseField
+	private String uak;
 
 	@DatabaseField
 	private String uid;
@@ -62,7 +63,7 @@ public class Achievement implements Serializable, Identifiable<String> {
 	private String recordValue;
 
 	/**
-	 * for example: 1st achievement of day, one done 3 at once, selfrecords
+	 * for example: 1st achievement of day, one done 3 at once, self-records
 	 * (if I got today most point than the best day before, or for week), duels wins, etc...
 	 */
 	@DatabaseField
@@ -74,6 +75,14 @@ public class Achievement implements Serializable, Identifiable<String> {
 
 	public Integer getId() {
 		return id;
+	}
+
+	public String getUak() {
+		return uak;
+	}
+
+	public void setUak(String uak) {
+		this.uak = uak;
 	}
 
 	public String getUid() {return uid;}
@@ -128,6 +137,7 @@ public class Achievement implements Serializable, Identifiable<String> {
 	public String toTabSeparatedString() {
 		return TAG +
 				"\t" + id +
+				"\t" + uak +
 				"\t" + dateTime +
 				"\t" + name +
 				"\t" + recordText +
@@ -139,8 +149,9 @@ public class Achievement implements Serializable, Identifiable<String> {
 				+ "|\t." + "\t| " + bHtml(this.getRecordValue()) + "\t " + this.getRecordText() + "|");
 	}
 
-	public  Achievement setAchievement(String uid, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark){
+	public  Achievement setAchievement(String uid, String uak, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark){
 		this.uid = uid;
+		this.uak = uak;
 		this.name = name;
 		this.timeStamp = timeStamp;
 		this.dateTime = dateTime;
@@ -151,6 +162,7 @@ public class Achievement implements Serializable, Identifiable<String> {
 		return this;
 	}
 
+	@Exclude
 	@Override
 	public String getEntityKey() {
 		return String.valueOf(id);

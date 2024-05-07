@@ -11,6 +11,8 @@ package org.nebobrod.schulteplus.data.fbservices;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -124,4 +126,14 @@ public class TestUtils {
 		return object;
 	}
 
+	public void sendLogMessage(final String message) {
+		Handler handler = new Handler(Looper.getMainLooper());
+
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+				android.util.Log.d(TAG, message);
+			}
+		});
+	}
 }

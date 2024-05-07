@@ -10,13 +10,31 @@ package org.nebobrod.schulteplus.ui.dashboard;
 
 import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
-import static org.nebobrod.schulteplus.data.ExResult.TIMESTAMP_FIELD_NAME;
+import static org.nebobrod.schulteplus.common.Const.TIMESTAMP_FIELD_NAME;
 
+import org.nebobrod.schulteplus.common.ExerciseRunner;
+import org.nebobrod.schulteplus.common.Log;
+import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.data.Achievement;
+import org.nebobrod.schulteplus.data.AchievementArrayAdapter;
+import org.nebobrod.schulteplus.data.ExResult;
+import org.nebobrod.schulteplus.data.ExResultArrayAdapter;
+import org.nebobrod.schulteplus.data.DataOrmRepo;
+import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
+import org.nebobrod.schulteplus.data.DataRepository;
+import org.nebobrod.schulteplus.databinding.FragmentDashboardBinding;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,29 +49,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
-import org.nebobrod.schulteplus.common.ExerciseRunner;
-import org.nebobrod.schulteplus.common.Log;
-import org.nebobrod.schulteplus.R;
-import org.nebobrod.schulteplus.Utils;
-import org.nebobrod.schulteplus.data.Achievement;
-import org.nebobrod.schulteplus.data.AchievementArrayAdapter;
-import org.nebobrod.schulteplus.data.ExResult;
-import org.nebobrod.schulteplus.data.ExResultArrayAdapter;
-import org.nebobrod.schulteplus.data.OrmRepo;
-import org.nebobrod.schulteplus.databinding.FragmentDashboardBinding;
-import org.nebobrod.schulteplus.data.fbservices.AchievementsFbData;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardFragment extends Fragment implements AchievementsFbData.DashboardCallback, OrmRepo.OrmGetCallback {
+public class DashboardFragment extends Fragment implements DataOrmRepo.OrmGetCallback {
 	private static final String TAG = "Dashboard";
 
 	DashboardViewModel dashboardViewModel;
@@ -128,7 +129,7 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 		list = new ArrayList<>();
 		adapter = new ArrayAdapter<>(this.getActivity(), R.layout.item_one_textview, list);
 		elvChart.setAdapter(adapter);
-		AchievementsFbData.basicQueryValueListener(DashboardFragment.this::onCallback, list);
+		new DataFirestoreRepo<>(Achievement.class).getListLimited(onCallback);
 		adapter.notifyDataSetChanged();
 
 //		ExResult adapter
@@ -249,14 +250,14 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 			switch(checkedRadioButtonId)
 			{
 				case R.id.rb_local:
-					OrmRepo.achieveGet25(DashboardFragment.this::onComplete);
+					DataOrmRepo.achieveGet25(DashboardFragment.this::onComplete);
 					arrayAdapter = new AchievementArrayAdapter(getAppContext(), (List<Achievement>) Utils.markupListAsGroupedBy(listAchievement, TIMESTAMP_FIELD_NAME));
 					elvChart.setAdapter(arrayAdapter);
 					break;
 				case R.id.rb_www:
 					adapter = new ArrayAdapter<>(getAppContext(), R.layout.item_one_textview, list);
 					elvChart.setAdapter(adapter);
-					AchievementsFbData.basicQueryValueListener(DashboardFragment.this::onCallback, list);
+					new DataFirestoreRepo<>(Achievement.class).getListLimited(onCallback);
 					break;
 				default:
 					// do nothing
@@ -341,13 +342,25 @@ public class DashboardFragment extends Fragment implements AchievementsFbData.Da
 	}
 
 	// Backend's Achievements
-	@Override
-	public void onCallback(ArrayList<Spanned> lst) {
+	public DataRepository.RepoCallback<List<Achievement>> onCallback = new DataRepository.RepoCallback<List<Achievement>>() {
+		@Override
+		public void onSuccess(List<Achievement> result) {
+			list.clear();
+			if (result != null) {
+				for (Object o : result) {
+					list.add(Html.fromHtml(o.toString()));
+				}
+			}
+			adapter.notifyDataSetChanged();
+		}
 
-		list = (ArrayList<Spanned>) lst.clone();
-		adapter.notifyDataSetChanged();
-//		Html.fromHtml("");
-	}
+		@Override
+		public void onError(Exception e) {
+			list.clear();
+			list.add(Html.fromHtml(e.getLocalizedMessage()));
+			adapter.notifyDataSetChanged();
+		}
+	};
 
 	// Local Achievements
 	@Override

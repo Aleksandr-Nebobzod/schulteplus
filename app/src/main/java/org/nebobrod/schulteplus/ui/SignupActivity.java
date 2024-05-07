@@ -28,14 +28,14 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import org.nebobrod.schulteplus.common.ExerciseRunner;
-import org.nebobrod.schulteplus.data.fbservices.UserFbData;
+import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
+import org.nebobrod.schulteplus.data.DataRepository;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.data.UserHelper;
@@ -45,7 +45,7 @@ import static org.nebobrod.schulteplus.common.Const.NAME_REG_EXP;
 import java.util.Arrays;
 import java.util.List;
 
-public class SignupActivity extends AppCompatActivity implements UserFbData.UserHelperCallback {
+public class SignupActivity extends AppCompatActivity {
 	private static final String TAG = "Signup";
 
 	private FirebaseAuth fbAuth;
@@ -58,7 +58,8 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 	LinearLayout llExtras;
 
 
-	UserFbData fbDbUser;
+	DataRepository fsRepo;
+	UserHelper userHelper;
 	FirebaseAuth.AuthStateListener mAuthListener;
 
 
@@ -157,10 +158,10 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 								Log.d(TAG, resMessage[0]);
 
 								// Create the fbDB copy of User
-								FirebaseUser user = fbAuth.getCurrentUser();
-								fbDbUser = new UserFbData();
-								fbDbUser.addUser(user.getUid(), email, name, password, Utils.getDeviceId(SignupActivity.this) , false);
-//								updateUI(user);
+								FirebaseUser fbUser = fbAuth.getCurrentUser();
+								userHelper = new UserHelper(fbUser.getUid(), email, name, password, Utils.getDevId() , Utils.getUUID(),  false);
+								fsRepo = new DataFirestoreRepo<>(userHelper.getClass());
+								fsRepo.create(userHelper);
 
 								Toast.makeText(SignupActivity.this, resMessage[0], Toast.LENGTH_SHORT).show();
 
@@ -170,7 +171,7 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 								intent.putExtra("email", email);
 								intent.putExtra("name", name);
 								intent.putExtra("password", password);
-								intent.putExtra("uid", user.getUid());
+								intent.putExtra("uid", fbUser.getUid());
 								startActivity(intent);
 								finish();
 
@@ -416,24 +417,10 @@ public class SignupActivity extends AppCompatActivity implements UserFbData.User
 	}
 
 	@Override
-	public void onStop()
-	{
+	public void onStop() {
 		super.onStop();
-		if(mAuthListener != null){
+		if (mAuthListener != null) {
 			fbAuth.removeAuthStateListener(mAuthListener);
 		}
 	}
-
-	@Override
-	public void onCallback(UserHelper value) { }
-
-	private UserFbData.UserHelperCallback signupCallback = new UserFbData.UserHelperCallback()
-	{
-		@Override
-		public void onCallback(UserHelper fbDbUser)
-		{
-			Log.d(TAG, "onCallback: " + fbDbUser);
-			runMainActivity(fbDbUser);
-		}
-	};
 }

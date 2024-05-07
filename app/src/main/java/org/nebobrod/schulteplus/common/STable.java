@@ -8,6 +8,7 @@
 
 package org.nebobrod.schulteplus.common;
 
+import static org.nebobrod.schulteplus.common.Const.AVERAGE_IDLE_LIMIT;
 import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_B0;
 import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S0;
 import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S1;
@@ -20,7 +21,6 @@ import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.pHtml;
 import static org.nebobrod.schulteplus.Utils.tHtml;
 
-import android.database.SQLException;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.widget.TextView;
@@ -30,15 +30,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
-import com.j256.ormlite.dao.Dao;
-
 import org.nebobrod.schulteplus.R;
-import org.nebobrod.schulteplus.data.ClickGroup;
-import org.nebobrod.schulteplus.data.DatabaseHelper;
+import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.ExResultBasics;
 import org.nebobrod.schulteplus.data.ExResultSchulte;
 import org.nebobrod.schulteplus.data.Turn;
+import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
+import org.nebobrod.schulteplus.data.DataRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,20 +49,26 @@ import java.util.Random;
  * Schulte Table -- a List of Cells represented as a rectangular
  * (xSize, ySize)
  */
-public class STable {
+public class STable extends Exercise {
 	public static final String TAG = "STable";
+
 	private ArrayList<Double> probabilities = new ArrayList<>();
 	private double probabilitiesSum = 0;
 	private ArrayList<SCell> area = new ArrayList<>();
 	private int xSize, ySize;
-	/** coordinates shift for probabilities */
+	/** shift of coordinate-center for probabilities */
 	private double dX, dY;
 	/** surface for probabilities
 	 * if 0 -> uniform, 0.4 : 1.0 -> normal, 1.4 : 2.0 -> remove 1.0 and cut 10% of low prob to zero, see KEY_PRF_PROB_ZERO */
 	private double w;
 	/** turnNumber is expected Cell (not an attempt) */
 	private int expectedValue;
-	private boolean isFinished = false;
+
+
+	// Simplified constructor overloading
+	public STable(int x, int y) {
+		this(x, y, 0, 0, 0);
+	}
 
 	public STable(int x, int y, double dX, double dY, double w) {
 
@@ -82,10 +87,6 @@ public class STable {
 
 		this.reset();
 	}
-	// Simplified constructor overloading for previous calls
-	public STable(int x, int y) {
-		this(x, y, 0, 0, 0);
-	}
 
 /*	public STable() {
 		if (ExerciseRunner.isRatings()) {
@@ -99,8 +100,9 @@ public class STable {
 	public void reset()
 	{
 		int value = 1;
-		isFinished = false;
+		setFinished(false);
 		probabilities = fillProbabilities (xSize, ySize, dX, dY, w);
+		random = new Random();
 		area.clear();
 		for (int x = xSize; x > 0; x--){
 			for (int y = ySize; y > 0; y--){
@@ -109,9 +111,31 @@ public class STable {
 		}
 		expectedValue = 1;
 		shuffle();
+
+		// prepare parent
+		{
+			seed = random.nextLong();
+			setSeed(seed);
+
+			switch (ExerciseRunner.getExType().substring(0, 7)) {
+				case KEY_PRF_EX_S0:
+					exResult = new ExResultSchulte(seed, 0L, 0, 0, 0F, 0F, 0, 0,  "");
+					break;
+				case KEY_PRF_EX_B0:
+					exResult = new ExResultBasics(seed, 0L, 0, 0, 0, "");
+					break;
+				default:
+					exResult = new ExResult(seed, 0L, 0, 0, "");
+			}
+
+			// Put in local DB and get id
+			DataRepos repos = new DataRepos();
+			repos.create(exResult);
+			exerciseId = exResult.getId();
+		}
 		// first record in journal has time, the others time of turn
 		this.journal.clear();
-		this.journal.add(new Turn(System.nanoTime(), 0L, expectedValue,0, 0, 0, true));
+		this.journal.add(new Turn(exResult, System.nanoTime(), 0L, expectedValue,0, 0, 0, true));
 		Log.d(TAG, "reset: \n" + area.toString());
 	}
 
@@ -172,13 +196,13 @@ public class STable {
 	}
 
 	private ArrayList<Double> fillProbabilities(int xSize, int ySize, double dX, double dY, double w) {
-		ArrayList<Double> result = new ArrayList<>(Collections.nCopies(xSize * ySize, (Double) 0.5));
+		ArrayList<Double> probArray = new ArrayList<>(Collections.nCopies(xSize * ySize, (Double) 0.5));
 		// -- prefilled with 50% probabilities (but it isn't used anywhere)
 
 		probabilitiesSum = 0;
 
 		if (w == 0) { // uniform dispersion
-			return result;
+			return probArray;
 		} else {
 			double xStep = (2D/xSize);
 			double yStep = (2D/ySize);
@@ -188,14 +212,14 @@ public class STable {
 				for (int i = 0; i< xSize; i++) { // Columns or horizontal step
 					Double probWeigh = Math.pow(100 * camelSurface(-1 + i * xStep + xStep/2, -1 + j * yStep + yStep/2, dX, dY, w),
 							3) / 10000;
-					result.set(j*xSize + i, probWeigh);
-					probabilitiesSum += result.get(j*xSize + i);
-					output = output + String.format ("%.2f | ", result.get(j*xSize + i)) + " |";
+					probArray.set(j*xSize + i, probWeigh);
+					probabilitiesSum += probArray.get(j*xSize + i);
+					output = output + String.format ("%.2f | ", probArray.get(j*xSize + i)) + " |";
 //					System.out.printf("\t'%3.3f'", result.get(i*xSize + j));
 				}
 				Log.d(TAG, "fillProbabilities: " + output);
 			}
-			return result;
+			return probArray;
 		}
 	}
 
@@ -205,7 +229,7 @@ public class STable {
 	 */
 	// TODOne 02.03.24: 25.12.2023 later return this as Map to display in ListView
 	public ExResult getResults() {
-		ExResult exResult;
+
 		int time = 0, turns = 0, turnsMissed = 0;	// time tends to milliseconds
 		float average = 0, rmsd = 0;
 		String results = "";	// this in seconds.00
@@ -245,20 +269,19 @@ public class STable {
 				new ExResultBasics(time, turns, 0, 0, ""));*/
 		switch (ExerciseRunner.getExType().substring(0, 7)) {
 			case KEY_PRF_EX_S0:
-				exResult = new ExResultSchulte(time, turns, turnsMissed, average, rmsd, 0, 0, "" );
+				((ExResultSchulte) exResult).update(time, turns, turnsMissed, average, rmsd, 0, 0, "" );
 				break;
 			case KEY_PRF_EX_B0:
-				exResult = new ExResultBasics(time, turns, 0, 0, "");
+				((ExResultBasics) exResult).update(time, turns, 0, 0, "");
 				break;
 			default:
-				exResult = new ExResult(time, 0, 0, "");
+				exResult.update(time, 0, 0, "");
 		}
-
 		return exResult;
 	}
 
 	public boolean checkIsFinished() {
-		return (expectedValue > xSize*ySize? isFinished = true: false);
+		return (expectedValue > xSize*ySize? isFinished(): false);
 /*		if (turnNumber > xSize*ySize) {
 			isFinished = true;
 		}
@@ -283,6 +306,7 @@ public class STable {
 			expectedValue++;
 		}
 		this.journal.add(new Turn(
+				exResult,
 				System.nanoTime(),
 				(System.nanoTime() - journal.get(attemptNumber - 1).getTimeStamp()) / 1000000,
 				(result ? expectedValue : expectedValue -1),
@@ -296,15 +320,11 @@ public class STable {
 	 * @param turn
 	 */
 	public void writeTurn (@NonNull Turn turn) {
-		ClickGroup group = new ClickGroup();
-		group.setName(turn.toString());
-		try {
-			DatabaseHelper helper = new DatabaseHelper();
-			Dao<ClickGroup, Integer> dao = helper.getGroupDao();
-			dao.create(group); // TODO: 29.01.2024 move into ClickGroup with "this" as put-method 
-		} catch (SQLException | java.sql.SQLException e) {
-			throw new RuntimeException(e);
-		}
+		DataRepos repos = new DataRepos();
+		DataRepository<? extends Turn, String> repository = new DataFirestoreRepo<Turn>(Turn.class);
+
+
+		//dao.create(group); // // DONE: 03.05.2024 got rid of click-group examples FROM TODOne: 29.01.2024 move into ClickGroup with "this" as put-method
 	}
 
 	/**
@@ -314,7 +334,7 @@ public class STable {
 
 		if (!ExerciseRunner.isShuffled()) return; // if no-shuffle option in user Prefs
 
-		Random r = new Random();
+
 		ArrayList<SCell> clonedArea = (ArrayList<SCell>) area.clone();
 
 		{ // uniform distribution:
@@ -322,14 +342,14 @@ public class STable {
 			//todo maybe Collections.shuffle(area);
 
 			for (int i = xSize * ySize-1; i>=0; i--){
-				int j = r.nextInt(clonedArea.size());
+				int j = random.nextInt(clonedArea.size());
 				area.set( i, clonedArea.get(j));	// instead of .add, .set replaces current Object
 //				Log.d(TAG, "shuffle: i=" + i +" j="+ j);
 				clonedArea.remove(j);
 			}
 		}
 		if (this.w != 0) { // custom distribution:
-			double nextExpectedPosition = (r.nextDouble() * probabilitiesSum);
+			double nextExpectedPosition = (random.nextDouble() * probabilitiesSum);
 			int caughtPosition =0 ;
 			double cumulativeBoundary = probabilitiesSum;
 			int i = 0;
@@ -411,7 +431,18 @@ public class STable {
 
 	public int getExpectedValue() { return expectedValue; }
 
-	public boolean isFinished() { return isFinished; }
+	@Override
+	boolean validateResult() {
 
-	public void setFinished(boolean finished) { isFinished = finished; }
+		// Spent seconds During the exercise
+		int events = this.journal.size()-1;
+		exResult.setNumValue((this.journal.get(events).getTimeStamp() - this.journal.get(0).getTimeStamp())/1000000000);
+
+		// if an average turn duration exceeds allowed limit
+		if ((exResult.getNumValue() / events) > AVERAGE_IDLE_LIMIT) {
+			return false;
+		}
+		setValid(true);
+		return true;
+	}
 }

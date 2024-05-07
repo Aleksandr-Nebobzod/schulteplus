@@ -1,5 +1,5 @@
 /*
- * Copyright (c) "Smart Rovers" 2024.
+ * Copyright (c) 2024  "Smart Rovers"
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -8,27 +8,88 @@
 
 package org.nebobrod.schulteplus.data;
 
-import org.nebobrod.schulteplus.common.Const;
+import org.nebobrod.schulteplus.common.Log;
 
-import java.util.List;
+import com.j256.ormlite.table.DatabaseTable;
 
-/** Provides necessary methods for stored data
+import com.google.android.gms.tasks.Task;
+
+
+/**
+ * Manages data access for POJOs that are uniquely identifiable by a key, such as POJOs implementing {@link Identifiable}.
  */
-public interface DataRepository {
+public interface DataRepository<TEntity extends Identifiable<TKey>, TKey> {
 
-	/** Puts into a DataRepository */
-	public<T> void putResult(T result);
-
-	/** Gets from a DataRepository <p>
-	 * number of rows as defined in: {@link Const#QUERY_COMMON_LIMIT} <p>
-	 * way to call: <code>List< ExResultBasics > results = getResultsLimited(ExResultBasics.class);</code>*/
-	public<T> List<T> getResultsLimited(Class<T> clazz, String exType);
 
 	/**
-	 * Clean user personal data (after account removal)
-	 * @param uid user id
-	 * @param unpersonalisedName new dummy name for keep ExResults' history
+	 * Allows to use common callback (for old approach)
+	 * @param <R> data-object returnable to call-point
 	 */
-	void unpersonalise(String uid, String unpersonalisedName);
-}
+	public interface RepoCallback<R> {
+		void onSuccess(R result);
 
+		void onError(Exception e);
+	}
+
+	/**
+	 * Checks the repository for a given id and returns a boolean representing its existence.
+	 * @param id the unique id of an entity.
+	 * @return A {@link Task} for a boolean which is 'true' if the entity for the given id exists, 'false' otherwise.
+	 */
+	Task<Boolean> exists(TKey id);
+
+	/**
+	 * Checks the repository for a given id and returns a boolean representing its existence.
+	 * @param id the unique id of an entity.
+	 * @param cb {@link RepoCallback} for a boolean which is <code>true</code> if the entity for the given id exists, <code>false</code> otherwise.
+	 */
+	void exists(TKey id, RepoCallback<Boolean> cb);
+
+	/**
+	 * Stores an entity in the repository so it is accessible via its unique id.
+	 * @param entity the entity implementing {@link Identifiable} to be stored.
+	 * @return An {@link Task} to be notified of failures.
+	 */
+	Task<Void> create(TEntity entity);
+
+	/**
+	 * Queries the repository for an uniquely identified entity and returns it. If the entity does
+	 * not exist in the repository, a new instance is returned.
+	 * @param id the unique id of an entity.
+	 * @return A {@link Task} for an entity implementing {@link Identifiable}.
+	 */
+	Task<TEntity> read(TKey id);
+
+	/**
+	 * Updates an entity in the repository
+	 * @param entity the new entity to be stored.
+	 * @return A {@link Task} to be notified of failures.
+	 */
+	Task<Void> update(TEntity entity);
+
+	/**
+	 * Deletes an entity from the repository.
+	 * @param id uniquely identifying the entity.
+	 * @return A {@link Task} to be notified of failures.
+	 */
+	Task<Void> delete(TKey id);
+
+	/**
+	 * Checks if clazz annotated properly
+	 * @param clazz which defines POJO
+	 * @return database table name (collection name)
+	 */
+	default String getTableName(Class<?> clazz) {
+		String tableName = "undefined";
+
+		// Get table name from annotation
+		if (clazz.isAnnotationPresent(DatabaseTable.class)) {
+			DatabaseTable databaseTable = clazz.getAnnotation(DatabaseTable.class);
+
+			tableName = databaseTable.tableName();
+		} else {
+			Log.w("RepositoryInterface", clazz.getName() + " class has no annotation @DatabaseTable");
+		}
+		return tableName;
+	}
+}

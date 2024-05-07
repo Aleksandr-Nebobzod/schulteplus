@@ -19,6 +19,8 @@ import java.util.Date;
  *
  * @author kevingalligan
  */
+
+/*
 @DatabaseTable
 public class ClickCount implements Serializable {
 
@@ -88,9 +90,13 @@ public class ClickCount implements Serializable {
 		this.value = value;
 	}
 
-	/**
+
+	*/
+/**
 	 * This updates the value and adjusts the date.
-	 */
+	 *//*
+
+
 	public void changeValue(int value) {
 		this.value = value;
 		this.lastClickDate = new Date();
@@ -101,3 +107,4 @@ public class ClickCount implements Serializable {
 		return name + " " + value;
 	}
 }
+*/

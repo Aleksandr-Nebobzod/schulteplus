@@ -7,6 +7,7 @@
  */
 
 package org.nebobrod.schulteplus.data.fbservices;
+/*
 
 import android.text.Spanned;
 import org.nebobrod.schulteplus.common.Log;
@@ -27,7 +28,9 @@ import java.util.Collections;
 
 import static org.nebobrod.schulteplus.common.Const.*;
 
-/** Achievements datasource in Realtime Firebase Database */
+*/
+/** Achievements datasource in Realtime Firebase Database *//*
+
 public class AchievementsFbData
 {
 	private static final String TAG = "AchievementsFbData";
@@ -96,3 +99,4 @@ public class AchievementsFbData
 		// [END basic_query_value_listener]
 	}
 }
+*/

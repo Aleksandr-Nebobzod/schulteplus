@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModel;
 
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.data.ExResult;
-import org.nebobrod.schulteplus.data.OrmRepo;
+import org.nebobrod.schulteplus.data.DataOrmRepo;
 import org.nebobrod.schulteplus.common.AppExecutors;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class DashboardViewModel extends ViewModel {
 		appExecutors.getDiskIO().execute(() -> {
 //			Log.d(TAG, "fetchResultsLimited, is MainLooper1?: " + (Looper.myLooper() == Looper.getMainLooper()));
 //			Log.d(TAG, "fetchResultsLimited, is MainLooper2?: " + (Looper.getMainLooper().getThread() == Thread.currentThread()));
-			List<? extends ExResult> results = (new OrmRepo()).getResultsLimited(clazz, dashboardKey.getValue());
+			List<? extends ExResult> results = (new DataOrmRepo()).getListLimited(clazz, dashboardKey.getValue());
 //			Log.d(TAG, "fetchResultsLimited: " + results);
 			resultsLiveData.postValue(results);
 		});

@@ -1,5 +1,5 @@
 #
-# generated on 2024/04/30 12:46:31
+# generated on 2024/05/07 07:13:44
 #
 # --table-start--
 dataClass=org.nebobrod.schulteplus.data.Achievement
@@ -8,6 +8,9 @@ tableName=achievement
 # --field-start--
 fieldName=id
 generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uak
 # --field-end--
 # --field-start--
 fieldName=uid
@@ -34,55 +37,18 @@ fieldName=specialMark
 # --table-end--
 #################################
 # --table-start--
-dataClass=org.nebobrod.schulteplus.data.ClickCount
-tableName=clickcount
-# --table-fields-start--
-# --field-start--
-fieldName=id
-generatedId=true
-# --field-end--
-# --field-start--
-fieldName=lastClickDate
-columnName=lastClickDate
-# --field-end--
-# --field-start--
-fieldName=name
-indexName=clickcount_name_idx
-# --field-end--
-# --field-start--
-fieldName=description
-# --field-end--
-# --field-start--
-fieldName=value
-# --field-end--
-# --field-start--
-fieldName=group
-foreign=true
-# --field-end--
-# --table-fields-end--
-# --table-end--
-#################################
-# --table-start--
-dataClass=org.nebobrod.schulteplus.data.ClickGroup
-tableName=clickgroup
-# --table-fields-start--
-# --field-start--
-fieldName=id
-generatedId=true
-# --field-end--
-# --field-start--
-fieldName=name
-# --field-end--
-# --table-fields-end--
-# --table-end--
-#################################
-# --table-start--
 dataClass=org.nebobrod.schulteplus.data.ExResult
 tableName=exresult
 # --table-fields-start--
 # --field-start--
 fieldName=id
 generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uak
+# --field-end--
+# --field-start--
+fieldName=seed
 # --field-end--
 # --field-start--
 fieldName=uid
@@ -95,6 +61,9 @@ fieldName=timeStamp
 # --field-end--
 # --field-start--
 fieldName=dateTime
+# --field-end--
+# --field-start--
+fieldName=isValid
 # --field-end--
 # --field-start--
 fieldName=exType
@@ -141,6 +110,12 @@ fieldName=id
 generatedId=true
 # --field-end--
 # --field-start--
+fieldName=uak
+# --field-end--
+# --field-start--
+fieldName=seed
+# --field-end--
+# --field-start--
 fieldName=uid
 # --field-end--
 # --field-start--
@@ -151,6 +126,9 @@ fieldName=timeStamp
 # --field-end--
 # --field-start--
 fieldName=dateTime
+# --field-end--
+# --field-start--
+fieldName=isValid
 # --field-end--
 # --field-start--
 fieldName=exType
@@ -197,6 +175,12 @@ fieldName=id
 generatedId=true
 # --field-end--
 # --field-start--
+fieldName=uak
+# --field-end--
+# --field-start--
+fieldName=seed
+# --field-end--
+# --field-start--
 fieldName=uid
 # --field-end--
 # --field-start--
@@ -207,6 +191,9 @@ fieldName=timeStamp
 # --field-end--
 # --field-start--
 fieldName=dateTime
+# --field-end--
+# --field-start--
+fieldName=isValid
 # --field-end--
 # --field-start--
 fieldName=exType
@@ -251,6 +238,9 @@ tableName=turn
 # --field-start--
 fieldName=id
 generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uak
 # --field-end--
 # --field-start--
 fieldName=exResult
@@ -300,6 +290,9 @@ fieldName=password
 fieldName=deviceId
 # --field-end--
 # --field-start--
+fieldName=uak
+# --field-end--
+# --field-start--
 fieldName=verified
 # --field-end--
 # --field-start--
@@ -312,7 +305,7 @@ fieldName=hours
 fieldName=level
 # --field-end--
 # --field-start--
-fieldName=tsUpdated
+fieldName=timeStamp
 # --field-end--
 # --field-start--
 fieldName=dateCreated

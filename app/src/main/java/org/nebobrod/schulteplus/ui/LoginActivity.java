@@ -13,7 +13,6 @@ import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -39,13 +38,13 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.nebobrod.schulteplus.data.fbservices.UserFbData;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
-import org.nebobrod.schulteplus.data.DataRepositories;
+import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.UserHelper;
+import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
 
-public class LoginActivity extends AppCompatActivity implements UserFbData.UserHelperCallback {
+public class LoginActivity extends AppCompatActivity {
 	private static final String TAG = "Login";
 
 	private static final String DB_PATH = "users";
@@ -106,12 +105,15 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 				progressBar.setVisibility(View.VISIBLE);
 //				progressDialog = ProgressDialog.show(getApplicationContext(),
 //						"Please wait...", "Retrieving data ...", true);
-				UserFbData.getUserFromFirebase(new UserFbData.UserHelperCallback() {
+
+				// TODO: 01.05.2024   Change to userHelper
+				Toast.makeText(LoginActivity.this, "todo in progress...", Toast.LENGTH_SHORT).show();
+/*				UserFbData.getUserFromFirebase(new UserFbData.UserHelperCallback() {
 					@Override
 					public void onCallback(@Nullable UserHelper fbDbUser) {
 //						Toast.makeText(LoginActivity.this, fbDbUser.toString(), Toast.LENGTH_SHORT).show();
 					}
-				}, email);
+				}, email);*/
 
 				fbAuth.signInWithEmailAndPassword(email, password)
 					.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -119,7 +121,17 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 						public void onSuccess(AuthResult authResult) {
 							// check an account for complete registration (repo copies)
 							String email = authResult.getUser().getEmail();
-							UserFbData.isExist(LoginActivity.this::onCallback, email.replace(".", "_"));
+							String uid = authResult.getUser().getUid();
+							UserHelper userHelper;
+							new DataFirestoreRepo<>(UserHelper.class).read(uid)
+									.addOnSuccessListener(userHelper1 -> {
+										runMainActivity(userHelper1);
+										finish();
+									})
+									.addOnFailureListener(e -> {
+										Toast.makeText(LoginActivity.this, getString(R.string.msg_user_login_failed), Toast.LENGTH_SHORT).show();
+										Log.w(TAG, "onFailure: " + e.getMessage());
+									});
 						}
 					}).addOnFailureListener(new OnFailureListener() {
 						@Override
@@ -211,33 +223,6 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 		});
 	}
 
-	@Override
-	public void onCallback(UserHelper fbDbUser)
-	{
-			if (fbDbUser != null) runMainActivity(fbDbUser);
-			finish();
-		/*if(signInPressed) {
-		} else {
-			for (int i = 0; (i < 10 & nameExists); i++ ){
-				if (fbDbUser == null) {
-					nameExists = false;
-					break;
-				} else {
-					String mName = Utils.getRandomName();
-					etName.setText(mName);
-					UserFbData.isNameExist(this, mName);
-				}
-			}
-		}*/
-	}
-
-/*	private UserFbData.UserCallback loginCallback = new UserFbData.UserCallback()
-	{
-		@Override
-		public void onCallback(UserHelper fbDbUser) { Log.d(TAG, "onCallback: " + fbDbUser); }
-	};*/
-
-
 	private boolean validateEmail()	{
 		String val = etEmail.getText().toString().trim();
 		if (val.isEmpty()) {
@@ -299,7 +284,7 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 							String dummyName = Utils.getRandomName();
 							// Inform user
 							if (task1.isSuccessful()) {
-								new DataRepositories().unpersonalise(_uid, dummyName);
+								new DataRepos().unpersonalise(_uid, dummyName);
 								_message = getRes().getString(R.string.msg_delete_account_success)  + dummyName;
 							} else {
 								_message = getRes().getString(R.string.msg_delete_account_failed);
@@ -308,13 +293,4 @@ public class LoginActivity extends AppCompatActivity implements UserFbData.UserH
 							showSnackBarConfirmation(this, _message, null);
 		}));
 	}
-
-
-/*	@Override
-	public void onSuccess(Object o)
-	{
-		Log.d(TAG, "onSuccess: " + o.toString());
-//		mTaskListener();
-
-	}*/
 }

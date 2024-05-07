@@ -14,7 +14,7 @@ import org.nebobrod.schulteplus.common.GridAdapter;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.SCell;
 import org.nebobrod.schulteplus.common.STable;
-import org.nebobrod.schulteplus.data.DataRepositories;
+import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.ExResultArrayAdapter;
 
@@ -51,7 +51,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 	private ExerciseRunner runner;
 	private ExToolbar exToolbar;
 
-	private DataRepositories repos;
+	private DataRepos repos;
 	private MutableLiveData<ExResult> resultLiveData = new MutableLiveData<>();
 	private DialogInterface.OnClickListener cancelListener;
 	private DialogInterface.OnClickListener restartListener;
@@ -77,7 +77,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 		cancelListener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialogInterface, int i) {
-				repos.putResult(resultLiveData.getValue());
+				repos.create(resultLiveData.getValue());
 				finish();
 			}
 		};
@@ -88,7 +88,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 				Log.d(TAG, "onClick: " + "note: " + resultLiveData.getValue().getNote() +
 						" levelOfEmotion: " + resultLiveData.getValue().getLevelOfEmotion() +
 						" sbEnergyLevel: " + resultLiveData.getValue().getLevelOfEnergy());
-				repos.putResult(resultLiveData.getValue());
+				repos.create(resultLiveData.getValue());
 				exercise.reset();
 				exToolbar.init();
 				mAdapter.notifyDataSetChanged();
@@ -97,10 +97,11 @@ public class SchulteActivity02 extends AppCompatActivity {
 
 		// Prepare exercise
 		mGrid = (GridView)findViewById(R.id.gvArea);
-		ExerciseRunner.loadPreference();
-		exercise = new STable(runner.getX(), runner.getY(), ExerciseRunner.probDx(), ExerciseRunner.probDy(), ExerciseRunner.probW());
+		ExerciseRunner.getInstance();
+		ExerciseRunner.loadPreference(); // TODO: 03.05.2024 check necessity
+		exercise = new STable( runner.getX(), runner.getY(), ExerciseRunner.probDx(), ExerciseRunner.probDy(), ExerciseRunner.probW());
 		ExerciseRunner.savePreferences(exercise);
-		repos = new DataRepositories();
+		repos = new DataRepos();
 
 		// Toolbar for exercise initiation (if hints are chosen)
 		exToolbar = new ExToolbar(findViewById(R.id.tb_custom));

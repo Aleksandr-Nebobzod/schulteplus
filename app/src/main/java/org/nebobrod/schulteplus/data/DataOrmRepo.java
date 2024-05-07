@@ -32,8 +32,8 @@ import java.util.List;
 
 /** Provides common CRUD methods working on local SchultePlus SQLite DB by ORMLite
  **/
-public class OrmRepo implements DataRepository {
-	private static final String TAG = OrmRepo.class.getSimpleName();
+public class DataOrmRepo implements xDataRepository {
+	private static final String TAG = DataOrmRepo.class.getSimpleName();
 
 	private static final AppExecutors appExecutors = new AppExecutors();
 	private final DatabaseHelper helper;
@@ -41,7 +41,7 @@ public class OrmRepo implements DataRepository {
 	/**
 	 * easy constructor
 	 */
-	public OrmRepo() {
+	public DataOrmRepo() {
 		this.helper = DatabaseHelper.getHelper();
 	}
 
@@ -72,7 +72,7 @@ public class OrmRepo implements DataRepository {
 	 * @param result ExResult's child classes
 	 */
 	@Override
-	public<T> void putResult(T result) {
+	public<T> void create(T result) {
 		Dao<T, Integer> dao = getAnyDao(result.getClass().getSimpleName());
 
 		try {
@@ -89,7 +89,7 @@ public class OrmRepo implements DataRepository {
 	 * number of rows as defined in: {@link Const#QUERY_COMMON_LIMIT}
 	 */
 	@Override
-	public<T> List<T> getResultsLimited(Class<T> clazz, String exType) {
+	public<T> List<T> getListLimited(Class<T> clazz, String exType) {
 		try {
 			// get name of data-class
 			String className = clazz.getSimpleName();
@@ -151,9 +151,9 @@ public class OrmRepo implements DataRepository {
 		void onComplete(R result);
 	}
 
-	public static synchronized void achievePut(String uid, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark) {
+	public static synchronized void achievePut(String uid, String uak, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark) {
 		Achievement achievement = new Achievement();
-		achievement.setAchievement( uid,  name,  timeStamp,  dateTime,  recordText,  recordValue,  specialMark);
+		achievement.setAchievement(uid,  uak, name,  timeStamp,  dateTime,  recordText,  recordValue,  specialMark);
 		try {
 			DatabaseHelper helper = new DatabaseHelper();
 			Dao<Achievement, Integer> dao = helper.getAchievementDao();
@@ -230,14 +230,14 @@ public class OrmRepo implements DataRepository {
 */
 
 	public static ArrayList getAchievementList(){
-		Log.i(OrmRepo.class.getName(), "Show list again");
+		Log.i(DataOrmRepo.class.getName(), "Show list again");
 		try {
 			Dao<Achievement, Integer> dao = getHelper().getAchievementDao();
 			QueryBuilder<Achievement, Integer> builder = dao.queryBuilder();
 			builder.orderBy(Achievement.DATE_FIELD_NAME, false).limit(QUERY_COMMON_LIMIT);
 			return (ArrayList) dao.query(builder.prepare());
 		} catch (Exception e) {
-			Log.i(OrmRepo.class.getName(), e.getMessage());
+			Log.i(DataOrmRepo.class.getName(), e.getMessage());
 			return null;
 		}
 	}

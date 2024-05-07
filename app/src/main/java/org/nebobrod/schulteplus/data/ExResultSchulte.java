@@ -28,8 +28,17 @@ public class ExResultSchulte  extends ExResult {
 //	float rmsd; // Root-mean-square deviation as a sign of stability & rhythm in exercises
 
 	public ExResultSchulte(){}
-	public ExResultSchulte(long time, int turns, int turnsMissed, float average, float rmsd, int levelOfEmotion, int levelOfEnergy, String note) {
-		super(time, levelOfEmotion, levelOfEnergy, note);
+	public ExResultSchulte(long seed, long time, int turns, int turnsMissed, float average, float rmsd, int levelOfEmotion, int levelOfEnergy, String note) {
+		super(seed, time, levelOfEmotion, levelOfEnergy, note);
+		this.setTurns(turns);
+		this.setTurnsMissed(turnsMissed);
+		this.setAverage(average);
+		this.setRmsd(rmsd);
+	}
+
+	/** minimum update */
+	public void update(long numValue, int turns, int turnsMissed, float average, float rmsd, int levelOfEmotion, int levelOfEnergy, String note) {
+		super.update(numValue, levelOfEmotion, levelOfEnergy, note);
 		this.setTurns(turns);
 		this.setTurnsMissed(turnsMissed);
 		this.setAverage(average);

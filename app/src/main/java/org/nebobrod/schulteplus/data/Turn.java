@@ -8,8 +8,7 @@
 
 package org.nebobrod.schulteplus.data;
 
-import org.nebobrod.schulteplus.data.fbservices.Identifiable;
-
+import com.google.firebase.firestore.Exclude;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -29,8 +28,13 @@ public class Turn implements Serializable, Identifiable<String> {
 	@DatabaseField(generatedId = true)
 	private Integer id;
 
+	@DatabaseField
+	private String uak;
+
 	@DatabaseField(canBeNull = true, foreign = true)
 	private ExResult exResult;
+
+	private Integer parentId;
 
 	@DatabaseField
 	private long timeStamp;
@@ -58,7 +62,10 @@ public class Turn implements Serializable, Identifiable<String> {
 
 	public Turn() {}
 
-	public Turn(long timeStamp, long time, int expected, int x, int y, int position, boolean isCorrect) {
+	public Turn(ExResult exResult, long timeStamp, long time, int expected, int x, int y, int position, boolean isCorrect) {
+		this.exResult = exResult;
+		parentId = exResult.getId();
+		uak = exResult.getUak();
 		this.timeStamp = timeStamp;
 		this.time = time;
 		this.expected = expected;
@@ -76,12 +83,30 @@ public class Turn implements Serializable, Identifiable<String> {
 		this.id = id;
 	}
 
+	public String getUak() {
+		return uak;
+	}
+
+	public void setUak(String uak) {
+		this.uak = uak;
+	}
+
+	@Exclude
 	public ExResult getExResult() {
 		return exResult;
 	}
 
 	public void setExResult(ExResult exResult) {
 		this.exResult = exResult;
+		this.parentId = exResult.getId();
+	}
+
+	public Integer getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Integer parentId) {
+		this.parentId = parentId;
 	}
 
 	public long getTimeStamp() {
@@ -155,8 +180,9 @@ public class Turn implements Serializable, Identifiable<String> {
 				'}';
 	}
 
+	@Exclude
 	@Override
 	public String getEntityKey() {
-		return String.valueOf(id);
+		return getUak() + "." + String.valueOf(id);
 	}
 }

@@ -14,6 +14,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -200,6 +201,13 @@ public final class Utils extends Application {
 		return UUID.randomUUID().timestamp();
 	}
 
+	/**
+	 * @return String value of universally unique identifier (UUID)
+	 */
+	public static  String getUUID(){
+		return UUID.randomUUID().toString();
+	}
+
 	public static int getVersionCode() {
 
 		return intFromString(getRes().getString(R.string.app_version_num));
@@ -303,11 +311,10 @@ public final class Utils extends Application {
 		return size;
 	}
 
-	public static String getDeviceId(Context context) {
+	public static String getDevId() {
 
-		String id = Settings.Secure.getString(context.getContentResolver(),
+		return Settings.Secure.getString(context.getContentResolver(),
 				Settings.Secure.ANDROID_ID);
-		return id;
 	}
 
 	/**
@@ -326,12 +333,15 @@ public final class Utils extends Application {
 
 	}
 
-	public static void showSnackBar(Activity activity, String message) {
-//	public static void showSnackBar(String message) {
-//		View view = getView(); // --
-		View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
-		Snackbar.make(rootView, message, Snackbar.LENGTH_INDEFINITE) // LENGTH_LONG
-				.show();
+	public static void showSnackBar(String message) {
+
+		try {
+			View rootView = ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content);
+			Snackbar.make(rootView, message, Snackbar.LENGTH_INDEFINITE) // LENGTH_LONG
+					.show();
+		} catch (Exception e) {
+			Log.e(TAG, "showSnackBar: " + e.getLocalizedMessage(), e);
+		}
 	}
 
 	public static void showSnackBarConfirmation(Activity activity, String message, @Nullable View.OnClickListener listener) {
@@ -360,7 +370,7 @@ public final class Utils extends Application {
 		snackbar.show();
 	}
 
-	//Current Android version data
+	/** Current Android version data */
 	public static String currentVersion(){
 		double release=Double.parseDouble(Build.VERSION.RELEASE.replaceAll("(\\d+[.]\\d+)(.*)","$1"));
 		String codeName="Unsupported";//below Jelly Bean
@@ -534,6 +544,20 @@ public final class Utils extends Application {
 
 	public static Context getAppContext() {
 		return Utils.context;
+	}
+
+	public static Activity getActivity(Context context) {
+		if (context == null) {
+			return null;
+		} else if (context instanceof ContextWrapper) {
+			if (context instanceof Activity) {
+				return (Activity) context;
+			} else {
+				return getActivity(((ContextWrapper) context).getBaseContext());
+			}
+		}
+
+		return null;
 	}
 
 	// TODO: 28.02.2024 check author

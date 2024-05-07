@@ -9,23 +9,23 @@
 package org.nebobrod.schulteplus.common;
 
 import static org.nebobrod.schulteplus.Utils.*;
-
 import static org.nebobrod.schulteplus.common.Const.*;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
+import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.data.Achievement;
+import org.nebobrod.schulteplus.data.DataOrmRepo;
+import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
+import org.nebobrod.schulteplus.data.fbservices.UserDbPreferences;
+import org.nebobrod.schulteplus.data.UserHelper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
-import org.nebobrod.schulteplus.R;
-import org.nebobrod.schulteplus.Utils;
-import org.nebobrod.schulteplus.data.OrmRepo;
-import org.nebobrod.schulteplus.data.fbservices.AchievementsFbData;
-import org.nebobrod.schulteplus.data.fbservices.UserDbPreferences;
-import org.nebobrod.schulteplus.data.UserHelper;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,30 +35,34 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 	private static final String TAG = "ExerciseRunner";
 	public static final String KEY_RUNNER = "runner"; //?
 	public static final String KEY_DEFAULT_USER_PREF = "TFKBiTdd7OVYUaplfzDHrXSCixr1";
+
 	public static SharedPreferences sharedPreferences;
 	public static String uid = "";
+	public static String uak = "";
 	public static String userName = "";
 	public static String userEmail = "";
-	public static boolean sharedData = false; // KEY_SEND_DATA
-	public static int points = 0; //  achieved point (seconds)
-	public static int hours = 0; //  achieved hours
-	public static int level = 1; // maximum achieved level
-	public static int currentLevel = 1; // level limited by user
-	public static  long tsUpdated;	// Timestamp of data updated
+	public static boolean sharedData = false; 	// KEY_SEND_DATA
+	public static int points = 0; 				//  achieved point (seconds)
+	public static int hours = 0; 				//  achieved hours
+	public static int level = 1; 				// maximum achieved level
+	public static int currentLevel = 1; 		// level limited by user
+	public static  long timeStamp;				// Timestamp of data updated
 //	private Context context;
 	private static ExerciseRunner instance = null;
+	private static long id;
+	private static long seed = 0;
 	private static String exType = "no_exercise";
 	private static byte xSize = 5, ySize = 5;
-	private static boolean ratings = false; // Limitation of Settings
+	private static boolean ratings = false; 	// Limitation of Settings
 	private static boolean hinted = true;
 	private static boolean shuffled = true;
 	private static String symbolType = "number"; // See string-array name="symbol_type_values"
-	private static int fontScale = 0; // {-1, 0, 1}
+	private static int fontScale = 0; 			// {-1, 0, 1}
 	private static boolean probEnabled = false; // Probabilities control
-	private static boolean squared = false; // active screen height==width
-	private static boolean probZero = false; // Probabilities can be 0
+	private static boolean squared = false; 	// active screen height==width
+	private static boolean probZero = false; 	// Probabilities can be 0
 	private static double probDx = .0, probDy = .0, probW = .0;
-	private static boolean online = true; // False if no connection to the Internet
+	private static boolean online = true; 		// False if no connection to the Internet
 	private static UserHelper userHelper;
 
 
@@ -68,6 +72,7 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 		try {
 //			sharedPreferences = context.getSharedPreferences(KEY_APP_STATE, Context.MODE_PRIVATE);
 			uid = userHelper.getUid();
+			uak = userHelper.getUak();
 			userName = userHelper.getName();
 			userEmail = userHelper.getEmail();
 			if (uid.isEmpty()) uid = KEY_DEFAULT_USER_PREF;
@@ -87,16 +92,14 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 		this.savePreferences(null);
 	}
 
+	/** Check and refresh runtime values for new Exercise */
 	public static ExerciseRunner getInstance() 	{
 
-		if (userHelper == null) userHelper = new UserHelper("TFKBiTdd7OVYUaplfzDHrXSCixr1", "nebobzod@gmail.com", "all", "password", "65ed474536cced3a", false);
+		if (userHelper == null) userHelper = new UserHelper("TFKBiTdd7OVYUaplfzDHrXSCixr1", "nebobzod@gmail.com", "all", "password", "65ed474536cced3a", "65ed474536cced3a", false);
 		return  getInstance(userHelper);
 	}
 	public static ExerciseRunner getInstance(@NonNull UserHelper userHelper) {
-/*		Context context = getAppContext();
-		if (null == context) {
-			Log.i(TAG, "getInstance: skipped");
-		}*/
+
 		if (null == instance) {
 			instance = new ExerciseRunner(userHelper);
 			UserDbPreferences.getInstance(instance);
@@ -106,6 +109,8 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 			instance = new ExerciseRunner(userHelper);
 			UserDbPreferences.getInstance(instance);
 		}
+		timeStamp = timeStampU();
+
 		return instance;
 	}
 
@@ -113,6 +118,7 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 		try {
 			// apply previous parameters on load
 			// And some additional prefs:
+			uak = sharedPreferences.getString(KEY_USER_APP_KEY, uak);
 			userName = sharedPreferences.getString(KEY_USER_NAME, userName);
 			userEmail = sharedPreferences.getString(KEY_USER_EMAIL, userEmail);
 			sharedData = sharedPreferences.getBoolean(KEY_PRF_SHARED_DATA, false);
@@ -157,40 +163,37 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 			}
 
 			fontScale = sharedPreferences.getInt(KEY_PRF_FONT_SCALE, 0);
-			tsUpdated = sharedPreferences.getLong(KEY_TS_UPDATED, timeStampU());
+			timeStamp = sharedPreferences.getLong(KEY_TS_UPDATED, timeStampU());
 		}
 			catch (Exception e){
 			Log.d(TAG, "ExerciseRunner: noContext");
 		}
 	}
 
-	public static boolean savePreferences(@Nullable STable exercise){
+	public static boolean savePreferences(@Nullable Exercise exercise){
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		boolean result = true;
 		List<AchievementFlags> achieved = new ArrayList<>();
+		editor.putString(	KEY_USER_APP_KEY, uak);
 		editor.putString(	KEY_USER_NAME, userName);
 		editor.putString(	KEY_USER_EMAIL, userEmail);
 		editor.putBoolean(	KEY_PRF_ONLINE, online);
-		tsUpdated = timeStampU();
-		editor.putLong(		KEY_TS_UPDATED, tsUpdated);
+		timeStamp = timeStampU();
+		editor.putLong(		KEY_TS_UPDATED, timeStamp);
 
 		if(null != exercise){
 			CALC:
 			if (exercise.isFinished()) {
-				// Spent ms During the exercise
-				int events = exercise.journal.size()-1;
-				long spent = ((exercise.journal.get(events).getTimeStamp() - exercise.journal.get(0).getTimeStamp())/1000000000) ;
 
-				// if an average turn duration exceeds 5 minutes
-				if ((spent / events) > 300) {
-					result = false;
+				if (!exercise.validateResult()) {
+					showSnackBar(getRes().getString(R.string.err_result_validity));
 					break CALC;
+				} else {
+					showSnackBar("okay!");
 				}
 
 				// On the whole spent seconds
-				spent += sharedPreferences.getInt(KEY_POINTS, 0);
-
-				points = (int) spent;
+				points = (int) (sharedPreferences.getInt(KEY_POINTS, 0) + exercise.getExResult().getNumValue());
 				achieved.add(AchievementFlags.SECONDS);
 				if (points > 3600){
 					hours += (points / 3600);
@@ -202,7 +205,7 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 				editor.putInt(		KEY_HOURS, (int) hours  );
 				int _level = (int) Math.sqrt(hours * 3600 + points);
 				if (_level > level) {
-					editor.putInt(		KEY_PRF_LEVEL, level = _level );
+					editor.putInt(	KEY_PRF_LEVEL, level = _level );
 				}
 			}
 		}
@@ -241,14 +244,22 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 										  String timeStampFormattedLocal, String string, String s, String exDescription) {
 
 		for (AchievementFlags flag: achieved) {
+			Achievement achievement = new Achievement();
+			DataFirestoreRepo<Achievement> fsRepoAchiev = new DataFirestoreRepo<>(Achievement.class);
 			switch (flag) {
 				case SECONDS:
-					OrmRepo.achievePut( uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
-					if (sharedData) AchievementsFbData.achievePut(null, uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
+					achievement.setAchievement(uid, uak, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
+					DataOrmRepo.achievePut(uid, uak, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
+					if (sharedData) {
+						fsRepoAchiev.create(achievement);
+					}
 				break;
 				case HOURS:
-					OrmRepo.achievePut(  uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
-					if (sharedData) AchievementsFbData.achievePut(null, uid, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
+					achievement.setAchievement(uid, uak, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
+					DataOrmRepo.achievePut(uid, uak, userName, timeStampU(), timeStampFormattedLocal(timeStampU()), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
+					if (sharedData) {
+						fsRepoAchiev.create(achievement);
+					}
 				break;
 			}
 		}
@@ -334,7 +345,7 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 	}
 
 	public  String getDateTimeUpdated() {
-		return timeStampFormattedLocal(tsUpdated);
+		return timeStampFormattedLocal(timeStamp);
 	}
 
 	@Override
@@ -345,7 +356,7 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 				"\nxSize=" + xSize +
 				"\nySize=" + ySize +
 				"\nHints=" + (hinted ?"On":"Off") +
-				"\ntsUpdated=" + tsUpdated + "\ntsUpdatedDateTime=" + timeStampFormattedLocal(tsUpdated) +
+				"\ntsUpdated=" + timeStamp + "\ntsUpdatedDateTime=" + timeStampFormattedLocal(timeStamp) +
 				"\nsharedPreferences=" +
 					"\n\texType = " + sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, "gcb_schulte_1_sequence<") +
 					"\n\txSize = " + String.valueOf( sharedPreferences.getInt(KEY_X_SIZE, 5)) +
@@ -359,7 +370,7 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 	public int getPoints() {return points;}
 	public int getHours() {return hours;}
 	public int getLevel() {return level;}
-	public long getTsUpdated() {return tsUpdated;}
+	public long getTsUpdated() {return timeStamp;}
 	public String getUid() {return uid;	}
 
 	@Override
@@ -392,7 +403,7 @@ public class ExerciseRunner implements UserDbPreferences.UserDbPrefCallback {
 		points = ((Number) objectMap.get("psyCoins")).intValue();
 		hours = ((Number) objectMap.get("hours")).intValue();
 		level = ((Number) objectMap.get("level")).intValue();
-		tsUpdated = ((Number) objectMap.get("tsUpdated")).longValue();
+		timeStamp = ((Number) objectMap.get("tsUpdated")).longValue();
 		savePreferences(null);
 	}
 }

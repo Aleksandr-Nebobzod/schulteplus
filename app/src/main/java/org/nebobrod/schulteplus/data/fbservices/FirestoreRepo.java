@@ -10,24 +10,23 @@ package org.nebobrod.schulteplus.data.fbservices;
 
 import static org.nebobrod.schulteplus.Utils.getRes;
 
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.nebobrod.schulteplus.common.Const;
 import org.nebobrod.schulteplus.R;
-import org.nebobrod.schulteplus.data.DataRepository;
+import org.nebobrod.schulteplus.data.xDataRepository;
 
 import java.util.List;
 
 /** Provides common CRUD methods working on external SchultePlus DB by FirebaseFirestore
  **/
-public class FirestoreRepo implements DataRepository {
+public class FirestoreRepo implements xDataRepository {
 	private static final String TAG = FirestoreRepo.class.getSimpleName();
 	private static final String DB_ROOT = getRes().getString(R.string.firestore_root);
 
 	static FirebaseFirestore db;
-	static DatabaseReference fbReference;
+//	static DatabaseReference fbReference;
 
 
 	private  static void init (String path) {
@@ -41,7 +40,7 @@ public class FirestoreRepo implements DataRepository {
 	 * @param result ExResult's child classes
 	 */
 	@Override
-	public<T> void putResult(T result) {
+	public<T> void create(T result) {
 		final String PATH = DB_ROOT + "exresults";
 
 	}
@@ -51,7 +50,7 @@ public class FirestoreRepo implements DataRepository {
 	 * number of rows as defined in: {@link Const#QUERY_COMMON_LIMIT}
 	 */
 	@Override
-	public<T> List<T> getResultsLimited(Class<T> clazz, String exType) {
+	public<T> List<T> getListLimited(Class<T> clazz, String exType) {
 		return null;
 	}
 

@@ -41,8 +41,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	private static final int DATABASE_VERSION = getVersionCode();
 
-	private Dao<ClickGroup, Integer> groupDao = null;
-	private Dao<ClickCount, Integer> clickDao = null;
+//	private Dao<ClickGroup, Integer> groupDao = null;
+//	private Dao<ClickCount, Integer> clickDao = null;
 	private Dao<Achievement, Integer> achievementDao = null;
 	private Dao<ExResult, Integer> exResultDao = null;
 	private Dao<Turn, Integer> turnDao = null;
@@ -64,8 +64,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase sqliteDatabase, ConnectionSource connectionSource) {
 		try {
-			TableUtils.createTable(connectionSource, ClickGroup.class);
-			TableUtils.createTable(connectionSource, ClickCount.class);
+//			TableUtils.createTable(connectionSource, ClickGroup.class);
+//			TableUtils.createTable(connectionSource, ClickCount.class);
 			TableUtils.createTable(connectionSource, Achievement.class);
 			TableUtils.createTable(connectionSource, ExResult.class);
 			TableUtils.createTable(connectionSource, Turn.class);
@@ -90,8 +90,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase sqliteDatabase, ConnectionSource connectionSource, int oldVer, int newVer) {
 		try {
-			TableUtils.dropTable(connectionSource, ClickGroup.class, true);
-			TableUtils.dropTable(connectionSource, ClickCount.class, true);
+//			TableUtils.dropTable(connectionSource, ClickGroup.class, true);
+//			TableUtils.dropTable(connectionSource, ClickCount.class, true);
 			TableUtils.dropTable(connectionSource, Achievement.class, true);
 			TableUtils.dropTable(connectionSource, ExResult.class, true);
 			TableUtils.dropTable(connectionSource, Turn.class, true);
@@ -105,6 +105,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 	}
 
+	/*
 	public Dao<ClickGroup, Integer> getGroupDao() throws SQLException {
 		if (groupDao == null) {
 			groupDao = getDao(ClickGroup.class);
@@ -117,7 +118,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			clickDao = getDao(ClickCount.class);
 		}
 		return clickDao;
-	}
+	}*/ // Left as an example:
 
 	public Dao<Achievement, Integer> getAchievementDao() throws SQLException {
 		if (achievementDao == null) {
@@ -162,8 +163,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	public void close() {
 		if (usageCounter.decrementAndGet() == 0) {
 			super.close();
-			groupDao = null;
-			clickDao = null;
+//			groupDao = null;
+//			clickDao = null;
 			achievementDao = null;
 			exResultDao = null;
 			turnDao = null;

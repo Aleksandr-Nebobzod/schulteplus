@@ -18,6 +18,8 @@ import com.j256.ormlite.table.DatabaseTable;
  *
  * @author kevingalligan
  */
+/*
+
 @DatabaseTable
 public class ClickGroup implements Serializable {
 
@@ -46,3 +48,4 @@ public class ClickGroup implements Serializable {
 		return name == null ? "<None>" : name;
 	}
 }
+*/

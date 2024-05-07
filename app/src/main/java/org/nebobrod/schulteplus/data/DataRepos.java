@@ -9,18 +9,18 @@
 package org.nebobrod.schulteplus.data;
 
 import org.nebobrod.schulteplus.common.Const;
-import org.nebobrod.schulteplus.data.fbservices.FirestoreRepository;
+import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
 import org.nebobrod.schulteplus.data.fbservices.UserDbPreferences;
 
 import java.util.List;
 
 /** Makes one entry point for different places to maintain data
  */
-public class DataRepositories implements DataRepository {
+public class DataRepos implements xDataRepository {
 
-	private static final OrmRepo ormLiteDataHandler = new OrmRepo();
+	private static final DataOrmRepo ormLiteDataHandler = new DataOrmRepo();
 //	private static final FirestoreUtils firestoreDataHandler = new FirestoreUtils();
-	private static final FirestoreRepository<ExResult> exResultFsRepo = new FirestoreRepository<>(ExResult.class);
+	private static final DataFirestoreRepo<ExResult> exResultFsRepo = new DataFirestoreRepo<>(ExResult.class);
 
 
 	/**
@@ -28,8 +28,8 @@ public class DataRepositories implements DataRepository {
 	 * @param result
 	 */
 	@Override
-	public void putResult(Object result) {
-		ormLiteDataHandler.putResult(result);
+	public void create(Object result) {
+		ormLiteDataHandler.create(result);
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class DataRepositories implements DataRepository {
 	 * number of rows as defined in: {@link Const#QUERY_COMMON_LIMIT}
 	 */
 	@Override
-	public<T> List<T> getResultsLimited(Class<T> clazz, String exType) {
+	public<T> List<T> getListLimited(Class<T> clazz, String exType) {
 		return null;
 	}
 
@@ -50,7 +50,9 @@ public class DataRepositories implements DataRepository {
 	@Override
 	public void unpersonalise(String uid, String unpersonalisedName) {
 		// TODO: 25.03.2024 provide checks to all tables using  name & email
-		UserDbPreferences.getInstance(uid);
+			// UserHelper name email devId (leave uak)
+			// ExResult name (leave uak)
+			// Achievement (leave uak)
 	}
 
 }

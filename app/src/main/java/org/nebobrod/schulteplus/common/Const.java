@@ -23,13 +23,15 @@ public interface Const {
 	byte 	SEQ4_YELLOW = 43;
 	byte 	SEQ4_GREEN = 44;
 	long 	QUERY_COMMON_LIMIT = 25;
-
+	long 	AVERAGE_IDLE_LIMIT = 300; 					// in seconds
+//1	2	3	4	5	6	7	8	9	10	11	12	13	14	15
 	// set of prf related constants
+	String KEY_USER_APP_KEY = "prf_user_app_key";
 	String KEY_USER_NAME = "prf_user_name";
 	String KEY_USER_EMAIL = "prf_user_email";
 	String KEY_PRF_SHARED_DATA = "prf_title_data";
-	String KEY_POINTS = "prf_points"; // number of points earned (seconds + hits + prises)
-	String KEY_HOURS = "prf_hours"; // number of hours practicing
+	String KEY_POINTS = "prf_points"; 					// number of points earned (seconds + hits + prises)
+	String KEY_HOURS = "prf_hours"; 					// number of hours practicing
 	String KEY_PRF_LEVEL = "prf_level";
 	String KEY_PRF_CURRENT_LEVEL = "prf_current_level";
 	String KEY_TYPE_OF_EXERCISE = "prf_ex_type";
@@ -51,10 +53,10 @@ public interface Const {
 	String KEY_PRF_PROBABILITIES = "prf_cat_prob";
 	String KEY_PRF_PROB_ENABLED = "prf_prob_enabled";
 	String KEY_PRF_PROB_DRAWER = "prf_prob_drawer";
-	String KEY_PRF_PROB_ZERO = "prf_prob_zero"; // can make "white spaces"
-	String KEY_PRF_PROB_X = "prf_prob_x"; // value -10:10 should be divided by 10
-	String KEY_PRF_PROB_Y = "prf_prob_y"; // value -10;10 should be divided by 10
-	String KEY_PRF_PROB_SURFACE = "prf_prob_surface"; // value 4:10 should be divided by 10
+	String KEY_PRF_PROB_ZERO = "prf_prob_zero"; 		// can make "white spaces"
+	String KEY_PRF_PROB_X = "prf_prob_x"; 				// value -10:10 should be divided by 10
+	String KEY_PRF_PROB_Y = "prf_prob_y"; 				// value -10;10 should be divided by 10
+	String KEY_PRF_PROB_SURFACE = "prf_prob_surface"; 	// value 4:10 should be divided by 10
 
 	/* PRFs for the schulte exercises */
 	/* gcb means Group Check Box  */
@@ -99,14 +101,12 @@ public interface Const {
 		AIM
 	}
 
-	enum FirestoreCollections {
-
-	}
-
 	/**
 	 * Shared constants for data classes {@link org.nebobrod.schulteplus.data.ExResult}
 	 */
 	String LAYOUT_HEADER_FLAG = "H";
 	String LAYOUT_GROUP_FLAG = "G";
+	/** The last update of data */
+	public static final String TIMESTAMP_FIELD_NAME = "timeStamp";
 
 }

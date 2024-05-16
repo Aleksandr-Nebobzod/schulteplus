@@ -34,7 +34,7 @@ public class DashboardViewModel extends ViewModel {
 		appExecutors.getDiskIO().execute(() -> {
 //			Log.d(TAG, "fetchResultsLimited, is MainLooper1?: " + (Looper.myLooper() == Looper.getMainLooper()));
 //			Log.d(TAG, "fetchResultsLimited, is MainLooper2?: " + (Looper.getMainLooper().getThread() == Thread.currentThread()));
-			List<? extends ExResult> results = (new DataOrmRepo()).getListLimited(clazz, dashboardKey.getValue());
+			List<? extends ExResult> results = (new DataOrmRepo(ExResult.class)).getListLimited(clazz, dashboardKey.getValue());
 //			Log.d(TAG, "fetchResultsLimited: " + results);
 			resultsLiveData.postValue(results);
 		});

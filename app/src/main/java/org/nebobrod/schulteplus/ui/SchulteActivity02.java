@@ -77,7 +77,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 		cancelListener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialogInterface, int i) {
-				repos.create(resultLiveData.getValue());
+				repos.put(resultLiveData.getValue());
 				finish();
 			}
 		};
@@ -88,7 +88,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 				Log.d(TAG, "onClick: " + "note: " + resultLiveData.getValue().getNote() +
 						" levelOfEmotion: " + resultLiveData.getValue().getLevelOfEmotion() +
 						" sbEnergyLevel: " + resultLiveData.getValue().getLevelOfEnergy());
-				repos.create(resultLiveData.getValue());
+				repos.put(resultLiveData.getValue());
 				exercise.reset();
 				exToolbar.init();
 				mAdapter.notifyDataSetChanged();
@@ -101,7 +101,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 		ExerciseRunner.loadPreference(); // TODO: 03.05.2024 check necessity
 		exercise = new STable( runner.getX(), runner.getY(), ExerciseRunner.probDx(), ExerciseRunner.probDy(), ExerciseRunner.probW());
 		ExerciseRunner.savePreferences(exercise);
-		repos = new DataRepos();
+		repos = new DataRepos(ExResult.class);
 
 		// Toolbar for exercise initiation (if hints are chosen)
 		exToolbar = new ExToolbar(findViewById(R.id.tb_custom));

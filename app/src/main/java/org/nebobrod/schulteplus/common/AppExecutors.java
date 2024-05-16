@@ -31,36 +31,34 @@ public class AppExecutors {
 	private final Executor diskIO;
 	private final Executor mainThread;
 
-
 	@Inject
 	public AppExecutors() {
-		this.networkIO = Executors.newSingleThreadExecutor();
-		this.diskIO = Executors.newFixedThreadPool(3);
+		this.networkIO = Executors.newSingleThreadExecutor(r -> new Thread(r, "NetworkIOThread"));
+		this.diskIO = Executors.newFixedThreadPool(3, r -> new Thread(r, "DiskIOThread"));
 		this.mainThread = new MainThreadExecutor();
-
-		Log.d(TAG, "AppExecutors: " + networkIO.toString());
 	}
 
-
 	public Executor getNetworkIO() {
+		Log.d(TAG, "getNetworkIO: " + networkIO.toString());
 		return networkIO;
 	}
 
 	public Executor getDiskIO() {
+		Log.d(TAG, "getDiskIO: " + diskIO.toString());
 		return diskIO;
 	}
 
 	public Executor mainThread() {
+		Log.d(TAG, "getMainThread: " + diskIO.toString());
 		return mainThread;
 	}
 
 	private static class MainThreadExecutor implements Executor {
-		private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+		private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
 		@Override
 		public void execute(@NonNull Runnable command) {
 			mainThreadHandler.post(command);
 		}
 	}
-
 }

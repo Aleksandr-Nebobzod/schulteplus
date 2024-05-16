@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
 										finish();
 									})
 									.addOnFailureListener(e -> {
-										Toast.makeText(LoginActivity.this, getString(R.string.msg_user_login_failed), Toast.LENGTH_SHORT).show();
+										Toast.makeText(LoginActivity.this, getString(R.string.msg_user_data_failed), Toast.LENGTH_SHORT).show();
 										Log.w(TAG, "onFailure: " + e.getMessage());
 									});
 						}
@@ -284,7 +284,7 @@ public class LoginActivity extends AppCompatActivity {
 							String dummyName = Utils.getRandomName();
 							// Inform user
 							if (task1.isSuccessful()) {
-								new DataRepos().unpersonalise(_uid, dummyName);
+								new DataRepos(UserHelper.class).unpersonalise(_uid, dummyName);
 								_message = getRes().getString(R.string.msg_delete_account_success)  + dummyName;
 							} else {
 								_message = getRes().getString(R.string.msg_delete_account_failed);

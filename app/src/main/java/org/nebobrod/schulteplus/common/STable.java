@@ -31,13 +31,13 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
 import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.data.DataOrmRepo;
 import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.ExResultBasics;
 import org.nebobrod.schulteplus.data.ExResultSchulte;
 import org.nebobrod.schulteplus.data.Turn;
 import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
-import org.nebobrod.schulteplus.data.DataRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -129,8 +129,8 @@ public class STable extends Exercise {
 			}
 
 			// Put in local DB and get id
-			DataRepos repos = new DataRepos();
-			repos.create(exResult);
+			DataRepos repos = new DataRepos(exResult.getClass());
+			repos.put(exResult);
 			exerciseId = exResult.getId();
 		}
 		// first record in journal has time, the others time of turn
@@ -320,9 +320,12 @@ public class STable extends Exercise {
 	 * @param turn
 	 */
 	public void writeTurn (@NonNull Turn turn) {
-		DataRepos repos = new DataRepos();
-		DataRepository<? extends Turn, String> repository = new DataFirestoreRepo<Turn>(Turn.class);
 
+		DataOrmRepo localRepo = new DataOrmRepo<>(turn.getClass());
+		localRepo.put(turn);
+
+		DataFirestoreRepo centralRepo = new DataFirestoreRepo<Turn>(Turn.class);
+		centralRepo.create(turn);
 
 		//dao.create(group); // // DONE: 03.05.2024 got rid of click-group examples FROM TODOne: 29.01.2024 move into ClickGroup with "this" as put-method
 	}

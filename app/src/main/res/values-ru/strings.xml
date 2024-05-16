@@ -227,5 +227,6 @@
 	<string name="str_about_user_data_policy">user_data_policy-ru.html</string>
 	<string name="str_logoff_caution">Вы сможете выйти из системы и удалить аккаунт в главном меню</string>
 	<string name="err_result_validity">Результат упражнения не валидирован.</string>
+	<string name="msg_user_data_failed">Трудности с получением данных</string>
 
 </resources>

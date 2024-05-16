@@ -249,5 +249,6 @@
 	<string name="str_about_user_data_policy">user_data_policy-en.html</string>
 	<string name="str_logoff_caution">You are able to log off and delete your account on main preferences menu</string>
 	<string name="err_result_validity">Error of result validation. No stat update.</string>
+	<string name="msg_user_data_failed">Hard to fetch data</string>
 
 </resources>

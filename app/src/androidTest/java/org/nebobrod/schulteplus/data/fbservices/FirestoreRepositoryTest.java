@@ -24,13 +24,10 @@ import org.nebobrod.schulteplus.data.DataRepository;
 import org.nebobrod.schulteplus.data.Turn;
 import org.nebobrod.schulteplus.data.UserHelper;
 
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Exclude;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -78,6 +75,11 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 		@Override
 		public String getEntityKey() {
 			return String.valueOf(id);
+		}
+
+		@Override
+		public long getTimeStamp() {
+			return 0;
 		}
 	}
 
@@ -137,11 +139,11 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 	@Test
 	public void testCreateExResult(){
 		DataRepos repos;
-		repos = new DataRepos();
+		repos = new DataRepos(ExResult.class);
 
 		// Создаем объект ExResult
 		ExResult exResult = new ExResult(3L,3L, 3, 3, "3 means 3x3");
-		repos.create(exResult);
+		repos.put(exResult);
 		android.util.Log.d(TAG, "testCreateExResult: exResult" + exResult);
 
 		fsRepo = new DataFirestoreRepo<>(ExResult.class);
@@ -211,10 +213,10 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 	@Test
 	public void testCreateAchievement(){
 		DataRepos repos;
-		repos = new DataRepos();
+		repos = new DataRepos(Achievement.class);
 
 		Achievement achievement = new Achievement().setAchievement("uid2", "uak2", "n2", 1711556006L, "05.05.05", "r2", "v2", "m2");
-		repos.create(achievement);
+		repos.put(achievement);
 		android.util.Log.d(TAG, "testCreateAchievement: achievement" + achievement);
 
 		Identifiable<String> ach;
@@ -269,7 +271,7 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 
 		DataRepos mockRepos = Mockito.mock(DataRepos.class);
 
-		mockRepos.create(exResult);
+		mockRepos.put(exResult);
 		exResult.setId(-1000001); //like if it generated id
 
 		Identifiable<String> data = new Turn(exResult, 1711556007L, 10L, 1, 1, 1, 1, false);
@@ -278,8 +280,8 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 		((Turn)data).setExResult(exResult);
 
 		// Provide an id for ORMLite dependant objects
-		DataRepos repos = new DataRepos();
-		repos.create(data);
+		DataRepos repos = new DataRepos(data.getClass());
+		repos.put(data);
 		android.util.Log.d(TAG, "testCreateTurn: data " + data);
 
 		this.repository = new DataFirestoreRepo<>(data.getClass());
@@ -312,8 +314,8 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 		Identifiable<String> data = new UserHelper("TFKBiTdd7OVYUaplfzDHrXSCixr1", "nebobzod@gmail.com", "all", "password", "65ed474536cced3a", "65ed474536cced3a", false);
 
 		// Provide an id for ORMLite dependant objects
-		DataRepos repos = new DataRepos();
-		repos.create(data);
+		DataRepos repos = new DataRepos(data.getClass());
+		repos.put(data);
 
 
 		android.util.Log.d(TAG, "testCreateIdentifiable: data " + data);

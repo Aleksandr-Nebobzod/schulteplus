@@ -11,9 +11,9 @@ package org.nebobrod.schulteplus.data;
 
 /**
  * Represents an object that can be uniquely identified among other objects of the same type
- * by using an UID.
+ * by using an ID.
  *
- * @param <TKey> type of the unique key (UID) this object is uniquely identified by. The type needs
+ * @param <TKey> type of the unique key (ID) this object is uniquely identified by. The type needs
  *              a correct implementation of its equals() method or the behaviour of code using this
  *              interface will be undefined.
  */
@@ -23,4 +23,6 @@ public interface Identifiable<TKey> {
 	 * record-id + uak (user app key) -- value which is unique for 1 active user record on the device (after delete user it is inactive, after the same user sign-on the same device this value regenerated)
 	 * */
 	TKey getEntityKey();
+
+	long getTimeStamp();
 }

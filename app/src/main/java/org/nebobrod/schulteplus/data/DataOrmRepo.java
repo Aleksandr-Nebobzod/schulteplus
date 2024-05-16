@@ -16,6 +16,8 @@ import android.database.SQLException;
 import android.media.MediaPlayer;
 import org.nebobrod.schulteplus.common.Log;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
@@ -29,20 +31,26 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executor;
 
-/** Provides common CRUD methods working on local SchultePlus SQLite DB by ORMLite
+/** Provides common CRUD methods working on local SQLite DB by ORMLite
  **/
-public class DataOrmRepo implements xDataRepository {
+public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRepository<TEntity, String> {
 	private static final String TAG = DataOrmRepo.class.getSimpleName();
 
-	private static final AppExecutors appExecutors = new AppExecutors();
 	private final DatabaseHelper helper;
+	Dao<TEntity, Integer> dao;
+	private static final AppExecutors appExecutors = new AppExecutors();
+	private final Executor bgRunner;
 
 	/**
 	 * easy constructor
 	 */
-	public DataOrmRepo() {
+	public DataOrmRepo(Class<TEntity> entityClass) {
 		this.helper = DatabaseHelper.getHelper();
+		dao = getAnyDao(entityClass.getSimpleName());
+		this.bgRunner = new AppExecutors().getDiskIO();
 	}
 
 	/**
@@ -50,7 +58,7 @@ public class DataOrmRepo implements xDataRepository {
 	 * @param className defined as a String
 	 */
 	public<T> Dao<T, Integer>  getAnyDao(String className) {
-		Dao<T, Integer> dao;
+		Dao<T, Integer> _dao;
 
 		try {
 			// getting method name like "getExResultBasicsDao"
@@ -59,20 +67,20 @@ public class DataOrmRepo implements xDataRepository {
 			Method daoMethod = helper.getClass().getMethod(methodName);
 
 			// Calling method to get Dao of object
-			dao = (Dao<T, Integer>) daoMethod.invoke(helper);
+			_dao = (Dao<T, Integer>) daoMethod.invoke(helper);
 		} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
 
-		return dao;
+		return _dao;
 	}
 
 	/**
 	 * Put into a DataRepository
 	 * @param result ExResult's child classes
 	 */
-	@Override
-	public<T> void create(T result) {
+	@Deprecated
+	public<T> void put(T result) {
 		Dao<T, Integer> dao = getAnyDao(result.getClass().getSimpleName());
 
 		try {
@@ -88,7 +96,7 @@ public class DataOrmRepo implements xDataRepository {
 	 * Gets from a DataRepository <p>
 	 * number of rows as defined in: {@link Const#QUERY_COMMON_LIMIT}
 	 */
-	@Override
+	@Deprecated
 	public<T> List<T> getListLimited(Class<T> clazz, String exType) {
 		try {
 			// get name of data-class
@@ -141,9 +149,151 @@ public class DataOrmRepo implements xDataRepository {
 	 * @param uid                user id
 	 * @param unpersonalisedName new dummy name for keep ExResults' history
 	 */
-	@Override
 	public void unpersonalise(String uid, String unpersonalisedName) {
 		; // not need for local data
+	}
+
+	/**
+	 * Checks the repository for a given id and returns a boolean representing its existence.
+	 *
+	 * @param documentName the unique id of an entity.
+	 * @return A {@link Task} for a boolean which is 'true' if the entity for the given id exists, 'false' otherwise.
+	 */
+	@Override
+	public Task<Boolean> exists(final String documentName) {
+		final TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+
+		Callable<Boolean> callable = () -> {
+			try {
+				Boolean _result = dao.idExists(Integer.valueOf(documentName));
+				taskCompletionSource.setResult(_result); 	// Success
+				return _result;
+			} catch (java.sql.SQLException e) {
+				throw new RuntimeException(e); 			// Catch it in runnable below
+			}
+		};
+
+		// Run callable
+		bgRunner.execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					callable.call();
+				} catch (Exception e) {
+					Log.e(TAG, "exists: " + documentName + "in" + dao.getDataClass().getSimpleName() + "Err: " + e.getLocalizedMessage(), e);
+					taskCompletionSource.setException(e); 	// Rise exception on callable
+				}
+			}
+		});
+
+		return taskCompletionSource.getTask();
+	}
+
+	/**
+	 * Checks the repository for a given id and returns a boolean representing its existence.
+	 *
+	 * @param id the unique id of an entity.
+	 * @param cb {@link RepoCallback} for a boolean which is <code>true</code> if the entity for the given id exists, <code>false</code> otherwise.
+	 */
+	@Override
+	public void exists(String id, RepoCallback<Boolean> cb) {
+
+	}
+
+	/**
+	 * Stores an entity in the repository so it is accessible via its unique id.
+	 *
+	 * @param tEntity the entity implementing {@link Identifiable} to be stored.
+	 * @return An {@link Task} to be notified of failures.
+	 */
+	@Override
+	public Task<Void> create(TEntity tEntity) {
+		final TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
+
+		//  Callable, which makes db-operation
+		Callable<Void> callable = () -> {
+			try {
+				dao.createOrUpdate(tEntity);
+				taskCompletionSource.setResult(null); // Success
+			} catch (java.sql.SQLException e) {
+				Log.e(TAG, "create: " + tEntity + "in" + dao.getDataClass().getSimpleName() + "Err: " + e.getLocalizedMessage(), e);
+				taskCompletionSource.setException(e); // Error
+			}
+			return null;
+		};
+
+		// Run callable
+		bgRunner.execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					callable.call();
+				} catch (Exception e) {
+					taskCompletionSource.setException(e); // Rise exception callable
+				}
+			}
+		});
+
+		return taskCompletionSource.getTask();
+	}
+
+	/**
+	 * Queries the repository for an uniquely identified entity and returns it. If the entity does
+	 * not exist in the repository, a new instance is returned.
+	 *
+	 * @param id the unique id of an entity.
+	 * @return A {@link Task} for an entity implementing {@link Identifiable}.
+	 */
+	@Override
+	public Task<TEntity> read(String id) {
+		final TaskCompletionSource<TEntity> taskCompletionSource = new TaskCompletionSource<>();
+
+		//  Callable, which makes db-operation
+		Callable<Void> callable = () -> {
+			try {
+				taskCompletionSource.setResult(dao.queryForId(Integer.valueOf(id)));	// Success
+			} catch (java.sql.SQLException e) {
+				Log.e(TAG, "read id: " + id + " in" + dao.getDataClass().getSimpleName() + "Err: " + e.getLocalizedMessage(), e);
+				taskCompletionSource.setException(e); // Error
+			}
+			return null;
+		};
+
+		// Run callable
+		bgRunner.execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					callable.call();
+				} catch (Exception e) {
+					taskCompletionSource.setException(e); // Rise exception callable
+				}
+			}
+		});
+
+		return taskCompletionSource.getTask();
+	}
+
+	/**
+	 * Updates an entity in the repository
+	 *
+	 * @param tEntity the new entity to be stored.
+	 * @return A {@link Task} to be notified of failures.
+	 */
+	@Override
+	public Task<Void> update(TEntity tEntity) {
+		return null;
+	}
+
+	/**
+	 * Deletes an entity from the repository.
+	 *
+	 * @param id uniquely identifying the entity.
+	 * @return A {@link Task} to be notified of failures.
+	 */
+	@Override
+	public Task<Void> delete(String id) {
+		return null;
 	}
 
 
@@ -168,6 +318,7 @@ public class DataOrmRepo implements xDataRepository {
 	 * @param callback for main thread
 	 * @param <R> (check the reason of this)
 	 */
+	@Deprecated
 	public static <R> void achieveGet25(OrmGetCallback<R> callback) {
 		final ArrayList[] arrayList = {null};
 
@@ -198,36 +349,6 @@ public class DataOrmRepo implements xDataRepository {
 			});
 		});
 	}
-
-/*
-	private static ArrayList z_achieveGet25() {
-		final ArrayList[] arrayList = {null};
-		appExecutors.getNetworkIO().execute(() -> {
-
-
-		AsyncTask<Integer, Void, Void> asyncTask = new AsyncTask<Integer, Void, Void>() {
-
-			@Override
-			protected Void doInBackground(Integer... integers) {
-				try {
-
-				} catch (Exception e) {
-					Log.i(OrmUtils.class.getName(), e.getMessage());
-				}
-				return  Void();
-			}
-
-			@Override
-			protected void onPostExecute(Void aVoid) {
-//				updateScreenValue();
-
-			}
-		};
-
-		asyncTask.execute();
-		return arrayList[0];
-	}
-*/
 
 	public static ArrayList getAchievementList(){
 		Log.i(DataOrmRepo.class.getName(), "Show list again");

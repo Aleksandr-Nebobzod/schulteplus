@@ -8,28 +8,38 @@
 
 package org.nebobrod.schulteplus.data;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+
 import org.nebobrod.schulteplus.common.Const;
 import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
-import org.nebobrod.schulteplus.data.fbservices.UserDbPreferences;
 
 import java.util.List;
 
 /** Makes one entry point for different places to maintain data
  */
-public class DataRepos implements xDataRepository {
+public class DataRepos<TEntity extends Identifiable<String>>  implements xDataRepository {
 
-	private static final DataOrmRepo ormLiteDataHandler = new DataOrmRepo();
+	private final DataOrmRepo ormRepo;
 //	private static final FirestoreUtils firestoreDataHandler = new FirestoreUtils();
-	private static final DataFirestoreRepo<ExResult> exResultFsRepo = new DataFirestoreRepo<>(ExResult.class);
+	private  final DataFirestoreRepo fsRepo;
 
+	public DataRepos(Class<TEntity> entityClass) {
+		ormRepo = new DataOrmRepo(entityClass);
+		fsRepo = new DataFirestoreRepo<>(entityClass);
+	}
 
 	/**
 	 * Puts into a DataRepositories
 	 * @param result
 	 */
 	@Override
-	public void create(Object result) {
-		ormLiteDataHandler.create(result);
+	public void put(Object result) {
+		ormRepo.put(result);
 	}
 
 	/**
@@ -55,4 +65,41 @@ public class DataRepos implements xDataRepository {
 			// Achievement (leave uak)
 	}
 
+	//////////////////////////////
+
+	public Task<Void> create(TEntity entity) {
+		Task<Void> task1 = ormRepo.create(entity);
+		Task<Void> task2 = fsRepo.create(entity);
+
+		return Tasks.whenAll(task1, task2);
+	}
+
+	/** get two results from both repos and return the newest one
+	 * and update the other if it is older to be sure they are same
+ 	 * @param id key of entity
+	 * @return
+	 */
+	public Task<TEntity> read(String id) {
+		Task<TEntity> task1 = ormRepo.read(id);
+		Task<TEntity> task2 = fsRepo.read(id);
+
+		return Tasks.whenAll(task1, task2).continueWith(new Continuation<Void, TEntity>() {
+			@Override
+			public TEntity then(@NonNull Task<Void> task) throws Exception {
+
+				// Compare and update if necessary
+				TEntity r1 = task1.getResult();
+				TEntity r2 = task1.getResult();
+				if (r1.getTimeStamp() == r2.getTimeStamp()) {
+					return r1;
+				} else if (r1.getTimeStamp() > r2.getTimeStamp()) {
+					fsRepo.create(r1); 	// update from newer local data
+					return r1;
+				} else {
+					ormRepo.create(r2); 	// update from newer central data
+					return r2;
+				}
+			}
+		});
+	}
 }

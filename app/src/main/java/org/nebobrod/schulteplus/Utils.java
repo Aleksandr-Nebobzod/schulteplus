@@ -50,11 +50,14 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import org.nebobrod.schulteplus.common.Log;
 
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -93,10 +96,10 @@ public final class Utils extends Application {
 	/**
 	 * transforms "" and null into 0
 	 * @param s String
-	 * @return
+	 * @return its numeric value
 	 */
 	public static int intFromString(String s) {
-		int num=0;
+		int num = 0;
 		try
 		{
 			if(s != null)
@@ -104,18 +107,9 @@ public final class Utils extends Application {
 		}
 		catch (NumberFormatException e)
 		{
-			num =  0;
+			Log.e(TAG, "intFromString: ", e);
 		}
 		return num;
-	}
-
-	/**
-	 * @return current time as a String
-	 */
-	public static String getTimeStampNow() {
-		Time time = new Time();
-		time.setToNow();
-		return time.format3339(false);
 	}
 
 	/**
@@ -161,7 +155,7 @@ public final class Utils extends Application {
 	}
 
 	public static  long timeStampU(){
-		return (long) (Instant.now().getEpochSecond());
+		return Instant.now().getEpochSecond();
 	}
 
 	public static  String timeStampFormattedLocal(long ts) {
@@ -187,16 +181,25 @@ public final class Utils extends Application {
 		return Instant.ofEpochSecond(ts).toString(); // TODO: 20.12.2023 is it UTC? 
 	}
 
+	/**
+	 * @return String H:M:S.ms
+	 */
 	public static String duration (long millis) {
 		int s = (int) (millis / 1000);
 		return String.format(Locale.ENGLISH, "%d:%02d:%02d.%03d", s / 3600, (s % 3600) / 60, (s % 60), millis % 1000);
 	}
+
+	/**
+	 * @return String H:M:S
+	 */
 	public static String durationCut (long millis) {
 		int s = (int) (millis / 1000);
 		return String.format(Locale.ENGLISH, "%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
 	}
 
-
+	/**
+	 * @return Timestamp value of universally unique identifier (UUID)
+	 */
 	public static  long transactID(){
 		return UUID.randomUUID().timestamp();
 	}
@@ -208,6 +211,14 @@ public final class Utils extends Application {
 		return UUID.randomUUID().toString();
 	}
 
+	/**
+	 * @return integer value SHA1-hashcode of String
+	 */
+	public static  int intStringHash(String transform){
+		return Hashing.sha1().hashString(transform, Charset.defaultCharset()).asInt();
+	}
+
+	/** Takes the app version from < gradleResValues.xml */
 	public static int getVersionCode() {
 
 		return intFromString(getRes().getString(R.string.app_version_num));
@@ -301,8 +312,7 @@ public final class Utils extends Application {
 		return builder.create();
 	}
 
-	private static int getDialogPadding(Context context)
-	{
+	private static int getDialogPadding(Context context) {
 		int[] sizeAttr = new int[] { android.R.attr.dialogPreferredPadding };
 		TypedArray a = context.obtainStyledAttributes((new TypedValue()).data, sizeAttr);
 		int size = a.getDimensionPixelSize(0, -1);
@@ -311,8 +321,8 @@ public final class Utils extends Application {
 		return size;
 	}
 
+	/** Device ID */
 	public static String getDevId() {
-
 		return Settings.Secure.getString(context.getContentResolver(),
 				Settings.Secure.ANDROID_ID);
 	}

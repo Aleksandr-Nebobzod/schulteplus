@@ -17,7 +17,7 @@ import java.util.List;
 public interface xDataRepository {
 
 	/** Puts into a DataRepository */
-	public<T> void create(T result);
+	public<T> void put(T result);
 
 	/** Gets from a DataRepository <p>
 	 * number of rows as defined in: {@link Const#QUERY_COMMON_LIMIT} <p>

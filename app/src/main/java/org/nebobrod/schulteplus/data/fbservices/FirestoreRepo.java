@@ -40,7 +40,7 @@ public class FirestoreRepo implements xDataRepository {
 	 * @param result ExResult's child classes
 	 */
 	@Override
-	public<T> void create(T result) {
+	public<T> void put(T result) {
 		final String PATH = DB_ROOT + "exresults";
 
 	}

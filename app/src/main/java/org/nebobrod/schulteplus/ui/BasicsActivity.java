@@ -157,7 +157,7 @@ public class BasicsActivity extends AppCompatActivity {
 		binding = ActivityBasicsBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
-		repos = new DataRepos();
+		repos = new DataRepos(ExResult.class);
 		ExerciseRunner.getInstance();
 		exercise = new STable(1, 1);
 		ExerciseRunner.savePreferences(exercise);
@@ -210,7 +210,7 @@ public class BasicsActivity extends AppCompatActivity {
 					public void onClick(DialogInterface dialogInterface, int i) {
 						exercise.setFinished(true);
 						ExerciseRunner.savePreferences(exercise);
-						repos.create(resultLiveData.getValue());
+						repos.put(resultLiveData.getValue());
 						finish();
 					}
 				};

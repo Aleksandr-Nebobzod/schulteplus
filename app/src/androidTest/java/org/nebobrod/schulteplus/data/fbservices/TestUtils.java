@@ -93,7 +93,7 @@ public class TestUtils {
 
 
 	@Test
-	public static void testResultAwait(Task<Void> task) {
+	public static <T> void testResultAwait(Task<T> task) {
 
 		// wait for finishing the task and
 		try {

@@ -8,6 +8,7 @@
 
 package org.nebobrod.schulteplus.common;
 
+import static org.nebobrod.schulteplus.Utils.timeStampU;
 import static org.nebobrod.schulteplus.common.Const.AVERAGE_IDLE_LIMIT;
 import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_B0;
 import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S0;
@@ -32,7 +33,6 @@ import androidx.core.content.ContextCompat;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.data.DataOrmRepo;
-import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.ExResultBasics;
 import org.nebobrod.schulteplus.data.ExResultSchulte;
@@ -129,10 +129,10 @@ public class STable extends Exercise {
 			}
 
 			// Put in local DB and get id
-			DataRepos repos = new DataRepos(exResult.getClass());
-			repos.put(exResult);
-			exerciseId = exResult.getId();
+			DataOrmRepo<ExResult> repo = new DataOrmRepo(exResult.getClass());
+			repo.create(exResult).addOnCompleteListener(task -> exerciseId = exResult.getId());
 		}
+
 		// first record in journal has time, the others time of turn
 		this.journal.clear();
 		this.journal.add(new Turn(exResult, System.nanoTime(), 0L, expectedValue,0, 0, 0, true));
@@ -228,7 +228,7 @@ public class STable extends Exercise {
 	 * Gathering statistics of passed exercise
 	 */
 	// TODOne 02.03.24: 25.12.2023 later return this as Map to display in ListView
-	public ExResult getResults() {
+	public ExResult calculateResults() {
 
 		int time = 0, turns = 0, turnsMissed = 0;	// time tends to milliseconds
 		float average = 0, rmsd = 0;
@@ -269,23 +269,23 @@ public class STable extends Exercise {
 				new ExResultBasics(time, turns, 0, 0, ""));*/
 		switch (ExerciseRunner.getExType().substring(0, 7)) {
 			case KEY_PRF_EX_S0:
-				((ExResultSchulte) exResult).update(time, turns, turnsMissed, average, rmsd, 0, 0, "" );
+				((ExResultSchulte) exResult).update(getTimeStamp(), time, turns, turnsMissed, average, rmsd, 0, 0, "" );
 				break;
 			case KEY_PRF_EX_B0:
-				((ExResultBasics) exResult).update(time, turns, 0, 0, "");
+				((ExResultBasics) exResult).update(getTimeStamp(), time, turns, 0, 0, "");
 				break;
 			default:
-				exResult.update(time, 0, 0, "");
+				exResult.update(0, time, 0, 0, "");
 		}
 		return exResult;
 	}
 
 	public boolean checkIsFinished() {
-		return (expectedValue > xSize*ySize? isFinished(): false);
-/*		if (turnNumber > xSize*ySize) {
-			isFinished = true;
+
+		if (expectedValue > xSize*ySize) {
+			setFinished(true);
 		}
-		return isFinished;*/
+		return isFinished();
 	}
 
 	public List<Turn> journal = new ArrayList<>();

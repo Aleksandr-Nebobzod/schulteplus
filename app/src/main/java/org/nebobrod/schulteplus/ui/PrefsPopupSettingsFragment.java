@@ -8,6 +8,7 @@
 
 package org.nebobrod.schulteplus.ui;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,14 +30,22 @@ import androidx.preference.PreferenceGroup;
 import androidx.preference.SeekBarPreference;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
+import static org.nebobrod.schulteplus.Utils.getAppContext;
+import static org.nebobrod.schulteplus.Utils.getRes;
+import static org.nebobrod.schulteplus.Utils.showSnackBar;
 import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
 import static org.nebobrod.schulteplus.common.Const.*;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.common.Log;
+
+import java.util.Objects;
 
 public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
+	public static final String TAG = "PrefsPopupSettingsFragment";
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,11 +58,11 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 	}
 
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
 		if (savedInstanceState == null) {
-			Fragment fragment = Fragment.instantiate(getActivity(),
-					PreferenceFragment.class.getName(), getArguments());
+			PreferenceFragment fragment = new PreferenceFragment();
+			fragment.setArguments(getArguments());
 			getChildFragmentManager()
 					.beginTransaction()
 					.add(R.id.content, fragment)
@@ -71,7 +81,7 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 			getPreferenceManager().setSharedPreferencesName(ExerciseRunner.uid);
 			getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
 
-			getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+			Objects.requireNonNull(getPreferenceScreen().getSharedPreferences()).registerOnSharedPreferenceChangeListener(this);
 
 			currentLevel = (getPreferenceScreen().getSharedPreferences().getInt(KEY_PRF_LEVEL, 0));
 			sbPrfCurrentLevel = getPreferenceScreen().findPreference(KEY_PRF_CURRENT_LEVEL);
@@ -85,24 +95,34 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 
 		@Override
 		public boolean onPreferenceTreeClick(@NonNull Preference preference) {
+			Activity activity = getActivity();
+			if (activity == null) {
+				Log.w("PreferenceFragment", "Activity is null");
+				return false;
+			}
 			switch (preference.getKey()) {
 				case "prf_user_logoff":
 					FirebaseAuth.getInstance().signOut();
 					getActivity().finishAndRemoveTask();
 					return true; // makes not necessary of break;
+
 				case "prf_user_delete":
-					showSnackBarConfirmation(getActivity(), String.valueOf(R.string.msg_proceed_to_password_reentry), new View.OnClickListener() {
-						@Override
-						public void onClick(View view) {
-							// fill with extras to avoid retyping on Login
-							Intent intent = new Intent(getActivity(), LoginActivity.class);
-							intent.putExtra("email", ExerciseRunner.getUserHelper().getEmail());
-							FirebaseAuth.getInstance().signOut();
-							startActivity(intent);
-						}
-					});
-					getActivity().finishAndRemoveTask();
+
+					// Confirmation
+					Snackbar.make(getView(), getRes().getString(R.string.msg_proceed_to_password_reentry), Snackbar.LENGTH_INDEFINITE)
+							.setAction(getRes().getString(R.string.lbl_ok), new View.OnClickListener() {
+								@Override
+								public void onClick(View view) {
+									// fill with extras to avoid retyping on Login
+									Intent intent = new Intent(getActivity(), LoginActivity.class);
+									intent.putExtra("email", ExerciseRunner.getUserHelper().getEmail());
+//									FirebaseAuth.getInstance().signOut();
+									startActivity(intent);
+								}
+							})
+							.show();
 					return true; // makes not necessary of break;
+
 				default:
 					return super.onPreferenceTreeClick(preference);
 			}

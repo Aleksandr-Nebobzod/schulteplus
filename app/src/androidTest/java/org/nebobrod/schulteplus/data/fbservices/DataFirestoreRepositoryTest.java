@@ -11,6 +11,7 @@ package org.nebobrod.schulteplus.data.fbservices;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import android.os.Looper;
 
@@ -24,6 +25,7 @@ import org.nebobrod.schulteplus.data.DataRepository;
 import org.nebobrod.schulteplus.data.Turn;
 import org.nebobrod.schulteplus.data.UserHelper;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -46,7 +48,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
 
-public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
+public class DataFirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 	public static final String TAG = "FirestoreRepositoryTest";
 
 
@@ -90,7 +92,7 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 		TestUtils.performAuthorization();
 
 		// starting init of repo (with "testCollection" from TestEntity)
-		repository = new DataFirestoreRepo<>(FirestoreRepositoryTest.TestEntity.class);
+		repository = new DataFirestoreRepo<>(DataFirestoreRepositoryTest.TestEntity.class);
 	}
 
 /*	@Test
@@ -165,6 +167,7 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 						Assert.assertTrue(false); // Помечаем тест как проваленный
 					}
 				});
+
 		// Ждем завершения задачи
 			TestUtils.testResultAwait(createTask);
 	}
@@ -215,7 +218,7 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 		DataRepos repos;
 		repos = new DataRepos(Achievement.class);
 
-		Achievement achievement = new Achievement().setAchievement("uid2", "uak2", "n2", 1711556006L, "05.05.05", "r2", "v2", "m2");
+		Achievement achievement = new Achievement().set("uid2", "uak2", "n2", 1711556006L, "05.05.05", "r2", "v2", "m2");
 		repos.put(achievement);
 		android.util.Log.d(TAG, "testCreateAchievement: achievement" + achievement);
 
@@ -315,7 +318,7 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 
 		// Provide an id for ORMLite dependant objects
 		DataRepos repos = new DataRepos(data.getClass());
-		repos.put(data);
+		repos.create(data);
 
 
 		android.util.Log.d(TAG, "testCreateIdentifiable: data " + data);
@@ -401,9 +404,12 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 	@Test
 	public void testReadBackGround() {
 		this.fsRepo = new DataFirestoreRepo<>(Turn.class);
+		this.fsRepo = new DataFirestoreRepo<>(UserHelper.class);
+		String docNum = "-1906027091.007uaked47";
+
 		Log.d(TAG,  " test starts at: main " + Looper.getMainLooper().isCurrentThread() + Thread.currentThread());
 
-		final Task<TEntity> task = fsRepo.read("110").addOnSuccessListener( new OnSuccessListener() {
+		final Task<TEntity> task = fsRepo.read(docNum).addOnSuccessListener( new OnSuccessListener() {
 			@Override
 			public void onSuccess(Object o) {
 				Log.d(TAG," OnSuccessListener Object o: " + o.toString());
@@ -456,4 +462,66 @@ public class FirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 			}
 		});*/ // OnComplete doesn't work (lies)
 	}
+
+	@Test
+	public void getListByField() {
+		this.fsRepo = new DataFirestoreRepo<>(UserHelper.class);
+		String field = "id";
+		int value = -990303179; 	// "-990303179.65ed474536cced3a"
+		Task<?> _task;
+
+		_task = fsRepo.getListByField(field, value).addOnSuccessListener(o -> {
+			Log.d(TAG, "getListByField: " + o);
+			assertTrue(true);
+		}).addOnFailureListener(e -> {
+			Log.d(TAG, "getListByField: " + e.getLocalizedMessage());
+			assertTrue(false);
+		});
+
+
+		TestUtils.testResultAwait(_task);
+	}
+
+	@Test
+	public void printListByField() {
+		this.fsRepo = new DataFirestoreRepo<>(UserHelper.class);
+		String field = "id";
+		String value = "-990303179"; 	// "-990303179.65ed474536cced3a"
+		Task<?> _task;
+
+		_task = fsRepo.printListByField().addOnCompleteListener(new OnCompleteListener() {
+			@Override
+			public void onComplete(@NonNull Task task) {
+				assertFalse(false);
+			}
+		}).addOnFailureListener(new OnFailureListener() {
+			@Override
+			public void onFailure(@NonNull Exception e) {
+				assertTrue(false);
+			}
+		});
+
+		TestUtils.testResultAwait(_task);
+	}
+
+
+	@Test
+	public void unpersoniliseTest() {
+//		this.fsRepo = new DataFirestoreRepo<>(UserHelper.class);
+		this.fsRepo = new DataFirestoreRepo<>(Achievement.class);
+		String _uid = "MhBXs9apwObZc0wFz8zesERLdIB2";
+		String _name = "upDated";
+		Task<?> _task;
+
+		_task = fsRepo.unpersonilise(_uid, _name).addOnSuccessListener(o -> {
+			Log.d(TAG, "unpersoniliseTest: " + o);
+			assertTrue(true);
+		}).addOnFailureListener(e -> {
+			Log.d(TAG, "unpersoniliseTest: " + e.getLocalizedMessage());
+			fail();
+		});
+
+		TestUtils.testResultAwait(_task);
+	}
+
 }

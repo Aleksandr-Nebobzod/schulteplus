@@ -28,9 +28,10 @@ public class DataReposTest {
 		Identifiable<String> data;
 		DataRepos repos;
 
-		String pr = "006";
-		data = new UserHelper(pr + "TFKBiTdd", pr + "@gmail.com", pr + "name", pr + "pass", pr + "device3a", pr + "uaked47", false);
-//		data = new Achievement().setAchievement(pr + "uid", pr + "uak", pr + "nam", 1711556007L, "05.05.05", pr + "r", pr + "v", pr + "m");
+		String pr = "009";
+		String uid = pr + "T1K1i1d171V1U1p1f1D1r1S1i1r1"; // "TFKBiTdd7OVYUaplfzDHrXSCixr1"
+//		data = new UserHelper(uid, pr + "@gmail.com", pr + "name", pr + "pass", pr + "device3a", pr + "uaked47", false);
+		data = new Achievement().set(pr + "uid", pr + "uak", pr + "nam", 1711556007L, "05.05.05", pr + "r", pr + "v", pr + "m");
 
 		// Provide component Repository
 		repos = new DataRepos(data.getClass());
@@ -39,6 +40,7 @@ public class DataReposTest {
 			@Override
 			public void onSuccess(Void unused) {
 				Log.d(TAG, "onSuccess: ");
+				System.out.println(data.toString());
 				assertTrue("Success", true);
 			}
 		}).addOnFailureListener(new OnFailureListener() {
@@ -50,19 +52,34 @@ public class DataReposTest {
 		});
 
 		TestUtils.testResultAwait(_task);
-
 		Log.d(TAG, "create test finished: ");
 	}
 
 	//	1138605908.2uaked47
+	@Test
 	public void read() {
 
-		String key = "66229263";
+		String key = "-1906027091.007uaked47";
 
 		Identifiable<String> localData;
 		Identifiable<String> centralData;
-		DataRepos repos = new DataRepos(UserHelper.class);
+		DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
 
-		Task<UserHelper> _task = repos.read(key);
+		Task<UserHelper> _task = repos.read(key).addOnSuccessListener(new OnSuccessListener<UserHelper>() {
+			@Override
+			public void onSuccess(UserHelper userHelper) {
+				System.out.println(userHelper);
+				assertTrue("Success", true);
+			}
+		}).addOnFailureListener(new OnFailureListener() {
+			@Override
+			public void onFailure(@NonNull Exception e) {
+				Log.d(TAG, "onFailure: ");
+				assertTrue("Read NOT success with " + e.getLocalizedMessage(), false);
+			}
+		});
+
+		TestUtils.testResultAwait(_task);
+		Log.d(TAG, "read test finished: ");
 	}
 }

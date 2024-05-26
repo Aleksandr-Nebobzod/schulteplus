@@ -33,8 +33,10 @@ public class ExResult implements Serializable, Identifiable<String> {
 	public static final String TAG = "ExResult";
 
 	private static final long serialVersionUID = -7874823823497497002L; // after Achievement
-	public static final String DATE_FIELD_NAME = "dateTime";
 	public static final String UID_FIELD_NAME = "uid";
+	public static final String UAK_FIELD_NAME = "uak";
+	public static final String TIMESTAMP_FIELD_NAME = "timeStamp";
+	public static final String DATE_FIELD_NAME = "dateTime";
 	public static final String EXTYPE_FIELD_NAME = "exType";
 
 
@@ -73,7 +75,7 @@ public class ExResult implements Serializable, Identifiable<String> {
 
 	// and result data itself:
 	@DatabaseField
-	private long timeStampFinish = 0;	// 0 if not finished
+	private long timeStampFinish = 0;	// 0 if not finished TODO get rid of this...
 
 	@DatabaseField
 	private long numValue; 				// used as number of milliseconds, spent through the exercise */
@@ -338,9 +340,9 @@ public class ExResult implements Serializable, Identifiable<String> {
 		return stringMap;
 	}
 
-	/** ninimum update */
-	public void update(long numValue, int levelOfEmotion, int levelOfEnergy, String note) {
-		this.timeStampFinish = timeStampU();
+	/** minimum of update */
+	public void update(long timeStamp, long numValue, int levelOfEmotion, int levelOfEnergy, String note) {
+		this.timeStamp = timeStamp;
 		this.numValue = numValue;
 		this.levelOfEmotion = levelOfEmotion;
 		this.levelOfEnergy = levelOfEnergy;

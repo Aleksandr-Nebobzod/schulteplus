@@ -11,6 +11,8 @@ package org.nebobrod.schulteplus.common;
 import static org.nebobrod.schulteplus.Utils.exceptionFbCrash;
 import static org.nebobrod.schulteplus.Utils.logFbCrash;
 
+import android.os.Looper;
+
 import org.nebobrod.schulteplus.BuildConfig;
 
 public class Log {
@@ -20,7 +22,7 @@ public class Log {
 	static final boolean DB = BuildConfig.ENABLE_CRASHLYTICS;
 
 	public static void i(String tag, String string) {
-		if (LOG) android.util.Log.i(PREFIX + tag, string);
+		if (LOG) android.util.Log.i(PREFIX + tag, string + " is Thread main?=" + Looper.getMainLooper().isCurrentThread() + Thread.currentThread());
 	}
 
 	public static void d(String tag, String string) {

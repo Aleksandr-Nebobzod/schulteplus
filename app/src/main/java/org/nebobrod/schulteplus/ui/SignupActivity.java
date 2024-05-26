@@ -34,6 +34,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import org.nebobrod.schulteplus.common.ExerciseRunner;
+import org.nebobrod.schulteplus.data.Achievement;
+import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
 import org.nebobrod.schulteplus.data.DataRepository;
 import org.nebobrod.schulteplus.R;
@@ -157,24 +159,14 @@ public class SignupActivity extends AppCompatActivity {
 
 								Log.d(TAG, resMessage[0]);
 
-								// Create the fbDB copy of User
+								// Create the repositories copy of the new UserHelper
 								FirebaseUser fbUser = fbAuth.getCurrentUser();
-								userHelper = new UserHelper(fbUser.getUid(), email, name, password, Utils.getDevId() , Utils.getUUID(),  false);
-								fsRepo = new DataFirestoreRepo<>(userHelper.getClass());
-								fsRepo.create(userHelper);
-
+								userHelper = new UserHelper(fbUser.getUid(), email, name, password, Utils.getDevId() , Utils.getUak(),  false);
+								DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
+								repos.create(userHelper);		// Since it's a new user
+																// no need to check other records
 								Toast.makeText(SignupActivity.this, resMessage[0], Toast.LENGTH_SHORT).show();
-
-								// fill with extras to avoid retyping on Login
-								Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-//								intent.putExtra("user", user); // null username
-								intent.putExtra("email", email);
-								intent.putExtra("name", name);
-								intent.putExtra("password", password);
-								intent.putExtra("uid", fbUser.getUid());
-								startActivity(intent);
-								finish();
-
+								runMainActivity(userHelper);
 							} else { // In case of unsuccessful registration
 
 								if (taskAddUser.getException().getMessage().contains("A network error")){

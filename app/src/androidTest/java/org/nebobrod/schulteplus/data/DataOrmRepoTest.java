@@ -37,7 +37,7 @@ public class DataOrmRepoTest<TEntity extends Identifiable<String>>  {
 
 		String pr = "3";
 //		data = new UserHelper(pr + "TFKBiTdd", pr + "@gmail.com", pr + "name", pr + "pass", pr + "device3a", pr + "uaked47", false);
-		data = new Achievement().setAchievement(pr + "uid", pr + "uak", pr + "nam", 1711556007L, "05.05.05", pr + "r", pr + "v", pr + "m");
+		data = new Achievement().set(pr + "uid", pr + "uak", pr + "nam", 1711556007L, "05.05.05", pr + "r", pr + "v", pr + "m");
 
 		repo = new DataOrmRepo<>(data.getClass());
 

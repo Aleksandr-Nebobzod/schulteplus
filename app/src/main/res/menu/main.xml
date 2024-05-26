@@ -15,7 +15,8 @@
 		android:id="@+id/menu_settings"
 		android:icon="@drawable/ic_ab_settings"
 		app:showAsAction="always">
-		
 	</item>
+	
+<!--	menu items: ...Schulte/app/src/main/res/xml/menu_preferences.xml-->
 
 </menu>

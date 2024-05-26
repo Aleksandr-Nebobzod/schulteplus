@@ -42,7 +42,7 @@ public class TestUtils {
 
 	static CountDownLatch latch;
 
-	protected static void performAuthorization() {
+	public static void performAuthorization() {
 		// CountDownLatch for asynchronous responses
 		latch = new CountDownLatch(1);
 
@@ -98,10 +98,7 @@ public class TestUtils {
 		// wait for finishing the task and
 		try {
 			Tasks.await(task);
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		} catch (InterruptedException e) {
+		} catch (ExecutionException | InterruptedException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}

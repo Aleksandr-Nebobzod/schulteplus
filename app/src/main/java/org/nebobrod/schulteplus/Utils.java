@@ -13,6 +13,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Application;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -22,6 +23,8 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -35,15 +38,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -154,6 +163,7 @@ public final class Utils extends Application {
 		}
 	}
 
+	/** UTC timestamp for central DB comparability */
 	public static  long timeStampU(){
 		return Instant.now().getEpochSecond();
 	}
@@ -209,6 +219,15 @@ public final class Utils extends Application {
 	 */
 	public static  String getUUID(){
 		return UUID.randomUUID().toString();
+	}
+
+	/**
+	 * @return String value of Hex string of int from UUID
+	 */
+	public static  String getUak(){
+		String strUuid = UUID.randomUUID().toString();
+		int intUuid = intStringHash(strUuid);
+		return Long.toString(intUuid & 0xFFFFFFFFL, 16);
 	}
 
 	/**
@@ -354,14 +373,24 @@ public final class Utils extends Application {
 		}
 	}
 
-	public static void showSnackBarConfirmation(Activity activity, String message, @Nullable View.OnClickListener listener) {
+	public static void showSnackBarConfirmation(Activity activity, String message, @Nullable View.OnClickListener okListener) {
 		View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+		if (rootView == null) {
+			Log.w(TAG, "showSnackBarConfirmation: Root view is null");
+			return;
+		}
+		if (!rootView.isShown()) {
+			Log.w("showSnackBarConfirmation", "Root view is not shown");
+			return;
+		}
+
+		// Toast.makeText(activity, "Before Snackbar", Toast.LENGTH_SHORT).show();
 
 		Snackbar snackbar = Snackbar.make(rootView, message, Snackbar.LENGTH_INDEFINITE);
 
 		// Ensure we have a listener
-		if (listener==null) { // It seems that this code is redundant
-			listener = new View.OnClickListener() {
+		if (okListener==null) { // It seems that this code is redundant
+			okListener = new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
 					//  nothing
@@ -369,7 +398,7 @@ public final class Utils extends Application {
 				}
 			};
 		}
-		snackbar.setAction(getRes().getString(R.string.lbl_ok), listener);
+		snackbar.setAction(getRes().getString(R.string.lbl_ok), okListener);
 
 		// Set 7 rows allowed in snackbar
 		View snackbarView = snackbar.getView();
@@ -378,7 +407,49 @@ public final class Utils extends Application {
 
 		// Show
 		snackbar.show();
+		Log.i(TAG, "showSnackBarConfirmation: ");
+		Log.d(TAG + " showSnackBarConfirmation", "Snackbar shown");
+		// Toast.makeText(activity, "After Snackbar", Toast.LENGTH_SHORT).show();
 	}
+
+	public static void showSnackBarConfirmation2(final Activity activity, final String message, @Nullable View.OnClickListener listener) {
+		final View rootView = activity.findViewById(android.R.id.content);
+
+		if (rootView == null) {
+			Log.w(TAG, "showSnackBarConfirmation: Root view is null");
+			return;
+		}
+
+		if (!rootView.isShown()) {
+			Log.w(TAG, "showSnackBarConfirmation: Root view is not shown");
+			return;
+		}
+
+		// Make listener final to access it inside inner class
+		final View.OnClickListener finalListener = listener != null ? listener : new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				// nothing
+			}
+		};
+
+		new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				Snackbar snackbar = Snackbar.make(rootView, message, Snackbar.LENGTH_INDEFINITE);
+
+				snackbar.setAction(activity.getString(R.string.lbl_ok), finalListener);
+
+				View snackbarView = snackbar.getView();
+				TextView tv = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+				tv.setMaxLines(7);
+
+				snackbar.show();
+				Log.d(TAG, "showSnackBarConfirmation: Snackbar shown");
+			}
+		}, 1000); // Delay of 1 second
+	}
+
 
 	/** Current Android version data */
 	public static String currentVersion(){
@@ -757,15 +828,87 @@ public final class Utils extends Application {
 	 * Shows content of html-file
 	 * @param htmlSourceName string that keeps name of html-file for multi language purpose (like R.string.str_about_license_html_source)
 	 */
-	public static void displayHtmlAlertDialog(@StringRes int htmlSourceName) {
-		WebView view = (WebView) LayoutInflater.from(getAppContext()).inflate(R.layout.dialog_one_webview, null);
-		String fileName = getRes().getString(htmlSourceName);
-		view.loadUrl("file:///android_asset/" + fileName);
+	public static void displayHtmlAlertDialog(Context context, @StringRes int htmlSourceName) {
+		if (context instanceof Activity) {
+			Activity activity = (Activity) context;
+			if (activity.isFinishing() || activity.isDestroyed()) {
+				Log.w(TAG, "displayHtmlAlertDialog: Activity is not valid for displaying dialog.");
+				return;
+			}
+		}
 
-		androidx.appcompat.app.AlertDialog alertDialog =
-				new AlertDialog.Builder(getAppContext(), androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert)
-				.setView(view)
-				.setPositiveButton(android.R.string.ok, null)
-				.show();
+		WebView view = (WebView) LayoutInflater.from(context).inflate(R.layout.dialog_one_webview, null);
+		String fileName = getRes().getString(htmlSourceName);
+
+		view.setWebViewClient(new WebViewClient() {
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				super.onPageFinished(view, url);
+				Log.i("Utils", "Page loaded successfully: " + url);
+/*				androidx.appcompat.app.AlertDialog alertDialog =
+						new AlertDialog.Builder(context, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert)
+								.setView(view)
+								.setPositiveButton(android.R.string.ok, null)
+								.show();*/
+				Dialog dialog = new Dialog(context, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+				dialog.setContentView(view);
+				dialog.show();
+			}
+
+			@Override
+			public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+				super.onReceivedError(view, request, error);
+				Log.w("Utils", "Error loading page: " + error.getDescription());
+			}
+
+			@Override
+			public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+				super.onReceivedHttpError(view, request, errorResponse);
+				Log.w("Utils", "HTTP error loading page: " + errorResponse.getStatusCode());
+			}
+
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+				String url = request.getUrl().toString();
+				if (url.startsWith("mailto:")) {
+					Intent intent = new Intent(Intent.ACTION_SENDTO);
+					intent.setData(Uri.parse(url));
+					if (intent.resolveActivity(context.getPackageManager()) != null) {
+						context.startActivity(intent);
+					} else {
+						/* no-op */
+					}
+					return true;
+				} else if (url.startsWith("http://") || url.startsWith("https://")) {
+					Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+					if (intent.resolveActivity(context.getPackageManager()) != null) {
+						context.startActivity(intent);
+					} else {
+						/* no-op */
+					}
+					return true;
+				} else {
+					// if nor a "mailto:", neither "http://" or "https://"... WebView
+					return false;
+				}
+			}
+		});
+
+		// To prevent IllegalStateException: The specified child already has a parent
+/*		ViewParent parent = view.getParent();
+		if (parent instanceof ViewGroup) {
+			ViewGroup viewGroup = (ViewGroup) parent;
+			viewGroup.removeView(view);
+		}*/
+
+		view.loadUrl("file:///android_asset/" + fileName);
+	}
+
+	public static boolean hasFieldName(Class<?> clazz, String fieldName) {
+		try {
+			return (null != clazz.getDeclaredField(fieldName));
+		} catch (NoSuchFieldException e) {
+			return false;
+		}
 	}
 }

@@ -34,9 +34,11 @@ public class Achievement implements Serializable, Identifiable<String> {
 	private static final String TAG = "Achievement";
 
 	private static final long serialVersionUID = -7874823823497497001L;
+	public static final String UID_FIELD_NAME = "uid";
+	public static final String UAK_FIELD_NAME = "uak";
+	public static final String TIMESTAMP_FIELD_NAME = "timeStamp";
 	public static final String DATE_FIELD_NAME = "dateTime";
 
-	static Achievement achievement;
 
 	@DatabaseField(generatedId = true)
 	private Integer id;
@@ -149,7 +151,7 @@ public class Achievement implements Serializable, Identifiable<String> {
 				+ "|\t." + "\t| " + bHtml(this.getRecordValue()) + "\t " + this.getRecordText() + "|");
 	}
 
-	public  Achievement setAchievement(String uid, String uak, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark){
+	public  Achievement set(String uid, String uak, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark){
 		this.uid = uid;
 		this.uak = uak;
 		this.name = name;
@@ -165,6 +167,6 @@ public class Achievement implements Serializable, Identifiable<String> {
 	@Exclude
 	@Override
 	public String getEntityKey() {
-		return String.valueOf(id);
+		return getUak() + "." + String.valueOf(id);
 	}
 }

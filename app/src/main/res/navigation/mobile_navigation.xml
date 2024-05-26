@@ -27,7 +27,7 @@
 
 	<fragment
 		android:id="@+id/navigation_schulte"
-		android:name="org.nebobrod.schulteplus.ui.schultesettings.SchulteSettings"
+		android:name="org.nebobrod.schulteplus.ui.schulte.SchulteSettings"
 		android:label="@string/title_schulte"
 		/>
 <!--	tools:layout="@layout/fragment_schulte_settings"-->

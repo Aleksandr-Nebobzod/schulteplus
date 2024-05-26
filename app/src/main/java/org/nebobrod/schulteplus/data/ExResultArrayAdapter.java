@@ -319,7 +319,11 @@ public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
 		sbEmotionalLevel.setOnSeekBarChangeListener(seekBarChangeListener); // Same listener
 		sbEnergyLevel.setOnSeekBarChangeListener(seekBarChangeListener); // Same listener
 
-		alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+		// Show keyboard
+		if (resultLiveData != null) {
+			alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+		}
+
 		alertDialog.show();
 	}
 

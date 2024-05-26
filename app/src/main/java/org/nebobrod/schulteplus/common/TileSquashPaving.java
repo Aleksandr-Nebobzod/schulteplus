@@ -16,81 +16,125 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Squash algorithm <p>
+ *     Each tile (requestor) randomly tries to push/pull its side
+ *     gets answers from affected neighbours with:
+ *     1) new dependencies (reason for recursive check); 2) empty dependencies (reason to move); 3) null (can't move) <p>
+ *     After a squash cycle The diversity index calculated
+ */
 public class TileSquashPaving {
 	/** Allowed [0]Row X [1]Cols */
 	private static final boolean DEBUG_SETTINGS = false;
 	static final int[][] TILE_SIZES = {{2, 2},
-			{1, 2}, {2, 1}, {2, 3}, {3, 2},
-			{1, 3}, {3, 1}, {1, 4}, {4, 1}, {1, 1}};
-	static final int[] TILE_QUANTITIES = new int[TILE_SIZES.length];
+			{1, 2}, {2, 1},
+			{2, 3}, {3, 2},
+			{1, 3}, {3, 1},
+			{1, 4}, {4, 1}, {1, 1}};
+
 	private static final int ROWS = 5;
 	private static final int COLS = 5;
 	private static final int TILE_NUMBER = ROWS * COLS;
+	private static final int DIVERSITY_MIN_TARGET = 20;
+	private static final int CYCLES_LIMIT = 39; 	// this value is enough for quick result
+													// and good for testing (int side = x / 10)
 
+	private static final String ANSI_RESET = "\u001B[0m";
+	private static final String ANSI_WHITE = "\u001B[37m";
+	private static final String ANSI_RED = "\u001B[31m";
+	private static final String ANSI_GREEN = "\u001B[32m";
+	private static final String ANSI_YELLOW = "\u001B[33m";
+	private static final String ANSI_BLUE = "\u001B[34m";
+	private static final String ANSI_PURPLE = "\u001B[35m";
+	private static final String ANSI_CYAN = "\u001B[36m";
+	private static final String ANSI_BLACK = "\u001B[30m";		// not use for fonts
+	static final String[] ANSI_COLORS = {ANSI_RESET, ANSI_WHITE, ANSI_RED, ANSI_GREEN, ANSI_YELLOW, ANSI_BLUE, ANSI_PURPLE, ANSI_CYAN};
+
+	static final int[] TILE_QUANTITIES_BY_SIZE = new int[TILE_SIZES.length];
+	// Main list of tiles
 	static List<Tile> tiles;
 
+	// Main field
 	static int[][] field = new int[ROWS *2][COLS *2];
-	static int _cell;
 	static int height = field.length;
 	static int width = field[0].length;
-	/** elements meaning 1: right, 2: down, 3: left, 4: up */
-	static List<Integer> validSides;
+
 
 	public static void main(String[] args) {
 
-		// Init tile-list
+		// Init the tile-list in static environment
 		TileSquashPaving tilePaving = new TileSquashPaving();
-//		tiles = Collections.nCopies(TILE_NUMBER, tilePaving.new Tile()); 	// UnsupportedOperationException
+//		tiles = Collections.nCopies(TILE_NUMBER, tilePaving.new Tile()); 	// Error UnsupportedOperationException
 		tiles = new ArrayList<>();
 		for (int i = 0; i < TILE_NUMBER; i++) {
 			tiles.add(tilePaving.new Tile());
 		}
 
-		// Field with squared tiles 2x2
+		// Define the field with tile.set() squared 2x2 by the  field's coordinates
 		newField();
 
+		// Main cycle
 		int cycle = 0;
-		while ((diversity10x() > 20) && (cycle <= 39)) {
+		int divMinReached = 0x7FFFFFFF; // Max int
+		int[][] resultField = new int[height][width];
+
+		while ((diversity10x() > DIVERSITY_MIN_TARGET) && (cycle <= CYCLES_LIMIT)) {
 			// run Tightness
 			for (Tile t : tiles) {
-				int dir = (randomInt(0, 1) * 2) - 1; 	// -1 or 1
-				int side = randomInt(0, 3);
-				/* debug set */
-				if (DEBUG_SETTINGS) {
-
+				int dir = 1; 	// -1 or 1
+				int side = 0;
+				int steps = 3;
+				while (steps-- > 0) {
+					dir = (randomInt(0, 1) * 2) - 1; 	// -1 or 1
+					side = randomInt(0, 3);
+					/* debug set */
+					if (DEBUG_SETTINGS) {
 				/*{
 					dir = 1;
-					side = cycle / 10;
+					side = cycle / 10;			// see CYCLES_LIMIT comment
 				}*/
-					dir = -1;
-					side = 2;
-					if (t.num != 5) continue;
+						dir = -1;
+						side = 2;
+						if (t.num != 5) continue;
 
-					System.out.println("for: " + t);
-					System.out.println("dir " + dir + ", side " + side);
-				}	/* debug set finished */
+						System.out.println("for: " + t);
+						System.out.println("dir " + dir + ", side " + side);
+					}	/* debug set finished */
 
-				List<Integer> dep = t.canMove(dir, side);
-				if (dep == null) {if (DEBUG_SETTINGS) {System.out.println("X can't move");} continue;}
-				dep = dependCheck(dir, side, dep, t.num);
-				if (dep == null) {if (DEBUG_SETTINGS) {System.out.println("X can't move others");} continue;}
-				if (DEBUG_SETTINGS) {printField();}
-				dependMove(dir, side, t.canMove(dir, side), t.num);
+					// List of agreed neighbours
+					List<Integer> dep = t.canMove(dir, side);
+					if (dep == null) {if (DEBUG_SETTINGS) {System.out.println("X can't move");} continue;}
+					dep = dependCheck(dir, side, dep, t.num);
+					if (dep == null) {if (DEBUG_SETTINGS) {System.out.println("X can't move others");} continue;}
+					if (DEBUG_SETTINGS) {print2dArray(resultField);}
+					break;
+				}
 
-				if (printZeroesField()) {
+				if (steps > 0) {
+					dependMove(dir, side, t.canMove(dir, side), t.num);
+				}
+
+				if (DEBUG_SETTINGS && printZeroesField()) {
 					int a =1;
 				}
 			}
-			System.out.println("Cycle " + cycle++ + " DIVERSITY: " + diversity10x() + ", " + Arrays.toString(TILE_QUANTITIES));
-			if (DEBUG_SETTINGS) {if ((cycle % 10) == 9) printField();}
+
+			int _div = diversity10x();
+			if (divMinReached > _div) {
+				divMinReached = _div;
+				resultField = field;
+			}
+			System.out.println("Cycle " + cycle++ + " DIVERSITY: " + _div + ", " + Arrays.toString(TILE_QUANTITIES_BY_SIZE));
+			if (DEBUG_SETTINGS) {if ((cycle % 10) == 9) print2dArray(resultField);}
 		}
 
 		// Final Report
-		printField();
+		print2dArray(resultField);
+		System.out.println(" DIVERSITY reached: " + divMinReached);
 	}
 
-
 	/////////////////////////////////////
+	/** Class represents a tile on the {@link #field} */
 	private class Tile {
 		int num;            // number or other kind of symbol on the tile
 		int rowAddress;        // y-coordinate of top-left cell
@@ -98,28 +142,20 @@ public class TileSquashPaving {
 		int size;            // From the TILE_SIZES[]
 		// field[][] is used
 
-
-/*	public Tile(int num, int rowAddress, int colAddress, int size) {
-		this.num = num;
-		this.rowAddress = rowAddress;
-		this.colAddress = colAddress;
-		this.size = size;
-	}*/
-
 		/**
 		 * Set the tile and stamp it on the field
-		 * @param num number or other kind of symbol on the tile
+		 * @param num number or index for other kind of symbol on the tile
 		 * @param rowAddress y-coordinate of top-left cell
 		 * @param colAddress x-coordinate of top-left cell
-		 * @param size From the TILE_SIZES[] (0 means 2x2)
+		 * @param size From the {@link #TILE_SIZES} index (0 means 2x2)
 		 */
 		public void set(int num, int rowAddress, int colAddress, int size) {
 			this.num = num;
 			this.rowAddress = rowAddress;
 			this.colAddress = colAddress;
 			if (this.size != size) {
-				TILE_QUANTITIES[this.size]--;
-				TILE_QUANTITIES[size]++;
+				TILE_QUANTITIES_BY_SIZE[this.size]--;
+				TILE_QUANTITIES_BY_SIZE[size]++;
 				this.size = size;
 			}
 			stamp();
@@ -135,6 +171,7 @@ public class TileSquashPaving {
 					'}';
 		}
 
+		/** Put tile's num into appropriate cells of the {@link #field} */
 		private void stamp() {
 
 			try {
@@ -142,18 +179,17 @@ public class TileSquashPaving {
 					for (int col = colAddress; col < colAddress + TILE_SIZES[size][1]; col++) {
 						if ((field[row][col] == 0) || (field[row][col] == num)) {
 							field[row][col] = num;                            // take a space
-							_cell = field[row][col];
 						} else {
 							System.out.println("no space for " + this);
 							System.out.println("field["+row+"]["+col+"] == " + field[row][col]);
-							printField();
+							print2dArray(field);
 							throw new RuntimeException("NO SPACE TO STAMP!");        // Check if not clean
 						}
 					}
 				}
 			} catch (ArrayIndexOutOfBoundsException e) {
 				System.out.println("Stamp is wrong -- " + this);
-				printField();
+				print2dArray(field);
 				throw new RuntimeException(e);
 			}
 		}
@@ -161,158 +197,70 @@ public class TileSquashPaving {
 
 			for (int row = rowAddress; row < rowAddress + TILE_SIZES[size][0]; row++) {
 				for (int col = colAddress; col < colAddress + TILE_SIZES[size][1]; col++) {
-					if ((field[row][col] == num) || (field[row][col] == 0) || true) {
+					if ((field[row][col] == num) || (field[row][col] == 0)) {
 						field[row][col] = 0;                            // set free a space
 					} else {
-						System.out.println(this.toString());
-						printField();
+						System.out.println(this);
+						print2dArray(field);
 						throw new RuntimeException("NO FIELD!");        // Check if not clean
 					}
 				}
 			}
-			if (DEBUG_SETTINGS) {System.out.println("cleaned space " + this.toString());}
+			if (DEBUG_SETTINGS) {System.out.println("cleaned space " + this);}
 		}
 
 		/** Check borders and self-ability to move into new size
 		 *
-		 * @param dir minus or plus 1 of
+		 * @param dir direction minus or plus 1 of ax
 		 * @param side 0 East, 1 South, 2 West, 3 North
 		 * @return list of neighbours should be moved also (before) excluding `this`
 		 */
 		List<Integer> canMove (int dir, int side) {
-			int val = 0;
 			int[] newSizeArrow = TILE_SIZES[size].clone();
 			int newSize;
-			List<Integer>  can = new ArrayList<>();
+			List<Integer>  can;
 
 			try {
 				switch (side) {
 					case 0:
-						val = field[rowAddress][colAddress + TILE_SIZES[size][1] + dir];
 						newSizeArrow[1]+=dir;
 						break;
 					case 1:
-						val = field[rowAddress + TILE_SIZES[size][0] + dir][colAddress];
 						newSizeArrow[0]+=dir;
 						break;
 					case 2:
-						val = field[rowAddress][colAddress + dir];
 						newSizeArrow[1]-=dir;
 						break;
 					case 3:
-						val = field[rowAddress + dir][colAddress];
 						newSizeArrow[0]-=dir;
 						break;
 					default:
-						val = 0;
+						newSizeArrow[0] = 0;	// warranted future error of size-check
+						newSizeArrow[1] = 0;
 				}
 			} catch (ArrayIndexOutOfBoundsException e) {
-				can = null;
-				return can;
+				return null;
 			}
 
 			newSize = getTileSize(newSizeArrow);
 			if (newSize == -1) {
 				can = null;
 			} else {
-				can = getDepends(dir, side, this.num);
+				can = getDepends(side, this.num);
 			}
 			return can;
 		}
 
 		/**
-		 * @param dir
-		 * @param side
-		 * @return set of movable tiles behind the 'side' can move their sides (opposite one) to dir
+		 * Check every cell of field behind (outside) the requested side of move
+		 * @param side  0 East, 1 South, 2 West, 3 North
+		 * @param requestor 0 for self-request or requestor.num for recursive call
+		 * @return list of dependent tile.num (except of <code>requestor</code>)
+		 * <p> or empty list (which means can move with no dependencies)
+		 * <p> or <code>null</code> (means non-movable side)
 		 */
-		List<Integer> canMoveOthers (int dir, int side, int exclude) {
-			List<Integer>  can = new ArrayList<>();
-			int checkNum = 0;
-			try {
-				switch (side) {
-					case 0:
-						for (int row = rowAddress; row < rowAddress + TILE_SIZES[size][0]; row++) {
-							checkNum = field[row][colAddress + TILE_SIZES[size][1] + 1];
-							if ((checkNum != num) && (checkNum != exclude)) {
-								List<Integer> newDependencies = tiles.get(checkNum-1).canMove(dir, getOpposite(side));
-								if (!newDependencies.isEmpty()) {
-									if (!can.contains(checkNum-1)) {
-										can.add(checkNum-1);
-									}
-								} else {
-									can.clear();
-									break;
-								}
-							}
-						}
-						break;
-					case 1:
-						for (int col = colAddress; col < colAddress + TILE_SIZES[size][1]; col++) {
-							checkNum = field[rowAddress + TILE_SIZES[size][0] + 1][col];
-							if ((checkNum != num) && (checkNum != exclude)) {
-								List<Integer> newDependencies = tiles.get(checkNum-1).canMove(dir, getOpposite(side));
-								if (!newDependencies.isEmpty()) {
-									if (!can.contains(checkNum-1)) {
-										can.add(checkNum-1);
-									}
-								} else {
-									can.clear();
-									break;
-								}
-							}
-						}
-						break;
-					case 2:
-						for (int row = rowAddress; row < rowAddress + TILE_SIZES[size][0]; row++) {
-							checkNum = field[row][colAddress - 1];
-							if ((checkNum != num) && (checkNum != exclude)) {
-								List<Integer> newDependencies = tiles.get(checkNum-1).canMove(dir, getOpposite(side));
-								if (!newDependencies.isEmpty()) {
-									if (!can.contains(checkNum-1)) {
-										can.add(checkNum-1);
-									}
-								} else {
-									can.clear();
-									break;
-								}
-							}
-						}
-						break;
-					case 3:
-						for (int col = colAddress; col < colAddress + TILE_SIZES[size][1]; col++) {
-							checkNum = field[rowAddress - 1][col];
-							if ((checkNum != num) && (checkNum != exclude)) {
-								List<Integer> newDependencies = tiles.get(checkNum-1).canMove(dir, getOpposite(side));
-								if (!newDependencies.isEmpty()) {
-									if (!can.contains(checkNum-1)) {
-										can.add(checkNum-1);
-									}
-								} else {
-									can.clear();
-									break;
-								}
-							}
-						}
-						break;
-					default:
-						can.clear();
-				}
-			} catch (ArrayIndexOutOfBoundsException e) {
-				System.out.println(this + " with CheckNum" + checkNum + " rise e: " + e.getLocalizedMessage());
-			}
-
-			return can;
-		}
-
-		/**
-		 *
-		 * @param dir
-		 * @param side
-		 * @param asker 0 for self-request, initiator.num for recursive call
-		 * @return
-		 */
-		List<Integer> getDepends (int dir, int side, int asker) {
-			if (asker == 0) {asker = this.num;}
+		List<Integer> getDepends (int side, int requestor) {
+			if (requestor == 0) {requestor = this.num;}
 			List<Integer>  result = new ArrayList<>();
 			int checkNum = 0;
 			try {
@@ -320,7 +268,7 @@ public class TileSquashPaving {
 					case 0:
 						for (int row = rowAddress; row < rowAddress + TILE_SIZES[size][0]; row++) {
 							checkNum = field[row][colAddress + TILE_SIZES[size][1]];
-							if ((checkNum != 0) && (checkNum != num) && (checkNum != asker)) {
+							if ((checkNum != 0) && (checkNum != num) && (checkNum != requestor)) {
 								if (!result.contains(checkNum)) {
 									result.add(checkNum);
 								}
@@ -330,7 +278,7 @@ public class TileSquashPaving {
 					case 1:
 						for (int col = colAddress; col < colAddress + TILE_SIZES[size][1]; col++) {
 							checkNum = field[rowAddress + TILE_SIZES[size][0]][col];
-							if ((checkNum != 0) && (checkNum != num) && (checkNum != asker)) {
+							if ((checkNum != 0) && (checkNum != num) && (checkNum != requestor)) {
 								if (!result.contains(checkNum)) {
 									result.add(checkNum);
 								}
@@ -340,7 +288,7 @@ public class TileSquashPaving {
 					case 2:
 						for (int row = rowAddress; row < rowAddress + TILE_SIZES[size][0]; row++) {
 							checkNum = field[row][colAddress - 1];
-							if ((checkNum != 0) && (checkNum != num) && (checkNum != asker)) {
+							if ((checkNum != 0) && (checkNum != num) && (checkNum != requestor)) {
 								if (!result.contains(checkNum)) {
 									result.add(checkNum);
 								}
@@ -350,7 +298,7 @@ public class TileSquashPaving {
 					case 3:
 						for (int col = colAddress; col < colAddress + TILE_SIZES[size][1]; col++) {
 							checkNum = field[rowAddress - 1][col];
-							if ((checkNum != 0) && (checkNum != num) && (checkNum != asker)) {
+							if ((checkNum != 0) && (checkNum != num) && (checkNum != requestor)) {
 								if (!result.contains(checkNum)) {
 									result.add(checkNum);
 								}
@@ -362,7 +310,7 @@ public class TileSquashPaving {
 				}
 			} catch (ArrayIndexOutOfBoundsException e) {
 				result = null;
-				System.out.println(this + " with CheckNum" + checkNum + " rise e: " + e.getLocalizedMessage());
+				if (DEBUG_SETTINGS) {System.out.println(this + " with CheckNum" + checkNum + " rise e: " + e.getLocalizedMessage());}
 			}
 
 			return result;
@@ -389,26 +337,26 @@ public class TileSquashPaving {
 				default:
 					break;
 			}
-			TILE_QUANTITIES[size]--;
+			TILE_QUANTITIES_BY_SIZE[size]--;
 			if (DEBUG_SETTINGS) {System.out.print("from size: " + size);}
 			size = getTileSize(newSizeArrow);
-			if (DEBUG_SETTINGS) {System.out.println(" to size: " + this.toString());}
+			if (DEBUG_SETTINGS) {System.out.println(" to size: " + this);}
 			this.stamp();
-			TILE_QUANTITIES[size]++;
+			TILE_QUANTITIES_BY_SIZE[size]++;
 		}
 	}
 /////////////////////////////////////
 
-	private static List<Integer> dependCheck(int dir, int side, List<Integer> checkedTiles, int asker) {
+	private static List<Integer> dependCheck(int dir, int side, List<Integer> checkedTiles, int requestor) {
 
-		if (DEBUG_SETTINGS) {System.out.println("MyLog dependencies (" + asker + ") " + checkedTiles );}
+		if (DEBUG_SETTINGS) {System.out.println("MyLog dependencies (" + requestor + ") " + checkedTiles );}
 		List<Integer> newTiles = new ArrayList<>();
 
 		for (Integer t: checkedTiles ) {
 
 			if(tiles.get(t-1).canMove(dir, getOpposite(side)) == null) {return null;}
 
-			newTiles = tiles.get(t-1).getDepends(dir, getOpposite(side), asker);
+			newTiles = tiles.get(t-1).getDepends(getOpposite(side), requestor);
 			if (newTiles == null) {
 				return null;
 			} else {
@@ -421,26 +369,15 @@ public class TileSquashPaving {
 		return newTiles;
 	}
 
-	private static List<Integer> dependMove(int dir, int side, List<Integer> checkedTiles, int asker) {
+	private static List<Integer> dependMove(int dir, int side, List<Integer> checkedTiles, int requestor) {
 
-		if (DEBUG_SETTINGS) {System.out.println("MyLog dependMove:  (" + asker + ") " + checkedTiles);}
+		if (DEBUG_SETTINGS) {System.out.println("MyLog dependMove:  (" + requestor + ") " + checkedTiles);}
 		List<Integer> newTiles = new ArrayList<>();
-		tiles.get(asker-1).setFieldFree();
+		tiles.get(requestor-1).setFieldFree();
 
 		for (Integer t: checkedTiles ) {
 
-			newTiles = tiles.get(t-1).getDepends(dir, getOpposite(side), asker);
-			/*
-					если больше одной зависимости, то вызываем рекурсию в цикле*, на выходе из цикла делае движение
-					если тут зависимость только одна и == exclude то прямо после этого делаем движение
-					(может, можно и вызвать , всё равно вернет null)
-					* -- передаём пока 1 родитель (предполагаем, что для исключений не понадобится спискок)
-					 */
-/*			newTiles.removeAll(checkedTiles);
-			if (newTiles.contains(0)) newTiles.remove((Integer) 0);
-			if (newTiles.contains(t)) newTiles.remove(t);
-			if (newTiles.contains(asker)) newTiles.remove((Integer) asker);*/
-
+			newTiles = tiles.get(t-1).getDepends(getOpposite(side), requestor);
 
 			if (newTiles.isEmpty()){
 				tiles.get(t-1).setFieldFree();
@@ -448,22 +385,19 @@ public class TileSquashPaving {
 			} else {
 				newTiles.addAll(Objects.requireNonNull(dependMove(dir, getOpposite(side), newTiles, t)));
 			}
-//			tiles.get(t-1).setFieldFree();
-//			tiles.get(t-1).move(dir, getOpposite(side));
 		}
 
-//		if(newTiles != null) if (!newTiles.isEmpty())
-		tiles.get(asker-1).move(dir, side);
-//						System.out.println("Success neighbour moved: " + (o + 1));
+		tiles.get(requestor-1).move(dir, side);
+//		System.out.println("Success neighbour moved: " + (o + 1));
 		return newTiles;
 	}
 
 	private static int diversity10x() {
 		float div = 0;
-		float ave = tiles.size() / TILE_SIZES.length;
+		float ave = tiles.size() / (float) TILE_SIZES.length;
 
 		for (int i = 0; i < TILE_SIZES.length; i++) {
-			div += (TILE_QUANTITIES[i] - ave) * (TILE_QUANTITIES[i] - ave);
+			div += (TILE_QUANTITIES_BY_SIZE[i] - ave) * (TILE_QUANTITIES_BY_SIZE[i] - ave);
 /*			if ((i % 2) == 0) {
 				div += TILE_QUANTITIES[i];
 			} else {
@@ -486,7 +420,7 @@ public class TileSquashPaving {
 			for (int col = 0; col < width; col += 2) {
 				Tile tile = tiles.get(i);
 				tile.set(i+1, row, col, 0); 	// size 0 is 2x2
-				TILE_QUANTITIES[0]++;
+				TILE_QUANTITIES_BY_SIZE[0]++;
 				tiles.set(i, tile);
 				i++;
 			}
@@ -541,15 +475,26 @@ public class TileSquashPaving {
 		return -1; // If no matching tile size is found
 	}
 
-	private static void printField() {
+	private static void print2dArray(int[][] arr) {
+
+		System.out.print("\033\143"); 			// cls for linux
+
 		System.out.println("\nThe Field \n");
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				System.out.printf("[%02d]", field[i][j]);
+		for (int i = 0; i < arr.length; i++) {
+			for (int j = 0; j < arr[0].length; j++) {
+				Integer val = arr[i][j];
+				System.out.printf(tileColor(val) + "[%02d]" + ANSI_COLORS[0], val);
 			}
 			System.out.println();
 		}
 	}
+
+	private static String tileColor(int num) {
+
+		int col = num % (ANSI_COLORS.length - 1) + 1;
+		return ANSI_COLORS[col];
+	}
+
 	private static boolean printZeroesField() {
 		boolean result = false;
 
@@ -564,141 +509,4 @@ public class TileSquashPaving {
 		if (result) System.out.println("\n -- Zeroes");
 		return result;
 	}
-
-	/*
-	private static void runTightnessPass(int[][] field) {
-
-		int previousTile = -1;
-		for (int row = 0; row < height; row++) {
-			for (int col = 0; col < width; col++) {
-
-				// Tile's Number
-				int currentTile = field[row][col];
-				if (currentTile == previousTile) {
-					continue; 						// skip if same
-				}
-				int[] currentSize = getCurrentSize(field, row, col);
-				int tileSizeNum = getTileSize(currentSize);
-
-				// Try to offer new Size
-				int[] newSize = getNewSize(row, col, currentSize);
-				if (getTileSize(newSize) != -1) {
-					previousTile = currentTile;
-					continue;
-				}
-
-				int newX = col;
-				int newY = row;
-				if (newSize[0] > currentSize[0]) {
-					newX += 1; // right
-				} else if (newSize[0] < currentSize[0]) {
-					newX -= 1; // left
-				}
-				if (newSize[1] > currentSize[1]) {
-					newY += 1; // down
-				} else if (newSize[1] < currentSize[1]) {
-					newY -= 1; // up
-				}
-				field[row][col] = 0; // Set the current tile to 0
-			}
-		}
-	}
-
-	private static int[] getCurrentSize(int[][] field, int row, int col) {
-		int width = field[0].length;
-		int height = field.length;
-		int rightSteps = 0;
-		int leftSteps = 0;
-		int downSteps = 0;
-		int upSteps = 0;
-
-		// Count how many steps to the right we can take without changing the cell value
-		for (int c = col; c < width; c++) {
-			if (field[row][c] != 0) {
-				break;
-			}
-			rightSteps++;
-		}
-
-		// Count how many steps to the left we can take without changing the cell value
-		for (int c = col; c >= 0; c--) {
-			if (field[row][c] != 0) {
-				break;
-			}
-			leftSteps++;
-		}
-
-		// Count how many steps down we can take without changing the cell value
-		for (int r = row; r < height; r++) {
-			if (field[r][col] != 0) {
-				break;
-			}
-			downSteps++;
-		}
-
-		// Count how many steps up we can take without changing the cell value
-		for (int r = row; r >= 0; r--) {
-			if (field[r][col] != 0) {
-				break;
-			}
-			upSteps++;
-		}
-
-		return new int[]{rightSteps + leftSteps, downSteps + upSteps};
-	}
-
-		private static int[] getNewSize(int row, int col, int[] currentSize) {
-		Random random = new Random();
-		int direction = random.nextInt(2) -1;			// 1 Grow, -1 Shrink
-		validSides = new ArrayList<>(4);
-		Collections.fill(validSides, 0);
-		validSides = Collections.nCopies(4, 0);
-		// 1 if the side can be reduced, 0 otherwise
-		// Check if it's possible to decrease the tile size in each direction
-		if (col + currentSize[1] < width) validSides.set(0, 1); // right
-		if (row + currentSize[0] < height) validSides.set(1, 1); // down
-		if (col > 0) validSides.set(2, 1); // left
-		if (row > 0) validSides.set(3, 1); // up
-		// validSides.removeIf(side -> side == 0); // Remove sides that cannot be reduced
-
-		// Get random from available movements
-		int validSidesSum = 0;
-		for (Integer side : validSides) {
-			if (side != 0) validSidesSum++;
-		}
-		int randomSideIndex = random.nextInt(validSidesSum);
-
-		// Select chosen side
-		int sideToReduce = 0; // 1: right, 2: down, 3: left, 4: up
-		for (int i = 0; i < validSides.size(); i++) {
-			if (validSides.get(i) != 0) {
-				randomSideIndex--;
-			}
-			if (randomSideIndex == 0) {
-				sideToReduce = i;
-				// break;
-			} else {
-				validSides.set(i, 0); //
-			}
-		}
-
-		// Make the answer
-		switch (sideToReduce) {
-			case 1:
-			case 3:
-				currentSize[1]--;
-				break;
-			case 2:
-			case 4:
-				currentSize[0]--;
-				break;
-			default:
-				return new int[]{0, 0}; 	// zero size tile
-		}
-
-		return currentSize;
-	}
-
-*/
-
 }

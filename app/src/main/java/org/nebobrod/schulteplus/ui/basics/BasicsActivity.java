@@ -1,12 +1,12 @@
 /*
- * Copyright (c) "Smart Rovers" 2024.
+ * Copyright (c) 2024  "Smart Rovers"
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package org.nebobrod.schulteplus.ui;
+package org.nebobrod.schulteplus.ui.basics;
 
 import static org.nebobrod.schulteplus.Utils.getRes;
 
@@ -44,6 +44,7 @@ import org.nebobrod.schulteplus.databinding.ActivityBasicsBinding; // TODO: 01.1
 import org.nebobrod.schulteplus.R;
 
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * A full-screen activity that shows and hides the system UI (i.e.
@@ -160,8 +161,8 @@ public class BasicsActivity extends AppCompatActivity {
 		repos = new DataRepos(ExResult.class);
 		ExerciseRunner.getInstance();
 		exercise = new STable(1, 1);
-		ExerciseRunner.savePreferences(exercise);
-		resultLiveData.setValue(exercise.getResults());
+		ExerciseRunner.start(exercise);
+		resultLiveData.setValue(ExerciseRunner.getExResult());
 
 
 		mVisible = true;
@@ -204,16 +205,23 @@ public class BasicsActivity extends AppCompatActivity {
 			public void onClick(View view) {
 				btDistraction.performClick();
 
+				/** OK - continue, do nothing
+				 * (Basic exercise can not finish unsuccessfully) */
 				DialogInterface.OnClickListener okListener = null;
+
+				/** Cancel button means Complete (well finished exercise) */
 				DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {
-						exercise.setFinished(true);
-						ExerciseRunner.savePreferences(exercise);
-						repos.put(resultLiveData.getValue());
+
+						ExerciseRunner.setExResult(Objects.requireNonNull(resultLiveData.getValue()));
+						ExerciseRunner.complete();
+//						resultLiveData.setValue(exercise.calculateResults());
 						finish();
 					}
 				};
+
+				resultLiveData.setValue(exercise.calculateResults());
 
 				// Call Dialog
 				ExResultArrayAdapter.feedbackDialog(BasicsActivity.this,
@@ -239,7 +247,9 @@ public class BasicsActivity extends AppCompatActivity {
 				long time = (System.nanoTime()-timeStarted)/1000000000;
 				s = String.format(Locale.ENGLISH, "%1$d:%2$02d", time/60,time%60);
 				tvClock.setText(s);
-				resultLiveData.setValue(exercise.getResults());
+
+				// TODO: 23.05.2024 check if it's necessary
+				//resultLiveData.setValue(exercise.getResults());
 			}
 		});
 

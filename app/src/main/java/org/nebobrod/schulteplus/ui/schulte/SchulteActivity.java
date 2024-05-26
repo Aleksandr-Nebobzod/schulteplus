@@ -1,12 +1,12 @@
 /*
- * Copyright (c) "Smart Rovers" 2024.
+ * Copyright (c) 2024  "Smart Rovers"
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package org.nebobrod.schulteplus.ui;
+package org.nebobrod.schulteplus.ui.schulte;
 
 import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
@@ -20,6 +20,7 @@ import org.nebobrod.schulteplus.data.ExResultArrayAdapter;
 
 import static org.nebobrod.schulteplus.Utils.*;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -43,7 +44,7 @@ import android.widget.Toast;
 
 import java.util.Objects;
 
-public class SchulteActivity02 extends AppCompatActivity {
+public class SchulteActivity extends AppCompatActivity {
 	public static final String TAG = "SchulteActivity02";
 	private GridView mGrid;
 	private STable exercise;
@@ -51,7 +52,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 	private ExerciseRunner runner;
 	private ExToolbar exToolbar;
 
-	private DataRepos repos;
+	private DataRepos<ExResult> repos;
 	private MutableLiveData<ExResult> resultLiveData = new MutableLiveData<>();
 	private DialogInterface.OnClickListener cancelListener;
 	private DialogInterface.OnClickListener restartListener;
@@ -73,11 +74,23 @@ public class SchulteActivity02 extends AppCompatActivity {
 		boolean feedbackHaptic = runner.getPrefHaptic();
 		boolean feedbackSound = runner.getPrefSound();
 
+		getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+			@Override
+			public void handleOnBackPressed() {
+				ExResultArrayAdapter.feedbackDialog(SchulteActivity.this,
+						null,
+						getRes().getString(R.string.txt_ex_not_done) + "! " + getRes().getString(R.string.txt_continue_ex) + "?",
+						null,
+						(dialogInterface, i) -> finish());
+			}
+		});
+
 		// Dialog buttons listeners
 		cancelListener = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialogInterface, int i) {
-				repos.put(resultLiveData.getValue());
+//				repos.put(resultLiveData.getValue());
+				ExerciseRunner.complete();
 				finish();
 			}
 		};
@@ -88,7 +101,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 				Log.d(TAG, "onClick: " + "note: " + resultLiveData.getValue().getNote() +
 						" levelOfEmotion: " + resultLiveData.getValue().getLevelOfEmotion() +
 						" sbEnergyLevel: " + resultLiveData.getValue().getLevelOfEnergy());
-				repos.put(resultLiveData.getValue());
+				ExerciseRunner.complete();
 				exercise.reset();
 				exToolbar.init();
 				mAdapter.notifyDataSetChanged();
@@ -100,7 +113,7 @@ public class SchulteActivity02 extends AppCompatActivity {
 		ExerciseRunner.getInstance();
 		ExerciseRunner.loadPreference(); // TODO: 03.05.2024 check necessity
 		exercise = new STable( runner.getX(), runner.getY(), ExerciseRunner.probDx(), ExerciseRunner.probDy(), ExerciseRunner.probW());
-		ExerciseRunner.savePreferences(exercise);
+		ExerciseRunner.setExercise(exercise);
 		repos = new DataRepos(ExResult.class);
 
 		// Toolbar for exercise initiation (if hints are chosen)
@@ -137,9 +150,8 @@ public class SchulteActivity02 extends AppCompatActivity {
 //				if (position==1) Utils.showSnackBar(SchulteActivity02.this, position +"");
 				if (exercise.isCorrectTurn(position)) {
 					if (exercise.checkIsFinished()) {
-						ExerciseRunner.savePreferences(exercise);
-						resultLiveData.setValue(exercise.getResults());
-						ExResultArrayAdapter.feedbackDialog(SchulteActivity02.this,
+						resultLiveData.setValue(exercise.calculateResults());
+						ExResultArrayAdapter.feedbackDialog(SchulteActivity.this,
 								resultLiveData,
 								getRes().getString(R.string.txt_ex_done_1) + "! " + getRes().getString(R.string.txt_continue_ex) + "?",
 								restartListener,
@@ -170,17 +182,13 @@ public class SchulteActivity02 extends AppCompatActivity {
 			Objects.requireNonNull(getSupportActionBar()).hide();
 		}
 	}
-
+/*
 	@Override
 	public void onBackPressed() {
-		ExResultArrayAdapter.feedbackDialog(this,
-				null,
-				getRes().getString(R.string.txt_ex_not_done) + "! " + getRes().getString(R.string.txt_continue_ex) + "?",
-				null,
-				(dialogInterface, i) -> finish());
-		// TODO: 29.04.2024 check what to change for deprecated:
+
+		// TODOne: 29.04.2024 check what to change for deprecated:
 		super.onBackPressed();
-	}
+	}*/
 
 	@Override
 	public void onConfigurationChanged(@NonNull Configuration newConfig) {

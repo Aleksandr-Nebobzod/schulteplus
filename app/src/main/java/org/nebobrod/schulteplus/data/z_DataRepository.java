@@ -14,7 +14,7 @@ import java.util.List;
 
 /** Provides necessary methods for stored data
  */
-public interface xDataRepository {
+public interface z_DataRepository {
 
 	/** Puts into a DataRepository */
 	public<T> void put(T result);

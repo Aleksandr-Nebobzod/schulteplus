@@ -10,6 +10,7 @@ package org.nebobrod.schulteplus.data.fbservices;
 
 
 import static org.nebobrod.schulteplus.Utils.getRes;
+import static org.nebobrod.schulteplus.Utils.hasFieldName;
 import static org.nebobrod.schulteplus.common.Const.QUERY_COMMON_LIMIT;
 
 import org.nebobrod.schulteplus.R;
@@ -19,8 +20,12 @@ import org.nebobrod.schulteplus.data.Identifiable;
 import org.nebobrod.schulteplus.data.DataRepository;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import android.os.Looper;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -31,13 +36,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
 /**
- * Manages data access for Firebase
+ * Manages data access for Firebase with POJO, the entity implementing {@link Identifiable} to be stored.
  */
 public class DataFirestoreRepo<TEntity extends Identifiable<String>> implements DataRepository<TEntity, String> {
 
@@ -191,4 +197,83 @@ public class DataFirestoreRepo<TEntity extends Identifiable<String>> implements 
 				});
 	}
 
+	public Task<List<TEntity>> getListByField(@NonNull String field, @Nullable Object value) {
+		List<TEntity> result = new ArrayList<>();
+		Log.i(TAG, "Applying to  '" + collectionReference.getPath() + " for limited list");
+
+		return collectionReference
+//				.orderBy("timeStamp", Query.Direction.DESCENDING)
+				.limit(QUERY_COMMON_LIMIT)
+				.whereEqualTo(field, value)
+				.get().continueWith(bgRunner, new Continuation<QuerySnapshot, List<TEntity>>() {
+					@Override
+					public List<TEntity> then(@NonNull Task<QuerySnapshot> task) {
+
+						Log.d(TAG,  " inside getListByField.get().continueWith: main " + Looper.getMainLooper().isCurrentThread() + Thread.currentThread());
+						QuerySnapshot querySnapshot = task.getResult();
+						if (task.isSuccessful()) {
+							for (QueryDocumentSnapshot document : querySnapshot) {
+								Log.d(TAG, document.getId() + " => " + document.getData());
+								result.add(document.toObject(entityClass));
+							}
+						} else {
+							Log.e(TAG, "Error getting documents: ", task.getException());
+						}
+						return result;
+					}
+				});
+	}
+
+	public Task<QuerySnapshot> printListByField() {
+
+		// "66229263"	"-990303179"
+		return collectionReference.whereEqualTo("id", 66229263)
+				.get()
+				.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+					@Override
+					public void onComplete(@NonNull Task<QuerySnapshot> task) {
+						if (task.isSuccessful()) {
+							Log.d(TAG, "printListByField is successful");
+							for (QueryDocumentSnapshot document : task.getResult()) {
+								Log.d(TAG, document.getId() + " => " + document.getData());
+							}
+						} else {
+							Log.w(TAG, "Error getting documents." + task.getException());
+						}
+					}
+				});
+	}
+
+	public Task<Void> unpersonilise(String uid, String newName) {
+		TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
+		String dummyEmail = newName + getRes().getString(R.string.txt_common_mailbox);
+
+		collectionReference.whereEqualTo("uid", uid).get()
+				.addOnCompleteListener(task -> {
+					if (task.isSuccessful()) {
+						WriteBatch batch = FirebaseFirestore.getInstance().batch();
+						for (DocumentSnapshot document : task.getResult().getDocuments()) {
+							if (hasFieldName(entityClass, "name")) {
+								batch.update(document.getReference(), "name", newName);
+							}
+							if (hasFieldName(entityClass, "email")) {
+								batch.update(document.getReference(), "email", dummyEmail);
+							}
+
+						}
+						batch.commit()
+								.addOnCompleteListener(batchTask -> {
+									if (batchTask.isSuccessful()) {
+										taskCompletionSource.setResult(null);
+									} else {
+										taskCompletionSource.setException(batchTask.getException());
+									}
+								});
+					} else {
+						taskCompletionSource.setException(task.getException());
+					}
+				});
+
+		return taskCompletionSource.getTask();
+	}
 }

@@ -9,7 +9,11 @@
 package org.nebobrod.schulteplus;
 
 import org.junit.Test;
+import org.nebobrod.schulteplus.common.TileBranchPaving;
+import org.nebobrod.schulteplus.common.TileFilling;
+import org.nebobrod.schulteplus.common.TilePickPaving;
 import org.nebobrod.schulteplus.common.TileSquashPaving;
+
 
 public class TilePavingTest {
 
@@ -17,5 +21,8 @@ public class TilePavingTest {
 	public void mainTest() {
 		String[] arg = null;
 		TileSquashPaving.main(null);
+//		TilePickPaving.main(null);
+//		TileBranchPaving.main(null);
+//		TileFilling.main(null);
 	}
 }

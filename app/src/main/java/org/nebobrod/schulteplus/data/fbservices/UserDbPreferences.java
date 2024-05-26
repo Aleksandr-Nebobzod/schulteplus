@@ -45,6 +45,7 @@ import javax.inject.Singleton;
 
 /** Provides  user Preference copy in FirebaseFirestore
  * (ExerciseRunner is used as helper) */
+@Deprecated // 24.05.21 Getting rid of UserDbPreferences
 @Singleton
 public class UserDbPreferences {
 	private static final String TAG = "UserDbPreferences";
@@ -97,12 +98,12 @@ public class UserDbPreferences {
 	public static UserDbPreferences getInstance(String newUid) {
 		// TODO: 06.04.2024 make uid and email reasonable
 		if (instance == null) {
-			instance = new UserDbPreferences(ExerciseRunner.getInstance(
-					new UserHelper(newUid, "email", "name", "pass", "devId", "uak", false)));
+//			instance = new UserDbPreferences(ExerciseRunner.getInstance(
+//					new UserHelper(newUid, "email", "name", "pass", "devId", "uak", false)));
 		} else {
 			if (!runner.getUid().equals(newUid)) {
-				instance = new UserDbPreferences(ExerciseRunner.getInstance(
-						new UserHelper(newUid, "email", "name", "pass", "devId", "uak", false)));
+//				instance = new UserDbPreferences(ExerciseRunner.getInstance(
+//						new UserHelper(newUid, "email", "name", "pass", "devId", "uak", false)));
 			}
 		}
 		return instance;
@@ -133,6 +134,7 @@ public class UserDbPreferences {
 	}
 	*/
 
+	@Deprecated
 	public  void save() {
 		objectMap = new HashMap<>();
 		objectMap.put("uid", runner.getUid());
@@ -160,7 +162,7 @@ public class UserDbPreferences {
 		batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(@NonNull Task<Void> task) {
-				runner.onCallback(objectMap);
+				/*runner.onCallback(objectMap);*/  // 24.05.21 Getting rid of UserDbPreferences
 			}
 		}).addOnFailureListener(new OnFailureListener() {
 			@Override
@@ -192,7 +194,8 @@ public class UserDbPreferences {
 					objectMap = null;
 				}
 //				if (null != cb) cb.onCallback(objectMap);
-				runner.onCallback(objectMap);
+				// TODO: 21.05.2024 remove it done
+//				runner.onCallback(objectMap);
 			}
 		});
 		// [END firestore_data_reference_subcollection]

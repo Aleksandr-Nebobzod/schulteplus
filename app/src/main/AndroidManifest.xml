@@ -26,6 +26,7 @@
         android:configChanges="orientation|screenSize"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
@@ -71,13 +72,13 @@
             android:windowSoftInputMode="adjustNothing" >
         </activity>
         <activity
-            android:name=".ui.SchulteActivity02"
+            android:name=".ui.schulte.SchulteActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
             android:label="@string/title_activity_schulte"
             android:theme="@style/Theme.SchultePlus.Fullscreen" />
         <activity
-            android:name=".ui.BasicsActivity"
+            android:name=".ui.basics.BasicsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
             android:label="@string/title_activity_basics"

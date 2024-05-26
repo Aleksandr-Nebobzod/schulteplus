@@ -8,6 +8,8 @@
 
 package org.nebobrod.schulteplus.common;
 
+import static org.nebobrod.schulteplus.Utils.timeStampU;
+
 import org.nebobrod.schulteplus.data.ExResult;
 
 import java.util.Random;
@@ -16,6 +18,7 @@ import java.util.Random;
 public abstract class Exercise<T extends ExResult> {
 	long exerciseId = 0;
 	long seed = 0;
+	long timeStamp = 0; 			// updated time timeStampU()
 	Random random = null;
 	T exResult = null;
 	boolean isFinished = false;
@@ -59,6 +62,7 @@ public abstract class Exercise<T extends ExResult> {
 
 	public void setFinished(boolean finished) {
 		isFinished = finished;
+		setTimeStamp(timeStampU());
 	}
 
 	public boolean isValid() {
@@ -67,6 +71,14 @@ public abstract class Exercise<T extends ExResult> {
 
 	public void setValid(boolean valid) {
 		exResult.setValid(valid);
+	}
+
+	public long getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(long timeStamp) {
+		this.timeStamp = timeStamp;
 	}
 
 	abstract boolean validateResult();

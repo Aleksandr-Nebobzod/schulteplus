@@ -8,9 +8,12 @@
 
 package org.nebobrod.schulteplus.ui;
 
+import static com.google.android.gms.common.GooglePlayServicesUtil.isGooglePlayServicesAvailable;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +21,8 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragment;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
 import org.nebobrod.schulteplus.R;
@@ -69,7 +74,7 @@ public class PrefsAboutFragment extends PreferenceFragmentCompat {
 					@Override
 					public boolean onPreferenceClick(@NonNull Preference preference) {
 						try {
-							Utils.displayHtmlAlertDialog(R.string.str_about_license_html_source);
+							Utils.displayHtmlAlertDialog(requireActivity(), R.string.str_about_license_html_source);
 							return true;
 						} catch (Exception e) {
 							Log.e(TAG, "license dialog opening", e);
@@ -85,7 +90,7 @@ public class PrefsAboutFragment extends PreferenceFragmentCompat {
 					@Override
 					public boolean onPreferenceClick(@NonNull Preference preference) {
 						try {
-							Utils.displayHtmlAlertDialog(R.string.str_about_user_data_policy);
+							Utils.displayHtmlAlertDialog(requireActivity(), R.string.str_about_user_data_policy);
 							return true;
 						} catch (Exception e) {
 							Log.e(TAG, "user_data_policy dialog opening", e);
@@ -101,7 +106,13 @@ public class PrefsAboutFragment extends PreferenceFragmentCompat {
 					@Override
 					public boolean onPreferenceClick(@NonNull Preference preference) {
 						try {
-							startActivity(new Intent(getActivity(), OssLicensesMenuActivity.class));
+							GoogleApiAvailability gApiAvai = new GoogleApiAvailability();
+							if (ConnectionResult.SUCCESS == gApiAvai.isGooglePlayServicesAvailable(requireActivity())) {
+								startActivity(new Intent(getActivity(), OssLicensesMenuActivity.class));
+							} else {
+								Toast.makeText(requireActivity(), R.string.msg_no_google_play_services_installed , Toast.LENGTH_SHORT).show();
+							}
+
 							return true;
 						} catch (Exception e) {
 							Log.e(TAG, "OSS activity opening", e);

@@ -11,18 +11,25 @@ package org.nebobrod.schulteplus.data;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
 
+import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.Const;
+import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /** Makes one entry point for different places to maintain data
  */
-public class DataRepos<TEntity extends Identifiable<String>>  implements xDataRepository {
+public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataRepository {
+	public static final String TAG = "DataRepos";
 
 	private final DataOrmRepo ormRepo;
 //	private static final FirestoreUtils firestoreDataHandler = new FirestoreUtils();
@@ -37,6 +44,7 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements xDataRe
 	 * Puts into a DataRepositories
 	 * @param result
 	 */
+	@Deprecated
 	@Override
 	public void put(Object result) {
 		ormRepo.put(result);
@@ -67,17 +75,44 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements xDataRe
 
 	//////////////////////////////
 
+	/**
+	 * Create records in both repos (updates if id exists)
+	 * @param entity the entity implementing {@link Identifiable} to be stored.
+	 * @return the Task with success or failure state (for both repos)
+	 */
 	public Task<Void> create(TEntity entity) {
-		Task<Void> task1 = ormRepo.create(entity);
-		Task<Void> task2 = fsRepo.create(entity);
+		// Synchronisation signal-object
+		final TaskCompletionSource<Void> completionSource = new TaskCompletionSource<>();
 
-		return Tasks.whenAll(task1, task2);
+		Task<Void> task1 = ormRepo.create(entity).addOnCompleteListener(new OnCompleteListener() {
+			@Override
+			public void onComplete(@NonNull Task task) {
+				if (task.isSuccessful()) {
+
+					// Save into second Repo (having id from ORM)
+					fsRepo.create(entity).addOnCompleteListener(new OnCompleteListener() {
+						@Override
+						public void onComplete(@NonNull Task task) {
+							if (task.isSuccessful()) {
+								completionSource.setResult(null);
+							} else {
+								completionSource.setException(task.getException());
+							}
+						}
+					});
+				} else {
+					completionSource.setException(task.getException());
+				}
+			}
+		});
+
+		return completionSource.getTask();
 	}
 
-	/** get two results from both repos and return the newest one
+	/** Get two results from both repos and return the newest one
 	 * and update the other if it is older to be sure they are same
  	 * @param id key of entity
-	 * @return
+	 * @return the Task with most fresh (by timeStamp) Result, the entity implementing {@link Identifiable} to be stored.
 	 */
 	public Task<TEntity> read(String id) {
 		Task<TEntity> task1 = ormRepo.read(id);
@@ -89,17 +124,109 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements xDataRe
 
 				// Compare and update if necessary
 				TEntity r1 = task1.getResult();
-				TEntity r2 = task1.getResult();
+				TEntity r2 = task2.getResult();
 				if (r1.getTimeStamp() == r2.getTimeStamp()) {
 					return r1;
 				} else if (r1.getTimeStamp() > r2.getTimeStamp()) {
-					fsRepo.create(r1); 	// update from newer local data
+					fsRepo.create(r1); 		// update central repo from newer local data
 					return r1;
 				} else {
-					ormRepo.create(r2); 	// update from newer central data
+					ormRepo.create(r2); 	// update local data from newer central data
 					return r2;
 				}
 			}
 		});
 	}
+
+
+	/**
+	 * Checks local and central repos.Analyse if there are different devices data, updates and return
+	 * @param id hashCode of uid from fbAuth
+	 * @return  actual userHelper (score, name, etc.)
+	 */
+	public Task<UserHelper> getLatestUserHelper(int id) {
+		DataOrmRepo<UserHelper> ormRepo = new DataOrmRepo<>(UserHelper.class);
+		DataFirestoreRepo<UserHelper> fsRepo = new DataFirestoreRepo<>(UserHelper.class);
+		UserHelper userHelper = null;
+
+		// Get data from local repository
+		CompletableFuture<UserHelper> ormFuture = CompletableFuture.supplyAsync(() -> {
+			try {
+				return Tasks.await(ormRepo.read(String.valueOf(id)));
+			} catch (ExecutionException | InterruptedException e) {
+				Log.e(TAG, "ORM Task failed: ", e);
+				return null;
+			}
+		});
+
+		// Get data-set from central repository
+		CompletableFuture<List<UserHelper>> fsFuture = CompletableFuture.supplyAsync(() -> {
+			try {
+				return Tasks.await(fsRepo.getListByField("id", id));
+			} catch (ExecutionException | InterruptedException e) {
+				Log.e(TAG, "Firestore Task failed: ", e);
+				return null;
+			}
+		});
+
+		try {
+			UserHelper ormUser = ormFuture.get();
+			List<UserHelper> fsUsers = fsFuture.get();
+			// sort the list to get most fresh user record from central repo (including other devices)
+			if (fsUsers.size() > 0) {
+				fsUsers.sort(Comparator.comparingLong(UserHelper::getTimeStamp).reversed());
+			} else {
+				// to prevent possible errors due to DB lost
+				UserHelper _dummyOldUserHelper = new UserHelper();
+				_dummyOldUserHelper.setId(id);
+				_dummyOldUserHelper.setTimeStamp(0L);
+				fsUsers.add(_dummyOldUserHelper);
+			}
+
+			UserHelper latestFsUser = fsUsers.get(0);
+
+			// local record exists
+			if (ormUser != null) {
+				String ormUak = ormUser.getUak();
+				long ormTimestamp  = ormUser.getTimeStamp();
+
+				for (UserHelper helper : fsUsers) {
+
+					// same uak in central repo
+					if (ormUak.equals(helper.getUak())) {
+						if (helper.getTimeStamp() < ormTimestamp) {
+							userHelper = ormUser;
+							fsRepo.create(userHelper);
+						} else {
+							userHelper = helper;
+							ormRepo.create(userHelper);
+						}
+					}
+				}
+
+				// no same uak found in central repo
+				if (userHelper == null) {
+					if (ormTimestamp > latestFsUser.getTimeStamp()) {
+						userHelper = ormUser; 		// Used local db offline
+						fsRepo.create(userHelper);
+					} else {
+						userHelper = latestFsUser; 		// fresh data from another device
+						userHelper.setUak(ormUak);
+						ormRepo.create(userHelper); 	// Copy fresh central data to local DB
+					}
+				}
+			} else {
+				userHelper = latestFsUser; 				// fresh data from another device
+				userHelper.setUak(Utils.getUak()); 	// first login on this device (new uak)
+				ormRepo.create(userHelper); 			// Copy fresh central data to local DB
+				fsRepo.create(userHelper); 				// Copy fresh data with new uak to central DB
+			}
+		} catch (ExecutionException | InterruptedException e) {
+			Log.e(TAG, "getLatestUserHelper, Error occurred", e);
+			throw new RuntimeException(e);
+		}
+
+		return Tasks.forResult(userHelper);
+	}
+
 }

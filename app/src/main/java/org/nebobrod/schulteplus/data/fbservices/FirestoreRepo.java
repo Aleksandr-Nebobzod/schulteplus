@@ -15,13 +15,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.nebobrod.schulteplus.common.Const;
 import org.nebobrod.schulteplus.R;
-import org.nebobrod.schulteplus.data.xDataRepository;
+import org.nebobrod.schulteplus.data.z_DataRepository;
 
 import java.util.List;
 
 /** Provides common CRUD methods working on external SchultePlus DB by FirebaseFirestore
  **/
-public class FirestoreRepo implements xDataRepository {
+public class FirestoreRepo implements z_DataRepository {
 	private static final String TAG = FirestoreRepo.class.getSimpleName();
 	private static final String DB_ROOT = getRes().getString(R.string.firestore_root);
 

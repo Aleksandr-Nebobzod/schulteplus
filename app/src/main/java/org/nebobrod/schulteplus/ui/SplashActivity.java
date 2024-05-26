@@ -18,6 +18,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import org.nebobrod.schulteplus.common.Log;
+
+import android.os.Looper;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
@@ -36,7 +38,8 @@ import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.AppExecutors;
 import org.nebobrod.schulteplus.common.NetworkConnectivity;
-import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
+import org.nebobrod.schulteplus.data.DataOrmRepo;
+import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.UserHelper;
 
 import java.util.Random;
@@ -50,7 +53,7 @@ import javax.inject.Inject;
  */
 public class SplashActivity extends AppCompatActivity  implements NetworkConnectivity.ConnectivityCallback {
 	public static final String TAG = "SplashActivity";
-	private static final long SPLASH_STEP_TIME = 500;
+	private static final long SPLASH_STEP_TIME = 300;
 	private static final long TEST_TIME_ALLOWED = 8000L; // 8 sec is maximum splash time
 	private static final int TEST_TIME_IS_UP = 	0b1<<0;
 	private static final int TEST_APP_PASSED = 	0b1<<1;
@@ -60,15 +63,15 @@ public class SplashActivity extends AppCompatActivity  implements NetworkConnect
 
 	private int testPassedFlags = 0;
 
-	private static final int TEST_RES_APP = 		0b1<<0;
-	private static final int TEST_RES_USER_LOGGED_IN = 0b1<<1;
-	private static final int TEST_RES_USER_EXISTS = 0b1<<2;
+	private static final int TEST_RES_APP = 			0b1<<0;
+	private static final int TEST_RES_USER_LOGGED_IN = 	0b1<<1;
+	private static final int TEST_RES_USER_EXISTS = 	0b1<<2;
 	private static final int TEST_RES_USER_VERIFIED = 	0b1<<3;
 	private static final int TEST_RES_USER_VERIF_MESSAGE_CONFIRMED = 	0b1<<4;
-	private static final int TEST_RES_WEB_EXISTS = 	0b1<<5;
-	private static final int TEST_RES_DATA_STORAGE = 0b1<<6;
-	private static final int TEST_RES_DATA_TG = 	0b1<<7;
-	private static final int TEST_RES_DATA_VK = 	0b1<<8;
+	private static final int TEST_RES_WEB_EXISTS = 		0b1<<5;
+	private static final int TEST_RES_DATA_STORAGE = 	0b1<<6;
+	private static final int TEST_RES_DATA_TG = 		0b1<<7;
+	private static final int TEST_RES_DATA_VK = 		0b1<<8;
 	private static final int TEST_RES_USER_VERIF_MESSAGE_SHOWN = 	0b1<<9;
 
 
@@ -85,7 +88,7 @@ public class SplashActivity extends AppCompatActivity  implements NetworkConnect
 	@Inject
 	NetworkConnectivity networkConnectivity;
 	@Inject
-	AppExecutors appExecutors;
+	AppExecutors appExecutors = new AppExecutors();
 	boolean isConnected = false;
 
 
@@ -93,7 +96,7 @@ public class SplashActivity extends AppCompatActivity  implements NetworkConnect
 	FirebaseUser user = null;
 	UserHelper userHelper = null;
 
-	final Handler splashMainHandler = new Handler();
+	final Handler splashMainHandler = new Handler(Looper.getMainLooper());
 	Thread thread;
 	Runnable rMain = new Runnable() {
 	public int count = 5;
@@ -131,7 +134,8 @@ public class SplashActivity extends AppCompatActivity  implements NetworkConnect
 						String strMessage;
 						String email = user.getEmail();
 
-						new DataFirestoreRepo<>(UserHelper.class).read(user.getUid()).addOnSuccessListener(userFsRepoCallback);
+						new DataOrmRepo<>(UserHelper.class).read("" + intStringHash(user.getUid()))
+								.addOnSuccessListener(userRepoListener);
 						iv02User.setImageTintList(cstGreen);
 //						testPassedFlags |= TEST_USER_PASSED;
 //						testResFlags |= TEST_RES_USER_EXISTS;
@@ -156,9 +160,8 @@ public class SplashActivity extends AppCompatActivity  implements NetworkConnect
 //					tvStatus.setText(getResources().getText(R.string.msg_network_connection));
 					tvStatus.setText(Utils.getRes().getText(R.string.msg_internet) + "...");
 //					animThrob(iv04Network,null);
-					appExecutors = new AppExecutors();
 					networkConnectivity = new NetworkConnectivity(appExecutors, getApplicationContext());
-					internetCheck(ivBackground);
+					internetCheck();
 					tvStatus.setText(Utils.getRes().getText(R.string.str_empty));
 					splashMainHandler.postDelayed(this, SPLASH_STEP_TIME);
 					break;
@@ -181,11 +184,12 @@ public class SplashActivity extends AppCompatActivity  implements NetworkConnect
 						if (0 != (testPassedFlags & (TEST_APP_PASSED | TEST_USER_PASSED | TEST_WEB_PASSED | TEST_DATA_PASSED))) {
 							// Can we run to MainActivity?
 							if (0 != (testResFlags & TEST_RES_USER_EXISTS)) {
-								ExerciseRunner.getInstance(userHelper); // user found
-								ExerciseRunner.setOnline(0 != (testResFlags & TEST_RES_WEB_EXISTS));
+//								ExerciseRunner.getInstance(userHelper); // user found
+//								ExerciseRunner.setOnline(0 != (testResFlags & TEST_RES_WEB_EXISTS));
 								if (0 != (testResFlags & TEST_RES_USER_VERIFIED)) {
 									// Yes all done
-									runMainActivity(userHelper);
+									new DataRepos<>(UserHelper.class).getLatestUserHelper(intStringHash(user.getUid()))
+											.addOnCompleteListener(task -> runMainActivity(task.getResult()));
 								} else { // User has to confirm he isn't verified
 //									if (thread.isAlive()) thread.interrupt(); // No need run by time anymore...
 									// <- this changed: threaded runnable looks for flag USER_VERIF_MESSAGE_SHOWN ->
@@ -250,7 +254,6 @@ public class SplashActivity extends AppCompatActivity  implements NetworkConnect
 
 //		this.overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
 		// Hook links
-		ivBackground = findViewById(R.id.iv_background);
 		clTextHolder = findViewById(R.id.cl_text_holder);
 
 		//Animation Calls
@@ -302,11 +305,12 @@ public class SplashActivity extends AppCompatActivity  implements NetworkConnect
 
 		// Start it in a new thread
 		thread = new Thread(null, limitUiIdleTime,
-				"Background");
+				"BackgroundTimeLimit");
 		thread.start();
 
 		//Splash Screen Code to call new Activity after some time
-		rMain.run();
+		appExecutors.getNetworkIO().execute(rMain);
+//		rMain.run();
 
 	}
 
@@ -328,7 +332,7 @@ public class SplashActivity extends AppCompatActivity  implements NetworkConnect
 	}
 
 	// Callback for check user in database
-	private final OnSuccessListener<UserHelper> userFsRepoCallback = value -> {
+	private final OnSuccessListener<UserHelper> userRepoListener = value -> {
 		Log.d(TAG, "onCallback: " + value);
 		testPassedFlags |= TEST_USER_PASSED;
 		if (value == null) {
@@ -336,7 +340,7 @@ public class SplashActivity extends AppCompatActivity  implements NetworkConnect
 		} else {
 			userHelper = value;
 			testResFlags |= TEST_RES_USER_EXISTS;
-			ExerciseRunner.getInstance(userHelper);
+//			ExerciseRunner.getInstance(userHelper);
 		}
 	};
 
@@ -354,7 +358,7 @@ public class SplashActivity extends AppCompatActivity  implements NetworkConnect
 	};*/
 	////////////////////////////////////////////////////
 
-	public void internetCheck(View view) { //view is for test
+	public void internetCheck() { //view is for test
 		networkConnectivity.checkInternetConnection((isConnected) -> {
 			if (isConnected) {
 				testPassedFlags |= TEST_WEB_PASSED;

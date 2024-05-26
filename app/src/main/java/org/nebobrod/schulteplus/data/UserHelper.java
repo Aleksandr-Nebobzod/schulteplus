@@ -19,7 +19,8 @@ import com.j256.ormlite.field.DatabaseField;
 import java.io.Serializable;
 
 /**
- * UserHelper data object saved to the local database through ormlite.
+ * UserHelper data object represents user state.
+ * Saved to the local database through ormlite and in central repository as well.
  *
  * @author nebobzod
  */
@@ -42,7 +43,9 @@ public class UserHelper implements Serializable, Identifiable<String> {
 	private String password;
 	@DatabaseField
 	private String deviceId;
-	/** uak (user app key) -- value which is unique for 1 active user record on the device (after delete user it is inactive, after the same user sign-on the same device this value regenerated)	 */
+	/** uak (user app key) -- value which is unique for 1 active user record on the device
+	 * (after delete user it is inactive, after the same user sign-on the same device this value regenerated)
+	 * (the only 1 uak is possible for 1 uid in the Table) */
 	@DatabaseField (canBeNull = false)
 	private String uak;
 	@DatabaseField
@@ -80,7 +83,7 @@ public class UserHelper implements Serializable, Identifiable<String> {
 		this.dateChanged = this.dateCreated;
 	}
 
-	/** Updates fields except needed at creation */
+	/** Updates all fields except needed at creation */
 	public void set(String email, String name, String password, boolean verified, int psyCoins, int hours, int level) {
 
 		this.name = name;
@@ -91,6 +94,15 @@ public class UserHelper implements Serializable, Identifiable<String> {
 		this.hours = hours;
 		this.level = level;
 		this.timeStamp = timeStampU();
+		this.dateChanged = timeStampFormattedLocal(this.timeStamp);
+	}
+	/** Updates fields except needed at creation */
+	public void setStatus(int psyCoins, int hours, int level, long timeStamp) {
+
+		this.psyCoins = psyCoins;
+		this.hours = hours;
+		this.level = level;
+		this.timeStamp = timeStamp;
 		this.dateChanged = timeStampFormattedLocal(this.timeStamp);
 	}
 
@@ -129,8 +141,12 @@ public class UserHelper implements Serializable, Identifiable<String> {
 		return password;
 	}
 
+	/**
+	 *
+	 * @param password not the password indeed but hash code
+	 */
 	public void setPassword(String password) {
-		this.password = String.valueOf(password.hashCode()+password.hashCode());
+		this.password = password;
 	}
 
 	public boolean isPasswordMatches (String password)	{
@@ -204,7 +220,7 @@ public class UserHelper implements Serializable, Identifiable<String> {
 	{
 		if (this == null) return null;
 
-		return "FbUserHelper{at: " + timeStampFormattedLocal(timeStampU()) + '\n' + '\'' +
+		return "UserHelper{at: " + timeStampFormattedLocal(timeStampU()) + '\n' + '\'' +
 				" id='" + id + '\'' +
 				", uid='" + uid + '\'' +
 				", email='" + email + '\'' +
@@ -221,7 +237,7 @@ public class UserHelper implements Serializable, Identifiable<String> {
 	@Exclude
 	@Override
 	public String getEntityKey() {
-		return String.valueOf(id) + "." + String.valueOf(uak);
+		return getUak() + "." + String.valueOf(id);
 	}
 }
 

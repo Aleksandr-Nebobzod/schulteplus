@@ -37,8 +37,8 @@ public class ExResultSchulte  extends ExResult {
 	}
 
 	/** minimum update */
-	public void update(long numValue, int turns, int turnsMissed, float average, float rmsd, int levelOfEmotion, int levelOfEnergy, String note) {
-		super.update(numValue, levelOfEmotion, levelOfEnergy, note);
+	public void update(long timeStamp, long numValue, int turns, int turnsMissed, float average, float rmsd, int levelOfEmotion, int levelOfEnergy, String note) {
+		super.update(timeStamp, numValue, levelOfEmotion, levelOfEnergy, note);
 		this.setTurns(turns);
 		this.setTurnsMissed(turnsMissed);
 		this.setAverage(average);

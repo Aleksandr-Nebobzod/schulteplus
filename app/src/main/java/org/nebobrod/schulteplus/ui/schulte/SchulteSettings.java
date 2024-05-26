@@ -6,7 +6,7 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-package org.nebobrod.schulteplus.ui.schultesettings;
+package org.nebobrod.schulteplus.ui.schulte;
 
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.common.Const.*;
@@ -142,7 +142,7 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 	public void onPause() {
 		super.onPause();
 		// TODO: 16.01.2024 probably here bundle is needed for surfaceView 
-		ExerciseRunner.savePreferences(null);
+		ExerciseRunner.savePreferences();
 	}
 
 	@Override

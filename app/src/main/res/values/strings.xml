@@ -236,7 +236,7 @@
 	<string name="txt_datasource_www_hint">Actual in www</string>
 	<string name="txt_datasource_local_hint">Actual on local</string>
 	<string name="lbl_delete_account">Delete account</string>
-	<string name="txt_delete_account_description">Delete your personal data from all application resources and depersonalize all yor records. Continue?</string>
+	<string name="txt_delete_account_description">Delete your personal data from all shared application resources and depersonalize all yor records. Continue?</string>
 	<string name="msg_delete_account_success">Account data has been removed. Your exercise data are labeled by dummy name: </string>
 	<string name="msg_delete_account_failed">Can not remove account</string>
 	<string name="msg_password_reset_email_sent">Password Reset Email Sent!</string>
@@ -245,10 +245,13 @@
 	<string name="lbl_about_oss">Open source notices</string>
 	<string name="lbl_about_license">License</string>
 	<string name="str_about_license_html_source">licenses-en.html</string>
-	<string name="lbl_about_user_data_policy">User data policy</string>
+	<string name="lbl_about_user_data_policy">User data and privacy policy</string>
 	<string name="str_about_user_data_policy">user_data_policy-en.html</string>
 	<string name="str_logoff_caution">You are able to log off and delete your account on main preferences menu</string>
 	<string name="err_result_validity">Error of result validation. No stat update.</string>
 	<string name="msg_user_data_failed">Hard to fetch data</string>
+	<string name="msg_no_google_play_services_installed">No google play services installed. Can not get data</string>
+	<string name="msg_user_must_login">User must be logged in</string>
+	<string name="txt_common_mailbox" translatable="false">\@att.org</string>
 
 </resources>

@@ -31,8 +31,8 @@ public class ExResultBasics extends ExResult{
 	}
 
 	/** minimum update */
-	public void update(long numValue, int events, int levelOfEmotion, int levelOfEnergy, String note) {
-		super.update(numValue, levelOfEmotion, levelOfEnergy, note);
+	public void update(long timeStamp, long numValue, int events, int levelOfEmotion, int levelOfEnergy, String note) {
+		super.update(timeStamp, numValue, levelOfEmotion, levelOfEnergy, note);
 		this.setTurns(events);
 	}
 

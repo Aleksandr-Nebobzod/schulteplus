@@ -8,6 +8,7 @@
 
 package org.nebobrod.schulteplus.data;
 
+import static org.nebobrod.schulteplus.Utils.intFromString;
 import static org.nebobrod.schulteplus.common.Const.QUERY_COMMON_LIMIT;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.data.DatabaseHelper.getHelper;
@@ -39,8 +40,9 @@ import java.util.concurrent.Executor;
 public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRepository<TEntity, String> {
 	private static final String TAG = DataOrmRepo.class.getSimpleName();
 
+	private final Class<TEntity> entityType;
 	private final DatabaseHelper helper;
-	Dao<TEntity, Integer> dao;
+	private final Dao<TEntity, Integer> dao;
 	private static final AppExecutors appExecutors = new AppExecutors();
 	private final Executor bgRunner;
 
@@ -48,9 +50,14 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 	 * easy constructor
 	 */
 	public DataOrmRepo(Class<TEntity> entityClass) {
+		this.entityType = entityClass;
 		this.helper = DatabaseHelper.getHelper();
-		dao = getAnyDao(entityClass.getSimpleName());
+		this.dao = getAnyDao(entityClass.getSimpleName());
 		this.bgRunner = new AppExecutors().getDiskIO();
+	}
+
+	public Class<TEntity> getEntityType() {
+		return entityType;
 	}
 
 	/**
@@ -160,12 +167,20 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 	 * @return A {@link Task} for a boolean which is 'true' if the entity for the given id exists, 'false' otherwise.
 	 */
 	@Override
-	public Task<Boolean> exists(final String documentName) {
+	public Task<Boolean> exists(String documentName) {
 		final TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+
+		// Convert "uaknum.123123" to "123123" for UserHelper.id (the only 1 uak is possible for 1 uid)
+		String _documentName = documentName;
+		int dotIndex = documentName.indexOf(".");
+		if (dotIndex >= 0) {
+			_documentName = documentName.substring(dotIndex); 	// From the dot till end of string
+		}
+		String _docName = _documentName;
 
 		Callable<Boolean> callable = () -> {
 			try {
-				Boolean _result = dao.idExists(Integer.valueOf(documentName));
+				Boolean _result = dao.idExists(Integer.valueOf(_docName));
 				taskCompletionSource.setResult(_result); 	// Success
 				return _result;
 			} catch (java.sql.SQLException e) {
@@ -241,19 +256,27 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 	 * Queries the repository for an uniquely identified entity and returns it. If the entity does
 	 * not exist in the repository, a new instance is returned.
 	 *
-	 * @param id the unique id of an entity.
+	 * @param documentName the unique id of an entity.
 	 * @return A {@link Task} for an entity implementing {@link Identifiable}.
 	 */
 	@Override
-	public Task<TEntity> read(String id) {
+	public Task<TEntity> read(String documentName) {
 		final TaskCompletionSource<TEntity> taskCompletionSource = new TaskCompletionSource<>();
+
+		// Convert "uaknum.123123" to "123123" for UserHelper.id (the only 1 uak is possible for 1 uid)
+		String _documentName = documentName;
+		int dotIndex = documentName.indexOf(".");
+		if (dotIndex >= 0) {
+			_documentName = documentName.substring(dotIndex); 	// From the dot till end of string
+		}
+		String _docName = _documentName;
 
 		//  Callable, which makes db-operation
 		Callable<Void> callable = () -> {
 			try {
-				taskCompletionSource.setResult(dao.queryForId(Integer.valueOf(id)));	// Success
+				taskCompletionSource.setResult(dao.queryForId(intFromString(_docName)));	// Success
 			} catch (java.sql.SQLException e) {
-				Log.e(TAG, "read id: " + id + " in" + dao.getDataClass().getSimpleName() + "Err: " + e.getLocalizedMessage(), e);
+				Log.e(TAG, "read id: " + _docName + " in" + dao.getDataClass().getSimpleName() + "Err: " + e.getLocalizedMessage(), e);
 				taskCompletionSource.setException(e); // Error
 			}
 			return null;
@@ -303,7 +326,7 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 
 	public static synchronized void achievePut(String uid, String uak, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark) {
 		Achievement achievement = new Achievement();
-		achievement.setAchievement(uid,  uak, name,  timeStamp,  dateTime,  recordText,  recordValue,  specialMark);
+		achievement.set(uid,  uak, name,  timeStamp,  dateTime,  recordText,  recordValue,  specialMark);
 		try {
 			DatabaseHelper helper = new DatabaseHelper();
 			Dao<Achievement, Integer> dao = helper.getAchievementDao();

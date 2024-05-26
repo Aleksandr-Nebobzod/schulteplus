@@ -34,7 +34,8 @@
 			<PreferenceCategory app:key="prf_cat_prob" android:title="@string/lbl_Probabilities"  app:initialExpandedChildrenCount="0">
 				<SwitchPreference app:key="prf_prob_enabled"  app:summaryOn="@string/lbl_prob_enabled"  app:summaryOff="@string/lbl_prob_disabled" app:defaultValue="false" />
 				
-				<org.nebobrod.schulteplus.ui.schultesettings.DrawerPreference app:key="prf_prob_drawer" app:layout="@layout/fragment_probabilities" />
+				<org.nebobrod.schulteplus.ui.schulte.DrawerPreference
+					app:key="prf_prob_drawer" app:layout="@layout/fragment_probabilities" />
 				<SwitchPreference app:key="prf_prob_zero"  app:summaryOn="@string/lbl_prob_zero_enabled"  app:summaryOff="@string/lbl_prob_zero_disabled" app:defaultValue="false"  app:enabled="false"  />
 				<SeekBarPreference app:key="prf_prob_surface" app:title="@string/lbl_prob_surface" app:defaultValue="10" app:min="4" android:max="10" app:showSeekBarValue="false" app:enabled="false" />
 				

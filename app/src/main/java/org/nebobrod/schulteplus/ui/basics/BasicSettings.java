@@ -70,7 +70,7 @@ public class BasicSettings extends PreferenceFragmentCompat {
 	@Override
 	public void onPause() {
 		super.onPause();
-		ExerciseRunner.savePreferences(null);
+		ExerciseRunner.savePreferences();
 	}
 
 	@Override

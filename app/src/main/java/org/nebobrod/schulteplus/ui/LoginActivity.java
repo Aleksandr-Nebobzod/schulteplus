@@ -10,6 +10,7 @@ package org.nebobrod.schulteplus.ui;
 
 
 import static org.nebobrod.schulteplus.Utils.getRes;
+import static org.nebobrod.schulteplus.Utils.intStringHash;
 import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import org.nebobrod.schulteplus.common.AppExecutors;
 import org.nebobrod.schulteplus.common.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -27,10 +30,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -40,9 +45,19 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.data.Achievement;
+import org.nebobrod.schulteplus.data.DataOrmRepo;
 import org.nebobrod.schulteplus.data.DataRepos;
+import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.UserHelper;
 import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 
 public class LoginActivity extends AppCompatActivity {
 	private static final String TAG = "Login";
@@ -50,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 	private static final String DB_PATH = "users";
 
 	FirebaseAuth fbAuth;
-	FirebaseUser user;
+	FirebaseUser fbUser;
 
 	EditText etEmail, etName, etPassword;
 	MaterialButton btGoOn;
@@ -76,11 +91,10 @@ public class LoginActivity extends AppCompatActivity {
 		progressBar = findViewById(R.id.progress_bar);
 
 		fbAuth = FirebaseAuth.getInstance();
-		user = fbAuth.getCurrentUser();
+		fbUser = fbAuth.getCurrentUser();
 
 		// Started with credentials?...
 		if (getIntent() != null & getIntent().hasExtra("email"))	{
-//			fbUser = getIntent().getExtras().getParcelable("user");
 			etEmail.setText(getIntent().getExtras().getString("email",""));
 			etName.setText(getIntent().getExtras().getString("name", ""));
 			etPassword.setText(getIntent().getExtras().getString("password", ""));
@@ -119,19 +133,11 @@ public class LoginActivity extends AppCompatActivity {
 					.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
 						@Override
 						public void onSuccess(AuthResult authResult) {
-							// check an account for complete registration (repo copies)
-							String email = authResult.getUser().getEmail();
-							String uid = authResult.getUser().getUid();
-							UserHelper userHelper;
-							new DataFirestoreRepo<>(UserHelper.class).read(uid)
-									.addOnSuccessListener(userHelper1 -> {
-										runMainActivity(userHelper1);
-										finish();
-									})
-									.addOnFailureListener(e -> {
-										Toast.makeText(LoginActivity.this, getString(R.string.msg_user_data_failed), Toast.LENGTH_SHORT).show();
-										Log.w(TAG, "onFailure: " + e.getMessage());
-									});
+
+							// check an account for correct login (repo copies)
+							String uid = Objects.requireNonNull(authResult.getUser()).getUid();
+							new DataRepos<>(UserHelper.class).getLatestUserHelper(intStringHash(uid))
+									.addOnCompleteListener(task -> runMainActivity(task.getResult()));
 						}
 					}).addOnFailureListener(new OnFailureListener() {
 						@Override
@@ -223,6 +229,7 @@ public class LoginActivity extends AppCompatActivity {
 		});
 	}
 
+
 	private boolean validateEmail()	{
 		String val = etEmail.getText().toString().trim();
 		if (val.isEmpty()) {
@@ -265,6 +272,7 @@ public class LoginActivity extends AppCompatActivity {
 		}
 	}
 
+
 	private void runMainActivity(UserHelper user)	{
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.putExtra("user", user);
@@ -274,23 +282,74 @@ public class LoginActivity extends AppCompatActivity {
 
 	private void deleteUser(String email, String password) {
 		FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+		if (firebaseUser == null) {
+			showSnackBarConfirmation(this, getRes().getString(R.string.msg_user_must_login), null);
+			return;
+		}
 		String _uid = firebaseUser.getUid();
-		AuthCredential authCredential = EmailAuthProvider.getCredential(email, password);
+		String dummyName = Utils.getRandomName();
 
-		firebaseUser.reauthenticate(authCredential)
-				.addOnCompleteListener(task -> firebaseUser.delete()
-						.addOnCompleteListener(task1 -> {
-							String _message;
-							String dummyName = Utils.getRandomName();
-							// Inform user
-							if (task1.isSuccessful()) {
-								new DataRepos(UserHelper.class).unpersonalise(_uid, dummyName);
-								_message = getRes().getString(R.string.msg_delete_account_success)  + dummyName;
-							} else {
-								_message = getRes().getString(R.string.msg_delete_account_failed);
-							};
-							Log.v(TAG, _message);
-							showSnackBarConfirmation(this, _message, null);
-		}));
+		// Replace userdata in central repository
+		DataFirestoreRepo<Achievement> achRepo = new DataFirestoreRepo<>(Achievement.class);
+		Task<Void> taskAch = achRepo.unpersonilise(_uid, dummyName).addOnCompleteListener(new OnCompleteListener<Void>() {
+			@Override
+			public void onComplete(@NonNull Task<Void> task) {
+				if (task.isSuccessful()) {
+					Log.i(TAG, "onComplete: Achievements rewritten");
+				} else {
+					Log.w(TAG, "onComplete: Achievements rewriting error " + task.getException().getLocalizedMessage());
+				}
+			}
+		});
+
+		DataFirestoreRepo<ExResult> exResRepo = new DataFirestoreRepo<>(ExResult.class);
+		Task<Void> taskExRes = exResRepo.unpersonilise(_uid, dummyName).addOnCompleteListener(new OnCompleteListener<Void>() {
+			@Override
+			public void onComplete(@NonNull Task<Void> task) {
+				if (task.isSuccessful()) {
+					Log.i(TAG, "onComplete: ExResult rewritten");
+				} else {
+					Log.w(TAG, "onComplete: ExResult rewriting error " + task.getException().getLocalizedMessage());
+				}
+			}
+		});
+
+		DataFirestoreRepo<UserHelper> userRepo = new DataFirestoreRepo<>(UserHelper.class);
+		Task<Void> taskUser = exResRepo.unpersonilise(_uid, dummyName).addOnCompleteListener(new OnCompleteListener<Void>() {
+			@Override
+			public void onComplete(@NonNull Task<Void> task) {
+				if (task.isSuccessful()) {
+					Log.i(TAG, "onComplete: UserHelper rewritten");
+				} else {
+					Log.w(TAG, "onComplete: UserHelper rewriting error " + task.getException().getLocalizedMessage());
+				}
+			}
+		});
+
+		Tasks.whenAll(taskAch, taskExRes, taskUser).continueWith(new Continuation<Void, Object>() {
+			@Override
+			public Object then(@NonNull Task<Void> taskAll) throws Exception {
+				// Remove authentication record
+				AuthCredential authCredential = EmailAuthProvider.getCredential(email, password);
+				firebaseUser.reauthenticate(authCredential)
+						.addOnCompleteListener(task -> firebaseUser.delete()
+								.addOnCompleteListener(task1 -> {
+									String _message;
+
+									// Inform user
+									if (task1.isSuccessful()) {
+										new DataRepos(UserHelper.class).unpersonalise(_uid, dummyName);
+										_message = getRes().getString(R.string.msg_delete_account_success)  + " " + dummyName;
+									} else {
+										_message = getRes().getString(R.string.msg_delete_account_failed);
+									};
+									Log.v(TAG, _message);
+									AppExecutors _appEx = new AppExecutors();
+									Executor mainThread = _appEx.mainThread();
+									mainThread.execute(() -> showSnackBarConfirmation(LoginActivity.this, _message, null));
+								}));
+				return null;
+			}
+		});
 	}
 }

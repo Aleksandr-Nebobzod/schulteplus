@@ -1,3 +1,11 @@
+<!--
+  ~ Copyright (c) "Smart Rovers" 2024.
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto" >
 	
 	<EditTextPreference app:key="prf_ex_type" app:title="Exercise Type" app:useSimpleSummaryProvider="true"	app:isPreferenceVisible="false" />
@@ -7,12 +15,12 @@
 		
 <!--	gcb means Group Check Box -->
 		<CheckBoxPreference app:title="@string/lbl_bas_dot" app:key="gcb_bas_dot" app:defaultValue="true" app:icon="@drawable/ic_basics_dot" app:allowDividerAbove="true"/>
-		<CheckBoxPreference app:title="@string/lbl_bas_dbl_dot" app:key="gcb_bas_dbl_dot" app:defaultValue="false" app:icon="@drawable/ic_bsics_double_dot" />
+		<CheckBoxPreference app:title="@string/lbl_bas_dbl_dot" app:key="gcb_bas_dbl_dot" app:defaultValue="false" app:icon="@drawable/ic_basics_double_dot" />
 		<CheckBoxPreference app:title="@string/lbl_bas_pyramidot" app:key="gcb_bas_pyramidot" app:defaultValue="false" app:enabled="true"/>
 
 		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb" app:key="gcb_bas_circles_rb" app:defaultValue="false" app:icon="@drawable/ic_circles_rb"  app:allowDividerAbove="true"/>
 		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb_lined" app:key="gcb_bas_circles_rb_lined" app:defaultValue="false" app:enabled="false" />
-		<CheckBoxPreference app:title="@string/lbl_bas_sg_khao_manee" app:key="gcb_bas_khao_manee" app:defaultValue="false" app:enabled="true"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_khao_manee" app:key="gcb_bas_khao_manee" app:defaultValue="false" app:enabled="true"/>
 		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb_crossed" app:key="gcb_bas_circles_rb_crossed" app:defaultValue="false" app:enabled="false" app:allowDividerBelow="true"/>
 		
 		<CheckBoxPreference app:title="@string/lbl_bas_necker_cube" app:key="gcb_bas_necker_cube" app:defaultValue="false" app:icon="@drawable/ic_basics2_black_24dp"  app:allowDividerAbove="true"/>
@@ -24,7 +32,7 @@
 		<CheckBoxPreference app:title="@string/lbl_bas_dancing_cat" app:key="gcb_bas_dancing_cat" app:defaultValue="false" app:enabled="false" />
 		
 		<SwitchPreference app:defaultValue="false" app:key="sw_pref_double" app:enabled="false" app:title="@string/lbl_bas_double" app:summary="@string/lbl_bas_double_desc"  app:allowDividerAbove="true" />
-		<SwitchPreference app:key="prf_sw_hints" app:title="@string/lbl_hints" app:summary="@string/lbl_hints_sum" app:defaultValue="false" app:enabled="true" app:persistent="true" app:icon="@drawable/ic_notifications_black_24dp" />
+		<SwitchPreference app:key="prf_sw_hints" app:title="@string/lbl_hints" app:summary="@string/lbl_hints_sum" app:defaultValue="true" app:enabled="true" app:persistent="true" app:icon="@drawable/ic_notifications_black_24dp" />
 		
 		<PreferenceCategory app:key="prf_empty_row" app:title="" app:persistent="false" app:summary=" "/>
 	</PreferenceCategory>

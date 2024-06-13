@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) "Smart Rovers" 2024.
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:longClickable="true">
+	
+	<LinearLayout
+		android:id="@+id/ll_header"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="fill_horizontal"
+		android:layout_margin="2dp"
+		android:orientation="horizontal"
+		android:visibility="gone"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" >
+		
+		<TextView
+			android:id="@+id/tv_h_datetime"
+			style="@style/tv_list_header"
+			android:text="@string/lbl_date_time"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_h_name"
+			android:layout_width="0dp"
+			android:layout_weight="2"
+			style="@style/tv_list_header"
+			android:text="@string/lbl_user_name"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_h_record_text"
+			style="@style/tv_list_header"
+			android:text="@string/lbl_record_text"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_h_record_value"
+			style="@style/tv_list_header"
+			android:text="@string/lbl_record_value"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_h_special_mark"
+			style="@style/tv_list_header"
+			android:text="@string/lbl_special_mark"
+			/>
+	</LinearLayout>
+	
+	<TextView
+		android:id="@+id/tv_group_header"
+		style="@style/tv_list_header"
+		android:background="@color/transparent"
+		android:textColor="@color/light_grey_4"
+		android:text="2023.12.24"
+		android:visibility="gone"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/ll_header" />
+	
+	<LinearLayout
+		android:id="@+id/ll_content"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="2dp"
+		android:orientation="horizontal"
+		android:gravity="start"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/tv_group_header" >
+		
+		<TextView
+			android:id="@+id/tv_num"
+			android:layout_width="24dp"
+			android:gravity="end"
+			style="@style/tv_list_item"
+			android:background="@color/transparent"
+			android:text="#"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_date"
+			android:visibility="gone"
+			style="@style/tv_list_item"
+			android:text="2023.12.24"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_time"
+			style="@style/tv_list_item"
+			android:text="19:08"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_name"
+			android:layout_width="0dp"
+			android:layout_weight="2"
+			style="@style/tv_list_item"
+			android:text="user name"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_record_text"
+			android:layout_width="0dp"
+			android:layout_weight="1"
+			style="@style/tv_list_item"
+			android:text="seconds"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_record_value"
+			android:layout_width="50dp"
+			style="@style/tv_list_item"
+			android:gravity="end"
+			android:text="4012"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_special_mark"
+			style="@style/tv_list_item"
+			android:text=" * "
+			/>
+</LinearLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/tv_record_text" />-->
+<!--	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"  android:id="@+id/tv_record_value" />-->
+<!--	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"  android:id="@+id/tv_special_mark" />-->
+

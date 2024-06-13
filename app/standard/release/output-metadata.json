@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "org.nebobrod.schulteplus",
+  "variantName": "standardRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 25,
+      "versionName": "Entada",
+      "outputFile": "Schulte Plus_25_Entada.apk"
+    }
+  ],
+  "elementType": "File"
+}

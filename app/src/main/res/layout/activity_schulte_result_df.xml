@@ -1,79 +1,292 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) "Smart Rovers" 2024.
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/loResultDialog"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:layout_gravity="bottom"
-	android:background="@drawable/ic_border_thick" >
+	
+	android:background="@drawable/ic_border_thick">
 	
 	
 	<TextView
 		android:id="@+id/txtTitle"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="32dp"
+		android:letterSpacing=".5"
 		android:text="Title text"
 		android:textAlignment="center"
-		android:textStyle="bold"
+		android:textColor="@color/colorPrimary"
 		android:textSize="20sp"
-		android:textColor="@color/design_default_color_primary"
+		android:textStyle="bold"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		android:letterSpacing=".5" />
+		app:layout_constraintStart_toEndOf="@id/imageView"
+		app:layout_constraintTop_toTopOf="parent" />
 	
 	<ImageView
 		android:id="@+id/imageView"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginHorizontal="5dp"
+		android:layout_width="24dp"
+		android:layout_height="24dp"
+		android:layout_margin="3dp"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/txtTitle"
+		app:layout_constraintTop_toTopOf="@id/txtTitle"
+		app:layout_constraintBottom_toBottomOf="@id/txtTitle"
 		app:srcCompat="@android:drawable/ic_dialog_info" />
+	
+	<TableLayout
+		android:id="@+id/table_layout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="0dp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/txtTitle">
+		
+		<TableRow
+			android:id="@+id/table_row"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:background="@drawable/ic_border">
+			
+			<TextView
+				android:id="@+id/tv_key1"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:minLines="1"
+				android:padding="0dp"
+				android:text="Key1 meaning:"
+				android:textAlignment="textStart"
+				android:textColor="@color/cardview_light_background"
+				android:textSize="14sp"
+				android:typeface="monospace"
+				android:layout_weight="2"
+				android:ellipsize="end"
+				 />
+			
+			<TextView
+				android:id="@+id/tv_value1"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:minLines="1"
+				android:padding="0dp"
+				android:text="vvv"
+				android:textAlignment="textEnd"
+				android:textColor="@color/cardview_light_background"
+				android:textSize="14sp"
+				android:textStyle="bold"
+				android:typeface="monospace"
+				android:layout_weight="1"
+				android:ellipsize="start"
+				/>
+
+		</TableRow>
+	</TableLayout>
+
+	
+	<SurfaceView
+		android:layout_width="match_parent"
+		android:layout_height="150dp"
+		android:id="@+id/sv_psychometrics"
+		android:visibility="gone"
+		app:layout_constraintTop_toBottomOf="@+id/table_layout"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="@+id/imageView"
+		/>
+	
+
+	
+	<TableLayout
+		android:id="@+id/table_psychometry"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		app:layout_constraintTop_toBottomOf="@+id/sv_psychometrics"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent" >
+		<TableRow
+			android:id="@+id/table_row_psy_note"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+			<EditText
+				android:id="@+id/et_note"
+				android:layout_height="wrap_content"
+				android:layout_width="0dp"
+				android:layout_weight="1"
+				android:background="@drawable/border008"
+				android:backgroundTint="@color/semi_white"
+				android:focusableInTouchMode="true"
+				android:hint="@string/txt_note_hint"
+				android:inputType="textMultiLine"
+				android:minHeight="48dp"
+				android:minLines="2"
+				android:padding="1dp"
+				android:scrollbarAlwaysDrawVerticalTrack="true"
+				android:textColor="@color/black"
+				android:textColorHint="@color/light_grey_D"
+				android:textSize="12sp"
+				android:typeface="monospace" />
+			<androidx.appcompat.widget.SwitchCompat
+				android:id="@+id/sw_data_provided"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:checked="false"
+				android:text=""
+				android:visibility="gone"/>
+		</TableRow>
+		
+		<TableRow
+			android:id="@+id/table_row_psy_header"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="@drawable/ic_border">
+			<TextView
+				android:id="@+id/tv_psy_header_1"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:lines="1"
+				android:padding="0dp"
+				android:text="@string/lbl_level_of_feels"
+				android:textAlignment="center"
+				android:textColor="@color/light_grey_D"
+				android:textSize="10sp"
+				android:typeface="monospace"
+				android:layout_weight="3"
+				android:ellipsize="end"
+				/>
+			<TextView
+				android:id="@+id/tv_psy_header_2"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:lines="1"
+				android:padding="0dp"
+				android:text="@string/lbl_level_of_energy"
+				android:textAlignment="center"
+				android:textColor="@color/light_grey_D"
+				android:textSize="10sp"
+				android:typeface="monospace"
+				android:layout_weight="1"
+				android:ellipsize="end"
+				/>
+		</TableRow>
+		<TableRow
+			android:id="@+id/table_row_psy"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:background="@drawable/ic_border">
+			<SeekBar
+				android:id="@+id/sb_emotion"
+				android:layout_width="0dp"
+				android:layout_height="28dp"
+				android:layout_weight="3"
+				android:max="4"
+				android:progress="2"
+				android:min="0"
+				android:focusable="true"
+				android:focusableInTouchMode="true"
+				android:layout_margin="2dp"
+				android:thumb="@drawable/ic_baseline_heart_broken_24"
+				android:thumbTint="@color/light_grey_A_red"
+				android:progressDrawable="@drawable/bg_seek_progress_colored"
+				android:secondaryProgress="2"
+				android:splitTrack="true"
+				android:tooltipText="@string/lbl_level_of_feels"
+				android:contentDescription="@string/lbl_level_of_feels"
+				/>
+			<SeekBar
+				android:id="@+id/sb_energy"
+				android:layout_width="0dp"
+				android:layout_height="28dp"
+				android:layout_weight="1"
+				android:max="2"
+				android:progress="1"
+				android:min="0"
+				android:focusable="true"
+				android:focusableInTouchMode="true"
+				android:layout_margin="2dp"
+				android:thumb="@drawable/ic_baseline_local_fire_department_24"
+				android:thumbTint="@color/light_grey_A_red"
+				android:progressDrawable="@drawable/bg_seek_progress_bw"
+				android:splitTrack="true"
+				android:tooltipText="@string/lbl_level_of_energy"
+				android:contentDescription="@string/lbl_level_of_energy"
+				/>
+		</TableRow>
+	</TableLayout>
 	
 	<TextView
 		android:id="@+id/txtMessage"
-		android:layout_width="0dp"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:minLines="1"
 		android:padding="5dp"
 		android:text="Here is some custom message"
 		android:textAlignment="textEnd"
-		android:textColor="@color/cardview_light_background"
-		android:textSize="18sp"
+		android:textColor="@color/light_grey_D"
+		android:textSize="16sp"
 		android:typeface="monospace"
+		android:ellipsize="marquee"
+		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="@+id/imageView"
-		app:layout_constraintTop_toBottomOf="@+id/txtTitle"
-		app:layout_marginBaseline="15dp" />
+		app:layout_constraintTop_toBottomOf="@+id/table_psychometry"
+		 />
 	
 	<LinearLayout
-		android:id="@+id/llButtons"
+		android:id="@+id/ll_buttons"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginHorizontal="5dp"
 		android:orientation="horizontal"
+		android:visibility="gone"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/txtMessage"
-		tools:layout_editor_absoluteX="1dp"
-		android:visibility="invisible">
+		 >
 		
 		<Button
 			android:id="@+id/btnOK"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
+			android:layout_height="48dp"
 			android:layout_marginHorizontal="5dp"
 			android:layout_weight="3"
-			android:text="@string/lbl_ok" />
+			android:text="@string/lbl_ok"
+			android:textSize="20sp"
+			android:fontFamily="sans-serif-condensed-light"
+			style="@style/button3d"
+			
+			/>
 		
 		<Button
 			android:id="@+id/btnCancel"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
+			android:layout_height="48dp"
 			android:layout_marginHorizontal="5dp"
 			android:layout_weight="1"
-			android:text="@string/lbl_no" />
-	
+			android:text="@string/lbl_no"
+			android:textSize="20sp"
+			android:elevation="5dp"
+			android:background="@drawable/bg_button"
+			/>
+		
 	</LinearLayout>
+	
+	<SeekBar
+		android:id="@+id/seekbar_dummy"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:visibility="gone"
+		android:max="4"
+		android:progress="2"
+		android:progressDrawable="@drawable/custom_seekbar"
+		android:thumb="@drawable/thumb"
+		app:layout_constraintTop_toBottomOf="@+id/ll_buttons"
+		/>
+		
+
 </androidx.constraintlayout.widget.ConstraintLayout>

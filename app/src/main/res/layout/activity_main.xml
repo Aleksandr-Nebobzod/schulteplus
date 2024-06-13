@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) "Smart Rovers" 2024.
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
 <androidx.coordinatorlayout.widget.CoordinatorLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -45,20 +53,21 @@
 		android:id="@+id/fabLaunch"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		app:elevation="12dp"
+		app:elevation="10dp"
 		android:layout_marginBottom="32dp"
-		android:backgroundTint="@color/white"
-		android:foregroundTint="@color/purple_200"
 		android:contentDescription="Launch"
 		android:src="@drawable/ic_rocket_launch_24"
-		android:tint="@color/material_on_background_emphasis_medium"
+		android:background="@color/colorPrimary"
 		android:tooltipText="Launch"
 		app:labelVisibilityMode="labeled"
 		app:layout_constraintBottom_toBottomOf="@id/nav_view"
 		app:layout_constraintLeft_toLeftOf="parent"
 		app:layout_constraintRight_toRightOf="parent"
 		app:maxImageSize="40dp" />
-	
+<!--	android:tint="@color/colorPrimary"-->
+<!--	android:backgroundTint="@color/white"-->
+<!--	android:foregroundTint="@color/colorPrimary"-->
+<!--	app:rippleColor="@color/colorPrimaryVariant"-->
 	
 	<fragment
 		android:id="@+id/nav_host_fragment_activity_main"
@@ -71,8 +80,5 @@
 		app:layout_constraintRight_toRightOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:navGraph="@navigation/mobile_navigation" />
-	
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

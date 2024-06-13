@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) "Smart Rovers" 2024.
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:longClickable="true">
+	
+	<LinearLayout
+		android:id="@+id/ll_header"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="clip_horizontal"
+		android:layout_margin="2dp"
+		android:orientation="horizontal"
+		android:visibility="gone"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" >
+		
+		
+		<TextView
+			android:id="@+id/tv_h_num"
+			android:visibility="gone"
+			style="@style/tv_list_header"
+			android:text="|#"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_h_date"
+			style="@style/tv_list_header"
+			android:text="@string/lbl_date_time"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_h_duration"
+			style="@style/tv_list_header"
+			android:text="@string/lbl_duration"
+			android:typeface="monospace" />
+		
+		<TextView
+			android:id="@+id/tv_h_events"
+			style="@style/tv_list_header"
+			android:text="@string/lbl_events"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_h_note"
+			style="@style/tv_list_header"
+			android:layout_width="0dp"
+			android:layout_weight="1"
+			android:text="@string/lbl_note"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_h_emotion"
+			style="@style/tv_list_header"
+			android:text="@string/lbl_level_of_feels_cut"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_h_energy"
+			style="@style/tv_list_header"
+			android:text="@string/lbl_level_of_energy_cut"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_h_special_mark"
+			style="@style/tv_list_header"
+			android:gravity="center"
+			android:text="@string/lbl_special_mark"
+			/>
+
+		<!--		android:background="@color/light_grey_D"-->
+	</LinearLayout>
+	
+	<TextView
+		android:id="@+id/tv_group_header"
+		style="@style/tv_list_header"
+		android:background="@color/transparent"
+		android:textColor="@color/light_grey_4"
+		android:text="2023.12.24"
+		android:visibility="gone"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/ll_header" />
+	
+	<LinearLayout
+		android:id="@+id/ll_item"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="2dp"
+		android:orientation="horizontal"
+		android:gravity="start"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/tv_group_header"
+		>
+		
+		<TextView
+			android:id="@+id/tv_flag"
+			style="@style/tv_list_item"
+			android:layout_width="30dp"
+			android:background="@color/transparent"
+			android:visibility="gone"
+			android:gravity="end"
+			android:text="F"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_num"
+			android:layout_width="24dp"
+			android:gravity="end"
+			style="@style/tv_list_item"
+			android:background="@color/transparent"
+			android:text="#"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_date"
+			android:visibility="gone"
+			style="@style/tv_list_item"
+			android:text="2023.12.24"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_time"
+			style="@style/tv_list_item"
+			android:text="19:08"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_duration"
+			style="@style/tv_list_item"
+			android:text="00:08:31.002"
+			android:typeface="monospace" />
+		
+		<TextView
+			android:id="@+id/tv_events"
+			style="@style/tv_list_item"
+			android:gravity="end"
+			android:layout_width="24dp"
+			android:text="4012"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_note"
+			android:layout_width="200dp"
+			android:layout_weight="1"
+			android:lines="1"
+			android:clickable="true"
+			style="@style/tv_list_item"
+			android:text="impressions"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_emotion"
+			android:layout_width="24dp"
+			android:gravity="end"
+			style="@style/tv_list_item"
+			android:text="1"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_energy"
+			android:layout_width="24dp"
+			android:gravity="end"
+			style="@style/tv_list_item"
+			android:text="1"
+			/>
+		
+		<TextView
+			android:id="@+id/tv_special_mark"
+			android:layout_width="24dp"
+			style="@style/tv_list_item"
+			android:gravity="center"
+			android:text="*"
+			/>
+		<!--		android:background="@color/light_grey_D"-->
+	</LinearLayout>
+	
+	<TextView
+		android:id="@+id/tv_note_full"
+		android:layout_width="match_parent"
+		style="@style/tv_list_item"
+		android:lines="0"
+		android:maxLines="5"
+		android:visibility="gone"
+		android:background="@color/transparent"
+		android:textStyle="italic"
+		android:text="impressions"
+		android:gravity="end"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/ll_item"
+		/>
+<!--	android:clickable="true"-->
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

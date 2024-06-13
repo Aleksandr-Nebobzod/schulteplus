@@ -151,7 +151,7 @@
 	<string name="title_login">Log in</string>
 	<string name="msg_username_empty">The username can\'t be empty</string>
 	<string name="msg_username_wrong">The username seems incorrect</string>
-	<string name="msg_password_empty">Password can\'t be empty</string>
+	<string name="msg_password_rules">Password should have 6–15 Latin letters or Arabic digits or symbols ~!@#$%^*()+=</string>
 	<string name="msg_password_wrong">Password seems incorrect</string>
 	<string name="msg_user_signed_up">successfully signed up.</string>
 	<string name="msg_user_signed_up_failed">"-- unable to sign up. "</string>
@@ -259,6 +259,6 @@
 	<string name="msg_user_email_will_change">Your profile email will change with next log in</string>
 	<string name="lbl_about_user_agreement">Agreement</string>
 	<string name="str_about_user_agreement_html_source">user_agreement-en.html</string>
-	<string name="src_exDescriptionUrl">http://attplus.in/schulte/en/ex/</string>
+	<string name="src_exDescriptionUrl">http://attplus.in/schulte/en/ex_description/</string>
 
 </resources>

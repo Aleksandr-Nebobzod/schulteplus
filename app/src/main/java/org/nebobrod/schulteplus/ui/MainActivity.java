@@ -74,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	protected void onCreate(Bundle savedMAInstanceState) {
+		super.onCreate(savedMAInstanceState);
 
 		binding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
@@ -95,7 +95,8 @@ public class MainActivity extends AppCompatActivity {
 		mainActionBar.setLogo(R.drawable.ic_ab_schulte_plus);
 		mainActionBar.setDisplayUseLogoEnabled(true);
 		mainActionBar.setDisplayShowHomeEnabled(true);
-/*** ActionBar methods tested:
+
+/*
 //		mainActionBar.hide();
 
 //		View view = mainActionBar.getCustomView();
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 //		mainActionBar.setDisplayOptions(ActionBar.DISPLAY_USE_LOGO);
 //		mainActionBar.setHomeButtonEnabled(true);
 //		mainActionBar.setSubtitle("subtitle");
-		//mainActionBar.openOptionsMenu(); */
+		//mainActionBar.openOptionsMenu(); */ // -- ActionBar methods tested.
 
 		BottomNavigationView navView = findViewById(R.id.nav_view);
 		// Passing each menu ID as a set of Ids because each
@@ -158,16 +159,16 @@ public class MainActivity extends AppCompatActivity {
 				ExerciseRunner.loadPreference();
 				String exType = ExerciseRunner.getExType();
 
-				if (exType.equals("no_exercise")) {
+				if (exType == null | exType.equals("no_exercise")) {
 					return false;
 				} else {
 
-					String exDescriptionLocalUrl = getResources().getString(R.string.src_exDescriptionUrl);
+					String exDescriptionLocalUrl = getResources().getString(R.string.src_exDescriptionUrl) + exType + ".html";
 					try {
-						Utils.openWebPage(exDescriptionLocalUrl + ".html", getApplicationContext());
+						Utils.openWebPage(exDescriptionLocalUrl, getApplicationContext());
 						return true;
 					} catch (Exception e) {
-						Log.e(TAG, "web page opening", e);
+						Log.e(TAG, "web page opening url: " + exDescriptionLocalUrl, e);
 						return false;
 					}
 				}

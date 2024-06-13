@@ -130,7 +130,7 @@
 	<string name="str_login_go_off">Нет учётной записи?\nПерейти к регистрации!</string>
 	<string name="title_login">Вход</string>
 	<string name="msg_username_empty">Имя не может быть пустым</string>
-	<string name="msg_password_empty">Пароль не может быть пустым</string>
+	<string name="msg_password_rules">Пароль должен содеражать: 6–15 симолов: латинские буквы, арабские цифры, знаки ~!@#$%^*()+=</string>
 	<string name="msg_username_wrong">Имя пользователя неверно</string>
 	<string name="msg_password_wrong">Пароль неверен</string>
 	<string name="msg_user_signed_up">регистрация успешна</string>
@@ -236,6 +236,6 @@
 	<string name="msg_user_email_will_change">Адрес email Вашей учётной записи будет обновлён при следующем входе</string>
 	<string name="lbl_about_user_agreement">Соглашение</string>
 	<string name="str_about_user_agreement_html_source">user_agreement-ru.html</string>
-	<string name="src_exDescriptionUrl">http://attplus.in/schulte/ru/ex/</string>
+	<string name="src_exDescriptionUrl">http://attplus.in/schulte/ru/ex_description/</string>
 
 </resources>

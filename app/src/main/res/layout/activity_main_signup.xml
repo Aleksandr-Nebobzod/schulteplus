@@ -51,62 +51,63 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:id="@+id/et_email"
-					android:minHeight="48dp"
+					android:minHeight="56dp"
 					android:autofillHints="emailAddress"
 					android:inputType="textEmailAddress"
 					android:layout_marginTop="32dp"
 					android:background="@drawable/border02"
 					android:backgroundTint="@color/semi_white"
-					android:padding="8dp"
+					android:padding="12dp"
 					android:hint="@string/hint_email"
 					android:drawableStart="@drawable/ic_baseline_email_24"
-					android:drawablePadding="4dp"
-					android:textColor="@color/black"/>
+					android:drawablePadding="10dp"
+					android:textColor="@color/black"
+					android:layout_marginBottom="6dp"/>
 				
 				<com.google.android.material.textfield.TextInputLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:hint="@string/hint_login"
-					app:endIconMode="none" >
+					app:endIconMode="none"
+					android:paddingVertical="4dp"
+					style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+					android:orientation="vertical" >
 					
-					<EditText
+					<com.google.android.material.textfield.TextInputEditText
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
+						android:hint="@string/hint_login"
+						android:autofillHints="username"
 						android:id="@+id/et_name"
 						android:minHeight="48dp"
-						android:layout_marginTop="32dp"
 						android:background="@drawable/border02"
 						android:backgroundTint="@color/semi_white"
-						android:padding="8dp"
 						android:drawableStart="@drawable/ic_baseline_perm_identity_24"
 						android:drawablePadding="4dp"
 						android:textColor="@color/black"/>
 				</com.google.android.material.textfield.TextInputLayout>
 				
-				
-
-				
 				<com.google.android.material.textfield.TextInputLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:hint="@string/hint_pass"
-					app:endIconMode="password_toggle" >
+					android:id="@+id/et_pass_layout"
+					app:endIconMode="password_toggle"
+					android:paddingVertical="4dp"
+					style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+					android:orientation="vertical" >
 					
-					<EditText
+					<com.google.android.material.textfield.TextInputEditText
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:id="@+id/et_pass"
+						android:hint="@string/hint_pass"
 						android:inputType="textPassword"
-						android:layout_marginTop="32dp"
 						android:minHeight="48dp"
 						android:background="@drawable/border02"
 						android:backgroundTint="@color/semi_white"
-						android:padding="6dp"
 						android:drawableStart="@drawable/ic_baseline_lock_24"
 						android:drawablePadding="4dp"
 						android:textColor="@color/black"/>
 				</com.google.android.material.textfield.TextInputLayout>
-				
 				
 				<com.google.android.material.button.MaterialButton
 					android:layout_width="match_parent"
@@ -114,6 +115,7 @@
 					android:id="@+id/bt_go_on"
 					android:layout_marginTop="16dp"
 					android:text="@string/lbl_go_on"
+					android:enabled="false"
 					app:cornerRadius="25dp"
 					android:shadowRadius="5"/>
 				

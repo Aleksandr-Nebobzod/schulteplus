@@ -31,6 +31,18 @@
     <meta name="twitter:description" content="The independent development to Improve your consciousness">
     <meta name="twitter:image" content="http://attplus.in/common/ic_launcher_round.png">
 
+    <!-- Разметка JSON-LD, созданная Мастером разметки структурированных данных Google. -->
+    <script type="application/ld+json">
+    [
+      {
+        "@context": "http://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "SMART ROVERS team",
+        "url": "http://attplus.in/",
+        "datePublished": "2024-04-02"
+      }
+    ]
+    </script>
 </head>
 <body>
 <?php

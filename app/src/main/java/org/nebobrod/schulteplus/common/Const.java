@@ -11,6 +11,7 @@ package org.nebobrod.schulteplus.common;
 public interface Const {
 	// set of exercise related constants
 	String NAME_REG_EXP = "^[a-z][[a-z]![0-9]]{3,14}$";
+	String PASSWORD_REG_EXP = "^(?=.*[A-Za-z])[A-Za-z\\d~!@#$%^*()+=]{6,15}$";
 
 	// set of exercise related constants
 	byte 	SEQ1_SINGLE = 1;

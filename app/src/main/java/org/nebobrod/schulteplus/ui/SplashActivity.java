@@ -1,15 +1,16 @@
 /*
- * Copyright (c) 2023. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package org.nebobrod.schulteplus.ui;
 
 import static org.nebobrod.schulteplus.Utils.*;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -17,7 +18,9 @@ import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import org.nebobrod.schulteplus.common.Log;
+
+import android.os.Looper;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
@@ -27,32 +30,33 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.nebobrod.schulteplus.ExerciseRunner;
-import org.nebobrod.schulteplus.MainActivity;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
-import org.nebobrod.schulteplus.fbservices.AppExecutors;
-import org.nebobrod.schulteplus.fbservices.NetworkConnectivity;
-import org.nebobrod.schulteplus.fbservices.SignupActivity;
-import org.nebobrod.schulteplus.fbservices.UserDbPref;
-import org.nebobrod.schulteplus.fbservices.UserFbData;
-import org.nebobrod.schulteplus.fbservices.UserHelper;
+import org.nebobrod.schulteplus.common.AppExecutors;
+import org.nebobrod.schulteplus.common.NetworkConnectivity;
+import org.nebobrod.schulteplus.data.DataOrmRepo;
+import org.nebobrod.schulteplus.data.DataRepos;
+import org.nebobrod.schulteplus.data.UserHelper;
 
 import java.util.Random;
 
 import javax.inject.Inject;
 
 /**
- * This class a bit obfuscated.
+ * This class is a bit obfuscated.
  * Checks the environment, shows animation and routes user to
  * Signup or Login or Main
  */
-public class SplashActivity extends AppCompatActivity  implements UserFbData.UserHelperCallback, NetworkConnectivity.ConnectivityCallback {
+public class SplashActivity extends AppCompatActivity  implements NetworkConnectivity.ConnectivityCallback {
 	public static final String TAG = "SplashActivity";
-	private static final long SPLASH_STEP_TIME = 500;
+	private static final long SPLASH_STEP_TIME = 300;
 	private static final long TEST_TIME_ALLOWED = 8000L; // 8 sec is maximum splash time
 	private static final int TEST_TIME_IS_UP = 	0b1<<0;
 	private static final int TEST_APP_PASSED = 	0b1<<1;
@@ -62,15 +66,15 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 
 	private int testPassedFlags = 0;
 
-	private static final int TEST_RES_APP = 		0b1<<0;
-	private static final int TEST_RES_USER_LOGGED_IN = 0b1<<1;
-	private static final int TEST_RES_USER_EXISTS = 0b1<<2;
+	private static final int TEST_RES_APP = 			0b1<<0;
+	private static final int TEST_RES_USER_LOGGED_IN = 	0b1<<1;
+	private static final int TEST_RES_USER_EXISTS = 	0b1<<2;
 	private static final int TEST_RES_USER_VERIFIED = 	0b1<<3;
 	private static final int TEST_RES_USER_VERIF_MESSAGE_CONFIRMED = 	0b1<<4;
-	private static final int TEST_RES_WEB_EXISTS = 	0b1<<5;
-	private static final int TEST_RES_DATA_STORAGE = 0b1<<6;
-	private static final int TEST_RES_DATA_TG = 	0b1<<7;
-	private static final int TEST_RES_DATA_VK = 	0b1<<8;
+	private static final int TEST_RES_WEB_EXISTS = 		0b1<<5;
+	private static final int TEST_RES_DATA_STORAGE = 	0b1<<6;
+	private static final int TEST_RES_DATA_TG = 		0b1<<7;
+	private static final int TEST_RES_DATA_VK = 		0b1<<8;
 	private static final int TEST_RES_USER_VERIF_MESSAGE_SHOWN = 	0b1<<9;
 
 
@@ -87,16 +91,15 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 	@Inject
 	NetworkConnectivity networkConnectivity;
 	@Inject
-	AppExecutors appExecutors;
+	AppExecutors appExecutors = new AppExecutors();
 	boolean isConnected = false;
 
 
 	FirebaseAuth fbAuth;
 	FirebaseUser user = null;
 	UserHelper userHelper = null;
-	UserFbData userFbData = null;
 
-	final Handler splashMainHandler = new Handler();
+	final Handler splashMainHandler = new Handler(Looper.getMainLooper());
 	Thread thread;
 	Runnable rMain = new Runnable() {
 	public int count = 5;
@@ -109,8 +112,10 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 					// no flag is needed
 					break;
 				case 4:		// Self-test
-					tvStatus.setText(Utils.getRes().getText(R.string.msg_app_consistency)+ "...");
+					tvStatus.setText(Utils.getRes().getText(R.string.msg_app_consistency) + "...");
 					Random rnd = new Random(System.currentTimeMillis());
+
+					// couple seconds later (not a real check yet)
 					splashMainHandler.postDelayed(this, rnd.nextInt(5 * (int) SPLASH_STEP_TIME));
 					iv01App.setImageTintList(true ? cstGreen : cstRed);
 					animThrob(iv01App,null);
@@ -129,10 +134,11 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 						iv03Verified.setImageTintList(cstRed);
 						tvStatus.setText(Utils.getRes().getText(R.string.str_empty));
 					} else {
-						String strMessage, email = user.getEmail();
+						String strMessage;
+						String email = user.getEmail();
 
-						UserFbData.getByUid(splashUfbCallback, user.getUid());
-//						UserFbData.isExist(splashUfbCallback, email.replace(".", "_"));
+						new DataOrmRepo<>(UserHelper.class).read("" + intStringHash(user.getUid()))
+								.addOnSuccessListener(userRepoListener);
 						iv02User.setImageTintList(cstGreen);
 //						testPassedFlags |= TEST_USER_PASSED;
 //						testResFlags |= TEST_RES_USER_EXISTS;
@@ -157,9 +163,8 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 //					tvStatus.setText(getResources().getText(R.string.msg_network_connection));
 					tvStatus.setText(Utils.getRes().getText(R.string.msg_internet) + "...");
 //					animThrob(iv04Network,null);
-					appExecutors = new AppExecutors();
 					networkConnectivity = new NetworkConnectivity(appExecutors, getApplicationContext());
-					internetCheck(ivBackground);
+					internetCheck();
 					tvStatus.setText(Utils.getRes().getText(R.string.str_empty));
 					splashMainHandler.postDelayed(this, SPLASH_STEP_TIME);
 					break;
@@ -182,16 +187,24 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 						if (0 != (testPassedFlags & (TEST_APP_PASSED | TEST_USER_PASSED | TEST_WEB_PASSED | TEST_DATA_PASSED))) {
 							// Can we run to MainActivity?
 							if (0 != (testResFlags & TEST_RES_USER_EXISTS)) {
-								ExerciseRunner.getInstance(userHelper); // user found
-								ExerciseRunner.setOnline(0 != (testResFlags & TEST_RES_WEB_EXISTS));
+//								ExerciseRunner.getInstance(userHelper); // user found
+//								ExerciseRunner.setOnline(0 != (testResFlags & TEST_RES_WEB_EXISTS));
 								if (0 != (testResFlags & TEST_RES_USER_VERIFIED)) {
 									// Yes all done
-									runMainActivity(userHelper);
+									new DataRepos<>(UserHelper.class).getLatestUserHelper(intStringHash(user.getUid()))
+											.addOnCompleteListener(task -> {
+												if (task.isSuccessful()) {
+													runMainActivity(task.getResult());
+												} else {
+													Toast.makeText(SplashActivity.this, getString(R.string.err_unknown), Toast.LENGTH_SHORT).show();
+													runActivity(SignupActivity.class);
+												}
+											});
 								} else { // User has to confirm he isn't verified
 //									if (thread.isAlive()) thread.interrupt(); // No need run by time anymore...
 									// <- this changed: threaded runnable looks for flag USER_VERIF_MESSAGE_SHOWN ->
 									Log.d(TAG, "run NO verified, user: " + userHelper);
-									Log.d(TAG, "run NO verified, dbPref: " + UserDbPref.getInstance(ExerciseRunner.getInstance()).getObjectMap().toString() );
+//									Log.d(TAG, "run NO verified, dbPref: " + UserDbPreferences.getInstance(ExerciseRunner.getInstance()).getObjectMap().toString() );
 									String strMessage = userHelper.getName() + ", "
 											+ getString(R.string.msg_user_unverified);
 									if (0 == (testResFlags & TEST_RES_USER_VERIF_MESSAGE_SHOWN)) {
@@ -233,7 +246,7 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 		if (actionBar != null) {
 			actionBar.hide();
 		}*/
-		// And Navigation Bar
+		// Hide Navigation Bar
 		if (Build.VERSION.SDK_INT >= 30) {
 			mContentView.getWindowInsetsController().hide(
 					WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
@@ -251,8 +264,8 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 
 //		this.overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
 		// Hook links
-		ivBackground = findViewById(R.id.iv_background);
 		clTextHolder = findViewById(R.id.cl_text_holder);
+
 		//Animation Calls
 //		zoomIn = AnimationUtils.loadAnimation(this, R.anim.zoom_in);
 //		zoomOut = AnimationUtils.loadAnimation(this, R.anim.zoom_out);
@@ -271,10 +284,10 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 		tvVendor.setOnClickListener(view -> {
 			runMainActivity(null);
 		});
+
 		// Colors for Icons of passed checks
 		cstGreen = ColorStateList.valueOf(getColor(R.color.light_grey_A_green));
 		cstRed = ColorStateList.valueOf(getColor(R.color.light_grey_A_red));
-
 
 		//  Runnable, which counts deadline time
 		Runnable limitUiIdleTime = new Runnable() {
@@ -302,11 +315,12 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 
 		// Start it in a new thread
 		thread = new Thread(null, limitUiIdleTime,
-				"Background");
+				"BackgroundTimeLimit");
 		thread.start();
 
 		//Splash Screen Code to call new Activity after some time
-		rMain.run();
+		appExecutors.getNetworkIO().execute(rMain);
+//		rMain.run();
 
 	}
 
@@ -327,24 +341,16 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 		}
 	}
 
-	// UserFb methods callback
-	@Override
-	public void onCallback(UserHelper value) { }
-	// This strange construction allow avoid error: Non-static method cannot be referenced...
-	private final UserFbData.UserHelperCallback splashUfbCallback = new UserFbData.UserHelperCallback()
-	{
-		@Override
-		public void onCallback(UserHelper value)
-		{
-			Log.d(TAG, "onCallback: " + value);
-			testPassedFlags |= TEST_USER_PASSED;
-			if (value == null) {
-//				no flag to rise
-			} else {
-				userHelper = value;
-				testResFlags |= TEST_RES_USER_EXISTS;
-				ExerciseRunner.getInstance(userHelper);
-			}
+	// Callback for check user in database
+	private final OnSuccessListener<UserHelper> userRepoListener = value -> {
+		Log.d(TAG, "onCallback: " + value);
+		testPassedFlags |= TEST_USER_PASSED;
+		if (value == null) {
+			//	no flag to rise
+		} else {
+			userHelper = value;
+			testResFlags |= TEST_RES_USER_EXISTS;
+//			ExerciseRunner.getInstance(userHelper);
 		}
 	};
 
@@ -362,7 +368,7 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 	};*/
 	////////////////////////////////////////////////////
 
-	public void internetCheck(View view) { //view is for test
+	public void internetCheck() { //view is for test
 		networkConnectivity.checkInternetConnection((isConnected) -> {
 			if (isConnected) {
 				testPassedFlags |= TEST_WEB_PASSED;
@@ -376,7 +382,7 @@ public class SplashActivity extends AppCompatActivity  implements UserFbData.Use
 	private void animStart() {
 		clTextHolder.setVisibility(View.VISIBLE);
 		clTextHolder.setAnimation(zoomHyper);
-		testPassedFlags |= TEST_APP_PASSED; // bitwise conjunction to shared flags that test passed
+		testPassedFlags |= TEST_APP_PASSED; // bitwise conjunction to shared flags with test passed
 	}
 
 	private void runActivity(Class<?> cls)

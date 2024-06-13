@@ -1,3 +1,11 @@
+<!--
+  ~ Copyright (c) "Smart Rovers" 2024.
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
 <resources>
 	<string name="app_name">Schulte Plus</string>
 	<string name="title_home">What\'s up</string>
@@ -35,16 +43,18 @@
 	<string name="hnt_input_height">input the height (1 -- 10)</string>
 	<string name="str_continue">Would you like to go on? </string>
 	<string name="title_result">Result</string>
-	<string name="lbl_ok">oK</string>
-	<string name="lbl_no">No</string>
+	<string name="lbl_ok">OK</string>
+	<string name="lbl_no">heLL</string>
+	<string name="lbl_no_ok">No</string>
 	<string name="txt_one_more_q">Train one more time?</string>
 	<string name="lbl_show_password">Show password</string>
 	<string name="txt_settings">There are prestart settings of Schulte tables training should be improved</string>
 	<string name="txt_news">Here is the news list coming soon.\n Brief info: https://handwiki.org/wiki/Schulte_table </string>
 	<string name="txt_notification_desc">Notifications should be here</string>
 	<string name="txt_dashboard_desc">Here the dashboard is developing</string>
-	<string name="lbl_bas_dbl_dot">Double Dot</string>
+	<string name="lbl_achievements">Achievements</string>
 	<string name="lbl_bas_dot">The Dot</string>
+	<string name="lbl_bas_dbl_dot">Double Dot</string>
 	<string name="lbl_bas_circles_rb">Circles Red/Blue</string>
 	<string name="lbl_bas_circles_rb_lined">Circles R/B Lined</string>
 	<string name="lbl_bas_circles_rb_crossed">Circles R/B Crossed</string>
@@ -65,7 +75,7 @@
 	<string name="title_activity_basics">Schulte+ Basics</string>
 	<string name="dummy_button" translatable="false">Dummy Button</string>
 	<string name="dummy_content" translatable="false">DUMMY\nCONTENT</string>
-	<string name="lbl_bas_sg_khao_manee">Khao Manee</string>
+	<string name="lbl_bas_khao_manee">Khao Manee</string>
 	<string name="menu_user_long">User related options</string>
 	<string name="menu_user_short">User</string>
 	<string name="menu_about_long">About the application</string>
@@ -103,36 +113,36 @@
 	<string name="prf_hours_title">Hours</string>
 	<string name="prf_hours_summary">Earned number of \'minutes\' converted to hours of practice</string>
 	<string name="txt_schulte_description">There are core exercises based upon Schulte methods</string>
-	<string name="lbl_sch_1_sequence">Primary flow</string>
-	<string name="lbl_sch_1_sequence_sum">The exercise wants you to collect growing sequence</string>
+	<string name="lbl_schulte_1_sequence">Primary flow</string>
+	<string name="lbl_schulte_1_sequence_sum">The exercise wants you to collect growing sequence</string>
 	<string name="x_size">Field width or x-size</string>
 	<string name="y_size">Field height or y-size</string>
 	<string name="lbl_rating">Ratings</string>
 	<string name="lbl_rating_sum_on">Your settings gets comparable to other members\' settings. Your scores might be written to the Wall of Fame.</string>
 	<string name="lbl_rating_sum_off">This settings are for variety of personal training. Your scores are saved into your Achievements table.</string>
-	<string name="lbl_sch_2_sequence">Air and Fire (7х7)</string>>
-	<string name="lbl_sch_2_sequence_sum">Two sequences are waiting: Blue grows from 1 and Red wanes from 24</string>
-	<string name="lbl_sch_3_sequence">Four Seasons (10х10)</string>
-	<string name="lbl_sch_3_sequence_sum">For sequences: Up, Down, Convergent, Divergent...  That might make you mad for starters</string>
+	<string name="lbl_schulte_2_sequence">Air and Fire (7х7)</string>>
+	<string name="lbl_schulte_2_sequence_sum">Two sequences are waiting: Blue grows from 1 and Red wanes from 24</string>
+	<string name="lbl_schulte_3_sequence">Four Seasons (10х10)</string>
+	<string name="lbl_schulte_3_sequence_sum">For sequences: Up, Down, Convergent, Divergent...  That might make you mad for starters</string>
 	<string name="lbl_hints">Hints</string>
-	<string name="lbl_hints_sum">These fancy glows, digital reminders and timing are for rookie levels only. Real psychonaut needs nothing more than void.</string>
+	<string name="lbl_hints_sum">These fancy glows, digital reminders and timing are for rookie levels only.</string>
 	<string name="lbl_symbol_type">Cell\'s symbol type</string>
-	<string name="lbl_sch_4_sequence">Mishmash!</string>
-	<string name="lbl_sch_4_sequence_sum">Well, try to find them all totally unique</string>
+	<string name="lbl_schulte_4_sequence">Mishmash!</string>
+	<string name="lbl_schulte_4_sequence_sum">Well, try to find them all totally unique</string>
 	<string name="lbl_shuffle">Shaken, not stirred!</string>
 	<string name="lbl_shuffle_sum_on">Each new turn you are meeting new field</string>
 	<string name="lbl_shuffle_sum_off">Field stays permanent until coped out</string>
 	<string name="str_number" translatable="false">number</string>
 	<string name="prf_menu_about_url_sum">Visit and get additional resources</string>
 	<string name="src_home_ipir_vk_url" translatable="false">https://vk.com/public216345855</string>
-	<string name="src_menu_about_url" translatable="false">https://tinyurl.com/2untjbs8</string>
-	<string name="src_menu_about_email" translatable="false">"mailto:nebobzod@gmail.com"</string>
+	<string name="src_menu_about_url" translatable="true">https://tinyurl.com/schulte-plus</string>
+	<string name="src_menu_about_email" translatable="false">"mailto:support@attplus.in"</string>
 	<string name="title_activity_schulte">Schulte+ Tables</string>
 	<string name="lbl_distraction">✓</string>
 	<string name="lbl_back">◁</string>
 	<string name="lbl_schulte_stats">Next, Turns, Wrong, Time: </string>
 	<string name="title_signup">Sign Up</string>
-	<string name="hint_login">login (pseudonym)</string>
+	<string name="hint_login">Username (pseudonym)</string>
 	<string name="hint_email">email address</string>
 	<string name="hint_pass">Schulte-plus password</string>
 	<string name="lbl_go_on">Go on</string>
@@ -201,5 +211,54 @@
 	<string name="prf_title_online">Online</string>
 	<string name="lbl_datasource_local">local</string>
 	<string name="lbl_datasource_www">www</string>
+	<string name="lbl_dashboard_report">Dashboard report</string>
+	<string name="lbl_events_num">Events</string>
+	<string name="lbl_level_of_feels">Feeling</string>
+	<string name="lbl_level_of_energy">Energy</string>
+	<string name="lbl_note">Note</string>
+	<string name="txt_note_hint">Enter notes, check you emotional and energy level</string>
+	<string name="txt_ex_not_done">Exercise not done</string>
+	<string name="txt_ex_done_1">Well done</string>
+	<string name="lbl_date_time">Date, time</string>
+	<string name="lbl_user_name">User name</string>
+	<string name="lbl_record_text">Record text</string>
+	<string name="lbl_record_value">Record value</string>
+	<string name="lbl_special_mark">_*_</string>
+	<string name="lbl_duration">Duration</string>
+	<string name="lbl_level_of_energy_cut">E.</string>
+	<string name="lbl_level_of_feels_cut">F.</string>
+	<string name="code_rating" translatable="false">R</string>
+	<string name="code_common" translatable="false">C</string>
+	<string name="lbl_top_in_month">Top</string>
+	<string name="txt_top_in_month_hint">Top in Level this month</string>
+	<string name="lbl_top_in_month_progress">Prog</string>
+	<string name="txt_top_in_month_progress">Top progress in month</string>
+	<string name="txt_datasource_www_hint">Actual in www</string>
+	<string name="txt_datasource_local_hint">Actual on local</string>
+	<string name="lbl_delete_account">Delete account</string>
+	<string name="txt_delete_account_description">Delete your personal data from all shared application resources and depersonalize all yor records. Continue?</string>
+	<string name="msg_delete_account_success">Account data has been removed. Your exercise data are labeled by dummy name: </string>
+	<string name="msg_delete_account_failed">Can not remove account</string>
+	<string name="msg_password_reset_email_sent">Password Reset Email Sent!</string>
+	<string name="lbl_squared">Squared</string>
+	<string name="msg_proceed_to_password_reentry">You\'ll be signed off and asked to reenter your password. Proceed?</string>
+	<string name="lbl_about_oss">Open source notices</string>
+	<string name="lbl_about_license">License</string>
+	<string name="str_about_license_html_source">licenses-en.html</string>
+	<string name="lbl_about_user_data_policy">Privacy</string>
+	<string name="str_about_user_data_policy_html_source">user_data_policy-en.html</string>
+	<string name="str_logoff_caution">You are able to log off and delete your account on main preferences menu</string>
+	<string name="err_result_validity">Error of result validation. No stat update.</string>
+	<string name="msg_user_data_failed">Hard to fetch data</string>
+	<string name="msg_no_google_play_services_installed">No google play services installed. Can not get data</string>
+	<string name="msg_user_must_login">User must be logged in</string>
+	<string name="txt_common_mailbox" translatable="false">\@att.org</string>
+	<string name="msg_user_data_renewed">User data renewed</string>
+	<string name="str_confirm_policy">Documents Agreed:</string>
+	<string name="msg_username_updated">Username has been successfully updated for new records</string>
+	<string name="msg_user_email_will_change">Your profile email will change with next log in</string>
+	<string name="lbl_about_user_agreement">Agreement</string>
+	<string name="str_about_user_agreement_html_source">user_agreement-en.html</string>
+	<string name="src_exDescriptionUrl">http://attplus.in/schulte/en/ex/</string>
 
 </resources>

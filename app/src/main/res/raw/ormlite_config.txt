@@ -1,49 +1,6 @@
 #
-# generated on 2023/12/22 07:09:27
+# generated on 2024/05/31 07:00:44
 #
-# --table-start--
-dataClass=org.nebobrod.schulteplus.data.ClickCount
-tableName=clickcount
-# --table-fields-start--
-# --field-start--
-fieldName=id
-generatedId=true
-# --field-end--
-# --field-start--
-fieldName=lastClickDate
-columnName=lastClickDate
-# --field-end--
-# --field-start--
-fieldName=name
-indexName=clickcount_name_idx
-# --field-end--
-# --field-start--
-fieldName=description
-# --field-end--
-# --field-start--
-fieldName=value
-# --field-end--
-# --field-start--
-fieldName=group
-foreign=true
-# --field-end--
-# --table-fields-end--
-# --table-end--
-#################################
-# --table-start--
-dataClass=org.nebobrod.schulteplus.data.ClickGroup
-tableName=clickgroup
-# --table-fields-start--
-# --field-start--
-fieldName=id
-generatedId=true
-# --field-end--
-# --field-start--
-fieldName=name
-# --field-end--
-# --table-fields-end--
-# --table-end--
-#################################
 # --table-start--
 dataClass=org.nebobrod.schulteplus.data.Achievement
 tableName=achievement
@@ -51,6 +8,9 @@ tableName=achievement
 # --field-start--
 fieldName=id
 generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uak
 # --field-end--
 # --field-start--
 fieldName=uid
@@ -72,6 +32,332 @@ fieldName=recordValue
 # --field-end--
 # --field-start--
 fieldName=specialMark
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.AdminNote
+tableName=adminNote
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+# --field-end--
+# --field-start--
+fieldName=uak
+# --field-end--
+# --field-start--
+fieldName=uidAddress
+# --field-end--
+# --field-start--
+fieldName=title
+# --field-end--
+# --field-start--
+fieldName=message
+# --field-end--
+# --field-start--
+fieldName=appendix
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=verAppLatest
+# --field-end--
+# --field-start--
+fieldName=verDeprecating
+# --field-end--
+# --field-start--
+fieldName=verDeprecated
+# --field-end--
+# --field-start--
+fieldName=timeStampConfirmed
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.ExResult
+tableName=exresult
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uak
+# --field-end--
+# --field-start--
+fieldName=seed
+# --field-end--
+# --field-start--
+fieldName=uid
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=dateTime
+# --field-end--
+# --field-start--
+fieldName=isValid
+# --field-end--
+# --field-start--
+fieldName=exType
+# --field-end--
+# --field-start--
+fieldName=exDescription
+# --field-end--
+# --field-start--
+fieldName=timeStampStart
+# --field-end--
+# --field-start--
+fieldName=numValue
+# --field-end--
+# --field-start--
+fieldName=levelOfEmotion
+# --field-end--
+# --field-start--
+fieldName=levelOfEnergy
+# --field-end--
+# --field-start--
+fieldName=note
+# --field-end--
+# --field-start--
+fieldName=turns
+# --field-end--
+# --field-start--
+fieldName=turnsMissed
+# --field-end--
+# --field-start--
+fieldName=average
+# --field-end--
+# --field-start--
+fieldName=rmsd
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.ExResultBasics
+tableName=exresult
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uak
+# --field-end--
+# --field-start--
+fieldName=seed
+# --field-end--
+# --field-start--
+fieldName=uid
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=dateTime
+# --field-end--
+# --field-start--
+fieldName=isValid
+# --field-end--
+# --field-start--
+fieldName=exType
+# --field-end--
+# --field-start--
+fieldName=exDescription
+# --field-end--
+# --field-start--
+fieldName=timeStampStart
+# --field-end--
+# --field-start--
+fieldName=numValue
+# --field-end--
+# --field-start--
+fieldName=levelOfEmotion
+# --field-end--
+# --field-start--
+fieldName=levelOfEnergy
+# --field-end--
+# --field-start--
+fieldName=note
+# --field-end--
+# --field-start--
+fieldName=turns
+# --field-end--
+# --field-start--
+fieldName=turnsMissed
+# --field-end--
+# --field-start--
+fieldName=average
+# --field-end--
+# --field-start--
+fieldName=rmsd
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.ExResultSchulte
+tableName=exresult
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uak
+# --field-end--
+# --field-start--
+fieldName=seed
+# --field-end--
+# --field-start--
+fieldName=uid
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=dateTime
+# --field-end--
+# --field-start--
+fieldName=isValid
+# --field-end--
+# --field-start--
+fieldName=exType
+# --field-end--
+# --field-start--
+fieldName=exDescription
+# --field-end--
+# --field-start--
+fieldName=timeStampStart
+# --field-end--
+# --field-start--
+fieldName=numValue
+# --field-end--
+# --field-start--
+fieldName=levelOfEmotion
+# --field-end--
+# --field-start--
+fieldName=levelOfEnergy
+# --field-end--
+# --field-start--
+fieldName=note
+# --field-end--
+# --field-start--
+fieldName=turns
+# --field-end--
+# --field-start--
+fieldName=turnsMissed
+# --field-end--
+# --field-start--
+fieldName=average
+# --field-end--
+# --field-start--
+fieldName=rmsd
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.Turn
+tableName=turn
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uak
+# --field-end--
+# --field-start--
+fieldName=exResult
+foreign=true
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=time
+# --field-end--
+# --field-start--
+fieldName=expected
+# --field-end--
+# --field-start--
+fieldName=x
+# --field-end--
+# --field-start--
+fieldName=y
+# --field-end--
+# --field-start--
+fieldName=position
+# --field-end--
+# --field-start--
+fieldName=isCorrect
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.UserHelper
+tableName=userhelper
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+# --field-end--
+# --field-start--
+fieldName=uid
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=email
+# --field-end--
+# --field-start--
+fieldName=password
+# --field-end--
+# --field-start--
+fieldName=deviceId
+# --field-end--
+# --field-start--
+fieldName=uak
+canBeNull=false
+# --field-end--
+# --field-start--
+fieldName=verified
+# --field-end--
+# --field-start--
+fieldName=psyCoins
+# --field-end--
+# --field-start--
+fieldName=hours
+# --field-end--
+# --field-start--
+fieldName=level
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=dateCreated
+# --field-end--
+# --field-start--
+fieldName=dateChanged
 # --field-end--
 # --table-fields-end--
 # --table-end--

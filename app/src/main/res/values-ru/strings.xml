@@ -1,33 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) "Smart Rovers" 2024.
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
 <resources>
-	<string name="app_name">Шульте Плюс</string>
+	<string name="app_name">Внимание Шульте Плюс</string>
 	<string name="title_home">Что нового</string>
 	<string name="title_dashboard">Стата</string>
 	<string name="title_notifications">События</string>
-	<string name="title_schulte">Шульте</string>
+	<string name="title_schulte">Шульте+</string>
 	<string name="title_basics">База</string>
 	<string name="title_profile">Профиль</string>
 	<string name="lbl_quick_launch">Быстрый старт</string>
 	<string name="err_unknown">Неизвестная ошибка</string>
+	<string name="err_no_data">Нехватка данных</string>
 	<string name="lbl_time">Время</string>
 	<string name="lbl_turns">Ходы</string>
 	<string name="lbl_pace"><b>Статистика\n</b></string>
 	<string name="lbl_mu_second">сек</string>
-	<string name="err_no_data">Нехватка данных</string>
 	<string name="hnt_input_width">Ввести <b>ширину</b> (1 -- 10)</string>
 	<string name="hnt_input_height">Ввести <b>высоту</b> (1 -- 10)</string>
 	<string name="str_continue">Ещё тренировка?</string>
 	<string name="title_result">Сводка</string>
 	<string name="lbl_ok">Да</string>
 	<string name="lbl_no">аД</string>
+	<string name="lbl_no_ok">Нет</string>
 	<string name="txt_one_more_q">Ещё тренировка?</string>
 	<string name="lbl_show_password">Показывать пароль</string>
 	<string name="txt_settings">Настройки \nдля упражнений по таблицам Шульте со временем \n<b>будут обогащены</b> </string>
-	<string name="txt_news">Здесь вскоре \nбудет страничка новостей и полезные закрепы. \nА пока ссылочка с основаниями для разработки: \n"https://ru.wikipedia.org/wiki/Таблица_Шульте" </string>
+	<string name="txt_news">Будущая \nстраница новостей и полезных закрепов. \nА пока ссылка с основаниями для разработки: \n"https://ru.wikipedia.org/wiki/Таблица_Шульте" </string>
 	<string name="txt_notification_desc">Уведомления должны быть тут</string>
 	<string name="txt_dashboard_desc">Здесь будет развиваться перечень достижений</string>
-	<string name="lbl_bas_dbl_dot">Двойная Точка</string>
+	<string name="lbl_achievements">Достижения</string>
 	<string name="lbl_bas_dot">Точка</string>
+	<string name="lbl_bas_dbl_dot">Двойная Точка</string>
 	<string name="lbl_bas_circles_rb">Круги (кр/син)</string>
 	<string name="lbl_bas_circles_rb_lined">Круги вертикальные</string>
 	<string name="lbl_bas_circles_rb_crossed">Круги скрещенные</string>
@@ -42,11 +52,11 @@
 	<string name="lbl_bas_double">Двойное изображение*</string>
 	<string name="lbl_bas_double_desc">Для упражнений отмеченных звёздочкой, изображение будет удвоено для параллельного стереопросмотра.</string>
 	<string name="lbl_bas_penrose_triangle" >Треугольник Пенроуза</string>
-	<string name="lbl_average">Среднее:</string>
-	<string name="lbl_sd">Отклонение:</string>
+	<string name="lbl_average">Среднее</string>
+	<string name="lbl_sd">Отклонение</string>
 	<string name="lbl_turns_missed">Ходы мимо</string>
 	<string name="title_activity_basics">Шульте+ Основа</string>
-	<string name="lbl_bas_sg_khao_manee">Као мани</string>
+	<string name="lbl_bas_khao_manee">Као мани</string>
 	<string name="menu_user_long">Параметры пользователя</string>
 	<string name="menu_user_short">Пользователь</string>
 	<string name="menu_about_long">Сведения о приложении</string>
@@ -71,7 +81,7 @@
 	<string name="prf_sum_feedback">Сообщить о технической проблеме или предложить улучшения</string>
 	<string name="prf_user_name">Имя пользователя</string>
 	<string name="prf_user_email">е-мейл</string>
-	<string name="prf_user_email_sum">Идентификатор, позволяющий восстановить данные (не доступно другим пользователям)</string>
+	<string name="prf_user_email_sum">Идентификатор, позволяющий восстановить доступ (не доступно другим пользователям)</string>
 	<string name="prf_user_name_sum">Имя или псевдоним, который может быть виден другим пользователям</string>
 	<string name="prf_about_sum01">Это приложение посвящено идее совершенствования человека.
 		Кроме нескольких вариантов Таблиц Шульте мы снабдили приложение испытанными в психонетике стимульными материалами, которые будут полезны каждому ищущему: Осознанности, Саморазвития, Открытости миру.
@@ -86,23 +96,23 @@
 	<string name="prf_level_summary">Ваш максимально достигнутый уровень</string>
 	<string name="prf_hours_title">Часов</string>
 	<string name="prf_hours_summary">Количество добытых \'минуток\' сложенных в часы практик</string>
-	<string name="lbl_sch_1_sequence">Первичный поток</string>
 	<string name="txt_schulte_description">Здесь представлены основные упражнения по методике Шульте</string>
-	<string name="lbl_sch_1_sequence_sum">Вам следует найти все значения восходящей последовательности</string>
+	<string name="lbl_schulte_1_sequence">Первичный поток</string>
+	<string name="lbl_schulte_1_sequence_sum">Вам следует найти все значения восходящей последовательности</string>
 	<string name="x_size">Ширина таблицы или X-размер</string>
 	<string name="y_size">Высота таблицы или Y-размер</string>
 	<string name="lbl_rating">Рейтинги</string>
 	<string name="lbl_rating_sum_on">Ваши опции сопоставимы с другими участниками. Ваши результаты могут быть записаны на Доске почёта.</string>
 	<string name="lbl_rating_sum_off">Режим для разнообразия персональных тренировок. Ваши результаты хранятся в личной странице достижений.</string>
-	<string name="lbl_sch_2_sequence">Воздух и Пламя (7х7)</string>>
-	<string name="lbl_sch_2_sequence_sum">Вас ожидают две последовательности: Голубая растёт с 1 до 25, Красная уменьшаетася с 24 до 1.</string>
-	<string name="lbl_sch_3_sequence">Четыре времени года (10х10)</string>
-	<string name="lbl_sch_3_sequence_sum">Последовательности: Вверх, Вниз, Сходится, Расходится,.. Не свихнуться бы!</string>
+	<string name="lbl_schulte_2_sequence">Воздух и Пламя (7х7)</string>>
+	<string name="lbl_schulte_2_sequence_sum">Вас ожидают две последовательности: Голубая растёт с 1 до 25, Красная уменьшаетася с 24 до 1.</string>
+	<string name="lbl_schulte_3_sequence">Четыре времени года (10х10)</string>
+	<string name="lbl_schulte_3_sequence_sum">Последовательности: Вверх, Вниз, Сходится, Расходится,.. Не свихнуться бы!</string>
 	<string name="lbl_hints">Подсказки</string>
-	<string name="lbl_hints_sum">Эти милые подсветки, напоминатели цифр и хронометраж интересны только новичкам. Настоящему психонавту не требуется ничего более чем ничто.</string>
+	<string name="lbl_hints_sum">Подсветки, напоминатели и хронометраж интересны новичкам.</string>
 	<string name="lbl_symbol_type">Тип символа в ячейке</string>
-	<string name="lbl_sch_4_sequence">Мешанина!</string>
-	<string name="lbl_sch_4_sequence_sum">Что ж, попробуй найти их всех, таких уникальных</string>
+	<string name="lbl_schulte_4_sequence">Мешанина!</string>
+	<string name="lbl_schulte_4_sequence_sum">Что ж, попробуй найти их всех, таких уникальных</string>
 	<string name="lbl_shuffle">Перемешать, но не взбалтывать!</string>
 	<string name="lbl_shuffle_sum_on">Каждый ход вас ожидает новое поле</string>
 	<string name="lbl_shuffle_sum_off">Поле остаётся неизменным, пока не вспашешь всё</string>
@@ -112,7 +122,7 @@
 	<string name="lbl_back">◁</string>
 	<string name="lbl_schulte_stats">След, Ходов, Ошибок, Время: </string>
 	<string name="title_signup">Регистрация</string>
-	<string name="hint_login">Логин (псевдоним)</string>
+	<string name="hint_login">Имя пользователя (псевдоним)</string>
 	<string name="hint_email">адрес эл.почты</string>
 	<string name="hint_pass">пароль в Шульте плюс</string>
 	<string name="lbl_go_on">Вперёд!</string>
@@ -124,12 +134,12 @@
 	<string name="msg_username_wrong">Имя пользователя неверно</string>
 	<string name="msg_password_wrong">Пароль неверен</string>
 	<string name="msg_user_signed_up">регистрация успешна</string>
-	<string name="msg_user_signed_up_failed">-- регистрация невозможна.</string>
+	<string name="msg_user_signed_up_failed">-- регистрация невозможна</string>
 	<string name="msg_email_pattern">адрес эл.почты должен соответствовать формату</string>
 	<string name="msg_email_empty">адрес эл.почты не может быть пуст</string>
 	<string name="msg_user_login_failed">невозможно выполнить вход</string>
 	<string name="msg_user_logged_in">вход успешно выполнен</string>
-	<string name="msg_user_unverified">привет! Ваша регистрация успешно инициирована. Пожалуйста, проверьте сообщение с инструкцией по верификации учётной записи в Шульте плюс.</string>
+	<string name="msg_user_unverified">привет! Ваша регистрация успешно инициирована. Пожалуйста, проверьте эл.почту, сообщение с инструкцией по верификации учётной записи в Шульте плюс.</string>
 	<string name="msg_user_verif_sent">Сообщение с инструкцией для подтверждения выслано на адрес эл.почты.</string>
 	<string name="msg_user_verif_not_sent">Сообщение для подтверждения отправить на адрес эл.почты не удалось.</string>
 	<string name="lbl_reset_password">Сбросить ваш пароль</string>
@@ -180,4 +190,52 @@
 	<string name="prf_title_online">Онлайн</string>
 	<string name="lbl_datasource_www">Все</string>
 	<string name="lbl_datasource_local">Мои</string>
+	<string name="lbl_dashboard_report">Выбор отчёта</string>
+	<string name="lbl_events_num">Событий</string>
+	<string name="lbl_level_of_feels">Чувства</string>
+	<string name="lbl_level_of_energy">Энергия</string>
+	<string name="lbl_note">Заметка</string>
+	<string name="txt_note_hint">Ввести заметки, отметить чувственно-эмоциональные и энергетические уровни</string>
+	<string name="txt_ex_not_done">Упражнение не завершено</string>
+	<string name="txt_ex_done_1">Отлично</string>
+	<string name="lbl_date_time">Дата, время</string>
+	<string name="lbl_user_name">Адепт</string>
+	<string name="lbl_record_text">Достиг</string>
+	<string name="lbl_record_value">знач</string>
+	<string name="lbl_special_mark">_*_</string>
+	<string name="lbl_duration">Длительность</string>
+	<string name="lbl_level_of_feels_cut">Ч.</string>
+	<string name="lbl_level_of_energy_cut">Э.</string>
+	<string name="lbl_top_in_month">Топ</string>
+	<string name="txt_datasource_local_hint">Актуальные локальные записи</string>
+	<string name="txt_datasource_www_hint">Актуальные в сети</string>
+	<string name="txt_top_in_month_hint">Лучшие на уровне за месяц</string>
+	<string name="lbl_top_in_month_progress">Прог.</string>
+	<string name="txt_top_in_month_progress">Достижения: Прогресс за месяц</string>
+	<string name="lbl_delete_account">Удалить аккаунт</string>
+	<string name="txt_delete_account_description">Ваша учётная запись и все персональные данные будут удалены. Данные тренировок будут деперсонализированы навсегда. Продолжить?</string>
+	<string name="msg_delete_account_success">Данные учётной записи удалены. Результаты Ваших упражнений помещены под имя: </string>
+	<string name="msg_delete_account_failed">Не удалось удалить учётную запись</string>
+	<string name="msg_password_reset_email_sent">Электронное письмо сброса пароля направлено!</string>
+	<string name="lbl_squared">Квадраты</string>
+	<string name="src_menu_about_url">https://tinyurl.com/schulte-plus-ru</string>
+	<string name="msg_proceed_to_password_reentry">Выйти из системы и продолжить с подтверждением пароля?</string>
+	<string name="lbl_about_oss">Уведомления об открытом исходном коде</string>
+	<string name="lbl_about_license">Лицензионное соглашение</string>
+	<string name="str_about_license_html_source">licenses-ru.html</string>
+	<string name="lbl_about_user_data_policy">Конфиденциальность</string>
+	<string name="str_about_user_data_policy_html_source">user_data_policy-ru.html</string>
+	<string name="str_logoff_caution">Вы сможете выйти из системы и удалить аккаунт в главном меню</string>
+	<string name="err_result_validity">Результат упражнения не валидирован.</string>
+	<string name="msg_user_data_failed">Трудности с получением данных</string>
+	<string name="msg_no_google_play_services_installed">Не установлено ПО google play services, поэтому нет данных. </string>
+	<string name="msg_user_must_login">Должен быть выполнен вход в систему</string>
+	<string name="msg_user_data_renewed">Пользовательские данные обновлены</string>
+	<string name="str_confirm_policy">Согласие c:</string>
+	<string name="msg_username_updated">Имя пользователя успешно обновлено для новых записей</string>
+	<string name="msg_user_email_will_change">Адрес email Вашей учётной записи будет обновлён при следующем входе</string>
+	<string name="lbl_about_user_agreement">Соглашение</string>
+	<string name="str_about_user_agreement_html_source">user_agreement-ru.html</string>
+	<string name="src_exDescriptionUrl">http://attplus.in/schulte/ru/ex/</string>
+
 </resources>

@@ -1,48 +1,50 @@
 /*
- * Copyright (c) 2023. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * Copyright (c) "Smart Rovers" 2024.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
 package org.nebobrod.schulteplus.data;
 
 import static org.nebobrod.schulteplus.Utils.bHtml;
-import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.iHtml;
 import static org.nebobrod.schulteplus.Utils.pHtml;
 
-import android.database.SQLException;
+import org.nebobrod.schulteplus.Utils;
+
 import android.text.Html;
 import android.text.Spanned;
 
-import androidx.annotation.NonNull;
-
-import com.j256.ormlite.dao.Dao;
+import com.google.firebase.firestore.Exclude;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import org.nebobrod.schulteplus.STable;
-import org.nebobrod.schulteplus.Utils;
 
 import java.io.Serializable;
 
 /**
- * Achievement information object saved to the local database through ormlite.
+ * Achievement data object saved to the local database through ormlite.
  *
  * @author nebobzod
  */
-@DatabaseTable
-public class Achievement implements Serializable {
+@DatabaseTable(tableName = "achievement")
+public class Achievement implements Serializable, Identifiable<String> {
+	private static final String TAG = "Achievement";
 
 	private static final long serialVersionUID = -7874823823497497001L;
+	public static final String UID_FIELD_NAME = "uid";
+	public static final String UAK_FIELD_NAME = "uak";
+	public static final String TIMESTAMP_FIELD_NAME = "timeStamp";
 	public static final String DATE_FIELD_NAME = "dateTime";
 
-	static Achievement achievement;
 
 	@DatabaseField(generatedId = true)
 	private Integer id;
+
+	@DatabaseField
+	private String uak;
 
 	@DatabaseField
 	private String uid;
@@ -62,12 +64,27 @@ public class Achievement implements Serializable {
 	@DatabaseField
 	private String recordValue;
 
+	/**
+	 * for example: 1st achievement of day, one done 3 at once, self-records
+	 * (if I got today most point than the best day before, or for week), duels wins, etc...
+	 */
 	@DatabaseField
-	private String specialMark; // May be i.e.: 1st achievement of day, one done 3 at once, selfrecords
-	// (if I got today most point than the best day before, or for week), duels wins, etc...
+	private String specialMark;
+
+	@Exclude
+	private String layoutFlag = "";
+
 
 	public Integer getId() {
 		return id;
+	}
+
+	public String getUak() {
+		return uak;
+	}
+
+	public void setUak(String uak) {
+		this.uak = uak;
 	}
 
 	public String getUid() {return uid;}
@@ -102,18 +119,41 @@ public class Achievement implements Serializable {
 
 	public void setSpecialMark(String specialMark) {this.specialMark = specialMark;}
 
+	public String getLayoutFlag() {
+		return layoutFlag;
+	}
+
+	public Achievement setLayoutFlag(String layoutFlag) {
+		this.layoutFlag = layoutFlag;
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		return name == null ? "<None>" : name + "\t| " + bHtml(this.getRecordValue()) + "\t " + this.getRecordText() + "|";
 	}
 	///////////////////////////////////////////////////////////////
+	/**
+	 * Tab Separated Values
+	 */
+	public String toTabSeparatedString() {
+		return TAG +
+				"\t" + id +
+				"\t" + uak +
+				"\t" + dateTime +
+				"\t" + name +
+				"\t" + recordText +
+				"\t" + recordValue +
+				"\t" + specialMark;
+	}
 	public Spanned toSpanned() {
 		return Html.fromHtml("| \t" + this.getSpecialMark() + "\t| " + Utils.timeStampFormattedLocal(this.getTimeStamp()) + " | " + iHtml(this.getName()) + pHtml()
 				+ "|\t." + "\t| " + bHtml(this.getRecordValue()) + "\t " + this.getRecordText() + "|");
 	}
 
-	public  Achievement setAchievement(String uid, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark){
+	public  Achievement set(String uid, String uak, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark){
 		this.uid = uid;
+		this.uak = uak;
 		this.name = name;
 		this.timeStamp = timeStamp;
 		this.dateTime = dateTime;
@@ -122,10 +162,11 @@ public class Achievement implements Serializable {
 		this.specialMark = specialMark;
 
 		return this;
-
-
 	}
 
-
-
+	@Exclude
+	@Override
+	public String getEntityKey() {
+		return getUak() + "." + String.valueOf(id);
+	}
 }

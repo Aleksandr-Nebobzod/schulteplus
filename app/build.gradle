@@ -1,6 +1,10 @@
 plugins {
-    id 'com.android.application'
+    // Add the Crashlytics Gradle plugin
+    id 'com.google.firebase.crashlytics'
+    // Make sure that you have the Google services Gradle plugin
     id 'com.google.gms.google-services'
+    id 'com.android.application'
+    id 'com.google.android.gms.oss-licenses-plugin'
 }
 
 //configurations.all {
@@ -26,9 +30,10 @@ android {
         applicationId "org.nebobrod.schulteplus"
         minSdkVersion 26
         targetSdkVersion 34
-        versionCode 10
+        versionCode 25
         versionName "Entada"
-
+        buildConfigField 'boolean', 'ENABLE_CRASHLYTICS', 'true'
+        buildConfigField 'boolean', 'DEBUGGING', 'false'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -37,10 +42,25 @@ android {
         mergedFlavor.manifestPlaceholders = [appPackageId: "org.nebobrod.schulteplus"]
     }
 
+    flavorDimensions "config"
+
+    productFlavors {
+        standard {
+            dimension "config"
+            buildConfigField "boolean", "ENABLE_SUBCLASSES", "true"
+        }
+        // Allows to exclude inner classes at configuration run (for ORMLite)
+        standardNoSubclasses {
+            dimension "config"
+            buildConfigField "boolean", "ENABLE_SUBCLASSES", "false"
+        }
+    }
+
     buildTypes {
         release {
             debuggable false
             minifyEnabled false
+            resValue "string", "firestore_root", "spdbs/test/"
             versionNameSuffix ""
             resValue "string", "app_version_num", "${defaultConfig.versionCode}"
             resValue "string", "app_version_full", "${defaultConfig.versionCode}${"_"}${defaultConfig.versionName}${versionNameSuffix}"
@@ -49,11 +69,14 @@ android {
         debug {
             debuggable true
             minifyEnabled false
+            resValue "string", "firestore_root", "spdbs/dev/"
             versionNameSuffix "_alpha"
             resValue "string", "app_version_num", "${defaultConfig.versionCode}"
             resValue "string", "app_version_full", "${""}${defaultConfig.versionCode}${"_"}${defaultConfig.versionName}${versionNameSuffix}"
+            buildConfigField 'boolean', 'ENABLE_CRASHLYTICS', 'false'
+            buildConfigField 'boolean', 'DEBUGGING', 'true'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-                }
+        }
         applicationVariants.all { variant ->
             variant.outputs.each {
                 output -> String projectName = getRootProject().name
@@ -73,37 +96,37 @@ android {
 }
 
 dependencies {
-//    implementation 'com.google.api-client:google-api-client:1.25.0'
-//    implementation 'com.google.api-client:google-api-client:1.23.0'
-    implementation 'com.google.firebase:firebase-firestore:24.10.0'
-//    implementation 'com.google.firebase:firebase-firestore'
-//    implementation 'com.google.cloud:google-cloud-firestore:3.15.7'
-/*    implementation ('com.google.cloud:google-cloud-firestore:3.15.7') {
-                exclude module: 'proto-google-cloud-firestore-bundle-v1'
-                exclude module: 'proto-google-common-protos'
-                exclude module: 'proto-google-cloud-firestore-bundle'
-                exclude module: 'proto-google-cloud-firestore-v1'
-                exclude module: 'protolite-well-known-types'
-                exclude module: 'protobuf-javalite'
-                exclude module: 'protobuf-java'
-                exclude module: 'protobuf-java-util'
-            }*/
-    implementation 'com.google.firebase:firebase-database:20.3.0'
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.1.0'
+//    implementation 'com.github.Innovattic:range-seek-bar:v1.0.8'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation("com.google.firebase:firebase-crashlytics:19.0.1")
+    implementation("com.google.firebase:firebase-analytics:22.0.1")
+
+    implementation 'com.google.firebase:firebase-firestore:25.0.0'
+//    implementation 'com.google.firebase:firebase-database:20.3.1'
     implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
-    implementation 'com.google.firebase:firebase-auth:22.3.0'
+    implementation 'com.google.firebase:firebase-auth:23.0.0'
     implementation 'com.j256.ormlite:ormlite-android:6.1'
 
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'                 // 1.7 gives an error (24.06.04)
+    implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
-    implementation 'androidx.navigation:navigation-fragment:2.7.1'
-    implementation 'androidx.navigation:navigation-ui:2.7.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'    // 2.8.1 gives an error (24.06.04)
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'   // 2.8.1 gives an error (24.06.04)
+    implementation 'androidx.navigation:navigation-fragment:2.7.7'
+    implementation 'androidx.navigation:navigation-ui:2.7.7'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.preference:preference:1.2.1'
 
+    // Unit test section
     testImplementation 'junit:junit:4.13.2'
+    /*https://mvnrepository.com/artifact/org.mockito/mockito-core*/
+//    testImplementation 'org.mockito:mockito-core:4.0.0'
+
+    // Instrument test section
+    androidTestImplementation 'androidx.test:rules:1.5.0'
+//    androidTestImplementation 'org.mockito:mockito-core:4.0.0'
+    androidTestImplementation 'org.mockito:mockito-android:4.0.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 

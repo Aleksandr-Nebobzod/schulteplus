@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) "Smart Rovers" 2024.
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
@@ -10,7 +18,7 @@
 	android:gravity="center"
 	android:hapticFeedbackEnabled="true"
 	android:orientation="vertical"
-	tools:context=".fbservices.LoginActivity">
+	tools:context=".ui.LoginActivity">
 	
 	
 	<ScrollView
@@ -55,6 +63,8 @@
 					android:drawableStart="@drawable/ic_baseline_perm_identity_24"
 					android:drawablePadding="4dp"
 					android:hint="@string/hint_email"
+					android:autofillHints="emailAddress"
+					android:importantForAutofill="auto"
 					android:padding="8dp"
 					android:textColor="@color/black"
 					android:visibility="visible" />
@@ -93,6 +103,8 @@
 						android:drawablePadding="4dp"
 						android:inputType="textPassword"
 						android:contentDescription="@string/hint_pass"
+						android:autofillHints="password"
+						android:importantForAutofill="auto"
 						android:padding="8dp"
 						android:textColor="@color/black" />
 					
@@ -154,15 +166,25 @@
 						android:text="@string/lbl_reset_password"
 						android:textColor="@color/purple_500"
 						android:textSize="16sp" />
-					
 					<TextView
 						android:id="@+id/tv_resend_verification_email"
+						android:visibility="gone"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:layout_margin="6dp"
 						android:clickable="true"
 						android:maxLines="3"
 						android:text="@string/lbl_resend_verification_email"
+						android:textColor="@color/purple_500"
+						android:textSize="16sp" />
+					<TextView
+						android:id="@+id/tv_delete_account"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_margin="6dp"
+						android:clickable="true"
+						android:maxLines="3"
+						android:text="@string/lbl_delete_account"
 						android:textColor="@color/purple_500"
 						android:textSize="16sp" />
 

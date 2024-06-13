@@ -8,40 +8,91 @@
 
 package org.nebobrod.schulteplus.ui.dashboard;
 
+import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.data.Achievement;
+import org.nebobrod.schulteplus.data.DataOrmRepo;
+import org.nebobrod.schulteplus.data.DataRepository;
+import org.nebobrod.schulteplus.data.ExResult;
+import org.nebobrod.schulteplus.data.Identifiable;
+import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
+
+import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import org.nebobrod.schulteplus.Utils;
-import org.nebobrod.schulteplus.data.ExResult;
-import org.nebobrod.schulteplus.data.DataOrmRepo;
-import org.nebobrod.schulteplus.common.AppExecutors;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.List;
+import java.util.Objects;
 
-public class DashboardViewModel extends ViewModel {
+
+public class DashboardViewModel<TEntity extends Identifiable<String>> extends ViewModel {
 	private static final String TAG = "DashboardViewModel";
 
 	private final MutableLiveData<String> dashboardKey = new MutableLiveData<>();
 	private final MutableLiveData<String> dashboardFilter = new MutableLiveData<>();
-	private final MutableLiveData<List<? extends ExResult>> resultsLiveData = new MutableLiveData<>();
+	//private final MutableLiveData<List<? extends ExResult>> resultsLiveData = new MutableLiveData<>();
+	private final MutableLiveData<List<TEntity>> resultsLiveData = new MutableLiveData<>();
+	// private final MutableLiveData<List<Achievement>> achievementsLiveData = new MutableLiveData<>();
+
 
 	// Getting data from DB
-	public void fetchResultsLimited(Class<? extends ExResult> clazz) {
-		AppExecutors appExecutors = new AppExecutors();
+	public void fetchLimitedData() {
+/*		AppExecutors appExecutors = new AppExecutors();
 		appExecutors.getDiskIO().execute(() -> {
-//			Log.d(TAG, "fetchResultsLimited, is MainLooper1?: " + (Looper.myLooper() == Looper.getMainLooper()));
-//			Log.d(TAG, "fetchResultsLimited, is MainLooper2?: " + (Looper.getMainLooper().getThread() == Thread.currentThread()));
-			List<? extends ExResult> results = (new DataOrmRepo(ExResult.class)).getListLimited(clazz, dashboardKey.getValue());
+		});*/
+
+		Class<? extends Identifiable<String>> clazz;
+		if (dashboardKey.getValue().equals("gcb_achievements")) {
+			clazz = Achievement.class;
+		} else {
+			clazz = ExResult.class;
+		}
+
+		// Apply to Class<TEntity>
+		@SuppressWarnings("unchecked")
+		Class<TEntity> entityClass = (Class<TEntity>) clazz;
+
+
+		String _filter = Objects.requireNonNull(dashboardFilter.getValue());
+		if (_filter.equals(Utils.getRes().getString(R.string.lbl_datasource_local))) {
+			List<TEntity> result = (new DataOrmRepo(clazz)).getListLimited(clazz, dashboardKey.getValue());
 //			Log.d(TAG, "fetchResultsLimited: " + results);
-			resultsLiveData.postValue(results);
-		});
+			resultsLiveData.postValue(result);
+		} else if (_filter.equals(Utils.getRes().getString(R.string.lbl_datasource_www))) {
+/*			new DataFirestoreRepo<TEntity>(entityClass).getListLimited(new DataRepository.RepoCallback<List<TEntity>>() {
+				@Override
+				public void onSuccess(List<TEntity> result) {
+					resultsLiveData.postValue(result);
+				}
+
+				@Override
+				public void onError(Exception e) {
+					Log.w(TAG, "onError: ", e);
+				}
+			});*/ // that was first try with no filter
+
+			new DataFirestoreRepo<TEntity>(entityClass).getListByField("exType", dashboardKey.getValue())
+					.addOnCompleteListener(task -> {
+						if (task.isSuccessful()) {
+							resultsLiveData.postValue(task.getResult());
+						} else {
+							Log.w(TAG, "onError: ", task.getException());
+						}
+					});
+		}
 	}
 
-	// Getter for LiveData with ExResult
-	public LiveData<List<? extends ExResult>> getResultsLiveData() {
+
+	// Getter for LiveData with dataset
+	public LiveData<List<TEntity>> getResultsLiveData() {
 		return resultsLiveData;
 	}
 
@@ -49,9 +100,10 @@ public class DashboardViewModel extends ViewModel {
 	public LiveData<String> getKey() {
 		return dashboardKey;
 	}
+
 	public void setKey(String s) {
 		dashboardKey.setValue(s);
-		Toast.makeText(Utils.getAppContext(), s, Toast.LENGTH_SHORT).show();
+		Log.d(TAG, "setFilter: " + s);
 	}
 
 	public LiveData<String> getFilter() {
@@ -59,6 +111,6 @@ public class DashboardViewModel extends ViewModel {
 	}
 	public void setFilter(String s) {
 		dashboardFilter.setValue(s);
-		Toast.makeText(Utils.getAppContext(), s, Toast.LENGTH_SHORT).show();
+		Log.d(TAG, "setFilter: " + s);
 	}
 }

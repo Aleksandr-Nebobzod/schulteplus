@@ -17,6 +17,8 @@ import android.os.Bundle;
 import org.nebobrod.schulteplus.common.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,14 +36,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import org.nebobrod.schulteplus.common.ExerciseRunner;
-import org.nebobrod.schulteplus.data.Achievement;
+import org.nebobrod.schulteplus.data.AdminNote;
 import org.nebobrod.schulteplus.data.DataRepos;
-import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
 import org.nebobrod.schulteplus.data.DataRepository;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.data.UserHelper;
 
+import static org.nebobrod.schulteplus.Utils.currentVersion;
+import static org.nebobrod.schulteplus.Utils.getVersionCode;
 import static org.nebobrod.schulteplus.common.Const.NAME_REG_EXP;
 
 import java.util.Arrays;
@@ -49,25 +52,19 @@ import java.util.List;
 
 public class SignupActivity extends AppCompatActivity {
 	private static final String TAG = "Signup";
-
-	private FirebaseAuth fbAuth;
-
 	EditText etEmail, etName, etPassword;
 	MaterialButton btGoOn;
-	TextView tvGoOff, tvAlternativeReg, tvContinueAnonymously, tvContinueUnregistered;
-
+	CheckBox cbAgreed;
+	TextView tvPolicy, tvAgreement, tvGoOff, tvAlternativeReg, tvContinueAnonymously, tvContinueUnregistered;
 	ImageView btUnwrapExtra, btWrapExtra;
 	LinearLayout llExtras;
-
-
 	DataRepository fsRepo;
 	UserHelper userHelper;
 	FirebaseAuth.AuthStateListener mAuthListener;
-
+	private FirebaseAuth fbAuth;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_signup);
 
@@ -77,6 +74,9 @@ public class SignupActivity extends AppCompatActivity {
 		etName = findViewById(R.id.et_name);
 		etPassword = findViewById(R.id.et_pass);
 		btGoOn = findViewById(R.id.bt_go_on);
+		cbAgreed = findViewById(R.id.cb_agreed);
+		tvPolicy = findViewById(R.id.tv_policy);
+		tvAgreement = findViewById(R.id.tv_agreement);
 		tvGoOff = findViewById(R.id.tv_go_off);
 
 		btUnwrapExtra = findViewById(R.id.bt_unwrap_extra);
@@ -128,8 +128,7 @@ public class SignupActivity extends AppCompatActivity {
 
 
 		// Go Register
-		btGoOn.setOnClickListener(new View.OnClickListener()
-		{
+		btGoOn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				final String[] resMessage = {""};
@@ -162,10 +161,18 @@ public class SignupActivity extends AppCompatActivity {
 								// Create the repositories copy of the new UserHelper
 								FirebaseUser fbUser = fbAuth.getCurrentUser();
 								userHelper = new UserHelper(fbUser.getUid(), email, name, password, Utils.getDevId() , Utils.getUak(),  false);
-								DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
+								DataRepos repos;
+								repos = new DataRepos<>(UserHelper.class);
 								repos.create(userHelper);		// Since it's a new user
-																// no need to check other records
+																// no need to check other records in central repo
+
 								Toast.makeText(SignupActivity.this, resMessage[0], Toast.LENGTH_SHORT).show();
+
+								// registration record
+								AdminNote firstAdminNote = new AdminNote(0, userHelper.getUak(), userHelper.getUid(), "SignUp", "Android: " + currentVersion(), "", userHelper.getTimeStamp(), getVersionCode(), 0, 0, userHelper.getTimeStamp());
+								repos = new DataRepos<>(AdminNote.class);
+								repos.create(firstAdminNote);
+
 								runMainActivity(userHelper);
 							} else { // In case of unsuccessful registration
 
@@ -183,9 +190,42 @@ public class SignupActivity extends AppCompatActivity {
 			}
 		});
 
+		// User acceptance of Policy
+		cbAgreed.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+				if (b) {
+					btGoOn.setEnabled(true);
+					tvAlternativeReg.setEnabled(true);
+				} else {
+					btGoOn.setEnabled(false);
+					tvAlternativeReg.setEnabled(false);
+				}
+			}
+		});
+		tvPolicy.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				try {
+					Utils.displayHtmlAlertDialog(SignupActivity.this, R.string.str_about_user_data_policy_html_source);
+				} catch (Exception e) {
+					Log.e(TAG, "user_data_policy dialog opening", e);
+				}
+			}
+		});
+		tvAgreement.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				try {
+					Utils.displayHtmlAlertDialog(SignupActivity.this, R.string.str_about_user_agreement_html_source);
+				} catch (Exception e) {
+					Log.e(TAG, "user_data_policy dialog opening", e);
+				}
+			}
+		});
+
 		// This listener updates UserDisplayName in case of success authentication
-		mAuthListener = new FirebaseAuth.AuthStateListener()
-		{
+		mAuthListener = new FirebaseAuth.AuthStateListener() {
 			@Override
 			public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 				FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -214,8 +254,7 @@ public class SignupActivity extends AppCompatActivity {
 		};
 
 		// Goto LoginActivity
-		tvGoOff.setOnClickListener(new View.OnClickListener()
-		{
+		tvGoOff.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				Log.d(TAG, "Go on proceeded for user: " + etName.getText().toString().trim());
@@ -230,8 +269,7 @@ public class SignupActivity extends AppCompatActivity {
 			}
 		});
 
-		btUnwrapExtra.setOnClickListener(new View.OnClickListener()
-		{
+		btUnwrapExtra.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				llExtras.setVisibility(View.VISIBLE);
@@ -239,8 +277,7 @@ public class SignupActivity extends AppCompatActivity {
 			}
 		});
 
-		btWrapExtra.setOnClickListener(new View.OnClickListener()
-		{
+		btWrapExtra.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				btUnwrapExtra.setVisibility(View.VISIBLE);
@@ -248,8 +285,7 @@ public class SignupActivity extends AppCompatActivity {
 			}
 		});
 
-		tvContinueAnonymously.setOnClickListener(new View.OnClickListener()
-		{
+		tvContinueAnonymously.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 

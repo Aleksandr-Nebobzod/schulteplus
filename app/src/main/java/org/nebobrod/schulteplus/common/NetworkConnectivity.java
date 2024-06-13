@@ -64,9 +64,14 @@ public class NetworkConnectivity {
 					boolean isConnected = connection.getResponseCode() == 200; // && connection.getContentLength() == 286 for humans.txt;
 					postCallback(isConnected, callback);
 					connection.disconnect();
+					connection.getInputStream().close();
 				} catch (Exception e) {
 					postCallback( false, callback);
-					if(connection != null) connection.disconnect();
+				} finally {
+					if(connection != null) {
+						connection.disconnect();
+
+					}
 				}
 			} else {
 				postCallback(false, callback);

@@ -41,8 +41,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	private static final int DATABASE_VERSION = getVersionCode();
 
-//	private Dao<ClickGroup, Integer> groupDao = null;
-//	private Dao<ClickCount, Integer> clickDao = null;
+	private Dao<AdminNote, Integer> adminNoteDao = null;
 	private Dao<Achievement, Integer> achievementDao = null;
 	private Dao<ExResult, Integer> exResultDao = null;
 	private Dao<Turn, Integer> turnDao = null;
@@ -64,12 +63,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase sqliteDatabase, ConnectionSource connectionSource) {
 		try {
-//			TableUtils.createTable(connectionSource, ClickGroup.class);
-//			TableUtils.createTable(connectionSource, ClickCount.class);
 			TableUtils.createTable(connectionSource, Achievement.class);
 			TableUtils.createTable(connectionSource, ExResult.class);
 			TableUtils.createTable(connectionSource, Turn.class);
 			TableUtils.createTable(connectionSource, UserHelper.class);
+			TableUtils.createTable(connectionSource, AdminNote.class);
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Unable to create datbases", e);
 		}
@@ -90,12 +88,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase sqliteDatabase, ConnectionSource connectionSource, int oldVer, int newVer) {
 		try {
-//			TableUtils.dropTable(connectionSource, ClickGroup.class, true);
-//			TableUtils.dropTable(connectionSource, ClickCount.class, true);
 			TableUtils.dropTable(connectionSource, Achievement.class, true);
 			TableUtils.dropTable(connectionSource, ExResult.class, true);
 			TableUtils.dropTable(connectionSource, Turn.class, true);
 			TableUtils.dropTable(connectionSource, UserHelper.class, true);
+			TableUtils.dropTable(connectionSource, AdminNote.class, true);
 			onCreate(sqliteDatabase, connectionSource);
 		} catch (SQLException e) {
 			Log.e(
@@ -146,11 +143,19 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		}
 		return turnDao;
 	}
+
 	public Dao<UserHelper, Integer> getUserHelperDao() throws SQLException {
 		if (userHelperDao == null) {
 			userHelperDao = getDao(UserHelper.class);
 		}
 		return userHelperDao;
+	}
+
+	public Dao<AdminNote, Integer> getAdminNoteDao() throws SQLException {
+		if (adminNoteDao == null) {
+			adminNoteDao = getDao(AdminNote.class);
+		}
+		return adminNoteDao;
 	}
 
 
@@ -169,6 +174,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			exResultDao = null;
 			turnDao = null;
 			userHelperDao = null;
+			adminNoteDao = null;
 			// and finally the DatabaseHelper itself
 			helper = null;
 		}

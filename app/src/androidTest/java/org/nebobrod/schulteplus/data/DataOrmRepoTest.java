@@ -9,6 +9,10 @@
 package org.nebobrod.schulteplus.data;
 
 import static org.junit.Assert.assertTrue;
+import static org.nebobrod.schulteplus.Utils.currentVersion;
+import static org.nebobrod.schulteplus.Utils.getVersionCode;
+import static org.nebobrod.schulteplus.Utils.intFromString;
+import static org.nebobrod.schulteplus.Utils.timeStampU;
 
 
 import androidx.annotation.NonNull;
@@ -64,9 +68,11 @@ public class DataOrmRepoTest<TEntity extends Identifiable<String>>  {
 		Identifiable<String> data;
 		DataOrmRepo repo;
 
-		String pr = "006";
-		data = new UserHelper(pr + "TFKBiTdd", pr + "@gmail.com", pr + "name", pr + "pass", pr + "device3a", pr + "uaked47", false);
+		String pr = "008";
+//		data = new UserHelper(pr + "TFKBiTdd", pr + "@gmail.com", pr + "name", pr + "pass", pr + "device3a", pr + "uaked47", false);
 //		data = new Achievement().setAchievement(pr + "uid", pr + "uak", pr + "nam", 1711556007L, "05.05.05", pr + "r", pr + "v", pr + "m");
+		data = new AdminNote(intFromString(pr), pr + "uaked47", pr + "TFKBiTdd", "SignUp", "Android: " + currentVersion(), "", timeStampU(), getVersionCode(), 0, 0, timeStampU());
+
 
 		repo = new DataOrmRepo<>(data.getClass());
 

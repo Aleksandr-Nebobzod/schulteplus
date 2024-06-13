@@ -40,7 +40,7 @@ public class Turn implements Serializable, Identifiable<String> {
 	private long timeStamp;
 
 	@DatabaseField
-	private long time;					// num of nanoseconds since previous turn
+	private long time;					// num of milliseconds since previous turn
 
 	@DatabaseField
 	private int expected;

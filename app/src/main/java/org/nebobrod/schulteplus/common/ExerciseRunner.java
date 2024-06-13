@@ -26,6 +26,7 @@ import androidx.preference.PreferenceManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -229,15 +230,16 @@ public class ExerciseRunner {
 		if(null != exercise){
 			CALC:
 			if (!exercise.validateResult()) {
-				showSnackBar(getRes().getString(R.string.err_result_validity));
+				// showSnackBar(getRes().getString(R.string.err_result_validity));
+				Toast.makeText(getAppContext(), getRes().getString(R.string.err_result_validity), Toast.LENGTH_LONG).show();
 				result = false;
 				break CALC;
 			} else {
-				exResult = exercise.getExResult();
+				// exResult = exercise.getExResult();
 				exResult.setExDescription(exDescription());
 
 				// On the whole spent seconds
-				points = (int) (sharedPreferences.getInt(KEY_POINTS, 0) + exResult.getNumValue());
+				points = (int) (sharedPreferences.getInt(KEY_POINTS, 0) + exResult.getNumValue() / 1000);
 				achieved.add(AchievementFlags.SECONDS);
 				if (points > 3600){
 					hours += (points / 3600);
@@ -263,7 +265,7 @@ public class ExerciseRunner {
 		}
 	}
 
-	private static void updateUserHelper() {
+	public static void updateUserHelper() {
 		DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
 
 		userHelper.setStatus(points, hours, level, getTimeStamp());
@@ -382,6 +384,14 @@ public class ExerciseRunner {
 	public static boolean isProbEnabled() {return probEnabled;}
 
 	public static void setProbEnabled(boolean probEnabled) {ExerciseRunner.probEnabled = probEnabled;}
+
+	public static boolean isSquared() {
+		return squared;
+	}
+
+	public static void setSquared(boolean squared) {
+		ExerciseRunner.squared = squared;
+	}
 
 	public static boolean isShuffled() {return shuffled;}
 

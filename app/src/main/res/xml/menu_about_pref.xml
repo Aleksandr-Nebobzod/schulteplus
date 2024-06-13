@@ -55,14 +55,20 @@
 			app:persistent="false" />
 		
 		<Preference
-			app:key="prf_license"
-			app:title="@string/lbl_about_license"
+			app:key="prf_user_agreement"
+			app:title="@string/lbl_about_user_agreement"
 			android:icon="@drawable/ic_baseline_action_about_24"
 			app:persistent="false" />
 		
 		<Preference
 			app:key="prf_user_data_policy"
 			app:title="@string/lbl_about_user_data_policy"
+			android:icon="@drawable/ic_baseline_action_about_24"
+			app:persistent="false" />
+		
+		<Preference
+			app:key="prf_license"
+			app:title="@string/lbl_about_license"
 			android:icon="@drawable/ic_baseline_action_about_24"
 			app:persistent="false" />
 

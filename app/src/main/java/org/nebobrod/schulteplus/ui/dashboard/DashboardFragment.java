@@ -20,9 +20,6 @@ import org.nebobrod.schulteplus.data.Achievement;
 import org.nebobrod.schulteplus.data.AchievementArrayAdapter;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.ExResultArrayAdapter;
-import org.nebobrod.schulteplus.data.DataOrmRepo;
-import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
-import org.nebobrod.schulteplus.data.DataRepository;
 import org.nebobrod.schulteplus.databinding.FragmentDashboardBinding;
 
 import androidx.annotation.NonNull;
@@ -34,7 +31,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,8 +49,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class DashboardFragment extends Fragment implements DataOrmRepo.OrmGetCallback {
+public class DashboardFragment extends Fragment {
 	private static final String TAG = "Dashboard";
 
 	DashboardViewModel dashboardViewModel;
@@ -63,13 +60,12 @@ public class DashboardFragment extends Fragment implements DataOrmRepo.OrmGetCal
 	Spinner spDashboard;
 	RadioGroup rgSource;
 	TextView tvTitle;
-	ListView elvChart;
-	ArrayList<Spanned> list;
+
+	ListView elvChart;						// Main data chart
 	ArrayList<Achievement> listAchievement;
 	ArrayList<ExResult> listExResult;
-	ArrayAdapter<Spanned> adapter;
 	ArrayAdapter<ExResult> exResultAdapter;
-	ArrayAdapter<Achievement> arrayAdapter;
+	ArrayAdapter<Achievement> achievementAdapter;
 
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		dashboardViewModel =
@@ -79,14 +75,26 @@ public class DashboardFragment extends Fragment implements DataOrmRepo.OrmGetCal
 		View root = binding.getRoot();
 			// This prevents the bug#27 of App's backgrounding due to mis-click
 			root.setOnClickListener(view -> {});
-		spDashboard = binding.spDashboard;
-		setDashboardSpinner(spDashboard);
-		rgSource = binding.rgSource;
-		tvTitle = binding.tvTitle;
-		elvChart = binding.elvDashboard;
 
-		// Copy data to clipboard
+		spDashboard = binding.spDashboard;		// Spinner
+		setDashboardSpinner(spDashboard);
+
+		rgSource = binding.rgSource;			// RadioGroup report Filter
+		rgSource.setOnCheckedChangeListener((radioGroup, checkedId) -> {
+					//Change Local or WWW datasource & www-Filters
+
+			// Pass checked radioButton to viewModel
+			RadioButton _rb = getView().findViewById(checkedId);
+			tvTitle.setText(_rb.getHint());
+			dashboardViewModel.setFilter(_rb.getText().toString());
+			dashboardViewModel.fetchLimitedData();
+		});
+
+		tvTitle = binding.tvTitle;
+		elvChart = binding.elvDashboard;		// Report chart
 		elvChart.setOnItemLongClickListener((adapterView, view, i, l) -> {
+
+			// Copy data to clipboard
 			ListAdapter _adapter = ((ListView) adapterView).getAdapter();
 			int count = _adapter.getCount();
 			if (count == 0) {
@@ -119,77 +127,15 @@ public class DashboardFragment extends Fragment implements DataOrmRepo.OrmGetCal
 			return true;
 		});
 
-//		local achievement datasource
-		listAchievement = new ArrayList<>(); // OrmRepo.getAchievementList();
-		arrayAdapter = new AchievementArrayAdapter(getAppContext(), (List<Achievement>) Utils.markupListAsGroupedBy(listAchievement, TIMESTAMP_FIELD_NAME));
-		elvChart.setAdapter(arrayAdapter);
-		arrayAdapter.notifyDataSetChanged();
-
-//		firebase achievement datasource (Spanned yet)
-		list = new ArrayList<>();
-		adapter = new ArrayAdapter<>(this.getActivity(), R.layout.item_one_textview, list);
-		elvChart.setAdapter(adapter);
-		new DataFirestoreRepo<>(Achievement.class).getListLimited(onCallback);
-		adapter.notifyDataSetChanged();
-
-//		ExResult adapter
-		listExResult = new ArrayList<ExResult>(); //(ArrayList<ExResult>) dashboardViewModel.getResultsLiveData().getValue();
-		exResultAdapter = new ExResultArrayAdapter(getAppContext(), (List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME));
-		elvChart.setAdapter(exResultAdapter);
-		exResultAdapter.notifyDataSetChanged();
-
-		//Change Local or WWW datasource & www-Filters
-		rgSource.setOnCheckedChangeListener((radioGroup, checkedId) -> {
-			updateListView(checkedId);
-		});
-
-/*
-		//Change table datasource Achievements or ExResults & ExType
-		spDashboard.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				if (view == null) return;
-				Log.d(TAG, "onItemSelected: " + position + " id: " + id + " View: " + view.toString());
-				dashboardViewModel.setKey(((TextView) view).getText().toString());
-
-//				dashboardViewModel.setKey(view.getText());
-			}
-			@Override
-			public void onNothingSelected(AdapterView<?> adapterView) {}
-		});
-*/
-
 		return root;
 	}
 
-	/**
-	 * Copy listView's data to clipboard NOT used
-	 */
-/*	private View.OnLongClickListener copyData = view -> {
-		ListAdapter _adapter = ((ListView) view).getAdapter();
-		int count = _adapter.getCount();
-		// Create StringBuilder to gather text
-		StringBuilder stringBuilder = new StringBuilder();
-
-		for (int i = 0; i < count; i++) {
-			stringBuilder.append(_adapter.getItem(i).toString()).append("\n");
-		}
-		// Copy text to clipboard
-		ClipboardManager clipboard = (ClipboardManager) getAppContext().getSystemService(Context.CLIPBOARD_SERVICE);
-		ClipData clip = ClipData.newPlainText("label", stringBuilder.toString());
-		clipboard.setPrimaryClip(clip);
-
-		Toast.makeText(getAppContext(), "Table copied to clipboard", Toast.LENGTH_SHORT).show();
-		return true;
-	};
-	*/
-
 	/** Spinner to choose the dashboard (Achievements or an ExType) */
 	private void setDashboardSpinner(Spinner spinner) {
-		// Language independent values
+		// Language independent Values of Exercise Types
 		exTypeValues = getRes().getStringArray(R.array.ex_type);
 
-		// Language-dependent entries based on spinner-entries array (which was values indeed)
+		// Language-dependent Entries based on spinner-entries array (which was values indeed)
 		int spLength = exTypeValues.length;
 		exTypeEntries = new String[spLength];
 		for (int i = 0; i < spLength; i++) {
@@ -202,6 +148,7 @@ public class DashboardFragment extends Fragment implements DataOrmRepo.OrmGetCal
 				getAppContext(),
 				android.R.layout.simple_spinner_item, // R.layout.item_one_textview, //
 				exTypeEntries);
+
 		// set simple layout resource file for each item of spinner
 		 spAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
 
@@ -209,7 +156,7 @@ public class DashboardFragment extends Fragment implements DataOrmRepo.OrmGetCal
 		spinner.setAdapter(spAdapter);
 		spAdapter.notifyDataSetChanged();
 
-		// Set livedata Key when Dashboard spinner changed
+		/** Set livedata Key and Filter when Dashboard spinner changed */
 		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
@@ -231,6 +178,8 @@ public class DashboardFragment extends Fragment implements DataOrmRepo.OrmGetCal
 				// Pass checked radioButton to viewModel
 				_rb = getView().findViewById(rgSource.getCheckedRadioButtonId());
 				dashboardViewModel.setFilter(_rb.getText().toString());
+
+				dashboardViewModel.fetchLimitedData();
 			}
 
 			@Override
@@ -240,28 +189,16 @@ public class DashboardFragment extends Fragment implements DataOrmRepo.OrmGetCal
 		});
 	}
 
+/*
 	private void updateListView(int checkedRadioButtonId) {
 		RadioButton checkedRadioButton;
 		checkedRadioButton = getView().findViewById(checkedRadioButtonId);
-		tvTitle.setText(checkedRadioButton.getHint());
+
+
 		String _key = (dashboardViewModel.getKey().getValue() == null ? "gcb_achievements" : dashboardViewModel.getKey().getValue());
 		// choose table Achievements vs. ExResult
 		if (_key.equals("gcb_achievements")) {
-			switch(checkedRadioButtonId)
-			{
-				case R.id.rb_local:
-					DataOrmRepo.achieveGet25(DashboardFragment.this::onComplete);
-					arrayAdapter = new AchievementArrayAdapter(getAppContext(), (List<Achievement>) Utils.markupListAsGroupedBy(listAchievement, TIMESTAMP_FIELD_NAME));
-					elvChart.setAdapter(arrayAdapter);
-					break;
-				case R.id.rb_www:
-					adapter = new ArrayAdapter<>(getAppContext(), R.layout.item_one_textview, list);
-					elvChart.setAdapter(adapter);
-					new DataFirestoreRepo<>(Achievement.class).getListLimited(onCallback);
-					break;
-				default:
-					// do nothing
-			}
+
 		} else {
 			// ExResults
 			switch(checkedRadioButtonId)
@@ -285,14 +222,14 @@ public class DashboardFragment extends Fragment implements DataOrmRepo.OrmGetCal
 
 
 //			exResultAdapter = ExResult.getArrayAdapter(getAppContext(), listExResult);
-/*			adapter = new ArrayAdapter<>(
+			adapter = new ArrayAdapter<>(
 					getAppContext(),
 					R.layout.layout_one_textview,
-					exResultToSpanned(dashboardViewModel.getResultsLiveData().getValue()));*/
+					exResultToSpanned(dashboardViewModel.getResultsLiveData().getValue()));
 //			elvChart.setAdapter(exResultAdapter);
 //			exResultAdapter.notifyDataSetChanged();
 		}
-	}
+	}*/ // Previous approach was changed to livedata
 
 	/**
 	 * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
@@ -309,13 +246,33 @@ public class DashboardFragment extends Fragment implements DataOrmRepo.OrmGetCal
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
-		// Watch for LiveData and refresh ExResult UI
+		// Watch for LiveData and refresh UI
 		dashboardViewModel.getResultsLiveData().observe(getViewLifecycleOwner(), results -> {
-			// Update the listExResult with fresh data
-			listExResult = (ArrayList<ExResult>) results;
-			exResultAdapter = new ExResultArrayAdapter(getAppContext(), (List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME));
-			elvChart.setAdapter(exResultAdapter);
-			exResultAdapter.notifyDataSetChanged();
+			if (results == null || ((List<Object>)results).size() < 1) {
+				Toast.makeText(Utils.getAppContext(), getString(R.string.err_no_data), Toast.LENGTH_SHORT).show();
+				return;
+			}
+
+			boolean isLocal = (Objects.requireNonNull(dashboardViewModel.getFilter().getValue()).equals(Utils.getRes().getString(R.string.lbl_datasource_local)));
+			// check type of data
+			// and choose lv adapter Achievements vs. ExResult
+			if (((List<Object>)results).get(0) instanceof Achievement) {
+				listAchievement = (ArrayList<Achievement>) results;
+				achievementAdapter = new AchievementArrayAdapter(getAppContext(),
+						(List<Achievement>) Utils.markupListAsGroupedBy(listAchievement, TIMESTAMP_FIELD_NAME),
+						isLocal);
+				elvChart.setAdapter(achievementAdapter);
+				achievementAdapter.notifyDataSetChanged();
+			} else {
+
+				// here the first element of data is probably ExResult
+				listExResult = (ArrayList<ExResult>) results;
+				exResultAdapter = new ExResultArrayAdapter(getAppContext(),
+						(List<ExResult>) Utils.markupListAsGroupedBy(listExResult, TIMESTAMP_FIELD_NAME),
+						ExerciseRunner.GetUid());
+				elvChart.setAdapter(exResultAdapter);
+				exResultAdapter.notifyDataSetChanged();
+			}
 		});
 	}
 
@@ -331,7 +288,7 @@ public class DashboardFragment extends Fragment implements DataOrmRepo.OrmGetCal
 				break;
 			}
 		}
-		updateListView(rgSource.getCheckedRadioButtonId());
+		dashboardViewModel.fetchLimitedData();
 	}
 
 	@Override
@@ -339,33 +296,5 @@ public class DashboardFragment extends Fragment implements DataOrmRepo.OrmGetCal
 		super.onDestroyView();
 		Log.d(TAG, "onDestroyView: Called");
 		binding = null;
-	}
-
-	// Backend's Achievements
-	public DataRepository.RepoCallback<List<Achievement>> onCallback = new DataRepository.RepoCallback<List<Achievement>>() {
-		@Override
-		public void onSuccess(List<Achievement> result) {
-			list.clear();
-			if (result != null) {
-				for (Object o : result) {
-					list.add(Html.fromHtml(o.toString()));
-				}
-			}
-			adapter.notifyDataSetChanged();
-		}
-
-		@Override
-		public void onError(Exception e) {
-			list.clear();
-			list.add(Html.fromHtml(e.getLocalizedMessage()));
-			adapter.notifyDataSetChanged();
-		}
-	};
-
-	// Local Achievements
-	@Override
-	public void onComplete(Object result) {
-		listAchievement = (ArrayList<Achievement>) Utils.markupListAsGroupedBy((ArrayList<Achievement>) result, TIMESTAMP_FIELD_NAME);
-		arrayAdapter.notifyDataSetChanged();
 	}
 }

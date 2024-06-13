@@ -120,14 +120,7 @@ public class LoginActivity extends AppCompatActivity {
 //				progressDialog = ProgressDialog.show(getApplicationContext(),
 //						"Please wait...", "Retrieving data ...", true);
 
-				// TODO: 01.05.2024   Change to userHelper
-				Toast.makeText(LoginActivity.this, "todo in progress...", Toast.LENGTH_SHORT).show();
-/*				UserFbData.getUserFromFirebase(new UserFbData.UserHelperCallback() {
-					@Override
-					public void onCallback(@Nullable UserHelper fbDbUser) {
-//						Toast.makeText(LoginActivity.this, fbDbUser.toString(), Toast.LENGTH_SHORT).show();
-					}
-				}, email);*/
+				// TODOne: 01.05.2024   Change UserFbData to userHelper
 
 				fbAuth.signInWithEmailAndPassword(email, password)
 					.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -136,14 +129,32 @@ public class LoginActivity extends AppCompatActivity {
 
 							// check an account for correct login (repo copies)
 							String uid = Objects.requireNonNull(authResult.getUser()).getUid();
-							new DataRepos<>(UserHelper.class).getLatestUserHelper(intStringHash(uid))
-									.addOnCompleteListener(task -> runMainActivity(task.getResult()));
+							DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
+							repos.getLatestUserHelper(intStringHash(uid))
+									.addOnCompleteListener(task -> {
+										if (task.isSuccessful()) {
+											runMainActivity(task.getResult());
+										} else {
+											if (task.getException().getCause() instanceof RuntimeException){
+												Toast.makeText(LoginActivity.this, getString(R.string.msg_user_data_renewed), Toast.LENGTH_LONG).show();
+												UserHelper userHelper = new UserHelper(fbUser.getUid(), email, "new", password, Utils.getDevId() , Utils.getUak(),  false);
+												repos.create(userHelper).addOnCompleteListener(new OnCompleteListener<Void>() {
+													@Override
+													public void onComplete(@NonNull Task<Void> task) {
+														runMainActivity(userHelper);
+													}
+												});
+											} else {
+												Toast.makeText(LoginActivity.this, getString(R.string.err_unknown), Toast.LENGTH_SHORT).show();
+											}
+										}
+									});
 						}
 					}).addOnFailureListener(new OnFailureListener() {
 						@Override
 						public void onFailure(@NonNull Exception e) {
-							String s = email + " " + getString(R.string.msg_user_login_failed) + " - " + e.getMessage();
-							Log.d(TAG, s);
+							String s = email + " " + getString(R.string.msg_user_login_failed) + " - " + e.getLocalizedMessage();
+							Log.w(TAG, s);
 							Toast.makeText(LoginActivity.this, s, Toast.LENGTH_LONG).show();
 						}
 					});
@@ -315,7 +326,7 @@ public class LoginActivity extends AppCompatActivity {
 		});
 
 		DataFirestoreRepo<UserHelper> userRepo = new DataFirestoreRepo<>(UserHelper.class);
-		Task<Void> taskUser = exResRepo.unpersonilise(_uid, dummyName).addOnCompleteListener(new OnCompleteListener<Void>() {
+		Task<Void> taskUser = userRepo.unpersonilise(_uid, dummyName).addOnCompleteListener(new OnCompleteListener<Void>() {
 			@Override
 			public void onComplete(@NonNull Task<Void> task) {
 				if (task.isSuccessful()) {

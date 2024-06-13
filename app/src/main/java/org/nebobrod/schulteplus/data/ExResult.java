@@ -57,7 +57,7 @@ public class ExResult implements Serializable, Identifiable<String> {
 	private String name; 			// UserName
 
 	@DatabaseField
-	private long timeStamp;
+	private long timeStamp;			// actual updated timeStamp
 
 	@DatabaseField
 	private String dateTime;
@@ -75,7 +75,7 @@ public class ExResult implements Serializable, Identifiable<String> {
 
 	// and result data itself:
 	@DatabaseField
-	private long timeStampFinish = 0;	// 0 if not finished TODO get rid of this...
+	private long timeStampStart = 0;
 
 	@DatabaseField
 	private long numValue; 				// used as number of milliseconds, spent through the exercise */
@@ -120,14 +120,13 @@ public class ExResult implements Serializable, Identifiable<String> {
 		this.uid = exerciseRunner.getUserHelper().getUid();
 		this.name = exerciseRunner.getUserHelper().getName();
 		this.timeStamp = timeStampU();
+		this.timeStampStart = this.timeStamp;
 		this.dateTime = timeStampFormattedLocal(this.timeStamp);
 		this.exType = exerciseRunner.getExType();
 		this.exDescription = ""; // TODO: 26.02.2024 gather settings & screen width in String
 
 		// additional fields
 		this.seed = seed;
-		// DONE: 06.05.2024  FROM TODOne : 30.04.2024 split start&finish
-		this.timeStampFinish = this.timeStamp;
 		this.numValue = numValue;
 		this.levelOfEmotion = levelOfEmotion;
 		this.levelOfEnergy = levelOfEnergy;
@@ -209,12 +208,12 @@ public class ExResult implements Serializable, Identifiable<String> {
 		this.exDescription = exDescription;
 	}
 
-	public long getTimeStampFinish() {
-		return timeStampFinish;
+	public long getTimeStampStart() {
+		return timeStampStart;
 	}
 
-	public void setTimeStampFinish(long timeStampFinish) {
-		this.timeStampFinish = timeStampFinish;
+	public void setTimeStampStart(long timeStampStart) {
+		this.timeStampStart = timeStampStart;
 	}
 
 	public boolean isValid() {
@@ -342,7 +341,7 @@ public class ExResult implements Serializable, Identifiable<String> {
 
 	/** minimum of update */
 	public void update(long timeStamp, long numValue, int levelOfEmotion, int levelOfEnergy, String note) {
-		this.timeStamp = timeStamp;
+		this.timeStamp = timeStamp; // Finish
 		this.numValue = numValue;
 		this.levelOfEmotion = levelOfEmotion;
 		this.levelOfEnergy = levelOfEnergy;

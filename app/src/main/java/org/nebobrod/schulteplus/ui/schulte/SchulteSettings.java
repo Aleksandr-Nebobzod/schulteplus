@@ -159,7 +159,7 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 		}
 
 		if (KEY_PRF_RATINGS.equals(preference.getKey())) {
-			enableOptions ( ! ((SwitchPreference)preference).isChecked()); //		Action is opposite of ratings
+			enableOptions ( ! ((SwitchPreference)preference).isChecked()); 	// Action is opposite of ratings
 		}
 
 		if (KEY_PRF_PROB_ENABLED.equals(preference.getKey())) {
@@ -336,10 +336,10 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setVisible(allowed);
 		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setEnabled(allowed);
 
-		((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(!allowed);
-		((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(allowed);
-		((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setChecked(!allowed);
-		((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setEnabled(allowed);
+//		((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(!allowed);
+//		((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(allowed);
+//		((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setChecked(!allowed);
+//		((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setEnabled(allowed);
 
 //		((SeekBarPreference) findPreference(KEY_PRF_PROB_SURFACE)).setEnabled(action);
 //		((SwitchPreference) findPreference(KEY_PRF_PROB_ZERO)).setEnabled(action);
@@ -374,6 +374,7 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 		exType.setText(chosen.getKey());
 		runner.setExType(exType.getText().toString()); // set exType into the runner from invisible EditTextPreference field
 		runner.setRatings(((SwitchPreference) findPreference(KEY_PRF_RATINGS)).isChecked());
+//		runner.setSquared(((SwitchPreference) findPreference(KEY_PRF_SQUARED)).isChecked());
 
 		// set X & Y to runner
 		switch (chosen.getKey()){
@@ -391,6 +392,7 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 					runner.setY((byte) ((androidx.preference.SeekBarPreference) findPreference(KEY_Y_SIZE)).getValue());
 					// set hinted to runner
 					runner.setHinted(((androidx.preference.SwitchPreference) findPreference(KEY_PRF_HINTED)).isChecked());
+					runner.setSquared(((androidx.preference.SwitchPreference) findPreference(KEY_PRF_SQUARED)).isChecked());
 				}
 				break;
 			case KEY_PRF_EX_S2:

@@ -845,6 +845,7 @@ public final class Utils extends Application {
 			public void onPageFinished(WebView view, String url) {
 				super.onPageFinished(view, url);
 				Log.i("Utils", "Page loaded successfully: " + url);
+				// This variant shows smaller window:
 /*				androidx.appcompat.app.AlertDialog alertDialog =
 						new AlertDialog.Builder(context, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert)
 								.setView(view)

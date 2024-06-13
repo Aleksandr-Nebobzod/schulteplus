@@ -439,10 +439,10 @@ public class STable extends Exercise {
 
 		// Spent seconds During the exercise
 		int events = this.journal.size()-1;
-		exResult.setNumValue((this.journal.get(events).getTimeStamp() - this.journal.get(0).getTimeStamp())/1000000000);
+		// exResult.setNumValue((this.journal.get(events).getTimeStamp() - this.journal.get(0).getTimeStamp())/1000000);
 
 		// if an average turn duration exceeds allowed limit
-		if ((exResult.getNumValue() / events) > AVERAGE_IDLE_LIMIT) {
+		if ((exResult.getNumValue() /1000 / events) > AVERAGE_IDLE_LIMIT) {
 			return false;
 		}
 		setValid(true);

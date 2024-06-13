@@ -56,12 +56,14 @@ import java.util.Map;
  * @return
  */
 public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
-	static int textViewResourceId  = R.layout.fragment_dashboard_elv_achievement;
+	static int textViewResourceId  = R.layout.fragment_dashboard_elv_ex_result;
+	String myUid;
 	List<ExResult> items = new ArrayList<>();
 //		static ArrayAdapter<List<ExResult>> exResultArrayAdapter;
 
-	public ExResultArrayAdapter(Context context, List<ExResult> items) {
+	public ExResultArrayAdapter(Context context, List<ExResult> items, String uid) {
 		super(context, textViewResourceId, items);
+		myUid = uid;
 //			this.items = items;
 	}
 
@@ -107,14 +109,21 @@ public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
 		}
 
 //			fillText(v, R.id.tv_flag, exResult.layoutFlag()); // for debug
-		fillText(v, R.id.tv_num, "" + (position + 1)); // achievement.getName() -- not needed in personal list
+		fillText(v, R.id.tv_num, "" + (position + 1));
 		fillText(v, R.id.tv_time, timeStampToTimeLocal(exResult.getTimeStamp()));
 		fillText(v, R.id.tv_duration, durationCut(exResult.getNumValue()));
 		fillText(v, R.id.tv_events, exResult.getTurns() + "");
+
+		if (!exResult.getUid().equals(myUid)) {
+			exResult.setNote(exResult.getName());                                //  -- hide the Note from www list
+//			exResult.setLevelOfEmotion(0);
+//			exResult.setLevelOfEnergy(0);
+		}
 		fillText(v, R.id.tv_note, exResult.getNote());
 		fillText(v, R.id.tv_note_full, exResult.getNote());
 		fillText(v, R.id.tv_emotion, exResult.getLevelOfEmotion() + "");
 		fillText(v, R.id.tv_energy, exResult.getLevelOfEnergy() + "");
+
 		fillText(v, R.id.tv_special_mark, "*");
 
 		// Make Note an expandable

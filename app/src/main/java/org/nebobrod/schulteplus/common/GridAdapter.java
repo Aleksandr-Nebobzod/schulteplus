@@ -18,69 +18,76 @@ import android.widget.TextView;
 
 
 public class GridAdapter extends BaseAdapter {
-	 private static final String TAG = "GridAdapter";
-	 private Context mContext;
-	 private STable mExercise;
-	 private int textScale;
+	private static final String TAG = "GridAdapter";
+	private final int textScale;
+	private Context mContext;
+	private STable mExercise;
+	private boolean isSquared;
 
-	 public GridAdapter(Context context, STable exercise) {
-		 mExercise = exercise;
-		 mContext = context;
-		 textScale = ExerciseRunner.getPrefTextScale();
+	public GridAdapter(Context context, STable exercise, boolean isSquared, int textScale) {
+		this.mContext = context;
+		this.mExercise = exercise;
+		this.isSquared = isSquared;
+		this.textScale = textScale;
 
-	 }
+	}
 
-	 @Override
-	 public int getCount() {
-		 return mExercise.getX() * mExercise.getY();
-	 }
+	@Override
+	public int getCount() {
+		return mExercise.getX() * mExercise.getY();
+	}
 
-	 @Override
-	 public Object getItem(int position) {
-		 return null;
-	 }
+	@Override
+	public Object getItem(int position) {
+		return null;
+	}
 
-	 @Override
-	 public long getItemId(int position) {
-		 return 0;
-	 }
+	@Override
+	public long getItemId(int position) {
+		return 0;
+	}
 
-	 @Override
-	 public View getView(int position, View convertView, ViewGroup parent) {
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
 
-		 TextView view; // Text of a cell
+		TextView view; // Text of a cell
 
-		 if (convertView == null)
-			 view = new TextView(mContext);
-		 else
-			 view = (TextView) convertView;
+		if (convertView == null)
+			view = new TextView(mContext);
+		else
+			view = (TextView) convertView;
 
-		 // TODONE: 28.11.2023--14.12 extend this to Stable.setViewContent by exType & position
+		// TODONE: 28.11.2023--14.12 extend this to Stable.setViewContent by exType & position
 //		 view.setText("" + mExercise.getArea().get(position).getValue());
-		 view = mExercise.setViewContent(view, position);
-		 //Log.d(TAG, "getView:  " + view.getText());
+		view = mExercise.setViewContent(view, position);
+		//Log.d(TAG, "getView:  " + view.getText());
 
 
-		 { // Squared cells
-			 int itemWidth = ((GridView) parent).getColumnWidth();
-			 int itemHeight = ((GridView) parent).getColumnWidth();
-			 int rows = ((GridView) parent).getCount() / ((GridView) parent).getNumColumns();
-			 /*if (itemHeight * rows > ((GridView) parent).getHeight())*/ {
-				 itemHeight = ((GridView) parent).getHeight() / rows;
-			 }
+		// Maximized cells
+		int itemWidth = ((GridView) parent).getColumnWidth();
+		int itemHeight = ((GridView) parent).getColumnWidth();
+		int rows = ((GridView) parent).getCount() / ((GridView) parent).getNumColumns();
+		/*if (itemHeight * rows > ((GridView) parent).getHeight())*/
+
+		itemHeight = ((GridView) parent).getHeight() / rows;
+
+		if (isSquared) {
+			itemHeight = itemWidth = Math.min(itemHeight, itemWidth);
+		}
+
 //			 Log.d(TAG, "itemHeight: " + itemHeight);
 //			 view.setLayoutParams(new GridView.LayoutParams(new ViewGroup.LayoutParams(itemHeight, itemHeight)));
-			 view.setLayoutParams(new GridView.LayoutParams(new ViewGroup.LayoutParams(itemWidth, itemHeight)));
-			 view.setTextSize((Math.min(itemWidth, itemHeight)/(-1.3F * textScale + 5)));
-		 }
+		view.setLayoutParams(new GridView.LayoutParams(new ViewGroup.LayoutParams(itemWidth, itemHeight)));
+		view.setTextSize((Math.min(itemWidth, itemHeight) / (-1.3F * textScale + 5)));
+
 
 //		 TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 22, 36, 1, TypedValue.COMPLEX_UNIT_DIP);
 //		 TextViewCompat.setAutoSizeTextTypeWithDefaults(view, TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
-		 view.setGravity(Gravity.CENTER_VERTICAL);
-		 view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+		view.setGravity(Gravity.CENTER_VERTICAL);
+		view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 //		 view.setPadding(0, 25, 0, 25);
 //		 Log.d(TAG, "itemHeight: " + view.getHeight() + " and TextSize: " + view.getTextSize());
 
-		 return view;
-	 }
- }
+		return view;
+	}
+}

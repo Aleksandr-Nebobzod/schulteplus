@@ -1,5 +1,5 @@
 #
-# generated on 2024/05/09 05:48:21
+# generated on 2024/05/31 07:00:44
 #
 # --table-start--
 dataClass=org.nebobrod.schulteplus.data.Achievement
@@ -32,6 +32,47 @@ fieldName=recordValue
 # --field-end--
 # --field-start--
 fieldName=specialMark
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.AdminNote
+tableName=adminNote
+# --table-fields-start--
+# --field-start--
+fieldName=id
+id=true
+# --field-end--
+# --field-start--
+fieldName=uak
+# --field-end--
+# --field-start--
+fieldName=uidAddress
+# --field-end--
+# --field-start--
+fieldName=title
+# --field-end--
+# --field-start--
+fieldName=message
+# --field-end--
+# --field-start--
+fieldName=appendix
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=verAppLatest
+# --field-end--
+# --field-start--
+fieldName=verDeprecating
+# --field-end--
+# --field-start--
+fieldName=verDeprecated
+# --field-end--
+# --field-start--
+fieldName=timeStampConfirmed
 # --field-end--
 # --table-fields-end--
 # --table-end--
@@ -72,7 +113,7 @@ fieldName=exType
 fieldName=exDescription
 # --field-end--
 # --field-start--
-fieldName=timeStampFinish
+fieldName=timeStampStart
 # --field-end--
 # --field-start--
 fieldName=numValue
@@ -137,7 +178,7 @@ fieldName=exType
 fieldName=exDescription
 # --field-end--
 # --field-start--
-fieldName=timeStampFinish
+fieldName=timeStampStart
 # --field-end--
 # --field-start--
 fieldName=numValue
@@ -202,7 +243,7 @@ fieldName=exType
 fieldName=exDescription
 # --field-end--
 # --field-start--
-fieldName=timeStampFinish
+fieldName=timeStampStart
 # --field-end--
 # --field-start--
 fieldName=numValue
@@ -276,7 +317,6 @@ tableName=userhelper
 # --table-fields-start--
 # --field-start--
 fieldName=id
-canBeNull=false
 id=true
 # --field-end--
 # --field-start--

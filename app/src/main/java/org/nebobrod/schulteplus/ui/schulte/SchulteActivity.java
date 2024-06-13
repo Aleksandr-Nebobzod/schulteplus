@@ -122,7 +122,7 @@ public class SchulteActivity extends AppCompatActivity {
 		// Prepare exercise field
 		mGrid.setNumColumns(exercise.getX());
 		mGrid.setEnabled(true);
-		mAdapter = new GridAdapter(this, exercise);
+		mAdapter = new GridAdapter(this, exercise, ExerciseRunner.isSquared(), ExerciseRunner.getPrefTextScale());
 		mGrid.setAdapter(mAdapter);
 		mGrid.setLongClickable(true);
 
@@ -151,6 +151,7 @@ public class SchulteActivity extends AppCompatActivity {
 				if (exercise.isCorrectTurn(position)) {
 					if (exercise.checkIsFinished()) {
 						resultLiveData.setValue(exercise.calculateResults());
+						ExerciseRunner.setExResult(Objects.requireNonNull(resultLiveData.getValue()));
 						ExResultArrayAdapter.feedbackDialog(SchulteActivity.this,
 								resultLiveData,
 								getRes().getString(R.string.txt_ex_done_1) + "! " + getRes().getString(R.string.txt_continue_ex) + "?",

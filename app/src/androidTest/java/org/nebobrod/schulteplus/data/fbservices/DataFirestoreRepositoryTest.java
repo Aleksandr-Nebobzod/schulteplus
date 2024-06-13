@@ -12,12 +12,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.nebobrod.schulteplus.Utils.currentVersion;
+import static org.nebobrod.schulteplus.Utils.getVersionCode;
+import static org.nebobrod.schulteplus.Utils.intFromString;
+import static org.nebobrod.schulteplus.Utils.timeStampU;
 
 import android.os.Looper;
 
 import org.nebobrod.schulteplus.common.AppExecutors;
 import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.data.Achievement;
+import org.nebobrod.schulteplus.data.AdminNote;
 import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.Identifiable;
@@ -213,6 +218,34 @@ public class DataFirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 		Assert.assertTrue(result);;
 	}
 
+
+	@Test
+	public void testCreate() {
+
+		Identifiable<String> data;
+		String pr = "009";
+//		data = new UserHelper(pr + "TFKBiTdd", pr + "@gmail.com", pr + "name", pr + "pass", pr + "device3a", pr + "uaked47", false);
+//		data = new Achievement().setAchievement(pr + "uid", pr + "uak", pr + "nam", 1711556007L, "05.05.05", pr + "r", pr + "v", pr + "m");
+		data = new AdminNote(intFromString(pr), pr + "uaked47", pr + "TFKBiTdd", "SignUp", "Android: " + currentVersion(), "", timeStampU(), getVersionCode(), 0, 0, timeStampU());
+
+		this.repository = new DataFirestoreRepo<>(data.getClass());
+
+		// Try to put a data-object into Firestore
+		Task<Void> _task = repository.create(data)
+				.addOnSuccessListener((OnSuccessListener<Void>) aVoid -> {
+					Log.d(TAG, "Data-Object successfully written to Firestore");
+					assertTrue(true);
+				})
+				.addOnFailureListener(e -> {
+					Log.e(TAG, "Error writing Data-Object to Firestore", e);
+					Assert.assertTrue(false);
+				});
+
+		// Finish synchronised
+		TestUtils.testResultAwait(_task);
+	}
+
+
 	@Test
 	public void testCreateAchievement(){
 		DataRepos repos;
@@ -403,9 +436,12 @@ public class DataFirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 
 	@Test
 	public void testReadBackGround() {
-		this.fsRepo = new DataFirestoreRepo<>(Turn.class);
-		this.fsRepo = new DataFirestoreRepo<>(UserHelper.class);
-		String docNum = "-1906027091.007uaked47";
+		String docNum;
+//		this.fsRepo = new DataFirestoreRepo<>(Turn.class);
+//		this.fsRepo = new DataFirestoreRepo<>(UserHelper.class);
+//		docNum = "-1906027091.007uaked47";
+ 		this.fsRepo = new DataFirestoreRepo<>(AdminNote.class);
+		docNum = "009uaked47.9";
 
 		Log.d(TAG,  " test starts at: main " + Looper.getMainLooper().isCurrentThread() + Thread.currentThread());
 

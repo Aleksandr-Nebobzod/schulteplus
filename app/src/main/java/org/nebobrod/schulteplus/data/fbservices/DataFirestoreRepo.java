@@ -18,6 +18,7 @@ import org.nebobrod.schulteplus.common.AppExecutors;
 import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.data.Identifiable;
 import org.nebobrod.schulteplus.data.DataRepository;
+import org.nebobrod.schulteplus.data.UserHelper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,6 +40,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -197,14 +199,28 @@ public class DataFirestoreRepo<TEntity extends Identifiable<String>> implements 
 				});
 	}
 
+	/**
+	 * Applying to {@link TEntity} collection filtering data by equality of:
+	 * @param field
+	 * @param value
+	 * @return List limited by {@link org.nebobrod.schulteplus.common.Const#QUERY_COMMON_LIMIT}
+	 */
 	public Task<List<TEntity>> getListByField(@NonNull String field, @Nullable Object value) {
 		List<TEntity> result = new ArrayList<>();
-		Log.i(TAG, "Applying to  '" + collectionReference.getPath() + " for limited list");
+		Log.i(TAG, "Applying to  '" + collectionReference.getPath()
+				+ " for list filtered by " + field + " == " + value);
 
-		return collectionReference
+		Query _query = collectionReference.limit(QUERY_COMMON_LIMIT);
+
+		if (hasFieldName(entityClass.getClass(), field)) {
+			_query.whereEqualTo(field, value);
+		}
+
+/*		return collectionReference
 //				.orderBy("timeStamp", Query.Direction.DESCENDING)
 				.limit(QUERY_COMMON_LIMIT)
-				.whereEqualTo(field, value)
+				.whereEqualTo(field, value)*/
+		return _query
 				.get().continueWith(bgRunner, new Continuation<QuerySnapshot, List<TEntity>>() {
 					@Override
 					public List<TEntity> then(@NonNull Task<QuerySnapshot> task) {
@@ -216,14 +232,23 @@ public class DataFirestoreRepo<TEntity extends Identifiable<String>> implements 
 								Log.d(TAG, document.getId() + " => " + document.getData());
 								result.add(document.toObject(entityClass));
 							}
+							if (result.size() > 0) {
+								result.sort(Comparator.comparingLong(TEntity::getTimeStamp).reversed());
+							} else {
+								Log.w(TAG, "No documents  with field: " + field + " as: " + value);
+								return null;
+							}
 						} else {
 							Log.e(TAG, "Error getting documents: ", task.getException());
+							return null;
 						}
 						return result;
 					}
 				});
 	}
 
+	/** test method */
+	@Deprecated
 	public Task<QuerySnapshot> printListByField() {
 
 		// "66229263"	"-990303179"
@@ -244,6 +269,12 @@ public class DataFirestoreRepo<TEntity extends Identifiable<String>> implements 
 				});
 	}
 
+	/**
+	 * Clean user personal data before the account removal in {@link TEntity} related collection (name, email fields).
+	 *
+	 * @param uid                user id from Authentication service
+	 * @param newName new dummy name for keep ExResults' history
+	 */
 	public Task<Void> unpersonilise(String uid, String newName) {
 		TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
 		String dummyEmail = newName + getRes().getString(R.string.txt_common_mailbox);

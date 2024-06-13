@@ -117,6 +117,45 @@
 					app:cornerRadius="25dp"
 					android:shadowRadius="5"/>
 				
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:layout_gravity="center_vertical">
+					
+					<CheckBox
+						android:layout_width="0dp"
+						android:layout_weight="3"
+						android:layout_height="48dp"
+						android:id="@+id/cb_agreed"
+						android:text="@string/str_confirm_policy"
+						android:checked="false"
+						/>
+					
+					<TextView
+						android:layout_width="0dp"
+						android:layout_weight="1"
+						android:layout_height="48dp"
+						android:id="@+id/tv_policy"
+						android:text="@string/lbl_about_user_data_policy"
+						android:textSize="12sp"
+						android:textColor="@color/purple_500"
+						android:textStyle="bold"
+						android:clickable="true"/>
+					
+					<TextView
+						android:layout_width="0dp"
+						android:layout_weight="1"
+						android:layout_height="48dp"
+						android:id="@+id/tv_agreement"
+						android:text="@string/lbl_about_user_agreement"
+						android:textSize="12sp"
+						android:textAlignment="viewEnd"
+						android:textColor="@color/purple_500"
+						android:textStyle="bold"
+						android:clickable="true"/>
+				</LinearLayout>
+				
 				<TextView
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
@@ -227,11 +266,5 @@
 			
 			</LinearLayout>
 		</androidx.cardview.widget.CardView>
-		
 	</ScrollView>
-	
-	
-	
-	
-
 </LinearLayout>

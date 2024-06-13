@@ -148,6 +148,7 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataR
 		DataOrmRepo<UserHelper> ormRepo = new DataOrmRepo<>(UserHelper.class);
 		DataFirestoreRepo<UserHelper> fsRepo = new DataFirestoreRepo<>(UserHelper.class);
 		UserHelper userHelper = null;
+		UserHelper latestFsUser = null;
 
 		// Get data from local repository
 		CompletableFuture<UserHelper> ormFuture = CompletableFuture.supplyAsync(() -> {
@@ -172,18 +173,17 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataR
 		try {
 			UserHelper ormUser = ormFuture.get();
 			List<UserHelper> fsUsers = fsFuture.get();
-			// sort the list to get most fresh user record from central repo (including other devices)
-			if (fsUsers.size() > 0) {
-				fsUsers.sort(Comparator.comparingLong(UserHelper::getTimeStamp).reversed());
-			} else {
-				// to prevent possible errors due to DB lost
-				UserHelper _dummyOldUserHelper = new UserHelper();
-				_dummyOldUserHelper.setId(id);
-				_dummyOldUserHelper.setTimeStamp(0L);
-				fsUsers.add(_dummyOldUserHelper);
+
+			if ((ormUser == null) && fsUsers == null) {
+				throw new ExecutionException(new RuntimeException("No actual user record in any repository!"));
 			}
 
-			UserHelper latestFsUser = fsUsers.get(0);
+			if (fsUsers.size() > 0) {
+				// sort the list to get most fresh user record from central repo (including other devices)
+				// 240531 got sorted in getListByField()
+				latestFsUser = fsUsers.get(0);
+			}
+
 
 			// local record exists
 			if (ormUser != null) {
@@ -206,7 +206,9 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataR
 
 				// no same uak found in central repo
 				if (userHelper == null) {
-					if (ormTimestamp > latestFsUser.getTimeStamp()) {
+					if (ormTimestamp == 0) {
+						throw new ExecutionException(new RuntimeException("No actual user record in any repository!"));
+					} else if (ormTimestamp > latestFsUser.getTimeStamp()) {
 						userHelper = ormUser; 		// Used local db offline
 						fsRepo.create(userHelper);
 					} else {
@@ -216,14 +218,21 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataR
 					}
 				}
 			} else {
+				if (latestFsUser == null) {
+					throw new ExecutionException(new RuntimeException("No actual user record in any repository!"));
+				}
 				userHelper = latestFsUser; 				// fresh data from another device
 				userHelper.setUak(Utils.getUak()); 	// first login on this device (new uak)
 				ormRepo.create(userHelper); 			// Copy fresh central data to local DB
 				fsRepo.create(userHelper); 				// Copy fresh data with new uak to central DB
 			}
 		} catch (ExecutionException | InterruptedException e) {
-			Log.e(TAG, "getLatestUserHelper, Error occurred", e);
-			throw new RuntimeException(e);
+			if (e.getCause() instanceof RuntimeException) {
+				Log.e(TAG, "getLatestUserHelper, RuntimeException occurred", e);
+			} else {
+				Log.e(TAG, "getLatestUserHelper, Error occurred", e);
+			}
+			return Tasks.forException(e);
 		}
 
 		return Tasks.forResult(userHelper);

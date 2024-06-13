@@ -32,7 +32,7 @@
 		<CheckBoxPreference app:title="@string/lbl_bas_dancing_cat" app:key="gcb_bas_dancing_cat" app:defaultValue="false" app:enabled="false" />
 		
 		<SwitchPreference app:defaultValue="false" app:key="sw_pref_double" app:enabled="false" app:title="@string/lbl_bas_double" app:summary="@string/lbl_bas_double_desc"  app:allowDividerAbove="true" />
-		<SwitchPreference app:key="prf_sw_hints" app:title="@string/lbl_hints" app:summary="@string/lbl_hints_sum" app:defaultValue="false" app:enabled="true" app:persistent="true" app:icon="@drawable/ic_notifications_black_24dp" />
+		<SwitchPreference app:key="prf_sw_hints" app:title="@string/lbl_hints" app:summary="@string/lbl_hints_sum" app:defaultValue="true" app:enabled="true" app:persistent="true" app:icon="@drawable/ic_notifications_black_24dp" />
 		
 		<PreferenceCategory app:key="prf_empty_row" app:title="" app:persistent="false" app:summary=" "/>
 	</PreferenceCategory>

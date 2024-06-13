@@ -102,6 +102,7 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 	/**
 	 * Gets from a DataRepository <p>
 	 * number of rows as defined in: {@link Const#QUERY_COMMON_LIMIT}
+	 * Depends on {@link ExerciseRunner} (userHelper object, uak field)
 	 */
 	@Deprecated
 	public<T> List<T> getListLimited(Class<T> clazz, String exType) {
@@ -128,11 +129,17 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 			where.eq(fieldName, ExerciseRunner.getUserHelper().getUid());
 
 			// and
-			where.and();
-			// exType field must be filtered
-			field = clazz.getDeclaredField("EXTYPE_FIELD_NAME");
-			fieldName = (String) field.get(null);
-			where.eq(fieldName, exType);
+			try {
+				// exType field must be filtered if exists
+				field = clazz.getDeclaredField("EXTYPE_FIELD_NAME");
+				fieldName = (String) field.get(null);
+				where.and();
+				where.eq(fieldName, exType);
+			} catch (NoSuchFieldException e) {
+				/*no op*/
+			} catch (IllegalAccessException | IllegalArgumentException | java.sql.SQLException e) {
+				throw new RuntimeException(e);
+			}
 
 //			PreparedQuery<T> preparedQuery = qb.prepare();
 //			return dao.queryBuilder().limit(QUERY_COMMON_LIMIT).query();
@@ -142,7 +149,7 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 			fieldName = (String) field.get(null);
 
 			// return result of query
-			return qb.limit(QUERY_COMMON_LIMIT).orderBy(fieldName, true).query();
+			return qb.limit(QUERY_COMMON_LIMIT).orderBy(fieldName, false).query();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -150,12 +157,6 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 
 	}
 
-	/**
-	 * Clean user personal data (after account removal)
-	 *
-	 * @param uid                user id
-	 * @param unpersonalisedName new dummy name for keep ExResults' history
-	 */
 	public void unpersonalise(String uid, String unpersonalisedName) {
 		; // not need for local data
 	}
@@ -324,6 +325,7 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 		void onComplete(R result);
 	}
 
+	@Deprecated
 	public static synchronized void achievePut(String uid, String uak, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark) {
 		Achievement achievement = new Achievement();
 		achievement.set(uid,  uak, name,  timeStamp,  dateTime,  recordText,  recordValue,  specialMark);
@@ -373,6 +375,7 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 		});
 	}
 
+	@Deprecated
 	public static ArrayList getAchievementList(){
 		Log.i(DataOrmRepo.class.getName(), "Show list again");
 		try {

@@ -30,7 +30,7 @@ android {
         applicationId "org.nebobrod.schulteplus"
         minSdkVersion 26
         targetSdkVersion 34
-        versionCode 21
+        versionCode 25
         versionName "Entada"
         buildConfigField 'boolean', 'ENABLE_CRASHLYTICS', 'true'
         buildConfigField 'boolean', 'DEBUGGING', 'false'
@@ -96,11 +96,11 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.1.0'
 //    implementation 'com.github.Innovattic:range-seek-bar:v1.0.8'
     implementation 'com.google.code.gson:gson:2.10.1'
-    implementation("com.google.firebase:firebase-crashlytics:19.0.0")
-    implementation("com.google.firebase:firebase-analytics:22.0.0")
+    implementation("com.google.firebase:firebase-crashlytics:19.0.1")
+    implementation("com.google.firebase:firebase-analytics:22.0.1")
 
     implementation 'com.google.firebase:firebase-firestore:25.0.0'
 //    implementation 'com.google.firebase:firebase-database:20.3.1'
@@ -108,11 +108,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:23.0.0'
     implementation 'com.j256.ormlite:ormlite-android:6.1'
 
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'                 // 1.7 gives an error (24.06.04)
+    implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'    // 2.8.1 gives an error (24.06.04)
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'   // 2.8.1 gives an error (24.06.04)
     implementation 'androidx.navigation:navigation-fragment:2.7.7'
     implementation 'androidx.navigation:navigation-ui:2.7.7'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'

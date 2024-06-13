@@ -10,6 +10,7 @@ package org.nebobrod.schulteplus.ui;
 
 import static org.nebobrod.schulteplus.Utils.*;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -29,7 +30,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -189,7 +192,14 @@ public class SplashActivity extends AppCompatActivity  implements NetworkConnect
 								if (0 != (testResFlags & TEST_RES_USER_VERIFIED)) {
 									// Yes all done
 									new DataRepos<>(UserHelper.class).getLatestUserHelper(intStringHash(user.getUid()))
-											.addOnCompleteListener(task -> runMainActivity(task.getResult()));
+											.addOnCompleteListener(task -> {
+												if (task.isSuccessful()) {
+													runMainActivity(task.getResult());
+												} else {
+													Toast.makeText(SplashActivity.this, getString(R.string.err_unknown), Toast.LENGTH_SHORT).show();
+													runActivity(SignupActivity.class);
+												}
+											});
 								} else { // User has to confirm he isn't verified
 //									if (thread.isAlive()) thread.interrupt(); // No need run by time anymore...
 									// <- this changed: threaded runnable looks for flag USER_VERIF_MESSAGE_SHOWN ->

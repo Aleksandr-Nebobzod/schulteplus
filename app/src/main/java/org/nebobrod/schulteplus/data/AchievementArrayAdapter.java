@@ -30,9 +30,11 @@ import org.nebobrod.schulteplus.R;
  */
 public class AchievementArrayAdapter extends ArrayAdapter<Achievement> {
 	static int textViewResourceId  = R.layout.fragment_dashboard_elv_achievement;
+	boolean hide;
 
-	public AchievementArrayAdapter(Context context, List<Achievement> items) {
+	public AchievementArrayAdapter(Context context, List<Achievement> items, boolean hideExtraData) {
 		super(context, textViewResourceId, items);
+		hide = hideExtraData;
 	}
 
 	@Override
@@ -61,8 +63,14 @@ public class AchievementArrayAdapter extends ArrayAdapter<Achievement> {
 		}
 
 		//the other fields
-		fillText(v, R.id.tv_num, "" + (position + 1)); // achievement.getName() -- not needed in personal list
+		fillText(v, R.id.tv_num, "" + (position + 1));
 		fillText(v, R.id.tv_time, timeStampToTimeLocal(achievement.getTimeStamp()));
+		if (hide) {
+			achievement.setName("");
+			fillText(v, R.id.tv_name, achievement.getName()); 		//  -- not needed in personal list
+		} else {
+			fillText(v, R.id.tv_name, achievement.getName()); 		//  -- show in www list
+		}
 		fillText(v, R.id.tv_record_text, achievement.getRecordText());
 		fillText(v, R.id.tv_record_value, achievement.getRecordValue());
 		fillText(v, R.id.tv_special_mark, achievement.getSpecialMark());

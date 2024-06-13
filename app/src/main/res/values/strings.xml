@@ -125,7 +125,7 @@
 	<string name="lbl_schulte_3_sequence">Four Seasons (10х10)</string>
 	<string name="lbl_schulte_3_sequence_sum">For sequences: Up, Down, Convergent, Divergent...  That might make you mad for starters</string>
 	<string name="lbl_hints">Hints</string>
-	<string name="lbl_hints_sum">These fancy glows, digital reminders and timing are for rookie levels only. Real psychonaut needs nothing more than void.</string>
+	<string name="lbl_hints_sum">These fancy glows, digital reminders and timing are for rookie levels only.</string>
 	<string name="lbl_symbol_type">Cell\'s symbol type</string>
 	<string name="lbl_schulte_4_sequence">Mishmash!</string>
 	<string name="lbl_schulte_4_sequence_sum">Well, try to find them all totally unique</string>
@@ -135,14 +135,14 @@
 	<string name="str_number" translatable="false">number</string>
 	<string name="prf_menu_about_url_sum">Visit and get additional resources</string>
 	<string name="src_home_ipir_vk_url" translatable="false">https://vk.com/public216345855</string>
-	<string name="src_menu_about_url" translatable="true">https://tinyurl.com/2untjbs8</string>
-	<string name="src_menu_about_email" translatable="false">"mailto:nebobzod@gmail.com"</string>
+	<string name="src_menu_about_url" translatable="true">https://tinyurl.com/schulte-plus</string>
+	<string name="src_menu_about_email" translatable="false">"mailto:support@attplus.in"</string>
 	<string name="title_activity_schulte">Schulte+ Tables</string>
 	<string name="lbl_distraction">✓</string>
 	<string name="lbl_back">◁</string>
 	<string name="lbl_schulte_stats">Next, Turns, Wrong, Time: </string>
 	<string name="title_signup">Sign Up</string>
-	<string name="hint_login">login (pseudonym)</string>
+	<string name="hint_login">Username (pseudonym)</string>
 	<string name="hint_email">email address</string>
 	<string name="hint_pass">Schulte-plus password</string>
 	<string name="lbl_go_on">Go on</string>
@@ -245,13 +245,20 @@
 	<string name="lbl_about_oss">Open source notices</string>
 	<string name="lbl_about_license">License</string>
 	<string name="str_about_license_html_source">licenses-en.html</string>
-	<string name="lbl_about_user_data_policy">User data and privacy policy</string>
-	<string name="str_about_user_data_policy">user_data_policy-en.html</string>
+	<string name="lbl_about_user_data_policy">Privacy</string>
+	<string name="str_about_user_data_policy_html_source">user_data_policy-en.html</string>
 	<string name="str_logoff_caution">You are able to log off and delete your account on main preferences menu</string>
 	<string name="err_result_validity">Error of result validation. No stat update.</string>
 	<string name="msg_user_data_failed">Hard to fetch data</string>
 	<string name="msg_no_google_play_services_installed">No google play services installed. Can not get data</string>
 	<string name="msg_user_must_login">User must be logged in</string>
 	<string name="txt_common_mailbox" translatable="false">\@att.org</string>
+	<string name="msg_user_data_renewed">User data renewed</string>
+	<string name="str_confirm_policy">Documents Agreed:</string>
+	<string name="msg_username_updated">Username has been successfully updated for new records</string>
+	<string name="msg_user_email_will_change">Your profile email will change with next log in</string>
+	<string name="lbl_about_user_agreement">Agreement</string>
+	<string name="str_about_user_agreement_html_source">user_agreement-en.html</string>
+	<string name="src_exDescriptionUrl">http://attplus.in/schulte/en/ex/</string>
 
 </resources>

@@ -10,7 +10,6 @@ package org.nebobrod.schulteplus.ui;
 
 import static com.google.android.gms.common.GooglePlayServicesUtil.isGooglePlayServicesAvailable;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceFragment;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -28,8 +26,6 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.Log;
-
-import java.util.prefs.Preferences;
 
 /**
  * This fragment shows the preferences for the second header.
@@ -83,6 +79,22 @@ public class PrefsAboutFragment extends PreferenceFragmentCompat {
 					}
 				});
 
+		// Show user agreement info
+		getPreferenceManager()
+				.findPreference("prf_user_agreement")
+				.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+					@Override
+					public boolean onPreferenceClick(@NonNull Preference preference) {
+						try {
+							Utils.displayHtmlAlertDialog(requireActivity(), R.string.str_about_user_agreement_html_source);
+							return true;
+						} catch (Exception e) {
+							Log.e(TAG, "user_data_policy dialog opening", e);
+							return false;
+						}
+					}
+				});
+
 		// Show user_data_policy info
 		getPreferenceManager()
 				.findPreference("prf_user_data_policy")
@@ -90,7 +102,7 @@ public class PrefsAboutFragment extends PreferenceFragmentCompat {
 					@Override
 					public boolean onPreferenceClick(@NonNull Preference preference) {
 						try {
-							Utils.displayHtmlAlertDialog(requireActivity(), R.string.str_about_user_data_policy);
+							Utils.displayHtmlAlertDialog(requireActivity(), R.string.str_about_user_data_policy_html_source);
 							return true;
 						} catch (Exception e) {
 							Log.e(TAG, "user_data_policy dialog opening", e);

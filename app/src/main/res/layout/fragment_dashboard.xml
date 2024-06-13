@@ -83,7 +83,7 @@
 				android:textSize="12sp"
 				android:text="@string/lbl_top_in_month"
 				android:hint="@string/txt_top_in_month_hint"
-				tools:ignore="TouchTargetSizeCheck" />
+				tools:ignore="TouchTargetSizeCheck" android:enabled="false" />
 			<RadioButton
 				android:visibility="gone"
 				android:id="@+id/rb_ac_top_progress"

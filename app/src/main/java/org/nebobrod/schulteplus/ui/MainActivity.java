@@ -9,8 +9,10 @@
 package org.nebobrod.schulteplus.ui;
 
 
+import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.databinding.ActivityMainBinding;
 import org.nebobrod.schulteplus.data.UserHelper;
 import org.nebobrod.schulteplus.ui.basics.BasicsActivity;
@@ -149,11 +151,33 @@ public class MainActivity extends AppCompatActivity {
 					}
 				});
 
+		// Show the exercise description
+		fabLaunch.setOnLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View view) {
+				ExerciseRunner.loadPreference();
+				String exType = ExerciseRunner.getExType();
+
+				if (exType.equals("no_exercise")) {
+					return false;
+				} else {
+
+					String exDescriptionLocalUrl = getResources().getString(R.string.src_exDescriptionUrl);
+					try {
+						Utils.openWebPage(exDescriptionLocalUrl + ".html", getApplicationContext());
+						return true;
+					} catch (Exception e) {
+						Log.e(TAG, "web page opening", e);
+						return false;
+					}
+				}
+			}
+		});
+		// Run the exercise
 		fabLaunch.setOnClickListener(view -> {
 			Class activity = null;
-			String exType = runner.getExType();
-//				runner.savePreferences(null);
 			ExerciseRunner.loadPreference();
+			String exType = runner.getExType();
 			// done: 21.09.2023 here we need to choose Activity by switch: (ExerciseRunner.getTypeOfExercise())
 			// gcb_bas_dbl_dot, gcb_bas_circles_rb, schulte_1_sequence
 			switch (exType.substring(0,7)){

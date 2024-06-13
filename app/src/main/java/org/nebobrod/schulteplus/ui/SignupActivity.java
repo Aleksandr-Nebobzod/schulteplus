@@ -46,6 +46,7 @@ import org.nebobrod.schulteplus.data.UserHelper;
 import static org.nebobrod.schulteplus.Utils.currentVersion;
 import static org.nebobrod.schulteplus.Utils.getVersionCode;
 import static org.nebobrod.schulteplus.common.Const.NAME_REG_EXP;
+import static org.nebobrod.schulteplus.common.Const.PASSWORD_REG_EXP;
 
 import java.util.Arrays;
 import java.util.List;
@@ -368,8 +369,8 @@ public class SignupActivity extends AppCompatActivity {
 	private boolean validatePassword()
 	{
 		String val = etPassword.getText().toString().trim();
-		if (val.isEmpty()) {
-			etPassword.setError(getString(R.string.msg_password_empty));
+		if (!val.matches(PASSWORD_REG_EXP)) {
+			etPassword.setError(getString(R.string.msg_password_rules));
 			return false;
 		} else {
 			etPassword.setError(null);

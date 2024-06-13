@@ -12,6 +12,7 @@ package org.nebobrod.schulteplus.ui;
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.intStringHash;
 import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
+import static org.nebobrod.schulteplus.common.Const.PASSWORD_REG_EXP;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,17 +47,12 @@ import com.google.firebase.auth.FirebaseUser;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.data.Achievement;
-import org.nebobrod.schulteplus.data.DataOrmRepo;
 import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.UserHelper;
 import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
 public class LoginActivity extends AppCompatActivity {
@@ -274,8 +270,8 @@ public class LoginActivity extends AppCompatActivity {
 
 	private boolean validatePassword()	{
 		String val = etPassword.getText().toString().trim();
-		if (val.isEmpty()) {
-			etPassword.setError(getString(R.string.msg_password_empty));
+		if (!val.matches(PASSWORD_REG_EXP)) {
+			etPassword.setError(getString(R.string.msg_password_rules));
 			return false;
 		} else {
 			etPassword.setError(null);

@@ -260,5 +260,44 @@
 	<string name="lbl_about_user_agreement">Agreement</string>
 	<string name="str_about_user_agreement_html_source">user_agreement-en.html</string>
 	<string name="src_exDescriptionUrl">http://attplus.in/schulte/en/ex_description/</string>
+	<string name="hint_main_fab_title">The Launch Button</string>
+	<string name="hint_main_fab_desc">After you chose and setup an exercise this button can Launch:\n• The Exercise by Tap\n• Web advices for it by Long Tap</string>
+	<string name="hint_main_basics_title">Basics</string>
+	<string name="hint_main_basics_desc">Settings for basics Exercises</string>
+	<string name="hint_main_schulte_title">Schulte</string>
+	<string name="hint_main_schulte_desc">Settings for Exercises on the Schulte area</string>
+	<string name="hint_main_dashboard_title">Dashboard</string>
+	<string name="hint_main_dashboard_desc">Exercises aims and efficiency analysis</string>
+	<string name="hint_main_home_title">News</string>
+	<string name="hint_main_home_desc">Attention Schulte Plus and friends news feed</string>
+	<string name="hint_main_settings_title">Profile and App Settings</string>
+	<string name="hint_main_settings_desc">Manage your league and privacy and check application details</string>
+	<string name="prf_title_show_intro">Show intro</string>
+	<string name="hint_base_settings_title">Base Settings</string>
+	<string name="hint_base_settings_desc">You can chose here:\n• The Exercise Type by Checkbox\n• Use or not Hints\n• And use Launch Long Tap for Web advices</string>
+	<string name="hint_schulte_settings_title">Schulte Settings</string>
+	<string name="hint_schulte_settings_desc">You can chose here:\n• The Exercise Type by Checkbox\n• Use or not Hints\n• And many other (use Launch Long Tap for Web advices)</string>
+	<string name="hint_base_space_title">Base Space</string>
+	<string name="hint_base_space_desc">Base is simple as that\n• Left [✓] Event button\n• Right [◁]  Finish button\n• The Counter and Timer between them if the Hints "On"\n(use Launch Long Tap for Web advices)</string>
+	<string name="hint_schulte_space_title">Schulte Space</string>
+	<string name="hint_schulte_space_desc">Just tap the Cells in Sequence\nJust long tap if you\'ve forgotten the Sequence\n• Exercise finishes at the end of the Sequence\n• Your device [◁] Back button interrupts the Exercise\n• The Counters and Timer at the top if the Hints "On"\n(using Launch Long Tap for Web advices is HIGHLY recommended)</string>
+	<string name="hint_stata_dashboard_title">Dashboard</string>
+	<string name="hint_stata_dashboard_desc">This space shows you history data.\n• Some data trimmed (such as long Exercise Note string) and showed by a Long Tap\n• Also Long Tap on the Dashboard copies its content to buffer you can collect data for more powerful analysis on desktop.</string>
+	<string name="hint_stata_dashboard_spinner_title">Dashboard Spinner</string>
+	<string name="hint_stata_dashboard_spinner_desc">Select data about Achievements or Exercise Results by its Type</string>
+	<string name="hint_stata_source_title">Dashboard Source</string>
+	<string name="hint_stata_source_desc">Select local or world-wide data\n• The local dashboard is minimalistic\n• The server data Dashboards are kept developing\n(the server data does not show your private Notes to others)</string>
+	<string name="hint_news_space_title">Home Space (under construction)</string>
+	<string name="hint_news_space_desc">Here you get informed of:\n• Attention Schulte Plus news\n• Outstanding Training Records\n• Other helpful Sources for Meditation and Consciousness Techniques</string>
+	<string name="str_attention">Attention</string>
+	<string name="str_delete_caution"><![CDATA[<b>Confirm account deletion</b>.
+		<br />We are glad that you have achieved the ability to consciously make strong-willed decisions that positively influence the prospects of your life and its environment.
+		<br />In this moment, here and now, you will leave your XXX psycoins with a light heart and renounce your personal history in XX days.
+		<br />We look forward to your successful application of our techniques in practice and will not stop developing new exercises that will be waiting if you decide to return.
+		<br />We are sure you will not be embarrassed that you will have to start from scratch.
+		<br />And yet, we feel obliged to ask again:
+		<br />-- <b>Do you want to stay?</b>]]></string>
+	<string name="msg_app_deprecated">Your app version is %1$d which is deprecated. We recommend you to upgrade your app to version %2$d. The current app shuts down. n\See you updated!</string>
+	<string name="msg_app_deprecating">Your app version is %1$d which goes deprecated soon. We recommend you to upgrade your app to version %2$d otherwise you won\'t be able to run the app soon.</string>
 
 </resources>

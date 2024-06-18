@@ -9,7 +9,7 @@
 package org.nebobrod.schulteplus.data;
 
 import static org.junit.Assert.assertTrue;
-import static org.nebobrod.schulteplus.Utils.currentVersion;
+import static org.nebobrod.schulteplus.Utils.currentOsVersion;
 import static org.nebobrod.schulteplus.Utils.getVersionCode;
 import static org.nebobrod.schulteplus.Utils.intFromString;
 import static org.nebobrod.schulteplus.Utils.timeStampU;
@@ -71,7 +71,7 @@ public class DataOrmRepoTest<TEntity extends Identifiable<String>>  {
 		String pr = "008";
 //		data = new UserHelper(pr + "TFKBiTdd", pr + "@gmail.com", pr + "name", pr + "pass", pr + "device3a", pr + "uaked47", false);
 //		data = new Achievement().setAchievement(pr + "uid", pr + "uak", pr + "nam", 1711556007L, "05.05.05", pr + "r", pr + "v", pr + "m");
-		data = new AdminNote(intFromString(pr), pr + "uaked47", pr + "TFKBiTdd", "SignUp", "Android: " + currentVersion(), "", timeStampU(), getVersionCode(), 0, 0, timeStampU());
+		data = new AdminNote(intFromString(pr), pr + "uaked47", pr + "TFKBiTdd", "SignUp", "Android: " + currentOsVersion(), "", timeStampU(), getVersionCode(), 0, 0, timeStampU());
 
 
 		repo = new DataOrmRepo<>(data.getClass());
@@ -102,14 +102,16 @@ public class DataOrmRepoTest<TEntity extends Identifiable<String>>  {
 
 		String pr = "006";
 		dataIn = new UserHelper(pr + "TFKBiTdd", pr + "@gmail.com", pr + "name", pr + "pass", pr + "device3a", pr + "uaked47", false);
+		dataIn = new UserHelper("TFKBiTdd7OVYUaplfzDHrXSCixr1", "nebobzod@gmail.com", "nebobzod", pr + "pass", pr + "device3a", "b83bd5c6", false);
+		dataIn = new UserHelper("0000000000000000", "nebobzod@gmail.com", "nebobzod", pr + "pass", pr + "device3a", "b83bd5c6", false);
 //		data = new Achievement().setAchievement(pr + "uid", pr + "uak", pr + "nam", 1711556007L, "05.05.05", pr + "r", pr + "v", pr + "m");
 
 		repo = new DataOrmRepo<>(dataIn.getClass());
 
-		pr = ((UserHelper) dataIn).getId() + "";
+		String docName = ((UserHelper) dataIn).getId() + "";
 
 
-		Task<TEntity> _task = repo.read(pr).addOnSuccessListener(new OnSuccessListener() {
+		Task<TEntity> _task = repo.read(docName).addOnSuccessListener(new OnSuccessListener() {
 			@Override
 			public void onSuccess(Object o) {
 				TEntity entity = (TEntity) o;

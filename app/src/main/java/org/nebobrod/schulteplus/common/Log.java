@@ -24,32 +24,32 @@ public class Log {
 	public static void i(String tag, String string) {
 		//					Log.d(TAG, "fetchResultsLimited, is MainLooper1?: " + (Looper.myLooper() == Looper.getMainLooper()));
 //					Log.d(TAG, "fetchResultsLimited, is MainLooper2?: " + (Looper.getMainLooper().getThread() == Thread.currentThread()));
-		if (LOG) android.util.Log.i(PREFIX + tag, string + " is Thread main?=" + Looper.getMainLooper().isCurrentThread()
+		if (LOG) android.util.Log.i(PREFIX + "info: " + tag, string + " is Thread main?=" + Looper.getMainLooper().isCurrentThread()
 				+ "\nThread is: " + Thread.currentThread());
 	}
 
 	public static void d(String tag, String string) {
-		if (LOG) android.util.Log.d(PREFIX + tag, string);
+		if (LOG) android.util.Log.d(PREFIX + "debug: " + tag, string);
 	}
 	public static void v(String tag, String string) {
 		if (LOG) {
-			android.util.Log.v(PREFIX + tag, string);
+			android.util.Log.v(PREFIX + "verb: " + tag, string);
 		} else {
-			logFbCrash("V." + PREFIX + tag +": " + string);
+			logFbCrash(PREFIX + "verb: " + tag +": " + string);
 		}
 	}
 	public static void w(String tag, String string) {
 		if (LOG) {
-			android.util.Log.w(PREFIX + tag, string);
+			android.util.Log.w(PREFIX + "warn: " + tag, string);
 		} else {
-			logFbCrash("W." + PREFIX + tag +": " + string);
+			logFbCrash(PREFIX + "warn: " + tag +": " + string);
 		}
 	}
 	public static void e(String tag, String string, Exception e) {
 		if (LOG) {
-			android.util.Log.e(PREFIX + tag, string, e);
+			android.util.Log.e(PREFIX + "error: " + tag, string, e);
 		} else {
-			logFbCrash(PREFIX + tag +": " + string);
+			logFbCrash(PREFIX + "error: " + tag +": " + string);
 			exceptionFbCrash(e);
 		}
 	}

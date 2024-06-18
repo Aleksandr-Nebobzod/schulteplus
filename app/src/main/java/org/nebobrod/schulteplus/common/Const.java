@@ -9,9 +9,19 @@
 package org.nebobrod.schulteplus.common;
 
 public interface Const {
-	// set of exercise related constants
+	// set of user related constants
 	String NAME_REG_EXP = "^[a-z][[a-z]![0-9]]{3,14}$";
 	String PASSWORD_REG_EXP = "^(?=.*[A-Za-z])[A-Za-z\\d~!@#$%^*()+=]{6,15}$";
+
+	// set of Showing Intro
+	int SHOWN_00_MAIN = 	0b1<<0;
+	int SHOWN_01_BASE = 	0b1<<1;
+	int SHOWN_02_SCHULTE = 	0b1<<2;
+	int SHOWN_03_STATA = 	0b1<<3;
+	int SHOWN_04_NEWS =		0b1<<4;
+	int SHOWN_05_BASE_SPACE =		0b1<<5;
+	int SHOWN_06_SCHULTE_SPACE =	0b1<<6;
+	int SHOWN_ALL =			0b1101111;			// no news yet
 
 	// set of exercise related constants
 	byte 	SEQ1_SINGLE = 1;
@@ -50,6 +60,8 @@ public interface Const {
 	String KEY_PRF_HAPTIC = "prf_vibration";
 	String KEY_PRF_SOUND = "prf_sound";
 	String KEY_PRF_ONLINE = "prf_online";
+	String KEY_PRF_SHOW_INTRO = "prf_show_intro";
+	String KEY_PRF_SHOWN_INTROS = "prf_shown_intros";
 
 	String KEY_PRF_PROBABILITIES = "prf_cat_prob";
 	String KEY_PRF_PROB_ENABLED = "prf_prob_enabled";
@@ -59,7 +71,7 @@ public interface Const {
 	String KEY_PRF_PROB_Y = "prf_prob_y"; 				// value -10;10 should be divided by 10
 	String KEY_PRF_PROB_SURFACE = "prf_prob_surface"; 	// value 4:10 should be divided by 10
 
-	/* PRFs for the schulte exercises */
+	/** PRFs for the schulte exercises */
 	/* gcb means Group Check Box  */
 	String KEY_PRF_EX_S0 = "gcb_sch";
 	String KEY_PRF_EX_S1 = "gcb_schulte_1_sequence";
@@ -67,7 +79,7 @@ public interface Const {
 	String KEY_PRF_EX_S3 = "gcb_schulte_3_sequences";
 	String KEY_PRF_EX_S4 = "gcb_schulte_4_mishmash";
 
-	/* PRFs for the basic exercises */
+	/** PRFs for the basic exercises */
 	String KEY_PRF_EX_B0 = "gcb_bas";
 	String KEY_PRF_EX_B1 = "gcb_bas_dot";
 	String KEY_PRF_EX_B2 = "gcb_bas_dbl_dot";

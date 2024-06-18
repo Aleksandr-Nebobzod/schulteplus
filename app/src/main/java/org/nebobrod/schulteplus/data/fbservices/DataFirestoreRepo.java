@@ -205,21 +205,30 @@ public class DataFirestoreRepo<TEntity extends Identifiable<String>> implements 
 	 * @param value
 	 * @return List limited by {@link org.nebobrod.schulteplus.common.Const#QUERY_COMMON_LIMIT}
 	 */
-	public Task<List<TEntity>> getListByField(@NonNull String field, @Nullable Object value) {
+	public Task<List<TEntity>> getListByField(@NonNull String field, @NonNull @WhereCond.Condition WhereCond condition, @Nullable Object value) {
 		List<TEntity> result = new ArrayList<>();
 		Log.i(TAG, "Applying to  '" + collectionReference.getPath()
 				+ " for list filtered by " + field + " == " + value);
 
 		Query _query = collectionReference.limit(QUERY_COMMON_LIMIT);
 
-		if (hasFieldName(entityClass.getClass(), field)) {
-			_query.whereEqualTo(field, value);
+		if (hasFieldName(entityClass, field)) {
+			_query = _query.whereEqualTo(field, value);
+			switch (condition) {
+				case EQ:
+					_query = _query.whereEqualTo(field, value);
+					break;
+				case GE:
+					_query = _query.whereGreaterThanOrEqualTo(field, value);
+					break;
+				case LE:
+					_query = _query.whereLessThanOrEqualTo(field, value);
+					break;
+				default:
+					throw new IllegalArgumentException("Unsupported condition: " + condition);
+			}
 		}
 
-/*		return collectionReference
-//				.orderBy("timeStamp", Query.Direction.DESCENDING)
-				.limit(QUERY_COMMON_LIMIT)
-				.whereEqualTo(field, value)*/
 		return _query
 				.get().continueWith(bgRunner, new Continuation<QuerySnapshot, List<TEntity>>() {
 					@Override
@@ -243,28 +252,6 @@ public class DataFirestoreRepo<TEntity extends Identifiable<String>> implements 
 							return null;
 						}
 						return result;
-					}
-				});
-	}
-
-	/** test method */
-	@Deprecated
-	public Task<QuerySnapshot> printListByField() {
-
-		// "66229263"	"-990303179"
-		return collectionReference.whereEqualTo("id", 66229263)
-				.get()
-				.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-					@Override
-					public void onComplete(@NonNull Task<QuerySnapshot> task) {
-						if (task.isSuccessful()) {
-							Log.d(TAG, "printListByField is successful");
-							for (QueryDocumentSnapshot document : task.getResult()) {
-								Log.d(TAG, document.getId() + " => " + document.getData());
-							}
-						} else {
-							Log.w(TAG, "Error getting documents." + task.getException());
-						}
 					}
 				});
 	}

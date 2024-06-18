@@ -8,6 +8,9 @@
 
 package org.nebobrod.schulteplus.ui.home;
 
+import static org.nebobrod.schulteplus.common.Const.SHOWN_03_STATA;
+import static org.nebobrod.schulteplus.common.Const.SHOWN_04_NEWS;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +19,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
+
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.databinding.FragmentHomeBinding;
+import org.nebobrod.schulteplus.ui.TapTargetViewWr;
 
 public class HomeFragment extends Fragment {
 
@@ -50,6 +59,41 @@ public class HomeFragment extends Fragment {
 		});
 
 		return root;
+	}
+
+	/**
+	 * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
+	 * has returned, but before any saved state has been restored in to the view.
+	 * This gives subclasses a chance to initialize themselves once
+	 * they know their view hierarchy has been completely created.  The fragment's
+	 * view hierarchy is not however attached to its parent at this point.
+	 *
+	 * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+	 * @param savedInstanceState If non-null, this fragment is being re-constructed
+	 *                           from a previous saved state as given here.
+	 */
+	@Override
+	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+
+		// Onboarding intro
+/*		if (ExerciseRunner.isShowIntro() &&
+				(0 == (ExerciseRunner.getShownIntros() & SHOWN_04_NEWS))) {
+			new TapTargetSequence(requireActivity())
+					.targets(
+							new TapTargetViewWr(this, view, getString(R.string.hint_stata_source_title), getString(R.string.hint_stata_source_desc)).getTapTarget()
+					)
+					.listener(new TapTargetSequence.Listener() {
+						@Override
+						public void onSequenceFinish() {
+							ExerciseRunner.updateShownIntros(SHOWN_04_NEWS);
+						}
+						@Override
+						public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) { }
+						@Override
+						public void onSequenceCanceled(TapTarget lastTarget) { }
+					}).start();
+		}*/
 	}
 
 	@Override

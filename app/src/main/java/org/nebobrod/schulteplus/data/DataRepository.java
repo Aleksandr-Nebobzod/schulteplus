@@ -8,11 +8,17 @@
 
 package org.nebobrod.schulteplus.data;
 
+import androidx.annotation.IntDef;
+
+import org.checkerframework.common.value.qual.EnumVal;
 import org.nebobrod.schulteplus.common.Log;
 
 import com.j256.ormlite.table.DatabaseTable;
 
 import com.google.android.gms.tasks.Task;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 
 /**
@@ -29,6 +35,19 @@ public interface DataRepository<TEntity extends Identifiable<TKey>, TKey> {
 		void onSuccess(R result);
 
 		void onError(Exception e);
+	}
+
+	enum WhereCond {
+		/** Means whereEqualTo */
+		EQ,
+		/** Means whereGreaterThanOrEqualTo */
+		GE,
+		/** Means whereLessThanOrEqualTo */
+		LE;
+
+		@EnumVal({"EQ", "GE", "LE"})
+		@Retention(RetentionPolicy.SOURCE)
+		public @interface Condition {}
 	}
 
 	/**

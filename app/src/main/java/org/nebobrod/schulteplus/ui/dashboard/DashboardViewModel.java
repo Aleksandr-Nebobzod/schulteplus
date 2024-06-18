@@ -79,7 +79,7 @@ public class DashboardViewModel<TEntity extends Identifiable<String>> extends Vi
 				}
 			});*/ // that was first try with no filter
 
-			new DataFirestoreRepo<TEntity>(entityClass).getListByField("exType", dashboardKey.getValue())
+			new DataFirestoreRepo<TEntity>(entityClass).getListByField("exType", DataRepository.WhereCond.EQ, dashboardKey.getValue())
 					.addOnCompleteListener(task -> {
 						if (task.isSuccessful()) {
 							resultsLiveData.postValue(task.getResult());

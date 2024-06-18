@@ -28,7 +28,7 @@ public class AdminNote implements Serializable, Identifiable<String> {
 	private Integer id;
 
 	@DatabaseField
-	private String uak;
+	private String uak; 			// "0" means Note from the Server
 
 	@DatabaseField
 	private String uidAddress; 		// null means "all" or addressed uid
@@ -55,7 +55,7 @@ public class AdminNote implements Serializable, Identifiable<String> {
 	private int verDeprecated;
 
 	@DatabaseField
-	private long timeStampConfirmed;
+	private long timeStampConfirmed; 	// the moment when the user confirmed the Note
 
 
 	public AdminNote() {}

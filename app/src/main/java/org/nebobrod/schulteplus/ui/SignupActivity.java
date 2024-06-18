@@ -43,7 +43,8 @@ import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.data.UserHelper;
 
-import static org.nebobrod.schulteplus.Utils.currentVersion;
+import static org.nebobrod.schulteplus.Utils.currentOsVersion;
+import static org.nebobrod.schulteplus.Utils.generateUuidInt;
 import static org.nebobrod.schulteplus.Utils.getVersionCode;
 import static org.nebobrod.schulteplus.common.Const.NAME_REG_EXP;
 import static org.nebobrod.schulteplus.common.Const.PASSWORD_REG_EXP;
@@ -161,7 +162,7 @@ public class SignupActivity extends AppCompatActivity {
 
 								// Create the repositories copy of the new UserHelper
 								FirebaseUser fbUser = fbAuth.getCurrentUser();
-								userHelper = new UserHelper(fbUser.getUid(), email, name, password, Utils.getDevId() , Utils.getUak(),  false);
+								userHelper = new UserHelper(fbUser.getUid(), email, name, password, Utils.getDevId() , Utils.generateUak(),  false);
 								DataRepos repos;
 								repos = new DataRepos<>(UserHelper.class);
 								repos.create(userHelper);		// Since it's a new user
@@ -170,7 +171,7 @@ public class SignupActivity extends AppCompatActivity {
 								Toast.makeText(SignupActivity.this, resMessage[0], Toast.LENGTH_SHORT).show();
 
 								// registration record
-								AdminNote firstAdminNote = new AdminNote(0, userHelper.getUak(), userHelper.getUid(), "SignUp", "Android: " + currentVersion(), "", userHelper.getTimeStamp(), getVersionCode(), 0, 0, userHelper.getTimeStamp());
+								AdminNote firstAdminNote = new AdminNote(generateUuidInt(), userHelper.getUak(), userHelper.getUid(), "SignUp", "Android: " + currentOsVersion(), "", userHelper.getTimeStamp(), getVersionCode(), 0, 0, userHelper.getTimeStamp());
 								repos = new DataRepos<>(AdminNote.class);
 								repos.create(firstAdminNote);
 

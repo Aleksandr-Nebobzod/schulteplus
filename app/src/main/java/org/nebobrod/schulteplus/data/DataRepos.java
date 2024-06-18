@@ -21,21 +21,24 @@ import org.nebobrod.schulteplus.common.Const;
 import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 /** Makes one entry point for different places to maintain data
  */
 public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataRepository {
 	public static final String TAG = "DataRepos";
 
+	private final Class<TEntity> entityClass;
 	private final DataOrmRepo ormRepo;
 //	private static final FirestoreUtils firestoreDataHandler = new FirestoreUtils();
 	private  final DataFirestoreRepo fsRepo;
 
 	public DataRepos(Class<TEntity> entityClass) {
+
+		this.entityClass = entityClass;
 		ormRepo = new DataOrmRepo(entityClass);
 		fsRepo = new DataFirestoreRepo<>(entityClass);
 	}
@@ -163,7 +166,7 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataR
 		// Get data-set from central repository
 		CompletableFuture<List<UserHelper>> fsFuture = CompletableFuture.supplyAsync(() -> {
 			try {
-				return Tasks.await(fsRepo.getListByField("id", id));
+				return Tasks.await(fsRepo.getListByField("id", DataRepository.WhereCond.EQ, id));
 			} catch (ExecutionException | InterruptedException e) {
 				Log.e(TAG, "Firestore Task failed: ", e);
 				return null;
@@ -209,7 +212,7 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataR
 					if (ormTimestamp == 0) {
 						throw new ExecutionException(new RuntimeException("No actual user record in any repository!"));
 					} else if (ormTimestamp > latestFsUser.getTimeStamp()) {
-						userHelper = ormUser; 		// Used local db offline
+						userHelper = ormUser; 			// Used local db offline
 						fsRepo.create(userHelper);
 					} else {
 						userHelper = latestFsUser; 		// fresh data from another device
@@ -218,11 +221,13 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataR
 					}
 				}
 			} else {
+
+				// Local user does not exist
 				if (latestFsUser == null) {
 					throw new ExecutionException(new RuntimeException("No actual user record in any repository!"));
 				}
 				userHelper = latestFsUser; 				// fresh data from another device
-				userHelper.setUak(Utils.getUak()); 	// first login on this device (new uak)
+				userHelper.setUak(Utils.generateUak()); 		// first login on this device (new uak)
 				ormRepo.create(userHelper); 			// Copy fresh central data to local DB
 				fsRepo.create(userHelper); 				// Copy fresh data with new uak to central DB
 			}
@@ -238,4 +243,41 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataR
 		return Tasks.forResult(userHelper);
 	}
 
+	/** Special for Admin Notes form server*/
+	public Task<Void> fetchAdminNotes(long sinceTimeStamp) {
+		final TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
+
+		new DataFirestoreRepo<>(AdminNote.class).getListByField("uak", DataRepository.WhereCond.EQ, "0").addOnCompleteListener(new OnCompleteListener<List<AdminNote>>() {
+			@Override
+			public void onComplete(@NonNull Task<List<AdminNote>> task) {
+				if (task.isSuccessful()) {
+					List<AdminNote> list = task.getResult();
+					if (list == null) {
+						Log.w(TAG, "fetchAdminNotes: Error loading data from the server.");
+						taskCompletionSource.setException(new RuntimeException("fetchAdminNotes: No data loaded from the server."));
+						return;
+					}
+					List<AdminNote> filteredList = list.stream()
+							.filter(note -> note.getTimeStamp() > sinceTimeStamp)
+							.collect(Collectors.toList());
+
+					new DataOrmRepo<>(entityClass).load((List<TEntity>) filteredList).addOnCompleteListener(new OnCompleteListener<Void>() {
+						@Override
+						public void onComplete(@NonNull Task<Void> task) {
+							if (task.isSuccessful()) {
+								taskCompletionSource.setResult(null); // Success
+							} else {
+								taskCompletionSource.setException(task.getException()); // Error
+							}
+						}
+					});
+				} else {
+					Log.w(TAG, "fetchAdminNotes: Error loading data from the server.");
+					taskCompletionSource.setException(new RuntimeException("fetchAdminNotes: Error loading data from the server."));
+				}
+			}
+		});
+
+		return taskCompletionSource.getTask();
+	}
 }

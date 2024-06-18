@@ -9,6 +9,9 @@
 package org.nebobrod.schulteplus.ui;
 
 
+import static org.nebobrod.schulteplus.Utils.getTopRightCornerRect;
+import static org.nebobrod.schulteplus.common.Const.SHOWN_00_MAIN;
+
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
@@ -18,12 +21,13 @@ import org.nebobrod.schulteplus.data.UserHelper;
 import org.nebobrod.schulteplus.ui.basics.BasicsActivity;
 import org.nebobrod.schulteplus.ui.schulte.SchulteActivity;
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
@@ -48,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
 	public static final String TAG = "MainActivity";
 //	private static MainActivity instance;
 
-	FirebaseAuth fbAuth;
-	FirebaseUser user = null;
 	UserHelper userHelper;
 
 	private ActivityMainBinding binding;
@@ -128,6 +130,13 @@ public class MainActivity extends AppCompatActivity {
 
 		fabLaunch = findViewById(R.id.fabLaunch);
 
+		getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+			@Override
+			public void handleOnBackPressed() {
+				finishAffinity();
+			}
+		});
+
 		// BottomSheet for Preferences
 		findViewById(R.id.touch_outside).setOnClickListener(v -> finish());
 		BottomSheetBehavior.from(findViewById(R.id.bottom_sheet))
@@ -204,14 +213,43 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-//		runner.loadPreference(getApplicationContext());
+		if (ExerciseRunner.isShowIntro() &&
+				(0 == (ExerciseRunner.getShownIntros() & SHOWN_00_MAIN))) {
+			new TapTargetSequence(this)
+					.targets(
+							new TapTargetViewWr(this, fabLaunch, getString(R.string.hint_main_fab_title), getString(R.string.hint_main_fab_desc)).getTapTarget(),
+							new TapTargetViewWr(this, findViewById(R.id.navigation_basics), getString(R.string.hint_main_basics_title), getString(R.string.hint_main_basics_desc)).getTapTarget(),
+							new TapTargetViewWr(this, findViewById(R.id.navigation_schulte), getString(R.string.hint_main_schulte_title), getString(R.string.hint_main_schulte_desc)).getTapTarget(),
+							new TapTargetViewWr(this, findViewById(R.id.navigation_dashboard), getString(R.string.hint_main_dashboard_title), getString(R.string.hint_main_dashboard_desc)).getTapTarget(),
+							new TapTargetViewWr(this, findViewById(R.id.navigation_home), getString(R.string.hint_main_home_title), getString(R.string.hint_main_home_desc)).getTapTarget(),
+
+							TapTarget.forBounds(getTopRightCornerRect(this), getString(R.string.hint_main_settings_title), getString(R.string.hint_main_settings_desc))
+									//.icon(null)
+									.outerCircleColor(R.color.black)
+									.outerCircleAlpha(0.96f)
+									.transparentTarget(true)
+									.cancelable(false)
+					)
+					.listener(new TapTargetSequence.Listener() {
+						// This listener will tell us when interesting(tm) events happen in regards
+						// to the sequence
+						@Override
+						public void onSequenceFinish() {
+							//Toast.makeText(MainActivity.this, "onSequenceFinish", Toast.LENGTH_SHORT).show();
+							ExerciseRunner.updateShownIntros(SHOWN_00_MAIN);
+						}
+
+						@Override
+						public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+							//Toast.makeText(MainActivity.this, "onSequenceStep", Toast.LENGTH_SHORT).show();
+						}
+
+						@Override
+						public void onSequenceCanceled(TapTarget lastTarget) {
+							//Toast.makeText(MainActivity.this, "onSequenceCanceled", Toast.LENGTH_SHORT).show();
+						}
+					}).start();
+		}
 	}
 
-	@Override
-	public void onBackPressed() {
-		finishAffinity();
-//		finishAndRemoveTask();
-//		finish();
-		super.onBackPressed();
-	}
 }

@@ -21,6 +21,7 @@ import java.util.List;
 
 /** Provides common CRUD methods working on external SchultePlus DB by FirebaseFirestore
  **/
+@Deprecated
 public class FirestoreRepo implements z_DataRepository {
 	private static final String TAG = FirestoreRepo.class.getSimpleName();
 	private static final String DB_ROOT = getRes().getString(R.string.firestore_root);

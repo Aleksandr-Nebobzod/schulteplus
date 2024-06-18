@@ -42,6 +42,7 @@
 		<!-- Customize your theme here. -->
 		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
 
+		<item name="alertDialogTheme">@style/Theme.AppCompat.Dialog</item>
 	</style>
 	
 	<style name="Theme.SchultePlus.FullscreenStart" parent="Theme.AppCompat.Light.NoActionBar">

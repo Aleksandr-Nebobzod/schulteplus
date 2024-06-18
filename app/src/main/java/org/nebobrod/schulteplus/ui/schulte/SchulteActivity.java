@@ -17,8 +17,11 @@ import org.nebobrod.schulteplus.common.STable;
 import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.ExResultArrayAdapter;
+import org.nebobrod.schulteplus.ui.TapTargetViewWr;
 
 import static org.nebobrod.schulteplus.Utils.*;
+import static org.nebobrod.schulteplus.common.Const.SHOWN_05_BASE_SPACE;
+import static org.nebobrod.schulteplus.common.Const.SHOWN_06_SCHULTE_SPACE;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -31,6 +34,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
@@ -41,6 +45,9 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 
 import java.util.Objects;
 
@@ -181,6 +188,30 @@ public class SchulteActivity extends AppCompatActivity {
 		super.onResume();
 		if (null != getSupportActionBar()) {
 			Objects.requireNonNull(getSupportActionBar()).hide();
+		}
+
+		// Onboarding intro
+		if (ExerciseRunner.isShowIntro() &&
+				(0 == (ExerciseRunner.getShownIntros() & SHOWN_06_SCHULTE_SPACE))) {
+			new TapTargetSequence(this)
+					.targets(
+							TapTarget.forBounds(new Rect(200, 100, 200, 100), getString(R.string.hint_schulte_space_title), getString(R.string.hint_schulte_space_desc))
+									//.icon(null)
+									.outerCircleColor(R.color.black)
+									.outerCircleAlpha(0.9f)
+									.transparentTarget(true)
+									.cancelable(false)
+					)
+					.listener(new TapTargetSequence.Listener() {
+						@Override
+						public void onSequenceFinish() {
+							ExerciseRunner.updateShownIntros(SHOWN_06_SCHULTE_SPACE);
+						}
+						@Override
+						public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) { }
+						@Override
+						public void onSequenceCanceled(TapTarget lastTarget) { }
+					}).start();
 		}
 	}
 /*

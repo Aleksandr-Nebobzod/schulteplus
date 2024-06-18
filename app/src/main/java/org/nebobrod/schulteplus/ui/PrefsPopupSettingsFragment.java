@@ -29,6 +29,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.SeekBarPreference;
+import androidx.preference.SwitchPreference;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -46,6 +47,7 @@ import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
 
 import java.util.Objects;
+
 
 public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 	public static final String TAG = "PrefsPopupSettingsFragment";
@@ -76,24 +78,11 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 	public static class PreferenceFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 		@Override
 		public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
-			SeekBarPreference sbPrfCurrentLevel;
-			int currentLevel;
 
 			addPreferencesFromResource(R.xml.menu_preferences);
-
 			getPreferenceManager().setSharedPreferencesName(ExerciseRunner.uid);
 			getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
-
 			Objects.requireNonNull(getPreferenceScreen().getSharedPreferences()).registerOnSharedPreferenceChangeListener(this);
-
-			currentLevel = (getPreferenceScreen().getSharedPreferences().getInt(KEY_PRF_LEVEL, 0));
-			sbPrfCurrentLevel = getPreferenceScreen().findPreference(KEY_PRF_CURRENT_LEVEL);
-
-			if (currentLevel < sbPrfCurrentLevel.getValue()){
-				sbPrfCurrentLevel.setValue(currentLevel);
-			}
-			sbPrfCurrentLevel.setMax(currentLevel);
-			sbPrfCurrentLevel.setTitle(R.string.prf_current_level_title );
 		}
 
 		@Override
@@ -104,6 +93,17 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 				return false;
 			}
 			switch (preference.getKey()) {
+				case "prf_show_intro":
+					if (((SwitchPreference)preference).isChecked()) {
+						((SwitchPreference)preference).setChecked(true);
+						ExerciseRunner.setShowIntro(true);
+						ExerciseRunner.setShownIntros(0);
+						ExerciseRunner.savePreferences();
+					}
+					return false; // makes not necessary of break;
+					// -- this FALSE is really important to prevent self-circled job
+
+
 				case "prf_user_logoff":
 					FirebaseAuth.getInstance().signOut();
 					getActivity().finishAndRemoveTask();
@@ -113,15 +113,12 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 
 					// Confirmation
 					Snackbar.make(getView(), getRes().getString(R.string.msg_proceed_to_password_reentry), Snackbar.LENGTH_INDEFINITE)
-							.setAction(getRes().getString(R.string.lbl_ok), new View.OnClickListener() {
-								@Override
-								public void onClick(View view) {
-									// fill with extras to avoid retyping on Login
-									Intent intent = new Intent(getActivity(), LoginActivity.class);
-									intent.putExtra("email", ExerciseRunner.getUserHelper().getEmail());
+							.setAction(getRes().getString(R.string.lbl_ok), view -> {
+								// fill with extras to avoid retyping on Login
+								Intent intent = new Intent(getActivity(), LoginActivity.class);
+								intent.putExtra("email", ExerciseRunner.getUserHelper().getEmail());
 //									FirebaseAuth.getInstance().signOut();
-									startActivity(intent);
-								}
+								startActivity(intent);
 							})
 							.show();
 					return true; // makes not necessary of break;
@@ -134,9 +131,9 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 		@Override
 		public void onResume() {
 			super.onResume();
-/*			// Set up a listener whenever a key changes
-			getPreferenceScreen().getSharedPreferences()
-					.registerOnSharedPreferenceChangeListener(this);*/
+			// Set up a listener whenever a key changes
+			Objects.requireNonNull(getPreferenceScreen().getSharedPreferences())
+					.registerOnSharedPreferenceChangeListener(this);
 
 			// This maybe redundant... nope -- registered listeners don't work
 			for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); ++i) {
@@ -153,13 +150,13 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 			}
 		}
 
-/*		@Override
+		@Override
 		public void onPause() {
 			super.onPause();
 			// Unregister the listener whenever a key changes
-			getPreferenceScreen().getSharedPreferences()
+			Objects.requireNonNull(getPreferenceScreen().getSharedPreferences())
 					.unregisterOnSharedPreferenceChangeListener(this);
-		}*/
+		}
 
 		@Override
 		public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -181,14 +178,34 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 
 			switch (key) {
 				// integer values assignment
-				case "prf_points":
-				case "prf_hours":
-				case "prf_level":
+				case KEY_POINTS:
+				case KEY_HOURS:
+				case KEY_PRF_LEVEL:
+				case KEY_PRF_SHOWN_INTROS:
+					Log.d(TAG, "updatePreference: int value: " + ((EditTextPreference) getPreferenceScreen().findPreference(KEY_PRF_SHOWN_INTROS)).getText());
 					preference.setSummary("" + sharedPrefs.getInt(key, 0));
+
+					// Update Seekbar range
+					SeekBarPreference sbPrfCurrentLevel;
+					int currentLevel;
+
+					currentLevel = (getPreferenceScreen().getSharedPreferences().getInt(KEY_PRF_LEVEL, 0));
+					sbPrfCurrentLevel = getPreferenceScreen().findPreference(KEY_PRF_CURRENT_LEVEL);
+
+					if (currentLevel < sbPrfCurrentLevel.getValue()){
+						sbPrfCurrentLevel.setValue(currentLevel);
+					}
+					sbPrfCurrentLevel.setMax(currentLevel);
+					sbPrfCurrentLevel.setTitle(R.string.prf_current_level_title );
+					break;
+
+				// boolean values assignment
+				case KEY_PRF_SHOW_INTRO:
+					((SwitchPreference)preference).setChecked((sharedPrefs.getBoolean(key, true)));
 					break;
 
 				// String values assignment
-				case "prf_user_name":
+				case KEY_USER_NAME:
 					oldValue = ExerciseRunner.userName;
 					newValue = ((EditTextPreference) preference).getText();
 					if (newValue == null) {
@@ -200,6 +217,8 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 						ExerciseRunner.loadPreference();
 						ExerciseRunner.getUserHelper().setName(ExerciseRunner.userName);
 						ExerciseRunner.updateUserHelper();
+						/** we leave old records but future records market with new name
+						 *  (to avoid enormous data traffic) -- BE CONSCIOUS!!! */
 						// updateNameInHistory(ExerciseRunner.getUserHelper().getUid(), newValue);
 						Toast.makeText(requireActivity(), getRes().getString(R.string.msg_username_updated) + ": " + ExerciseRunner.userName, Toast.LENGTH_LONG).show();
 					} else {
@@ -208,7 +227,7 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 						// preference.setSummary(ExerciseRunner.getUserHelper().getName());
 					}
 					break;
-				case "prf_user_email":
+				case KEY_USER_EMAIL:
 					// preference.setSummary(sharedPrefs.getString(key, "-"));
 					oldValue = ExerciseRunner.userEmail;
 					newValue = ((EditTextPreference) preference).getText();
@@ -223,7 +242,7 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 						ExerciseRunner.updateUserHelper();
 
 						/** leaveHereSomeFlag() which should be checked in Splash for
-							forwarding user to Login for re-authenticate */
+						 forwarding user to Login for re-authenticate */
 						Toast.makeText(requireActivity(), getRes().getString(R.string.msg_user_email_will_change) + ExerciseRunner.userName, Toast.LENGTH_LONG).show();
 					} else {
 						((EditTextPreference) preference).setText(oldValue);
@@ -251,6 +270,8 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 		}
 	}
 
+	/** Update the whole history records ov the user
+	 * (this is maybe for future) */
 	private static void updateNameInHistory(String uid, String newName) {
 
 		// Replace userdata in central repository
@@ -277,7 +298,6 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 				}
 			}
 		});
-
 	}
 }
 

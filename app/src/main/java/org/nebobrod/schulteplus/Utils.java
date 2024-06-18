@@ -16,11 +16,14 @@ import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -28,17 +31,17 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.ViewParent;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -48,18 +51,23 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.text.HtmlCompat;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
@@ -174,11 +182,11 @@ public final class Utils extends Application {
 	}
 	public static  String timeStampLocal(long ts) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy.MM.dd HH:mm");
-		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter)  ;
+		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter);
 	}
 	public static  String timeStampToDateLocal(long ts) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd"); // use correct format ('S' for milliseconds)
-		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter)  ;
+		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter);
 	}
 	public static  String timeStampToTimeLocal(long ts) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss"); // use correct format ('S' for milliseconds)
@@ -215,16 +223,23 @@ public final class Utils extends Application {
 	}
 
 	/**
+	 * @return Make an int value of universally unique identifier (UUID)
+	 */
+	public static  int generateUuidInt(){
+		return UUID.randomUUID().hashCode();
+	}
+
+	/**
 	 * @return String value of universally unique identifier (UUID)
 	 */
-	public static  String getUUID(){
+	public static  String generateUuidString(){
 		return UUID.randomUUID().toString();
 	}
 
 	/**
 	 * @return String value of Hex string of int from UUID
 	 */
-	public static  String getUak(){
+	public static  String generateUak(){
 		String strUuid = UUID.randomUUID().toString();
 		int intUuid = intStringHash(strUuid);
 		return Long.toString(intUuid & 0xFFFFFFFFL, 16);
@@ -452,7 +467,7 @@ public final class Utils extends Application {
 
 
 	/** Current Android version data */
-	public static String currentVersion(){
+	public static String currentOsVersion(){
 		double release=Double.parseDouble(Build.VERSION.RELEASE.replaceAll("(\\d+[.]\\d+)(.*)","$1"));
 		String codeName="Unsupported";//below Jelly Bean
 		if(release >= 4.1 && release < 4.4) codeName = "Jelly Bean";
@@ -463,7 +478,7 @@ public final class Utils extends Application {
 		else if(release < 9)   codeName="Oreo";
 		else if(release < 10)  codeName="Pie";
 		else if(release >= 10) codeName="Android "+((int)release);//since API 29 no more candy code names
-		return codeName+" v"+release+", API Level: "+Build.VERSION.SDK_INT;
+		return codeName + " v" + release + ", API Level: " + Build.VERSION.SDK_INT;
 	}
 
 	public static void animThrob(View view, @Nullable Color color) {
@@ -905,6 +920,99 @@ public final class Utils extends Application {
 		view.loadUrl("file:///android_asset/" + fileName);
 	}
 
+	/**
+	 * <b>"OK"</b> usually means Skip <p> when <b>"No"</b> means an Action.
+	 * @param strMessage Output below results and feedback elements
+	 */
+	public static void confirmationDialog(Context newContext,
+										  String title,
+										  String strMessage,
+										  @Nullable DialogInterface.OnClickListener okListener,
+										  @Nullable DialogInterface.OnClickListener cancelListener) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(newContext, androidx.appcompat.R.style.Theme_AppCompat); // Theme_AppCompat_Dialog_Alert
+
+		final FrameLayout frameView = new FrameLayout(newContext);
+		builder.setView(frameView);
+		builder.setPositiveButton(Utils.getRes().getText(R.string.lbl_ok), null);
+
+		final AlertDialog alertDialog = builder.create();
+		alertDialog.setCancelable(false);
+		alertDialog.setCanceledOnTouchOutside(false);
+		alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		alertDialog.getWindow().setDimAmount(0.2F);
+
+		// Put the dialog layout to bottom of the screen
+		Window window = alertDialog.getWindow();
+		WindowManager.LayoutParams wlp = window.getAttributes();
+		wlp.gravity = Gravity.BOTTOM;
+//		wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+		window.setAttributes(wlp);
+
+		// Variables
+		LayoutInflater inflater = alertDialog.getLayoutInflater();
+		View layout = inflater.inflate(R.layout.activity_schulte_result_df, frameView);
+		TextView txtTitle, txtMessage;
+		TableRow tbRow;
+		TableLayout tbPsychometry;
+		EditText etNote;
+		Button btnOk, btnCancel;	// These template buttons are invisible on  inflated layout
+		final Button[] btnRedesign = new Button[1];
+
+		// Initiating controls
+		txtTitle = layout.findViewById(R.id.txtTitle);
+		tbRow = layout.findViewById(R.id.table_row);
+		txtMessage = layout.findViewById(R.id.txtMessage);
+		tbPsychometry = layout.findViewById(R.id.table_psychometry);
+		etNote = layout.findViewById(R.id.et_note);
+		btnCancel = layout.findViewById(R.id.btnCancel);
+		btnOk = layout.findViewById(R.id.btnOK);
+
+		txtTitle.setText(title);
+		txtMessage.setText(HtmlCompat.fromHtml(strMessage, HtmlCompat.FROM_HTML_MODE_LEGACY));
+
+
+		// hide template row of table
+		tbRow.setVisibility(View.GONE);
+		tbPsychometry.setVisibility(View.GONE);
+		etNote.setVisibility(View.GONE);
+
+		// Prepare listeners
+		DialogInterface.OnClickListener voidListener = (DialogInterface dialogInterface, int i) -> {
+			// Means continue ex i.e. do nothing
+			alertDialog.dismiss();
+		};
+
+		if (cancelListener == null) cancelListener = voidListener;
+		if (okListener == null) okListener = voidListener;
+
+		// Set the buttons
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, Utils.getRes().getText(R.string.lbl_ok), (DialogInterface.OnClickListener) okListener);
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, Utils.getRes().getText(R.string.lbl_no), (DialogInterface.OnClickListener)  cancelListener);
+
+		// Copy design from templates
+		alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+			@Override
+			public void onShow(DialogInterface dialogInterface) {
+				// redesign OK by template
+				btnRedesign[0] = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+				btnRedesign[0].setLayoutParams(btnOk.getLayoutParams());
+				btnRedesign[0].setBackground(Utils.getRes().getDrawable(R.drawable.bg_button, newContext.getTheme()));
+//				btnRedesign[0].setTextAppearance(R.style.button3d);
+				btnRedesign[0].setAllCaps(false);
+				btnRedesign[0].setWidth(btnOk.getWidth()-10);
+				// redesign Cancel by template
+				btnRedesign[0] = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+				btnRedesign[0].setLayoutParams(btnCancel.getLayoutParams());
+				btnRedesign[0].setBackground(AppCompatResources.getDrawable(newContext, R.drawable.bg_button));
+//				btnRedesign[0].setTextAppearance(R.style.button3d);
+				btnRedesign[0].setAllCaps(false);
+				btnRedesign[0].setWidth(btnCancel.getWidth()-10);
+			}
+		});
+		alertDialog.show();
+	}
+
+	/** For using with any class */
 	public static boolean hasFieldName(Class<?> clazz, String fieldName) {
 		try {
 			return (null != clazz.getDeclaredField(fieldName));
@@ -912,4 +1020,38 @@ public final class Utils extends Application {
 			return false;
 		}
 	}
+
+
+	/**
+	 * @param activity
+	 * @return a rectangle of right-top corner of the screen (settings menu)
+	 */
+	public static Rect getTopRightCornerRect(Activity activity) {
+		// Get screen size
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		WindowManager windowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
+		windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+
+		// Размеры и координаты верхнего правого угла
+		int screenWidth = displayMetrics.widthPixels;
+		int statusBarHeight = getStatusBarHeight(activity);
+		int rectSize = 100; // размер прямоугольника, например, 100 пикселей
+
+		int left = screenWidth - rectSize;
+		int top = statusBarHeight;
+		int right = screenWidth;
+		int bottom = statusBarHeight + rectSize;
+
+		return new Rect(left, top, right, bottom);
+	}
+
+	private static int getStatusBarHeight(Activity activity) {
+		int result = 0;
+		int resourceId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
+		if (resourceId > 0) {
+			result = activity.getResources().getDimensionPixelSize(resourceId);
+		}
+		return result;
+	}
+
 }

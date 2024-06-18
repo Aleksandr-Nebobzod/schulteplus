@@ -44,6 +44,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.lifecycle.MutableLiveData;
 
@@ -266,14 +267,14 @@ public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
 				// redesign OK by template
 				btnRedesign[0] = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
 				btnRedesign[0].setLayoutParams(btnOk.getLayoutParams());
-				btnRedesign[0].setBackground(Utils.getRes().getDrawable(R.drawable.bg_button));
+				btnRedesign[0].setBackground(AppCompatResources.getDrawable(context1, R.drawable.bg_button));
 				btnRedesign[0].setTextAppearance(R.style.button3d);
 				btnRedesign[0].setAllCaps(false);
 				btnRedesign[0].setWidth(btnOk.getWidth()-10);
 				// redesign Cancel by template
 				btnRedesign[0] = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 				btnRedesign[0].setLayoutParams(btnCancel.getLayoutParams());
-				btnRedesign[0].setBackground(Utils.getRes().getDrawable(R.drawable.bg_button));
+				btnRedesign[0].setBackground(AppCompatResources.getDrawable(context1, R.drawable.bg_button));
 				btnRedesign[0].setTextAppearance(R.style.button3d);
 				btnRedesign[0].setAllCaps(false);
 				btnRedesign[0].setWidth(btnCancel.getWidth()-10);

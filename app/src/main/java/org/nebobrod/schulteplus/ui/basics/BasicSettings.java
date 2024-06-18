@@ -8,13 +8,17 @@
 
 package org.nebobrod.schulteplus.ui.basics;
 
+import static org.nebobrod.schulteplus.Utils.getTopRightCornerRect;
 import static org.nebobrod.schulteplus.common.Const.*;
 import static org.nebobrod.schulteplus.Utils.getRes;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
@@ -22,8 +26,12 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
+
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.ui.TapTargetViewWr;
 
 import java.util.ArrayList;
 
@@ -65,6 +73,44 @@ public class BasicSettings extends PreferenceFragmentCompat {
 		runner.setHinted(((androidx.preference.SwitchPreference) findPreference(KEY_PRF_HINTED)).isChecked());
 
 		super.onResume();
+	}
+
+	@Override
+	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+
+		/** Onboarding intro */
+		if (ExerciseRunner.isShowIntro() &&
+				(0 == (ExerciseRunner.getShownIntros() & SHOWN_01_BASE))) {
+			new TapTargetSequence(requireActivity())
+					.targets(
+//							new TapTargetViewWr(this, view, getString(R.string.hint_base_settings_title), getString(R.string.hint_base_settings_title)).getTapTarget()
+							TapTarget.forBounds(new Rect(200, 100, 200, 100), getString(R.string.hint_base_settings_title), getString(R.string.hint_base_settings_desc))
+									.outerCircleColor(R.color.black)
+									.outerCircleAlpha(0.96f)
+									.transparentTarget(true)
+									.cancelable(false)
+					)
+					.listener(new TapTargetSequence.Listener() {
+						// This listener will tell us when interesting(tm) events happen in regards
+						// to the sequence
+						@Override
+						public void onSequenceFinish() {
+							//Toast.makeText(MainActivity.this, "onSequenceFinish", Toast.LENGTH_SHORT).show();
+							ExerciseRunner.updateShownIntros(SHOWN_01_BASE);
+						}
+
+						@Override
+						public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+							//Toast.makeText(MainActivity.this, "onSequenceStep", Toast.LENGTH_SHORT).show();
+						}
+
+						@Override
+						public void onSequenceCanceled(TapTarget lastTarget) {
+							//Toast.makeText(MainActivity.this, "onSequenceCanceled", Toast.LENGTH_SHORT).show();
+						}
+					}).start();
+		}
 	}
 
 	@Override

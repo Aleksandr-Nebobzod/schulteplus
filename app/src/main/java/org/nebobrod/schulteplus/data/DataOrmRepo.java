@@ -15,6 +15,10 @@ import static org.nebobrod.schulteplus.data.DatabaseHelper.getHelper;
 
 import android.database.SQLException;
 import android.media.MediaPlayer;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.nebobrod.schulteplus.common.Log;
 
 import com.google.android.gms.tasks.Task;
@@ -32,6 +36,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 
@@ -54,6 +59,10 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 		this.helper = DatabaseHelper.getHelper();
 		this.dao = getAnyDao(entityClass.getSimpleName());
 		this.bgRunner = new AppExecutors().getDiskIO();
+	}
+
+	public interface OrmGetCallback<R> {
+		void onComplete(R result);
 	}
 
 	public Class<TEntity> getEntityType() {
@@ -157,9 +166,74 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 
 	}
 
+	@Deprecated
+	public static synchronized void achievePut(String uid, String uak, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark) {
+		Achievement achievement = new Achievement();
+		achievement.set(uid,  uak, name,  timeStamp,  dateTime,  recordText,  recordValue,  specialMark);
+		try {
+			DatabaseHelper helper = new DatabaseHelper();
+			Dao<Achievement, Integer> dao = helper.getAchievementDao();
+			dao.create(achievement);
+		} catch (SQLException | java.sql.SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * return result of query to local db in background thread. play sound on success.
+	 * @param callback for main thread
+	 * @param <R> (check the reason of this)
+	 */
+	@Deprecated
+	public static <R> void achieveGet25(OrmGetCallback<R> callback) {
+		final ArrayList[] arrayList = {null};
+
+		appExecutors.getDiskIO().execute(() -> {
+			final R result;
+			try {
+				Log.d(TAG, "query to local db within: " + Thread.currentThread());
+//				result = callable.call();
+				Dao<Achievement, Integer> dao = getHelper().getAchievementDao();
+				QueryBuilder<Achievement, Integer> builder = dao.queryBuilder();
+				builder.orderBy(Achievement.DATE_FIELD_NAME, false).limit(QUERY_COMMON_LIMIT);
+				result = (R) dao.query(builder.prepare());
+
+				MediaPlayer mp = MediaPlayer.create(getAppContext(), org.nebobrod.schulteplus.R.raw.slow_whoop_bubble_pop);
+				mp.start();
+				mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+					@Override
+					public void onCompletion(MediaPlayer mPlayer) {
+						mPlayer.release();
+					}
+				});
+			} catch (Exception e) {
+				Log.e(TAG, "achieveGet25: ", e);
+				throw new RuntimeException(e);
+			}
+			appExecutors.mainThread().execute(() -> {
+				callback.onComplete(result);
+			});
+		});
+	}
+
+	@Deprecated
+	public static ArrayList getAchievementList(){
+		Log.i(DataOrmRepo.class.getName(), "Show list again");
+		try {
+			Dao<Achievement, Integer> dao = getHelper().getAchievementDao();
+			QueryBuilder<Achievement, Integer> builder = dao.queryBuilder();
+			builder.orderBy(Achievement.DATE_FIELD_NAME, false).limit(QUERY_COMMON_LIMIT);
+			return (ArrayList) dao.query(builder.prepare());
+		} catch (Exception e) {
+			Log.i(DataOrmRepo.class.getName(), e.getMessage());
+			return null;
+		}
+	}
+	//------------------------------------------------
 	public void unpersonalise(String uid, String unpersonalisedName) {
 		; // not need for local data
 	}
+
 
 	/**
 	 * Checks the repository for a given id and returns a boolean representing its existence.
@@ -275,7 +349,14 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 		//  Callable, which makes db-operation
 		Callable<Void> callable = () -> {
 			try {
-				taskCompletionSource.setResult(dao.queryForId(intFromString(_docName)));	// Success
+				TEntity result = dao.queryForId(intFromString(_docName));
+				if (result != null) {
+					taskCompletionSource.setResult(result); // Success
+				} else {
+					String errorMessage = "No entity found with id: " + _docName;
+					Log.w(TAG, errorMessage);
+					taskCompletionSource.setException(new NoSuchElementException(errorMessage)); // Error
+				}
 			} catch (java.sql.SQLException e) {
 				Log.e(TAG, "read id: " + _docName + " in" + dao.getDataClass().getSimpleName() + "Err: " + e.getLocalizedMessage(), e);
 				taskCompletionSource.setException(e); // Error
@@ -320,72 +401,96 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 		return null;
 	}
 
-
-	public interface OrmGetCallback<R> {
-		void onComplete(R result);
-	}
-
-	@Deprecated
-	public static synchronized void achievePut(String uid, String uak, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark) {
-		Achievement achievement = new Achievement();
-		achievement.set(uid,  uak, name,  timeStamp,  dateTime,  recordText,  recordValue,  specialMark);
-		try {
-			DatabaseHelper helper = new DatabaseHelper();
-			Dao<Achievement, Integer> dao = helper.getAchievementDao();
-			dao.create(achievement);
-		} catch (SQLException | java.sql.SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	/**
-	 * return result of query to local db in background thread. play sound on success.
-	 * @param callback for main thread
-	 * @param <R> (check the reason of this)
+	 * Applying to {@link TEntity} collection filtering data by {@link org.nebobrod.schulteplus.data.DataRepository.WhereCond.Condition} of:
+	 * @param field
+	 * @param value
+	 * @return List limited by {@link org.nebobrod.schulteplus.common.Const#QUERY_COMMON_LIMIT}
 	 */
-	@Deprecated
-	public static <R> void achieveGet25(OrmGetCallback<R> callback) {
-		final ArrayList[] arrayList = {null};
+	public Task<List<TEntity>> getListByField(@NonNull String field, @NonNull @WhereCond.Condition WhereCond condition, @Nullable Object value) {
+		final TaskCompletionSource<List<TEntity>> taskCompletionSource = new TaskCompletionSource<>();
 
-		appExecutors.getDiskIO().execute(() -> {
-			final R result;
+		// Callable, which makes db-operation
+		Callable<Void> callable = () -> {
 			try {
-				Log.d(TAG, "query to local db within: " + Thread.currentThread());
-//				result = callable.call();
-				Dao<Achievement, Integer> dao = getHelper().getAchievementDao();
-				QueryBuilder<Achievement, Integer> builder = dao.queryBuilder();
-				builder.orderBy(Achievement.DATE_FIELD_NAME, false).limit(QUERY_COMMON_LIMIT);
-				result = (R) dao.query(builder.prepare());
+				List<TEntity> result;
+				switch (condition) {
+					case EQ:
+						//result = dao.queryBuilder().where().eq(field, value).query();
+						result = dao.queryBuilder().limit(QUERY_COMMON_LIMIT).orderBy("timeStamp", false).where().eq(field, value).query();
+						break;
+					case GE:
+						result = dao.queryBuilder().limit(QUERY_COMMON_LIMIT).orderBy("timeStamp", false).where().ge(field, value).query();
+						break;
+					case LE:
+						result = dao.queryBuilder().limit(QUERY_COMMON_LIMIT).orderBy("timeStamp", false).where().le(field, value).query();
+						break;
+					default:
+						throw new IllegalArgumentException("Unsupported condition: " + condition);
+				}
 
-				MediaPlayer mp = MediaPlayer.create(getAppContext(), org.nebobrod.schulteplus.R.raw.slow_whoop_bubble_pop);
-				mp.start();
-				mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-					@Override
-					public void onCompletion(MediaPlayer mPlayer) {
-						mPlayer.release();
-					}
-				});
-			} catch (Exception e) {
-				Log.e(TAG, "achieveGet25: ", e);
-				throw new RuntimeException(e);
+				if (result != null && !result.isEmpty()) {
+					taskCompletionSource.setResult(result); // Success
+				} else {
+					String errorMessage = "No entity found with field: " + field + " and value: " + value;
+					Log.w(TAG, errorMessage);
+					taskCompletionSource.setException(new NoSuchElementException(errorMessage)); // Error
+				}
+			} catch (java.sql.SQLException e) {
+				Log.e(TAG, "Error querying for field: " + field + " with value: " + value + " and condition: " + condition + " in " + dao.getDataClass().getSimpleName() + " Err: " + e.getLocalizedMessage(), e);
+				taskCompletionSource.setException(e); // Error
 			}
-			appExecutors.mainThread().execute(() -> {
-				callback.onComplete(result);
-			});
+			return null;
+		};
+
+		// Run callable
+		bgRunner.execute(() -> {
+			try {
+				callable.call();
+			} catch (Exception e) {
+				taskCompletionSource.setException(e); // Raise exception callable
+			}
 		});
+
+		return taskCompletionSource.getTask();
 	}
 
-	@Deprecated
-	public static ArrayList getAchievementList(){
-		Log.i(DataOrmRepo.class.getName(), "Show list again");
-		try {
-			Dao<Achievement, Integer> dao = getHelper().getAchievementDao();
-			QueryBuilder<Achievement, Integer> builder = dao.queryBuilder();
-			builder.orderBy(Achievement.DATE_FIELD_NAME, false).limit(QUERY_COMMON_LIMIT);
-			return (ArrayList) dao.query(builder.prepare());
-		} catch (Exception e) {
-			Log.i(DataOrmRepo.class.getName(), e.getMessage());
+	public Task<Void> load(@NonNull List<TEntity> list) {
+
+		final TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
+
+		// Callable, which makes db-operation
+		Callable<Void> callable = () -> {
+			int createdCount = 0;
+			TEntity curEntity = null;
+			try {
+				// int createdCount = dao.create(list); // this too buggy on updates
+				for (TEntity entity : list) {
+					createdCount++;
+					curEntity = entity;
+					dao.createOrUpdate(entity);
+				}
+				Log.i(TAG, "Successfully created " + createdCount + " entities.");
+				taskCompletionSource.setResult(null); // Success
+			} catch (java.sql.SQLException e) {
+				String strEntity = (curEntity == null ? "UNDEFINED" : curEntity.toString());
+				Log.e(TAG, "Error loading " + strEntity + " into " + dao.getDataClass().getSimpleName() + " Err: " + e.getLocalizedMessage(), e);
+				taskCompletionSource.setException(e); // Error
+			}
 			return null;
-		}
+		};
+
+		// Run callable
+		bgRunner.execute(() -> {
+			try {
+				callable.call();
+			} catch (Exception e) {
+				taskCompletionSource.setException(e); // Raise exception callable
+			}
+		});
+
+		return taskCompletionSource.getTask();
 	}
+
+
 }

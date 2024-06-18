@@ -13,7 +13,6 @@
 	android:id="@+id/loResultDialog"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	
 	android:background="@drawable/ic_border_thick">
 	
 	
@@ -230,7 +229,9 @@
 		android:text="Here is some custom message"
 		android:textAlignment="textEnd"
 		android:textColor="@color/light_grey_D"
-		android:textSize="16sp"
+		android:textSize="14sp"
+		
+		
 		android:typeface="monospace"
 		android:ellipsize="marquee"
 		app:layout_constraintEnd_toEndOf="parent"

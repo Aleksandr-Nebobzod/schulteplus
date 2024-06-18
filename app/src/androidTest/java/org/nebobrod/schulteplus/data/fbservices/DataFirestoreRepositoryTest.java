@@ -12,7 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.nebobrod.schulteplus.Utils.currentVersion;
+import static org.nebobrod.schulteplus.Utils.currentOsVersion;
 import static org.nebobrod.schulteplus.Utils.getVersionCode;
 import static org.nebobrod.schulteplus.Utils.intFromString;
 import static org.nebobrod.schulteplus.Utils.timeStampU;
@@ -226,7 +226,7 @@ public class DataFirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 		String pr = "009";
 //		data = new UserHelper(pr + "TFKBiTdd", pr + "@gmail.com", pr + "name", pr + "pass", pr + "device3a", pr + "uaked47", false);
 //		data = new Achievement().setAchievement(pr + "uid", pr + "uak", pr + "nam", 1711556007L, "05.05.05", pr + "r", pr + "v", pr + "m");
-		data = new AdminNote(intFromString(pr), pr + "uaked47", pr + "TFKBiTdd", "SignUp", "Android: " + currentVersion(), "", timeStampU(), getVersionCode(), 0, 0, timeStampU());
+		data = new AdminNote(intFromString(pr), pr + "uaked47", pr + "TFKBiTdd", "SignUp", "Android: " + currentOsVersion(), "", timeStampU(), getVersionCode(), 0, 0, timeStampU());
 
 		this.repository = new DataFirestoreRepo<>(data.getClass());
 
@@ -506,7 +506,7 @@ public class DataFirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 		int value = -990303179; 	// "-990303179.65ed474536cced3a"
 		Task<?> _task;
 
-		_task = fsRepo.getListByField(field, value).addOnSuccessListener(o -> {
+		_task = fsRepo.getListByField(field, DataRepository.WhereCond.EQ, value).addOnSuccessListener(o -> {
 			Log.d(TAG, "getListByField: " + o);
 			assertTrue(true);
 		}).addOnFailureListener(e -> {
@@ -517,29 +517,6 @@ public class DataFirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 
 		TestUtils.testResultAwait(_task);
 	}
-
-	@Test
-	public void printListByField() {
-		this.fsRepo = new DataFirestoreRepo<>(UserHelper.class);
-		String field = "id";
-		String value = "-990303179"; 	// "-990303179.65ed474536cced3a"
-		Task<?> _task;
-
-		_task = fsRepo.printListByField().addOnCompleteListener(new OnCompleteListener() {
-			@Override
-			public void onComplete(@NonNull Task task) {
-				assertFalse(false);
-			}
-		}).addOnFailureListener(new OnFailureListener() {
-			@Override
-			public void onFailure(@NonNull Exception e) {
-				assertTrue(false);
-			}
-		});
-
-		TestUtils.testResultAwait(_task);
-	}
-
 
 	@Test
 	public void unpersoniliseTest() {

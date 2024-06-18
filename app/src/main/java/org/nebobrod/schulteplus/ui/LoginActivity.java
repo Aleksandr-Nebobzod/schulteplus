@@ -9,7 +9,11 @@
 package org.nebobrod.schulteplus.ui;
 
 
+import static org.nebobrod.schulteplus.Utils.confirmationDialog;
+import static org.nebobrod.schulteplus.Utils.currentOsVersion;
+import static org.nebobrod.schulteplus.Utils.generateUuidInt;
 import static org.nebobrod.schulteplus.Utils.getRes;
+import static org.nebobrod.schulteplus.Utils.getVersionCode;
 import static org.nebobrod.schulteplus.Utils.intStringHash;
 import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
 import static org.nebobrod.schulteplus.common.Const.PASSWORD_REG_EXP;
@@ -22,6 +26,7 @@ import android.os.Bundle;
 
 import org.nebobrod.schulteplus.common.AppExecutors;
 import org.nebobrod.schulteplus.common.Log;
+
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
@@ -47,6 +52,7 @@ import com.google.firebase.auth.FirebaseUser;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.data.Achievement;
+import org.nebobrod.schulteplus.data.AdminNote;
 import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.UserHelper;
@@ -132,8 +138,15 @@ public class LoginActivity extends AppCompatActivity {
 											runMainActivity(task.getResult());
 										} else {
 											if (task.getException().getCause() instanceof RuntimeException){
+
+												//No actual user record in any repository!
 												Toast.makeText(LoginActivity.this, getString(R.string.msg_user_data_renewed), Toast.LENGTH_LONG).show();
-												UserHelper userHelper = new UserHelper(fbUser.getUid(), email, "new", password, Utils.getDevId() , Utils.getUak(),  false);
+												UserHelper userHelper = new UserHelper(fbUser.getUid(), email, "new", password, Utils.getDevId() , Utils.generateUak(),  fbUser.isEmailVerified());
+
+												// Make Note about a new device LogIn
+												new DataRepos<>(AdminNote.class).create(
+														new AdminNote(generateUuidInt(), userHelper.getUak(), userHelper.getUid(), "LogIn", "Android: " + currentOsVersion(), "", userHelper.getTimeStamp(), getVersionCode(), 0, 0, userHelper.getTimeStamp())
+												);
 												repos.create(userHelper).addOnCompleteListener(new OnCompleteListener<Void>() {
 													@Override
 													public void onComplete(@NonNull Task<Void> task) {
@@ -222,7 +235,12 @@ public class LoginActivity extends AppCompatActivity {
 				if (!validateEmail()  | !validatePassword()){
 					// do nothing (input errors are handled in validation functions
 				} else {
-					deleteUser(email, password);
+					confirmationDialog( LoginActivity.this,
+							getString(R.string.str_attention),
+							getString(R.string.str_delete_caution),
+							(dialogInterface, i) -> { /* OK no-op*/ },
+							(dialogInterface, i) -> {deleteUser(email, password);}
+					);
 				}
 			}
 		});

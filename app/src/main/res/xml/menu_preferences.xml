@@ -48,6 +48,8 @@
 	</PreferenceCategory>
 	
 	<PreferenceCategory app:key="prf_application" app:title="@string/prf_title_app" app:icon="@drawable/ic_ab_settings" >
+		<SwitchPreference app:key="prf_show_intro" app:title="@string/prf_title_show_intro" app:defaultValue="true" app:enabled="true" />
+		<EditTextPreference app:key="prf_shown_intros" app:title="@string/prf_title_show_intro" app:defaultValue="0" app:enabled="true" app:isPreferenceVisible="false" />
 		<SwitchPreference app:key="prf_online" app:title="@string/prf_title_online" app:defaultValue="true" app:enabled="false" />
 		<SwitchPreference app:key="prf_vibration" app:title="@string/prf_title_vibration" app:isPreferenceVisible="false"/>
 		<SwitchPreference app:key="prf_sound" app:title="@string/prf_title_sound_yn"  app:isPreferenceVisible="false"/>

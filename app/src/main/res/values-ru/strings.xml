@@ -237,5 +237,43 @@
 	<string name="lbl_about_user_agreement">Соглашение</string>
 	<string name="str_about_user_agreement_html_source">user_agreement-ru.html</string>
 	<string name="src_exDescriptionUrl">http://attplus.in/schulte/ru/ex_description/</string>
+	<string name="hint_main_fab_title">Кнопка Пуск!</string>
+	<string name="hint_main_fab_desc">После выбора упражнения и настроек запустить:\n• Упражнение (нажатие)\n• Веб справка (долгое нажатие)</string>
+	<string name="hint_main_basics_title">База</string>
+	<string name="hint_main_basics_desc">Настройки для базовых упражнений</string>
+	<string name="hint_main_schulte_title">Шульте</string>
+	<string name="hint_main_schulte_desc">Настройки пространства упражнений с таблицами Шульте</string>
+	<string name="hint_main_dashboard_title">Стата</string>
+	<string name="hint_main_dashboard_desc">Анализ результатов, достижений и прогресса</string>
+	<string name="hint_main_home_title">Новости</string>
+	<string name="hint_main_home_desc">Анонсы Внимание Шульте Плюс и дружественных каналов</string>
+	<string name="hint_main_settings_title">Настройки профиля и приложения</string>
+	<string name="hint_main_settings_desc">Упраляйте лигами и конфиденциальностью, следите за подробностями О приложении</string>
+	<string name="prf_title_show_intro">Знакомимся с функциями</string>
+	<string name="hint_base_settings_title">Настройки пространства База</string>
+	<string name="hint_base_settings_desc">Вы можете выбрать:\n• Тип упражнения (чекбокс)\n• Использовать или нет Подсказки\n• И пользуйтесь долгим нажатием на кнопке Пуск для Веб-справки</string>
+	<string name="hint_schulte_settings_title">Настройки пространства Шульте</string>
+	<string name="hint_schulte_settings_desc">Вы можете выбрать:\n• Тип упражнения (чекбокс)\n• Использовать или нет Подсказки\n• И многое другое (долгим нажатием на кнопке Пуск для Веб-справки -- НАСТОЯТЕЛЬНО рекомендуем)</string>
+	<string name="hint_base_space_title">Пространство База</string>
+	<string name="hint_base_space_desc">Такое минималистичное пространство\n• Слева [✓] кнопка Событие\n• Справа [◁] кнопка Завершить\n• Между ними Счётчик и Таймер если Подсказки "Да"\n(вне Упражнения пользуйтесь долгим нажатием на кнопке Пуск для Веб-справки)</string>
+	<string name="hint_schulte_space_title">Пространство Шульте</string>
+	<string name="hint_schulte_space_desc">Просто нажимайте Ячейки в соответствии с Последовательностью\nПросто Долгое нажатие на любой Ячейке если забыли Последовательность\n• Упражнение завершается само по завершении Последовательности\n• Кнопка [◁] Назад Вашего устройства прерывает Упражнение\n• Сверху Счётчики и Таймер если Подсказки "Да"\n(вне Упражнения пользуйтесь долгим нажатием на кнопке Пуск для Веб-справки -- НАСТОЯТЕЛЬНО рекомендуем)</string>
+	<string name="hint_stata_dashboard_title">Аналитическая панель</string>
+	<string name="hint_stata_dashboard_desc">Это пространство отображает Ваши истрические данные.\n• Некоторые данные сокращены (строка Заметок к упражнению) и отображаются по Долгому нажатию\n• Также Долгим нажатием данные Аналитики копируются в буфер, обеспечивая возможность сохранять их для более мощных аналитических инструментов на ПК.</string>
+	<string name="hint_stata_dashboard_spinner_title">Список Аналитик</string>
+	<string name="hint_stata_dashboard_spinner_desc">Выберите данные о Достижениях или Результатах упражнений по их Типу</string>
+	<string name="hint_stata_source_title">Источник данных</string>
+	<string name="hint_stata_source_desc">Выберите локальные или www-данные\n• Локальные аналитики минималистичны\n• Аналитика серверных данных постоянно совершенствуется\n(серверные данные не показывают Ваши личные Заметки к упражнениям другим участникам)</string>
+	<string name="hint_news_space_title">Домашнее пространство (under construction)</string>
+	<string name="hint_news_space_desc">Здесь мы делимся:\n• Внимание Шульте Плюс, обновления, рекомендации\n• Выдающиеся Рекорды Упражнений\n• Прочие источники, полезные полезные для Техник Медитации и Осознанности</string>
+	<string name="str_attention">Внимание</string>
+	<string name="str_delete_caution"><![CDATA[Подтвердить удаление учётной записи.
+		<br />Мы рады, что Вы достигли способности к осознанному принятию волевых решений, благополучно влияющих на перспективы Вашей жизни и её окружения.
+		<br />В этом моменте, здесь и сейчас Вы с лёгкой душой оставите свои ХХХ псикойнов и отречётесь от личной истории в ХХ дней.
+		<br />Мы будем рады Вашему успешному применению наших техник на практике и не остановимся в разработке новых упражнений, которые будут ждать, если Вы решите вернуться. Уверены, Вас не смутит, что начинать придётся с нуля.
+		<br />И всё же, мы чувствуем себя обязанными переспросить:
+		<br />-- <b>Желаете ли вы остаться?</b>]]></string>
+	<string name="msg_app_deprecated">Ваше приложение версии %1$d является устаревшим. Мы рекомендуем обновить приложение до версии %2$d. Это приложение будет закрыто. n\Увидимся в обновлении!</string>
+	<string name="msg_app_deprecating">Ваше приложение версии %1$d устаревает. Мы рекомендуем обновить приложение до версии %2$d иначе вскоре вы не сможете запускать это приложение.</string>
 
 </resources>

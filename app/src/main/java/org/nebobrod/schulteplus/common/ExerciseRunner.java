@@ -52,8 +52,10 @@ public class ExerciseRunner {
 	public static String uak = "";
 	public static String userName = "";
 	public static String userEmail = "";
-	public static int points = 0; 				//  achieved point (seconds)
-	public static int hours = 0; 				//  achieved hours
+	public static boolean showIntro = true; 	// flag on-boarding is necessary TapTargetView
+	public static int shownIntros = 0; 			// flag set for on-boarding TapTargetView
+	public static int points = 0; 				// achieved point (seconds)
+	public static int hours = 0; 				// achieved hours
 	public static int level = 1; 				// maximum achieved level
 	public static  long timeStamp;				// Timestamp of data updated
 
@@ -121,13 +123,21 @@ public class ExerciseRunner {
 	public static void loadPreference(){
 		try {
 			// apply previous parameters on load
+			// user parameters
 			uak = sharedPreferences.getString(KEY_USER_APP_KEY, uak);
 			userName = sharedPreferences.getString(KEY_USER_NAME, userName);
 			userEmail = sharedPreferences.getString(KEY_USER_EMAIL, userEmail);
-			sharedData = sharedPreferences.getBoolean(KEY_PRF_SHARED_DATA, true);
 			points = sharedPreferences.getInt(KEY_POINTS, 0);
 			level = sharedPreferences.getInt(KEY_PRF_LEVEL, 1);
 			currentLevel = sharedPreferences.getInt(KEY_PRF_CURRENT_LEVEL, 1);
+
+			// Application parameters
+			online = sharedPreferences.getBoolean(KEY_PRF_ONLINE, true);
+			sharedData = sharedPreferences.getBoolean(KEY_PRF_SHARED_DATA, true);
+			showIntro = sharedPreferences.getBoolean(KEY_PRF_SHOW_INTRO, true);
+			shownIntros = sharedPreferences.getInt(KEY_PRF_SHOWN_INTROS, 0);
+
+			// Exercise parameters
 			ratings = sharedPreferences.getBoolean(KEY_PRF_RATINGS, false);
 			probEnabled = sharedPreferences.getBoolean(KEY_PRF_PROB_ENABLED, false);
 			squared = sharedPreferences.getBoolean(KEY_PRF_SQUARED, false);
@@ -181,8 +191,10 @@ public class ExerciseRunner {
 		editor.putString(	KEY_USER_NAME, userName);
 		editor.putString(	KEY_USER_EMAIL, userEmail);
 		editor.putBoolean(	KEY_PRF_ONLINE, online);
-		editor.putInt(		KEY_POINTS, (int) points);
-		editor.putInt(		KEY_HOURS, (int) hours);
+		editor.putInt(		KEY_PRF_SHOWN_INTROS, shownIntros);
+		editor.putBoolean(	KEY_PRF_SHOW_INTRO, showIntro);
+		editor.putInt(		KEY_POINTS, points);
+		editor.putInt(		KEY_HOURS, hours);
 		editor.putInt(		KEY_PRF_LEVEL, level);
 
 		timeStamp = getTimeStamp();
@@ -429,12 +441,15 @@ public class ExerciseRunner {
 				"\nxSize=" + xSize +
 				"\nySize=" + ySize +
 				"\nHints=" + (hinted ?"On":"Off") +
+				"\nshowIntro=" + (showIntro ?"Yes":"No") +
+				"\nshownIntros=" + shownIntros +
 				"\ntsUpdated=" + timeStamp + "\ntsUpdatedDateTime=" + timeStampFormattedLocal(timeStamp) +
 				"\nsharedPreferences=" +
 					"\n\texType = " + sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, "gcb_schulte_1_sequence<") +
 					"\n\txSize = " + String.valueOf( sharedPreferences.getInt(KEY_X_SIZE, 5)) +
 					"\n\tySize = " + String.valueOf( sharedPreferences.getInt(KEY_Y_SIZE, 5)) +
-					"\n\tySize = " + String.valueOf( sharedPreferences.getBoolean(KEY_PRF_HINTED, true)) +
+					"\n\thinted = " + String.valueOf( sharedPreferences.getBoolean(KEY_PRF_HINTED, true)) +
+					"\n\tshownIntros = " + String.valueOf( sharedPreferences.getInt(KEY_PRF_SHOWN_INTROS, 0)) +
 				"\n}";
 	}
 
@@ -505,6 +520,38 @@ public class ExerciseRunner {
 
 	public static void setCurrentLevel(int currentLevel) {
 		ExerciseRunner.currentLevel = currentLevel;
+	}
+
+	public static boolean isShowIntro() {
+		return showIntro;
+	}
+
+	public static void setShowIntro(boolean showIntro) {
+		ExerciseRunner.showIntro = showIntro;
+	}
+
+	public static int getShownIntros() {
+		return shownIntros;
+	}
+
+	public static void setShownIntros(int shownIntros) {
+		ExerciseRunner.shownIntros = shownIntros;
+	}
+
+	public static void updateShownIntros(int shownIntroBit) {
+		ExerciseRunner.shownIntros |= shownIntroBit;
+		if (shownIntros == SHOWN_ALL) {
+			showIntro = false;
+		}
+		savePreferences();
+	}
+
+	public static boolean isSharedData() {
+		return sharedData;
+	}
+
+	public static void setSharedData(boolean sharedData) {
+		ExerciseRunner.sharedData = sharedData;
 	}
 
 	/*	@Override

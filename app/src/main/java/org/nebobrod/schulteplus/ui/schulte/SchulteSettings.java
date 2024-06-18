@@ -16,6 +16,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
 import org.nebobrod.schulteplus.common.Log;
 import android.view.LayoutInflater;
@@ -36,9 +37,13 @@ import androidx.preference.PreferenceScreen;
 import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreference;
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
+
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.STable;
+import org.nebobrod.schulteplus.ui.TapTargetViewWr;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -90,6 +95,41 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+
+		/** Onboarding intro */
+
+		if (ExerciseRunner.isShowIntro() &&
+				(0 == (ExerciseRunner.getShownIntros() & SHOWN_02_SCHULTE))) {
+			new TapTargetSequence(requireActivity())
+					.targets(
+//							new TapTargetViewWr(this, view, getString(R.string.hint_schulte_settings_title), getString(R.string.hint_schulte_settings_desc)).getTapTarget()
+							TapTarget.forBounds(new Rect(200, 100, 200, 100), getString(R.string.hint_schulte_settings_title), getString(R.string.hint_schulte_settings_desc))
+									.outerCircleColor(R.color.black)
+									.outerCircleAlpha(0.9f)
+									.transparentTarget(true)
+									.cancelable(false)
+					)
+					.listener(new TapTargetSequence.Listener() {
+						// This listener will tell us when interesting(tm) events happen in regards
+						// to the sequence
+						@Override
+						public void onSequenceFinish() {
+							//Toast.makeText(MainActivity.this, "onSequenceFinish", Toast.LENGTH_SHORT).show();
+							ExerciseRunner.updateShownIntros(SHOWN_02_SCHULTE);
+						}
+
+						@Override
+						public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+							//Toast.makeText(MainActivity.this, "onSequenceStep", Toast.LENGTH_SHORT).show();
+						}
+
+						@Override
+						public void onSequenceCanceled(TapTarget lastTarget) {
+							//Toast.makeText(MainActivity.this, "onSequenceCanceled", Toast.LENGTH_SHORT).show();
+						}
+					}).start();
+		}
+
 		/* this was an attempt to update ProbDrawer in real time appearing on screen. Callback is better.
 		this.getListView().setOnScrollChangeListener(new View.OnScrollChangeListener() {
 			@Override

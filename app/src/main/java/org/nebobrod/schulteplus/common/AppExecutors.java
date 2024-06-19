@@ -53,6 +53,18 @@ public class AppExecutors {
 		return mainThread;
 	}
 
+	public void executeOnDiskIO(Runnable runnable) {
+		diskIO.execute(runnable);
+	}
+
+	public void executeOnNetworkIO(Runnable runnable) {
+		networkIO.execute(runnable);
+	}
+
+	public void executeOnMainThread(Runnable runnable) {
+		mainThread.execute(runnable);
+	}
+
 	private static class MainThreadExecutor implements Executor {
 		private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 

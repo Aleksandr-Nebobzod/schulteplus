@@ -455,6 +455,7 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 		return taskCompletionSource.getTask();
 	}
 
+	/** Loads list of entities to an appropriate table of loal DB (updates if exists) */
 	public Task<Void> load(@NonNull List<TEntity> list) {
 
 		final TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();

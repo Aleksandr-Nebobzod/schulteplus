@@ -422,9 +422,7 @@ public final class Utils extends Application {
 
 		// Show
 		snackbar.show();
-		Log.i(TAG, "showSnackBarConfirmation: ");
 		Log.d(TAG + " showSnackBarConfirmation", "Snackbar shown");
-		// Toast.makeText(activity, "After Snackbar", Toast.LENGTH_SHORT).show();
 	}
 
 	public static void showSnackBarConfirmation2(final Activity activity, final String message, @Nullable View.OnClickListener listener) {

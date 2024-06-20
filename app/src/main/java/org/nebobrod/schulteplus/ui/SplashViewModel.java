@@ -13,6 +13,10 @@ import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.getVersionCode;
 import static org.nebobrod.schulteplus.Utils.intStringHash;
+import static org.nebobrod.schulteplus.Utils.timeStampU;
+
+import android.os.Handler;
+import android.os.Looper;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.Log;
@@ -25,13 +29,10 @@ import org.nebobrod.schulteplus.data.DataRepository;
 import org.nebobrod.schulteplus.data.UserHelper;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.google.android.gms.common.api.internal.LifecycleActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -39,16 +40,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class SplashViewModel extends ViewModel {
 	private static final String TAG = "SplashViewModel";
+	private static final long SPLASH_STEP_TIME = 300;
+	private static final long TEST_TIME_ALLOWED = 8000L; // 8 sec is maximum splash time
+
 	private MutableLiveData<SplashState> splashState = new MutableLiveData<>();
 	private MutableLiveData<InitialCheck> checkResult = new MutableLiveData<>();
-	private MutableLiveData<UserHelper> userHelper = new MutableLiveData<>();
-	private final ExecutorService executorService = Executors.newFixedThreadPool(4);
+	private MutableLiveData<UserHelper> userHelperLD = new MutableLiveData<>();
+	private final ExecutorService executorService = Executors.newFixedThreadPool(5);
+	private Handler mainHandler = new Handler(Looper.getMainLooper());
 	AppExecutors appExecutors = new AppExecutors();
 
 	public enum SplashState {
@@ -65,7 +69,8 @@ public class SplashViewModel extends ViewModel {
 		APP,
 		USER,
 		NETWORK,
-		DATA
+		DATA,
+		TIME
 	}
 
 	public enum CheckResult {
@@ -96,6 +101,15 @@ public class SplashViewModel extends ViewModel {
 		public String getMessage() {
 			return message;
 		}
+
+		@Override
+		public String toString() {
+			return "InitialCheck{" +
+					"type=" + type +
+					", result=" + result +
+					", message='" + message + '\'' +
+					'}';
+		}
 	}
 
 	public LiveData<SplashState> getSplashState() {
@@ -110,23 +124,57 @@ public class SplashViewModel extends ViewModel {
 		this.checkResult.postValue(initialCheck);
 	}
 
+	public MutableLiveData<UserHelper> getUserHelperLD() {
+		return userHelperLD;
+	}
+
 	public UserHelper getUserHelper() {
-		return userHelper.getValue();
+		return userHelperLD.getValue();
+	}
+
+	/**
+	 * This method will be called when this ViewModel is no longer used and will be destroyed.
+	 * <p>
+	 * It is useful when ViewModel observes some data and you need to clear this subscription to
+	 * prevent a leak of this ViewModel.
+	 */
+	@Override
+	protected void onCleared() {
+		super.onCleared();
+		// Cancel ongoing tasks, close connections, etc.
+		if (appExecutors != null) {
+			//appExecutors.shutdown();
+		}
+		Log.d("SplashViewModel", "ViewModel cleared");
 	}
 
 	public void startSplashProcess() {
 		Log.d(TAG, "startSplashProcess: ");
 		splashState.setValue(SplashState.START);
-		executorService.execute(this::checkApp);
+		//checkData();
+		//checkTime();
+		mainHandler.postDelayed(() -> appExecutors.getDiskIO().execute(this::checkApp), 0 * SPLASH_STEP_TIME);
+		mainHandler.postDelayed(() -> appExecutors.getDiskIO().execute(this::checkUser), 1 * SPLASH_STEP_TIME);
+		mainHandler.postDelayed(() -> appExecutors.getDiskIO().execute(this::checkNetwork), 2 * SPLASH_STEP_TIME);
+		mainHandler.postDelayed(() -> appExecutors.getDiskIO().execute(this::checkData), 5 * SPLASH_STEP_TIME);
+		mainHandler.postDelayed(() -> appExecutors.getDiskIO().execute(this::checkTime), 7 * SPLASH_STEP_TIME);
+/*		appExecutors.getNetworkIO().execute(this::checkApp);
+		appExecutors.getNetworkIO().execute(this::checkUser);
+		appExecutors.getNetworkIO().execute(this::checkNetwork);
+		appExecutors.getDiskIO().execute(this::checkData);
+		appExecutors.getDiskIO().execute(this::checkTime);*/
+/*		executorService.execute(this::checkApp);
 		executorService.execute(this::checkUser);
 		executorService.execute(this::checkNetwork);
 		executorService.execute(this::checkData);
+		executorService.execute(this::checkTime);*/
 		// appExecutors.mainThread().execute(this::waitForAllChecks);
 	}
 
 	private void checkApp() {
-		android.util.Log.d(TAG, "checkApp: ");
+		Log.d(TAG, "checkApp: ");
 		splashState.postValue(SplashState.APP_CHECK);
+		checkResult.postValue(new InitialCheck(CheckType.APP, CheckResult.OK, ""));
 		final CheckResult[] result = {CheckResult.ERROR};
 		final String[] message = new String[1];
 
@@ -139,16 +187,26 @@ public class SplashViewModel extends ViewModel {
 					int verDeprecating = list.get(0).getVerDeprecating();
 					int verAppLatest = list.get(0).getVerAppLatest();
 					if (getVersionCode() <= verDeprecated) {
-						// no-op result ERROR
+						// result ERROR
+						result[0] = CheckResult.ERROR;
+						String msgTemplate = getRes().getString(R.string.msg_app_deprecated);
+						message[0] = String.format(msgTemplate, verDeprecated, verAppLatest);
+						//checkResult.postValue(new InitialCheck(CheckType.APP, result[0], message[0]));
 					} else if (getVersionCode() <= verDeprecating) {
 						// warning but OK:
 						result[0] = CheckResult.WARN;
 						String msgTemplate = getRes().getString(R.string.msg_app_deprecating);
 						message[0] = String.format(msgTemplate, verDeprecated, verAppLatest);
+						//checkResult.postValue(new InitialCheck(CheckType.APP, result[0], message[0]));
 					} else {
 						// version is OK:
 						result[0] = CheckResult.OK;
+						message[0] = "Version check is OK";
+
 					};
+					new Handler(Looper.getMainLooper()).post(() -> {
+						checkResult.postValue(new InitialCheck(CheckType.APP, result[0], message[0]));
+					});
 
 					// Update the necessary AdminNotes:
 					long latestLocalTS = list.get(0).getTimeStamp();
@@ -158,18 +216,19 @@ public class SplashViewModel extends ViewModel {
 					// no version records found -- considered as OK
 					result[0] = CheckResult.OK;
 					message[0] = "";
+					new Handler(Looper.getMainLooper()).post(() -> {
+						checkResult.postValue(new InitialCheck(CheckType.APP, result[0], message[0]));
+					});
 
 					// Update the all AdminNotes:
 					new DataRepos<>(AdminNote.class).fetchAdminNotes(0L);
 				}
 			}
 		});
-
-		checkResult.postValue(new InitialCheck(CheckType.APP, result[0], message[0]));
 	}
 
 	private void checkUser() {
-		android.util.Log.d(TAG, "checkUser: ");
+		Log.d(TAG, "checkUser: ");
 		splashState.postValue(SplashState.USER_CHECK);
 		final CheckResult[] result = {CheckResult.ERROR};
 		final String[] message = new String[1];
@@ -178,7 +237,7 @@ public class SplashViewModel extends ViewModel {
 		FirebaseUser user = fbAuth.getCurrentUser();
 		if (user == null) {
 			// No user detected so don't call UserFbData
-			/* no-op */
+			checkResult.postValue(new InitialCheck(CheckType.USER, result[0], message[0]));
 		} else {
 			String strMessage;
 			String email = user.getEmail();
@@ -187,24 +246,34 @@ public class SplashViewModel extends ViewModel {
 					.addOnSuccessListener(new OnSuccessListener<UserHelper>() {
 						@Override
 						public void onSuccess(UserHelper userHelper) {
+
 							if (userHelper.isVerified()) {
 								result[0] = CheckResult.OK;
+								message[0] = email + " " + getRes().getString(R.string.msg_user_logged_in);
+								//checkResult.postValue(new InitialCheck(CheckType.USER, result[0], message[0]));
 							} else if (user.isEmailVerified()) {
 								result[0] = CheckResult.OK;
+								message[0] = email + " " + getRes().getString(R.string.msg_user_logged_in);
+								//checkResult.postValue(new InitialCheck(CheckType.USER, result[0], message[0]));
+								// update local user record
 								userHelper.setVerified(true);
+								userHelper.setTimeStamp(timeStampU());
 								new DataOrmRepo<>(UserHelper.class).create(userHelper);
 							} else {
 								result[0] = CheckResult.WARN;
+								//checkResult.postValue(new InitialCheck(CheckType.USER, result[0], message[0]));
 							}
-							message[0] = email + " " + getRes().getString(R.string.msg_user_logged_in);
+							new Handler(Looper.getMainLooper()).post(() -> {
+								userHelperLD.postValue(userHelper);
+								checkResult.postValue(new InitialCheck(CheckType.USER, result[0], message[0]));
+							});
 						}
 					});
 		}
-		checkResult.postValue(new InitialCheck(CheckType.USER, result[0], message[0]));
 	}
 
 	private void checkNetwork() {
-		android.util.Log.d(TAG, "checkNetwork: ");
+		Log.d(TAG, "checkNetwork: ");
 		splashState.postValue(SplashState.NETWORK_CHECK);
 		final CheckResult[] result = {CheckResult.ERROR};
 		final String[] message = new String[1];
@@ -213,44 +282,52 @@ public class SplashViewModel extends ViewModel {
 		networkConnectivity.checkInternetConnection((isConnected) -> {
 			if (isConnected) {
 				result[0] = CheckResult.OK;
+				new Handler(Looper.getMainLooper()).post(() -> {
+					checkResult.postValue(new InitialCheck(CheckType.NETWORK, result[0], message[0]));
+				});
+			} else {
+				new Handler(Looper.getMainLooper()).post(() -> {
+					checkResult.postValue(new InitialCheck(CheckType.NETWORK, result[0], message[0]));
+				});
 			}
-
-		}, null);
-		checkResult.postValue(new InitialCheck(CheckType.NETWORK, result[0], message[0]));
+		}, "http://attplus.in/schulte/ru/attention_schulte_plus_info_ru.html");
 	}
 
 	private void checkData() {
-		android.util.Log.d(TAG, "checkData: ");
+		Log.d(TAG, "checkData: ");
 		splashState.postValue(SplashState.DATA_CHECK);
-		final CheckResult[] result = {CheckResult.ERROR};
+		final CheckResult[] result = {CheckResult.OK};
 		final String[] message = new String[1];
 		// Simulate data check
-		result[0] = CheckResult.OK;
-		checkResult.postValue(new InitialCheck(CheckType.DATA, result[0], message[0]));
+//		checkResult.postValue(new InitialCheck(CheckType.DATA, CheckResult.OK, ""));
+		new Handler(Looper.getMainLooper()).post(() -> {
+			checkResult.postValue(new InitialCheck(CheckType.DATA, CheckResult.OK, ""));
+		});
 	}
 
-	/*private void waitForAllChecks() {
-		Log.d(TAG, "waitForAllChecks: ");
-		try {
-			// Wait for all checks to complete
-			CountDownLatch latch = new CountDownLatch(4);
-			Observer<InitialCheck> observer = new Observer<InitialCheck>() {
-				@Override
-				public void onChanged(InitialCheck initialCheck) {
-					android.util.Log.d(TAG, "waitForAllChecks, onChanged initialCheck: " + initialCheck.toString());
-					latch.countDown();
-					if (latch.getCount() == 0) {
-						checkResult.removeObserver(this);
-						splashState.postValue(SplashState.FINISH);
-					}
-				}
-			};
-			checkResult.observeForever(observer);
-			latch.await();
-		} catch (InterruptedException e) {
-			//Thread.currentThread().interrupt();
-			splashState.postValue(SplashState.ERROR);
-		}
-	}*/
+	private void checkTime() {
+		Log.d(TAG, "checkTime: ");
+		long endTime = System.currentTimeMillis() + TEST_TIME_ALLOWED;
 
+		// initial set flag to OK (to not prevent other tests)
+//		checkResult.postValue(new InitialCheck(CheckType.TIME, CheckResult.OK, ""));
+		new Handler(Looper.getMainLooper()).post(() -> {
+			checkResult.postValue(new InitialCheck(CheckType.TIME, CheckResult.OK, ""));
+		});
+
+		// wait for set flag to WARN
+		while (System.currentTimeMillis() < endTime) {
+			synchronized (this) {
+				try {
+					Log.i(TAG, "checkTime + 3sec: " + timeStampU());
+					wait(3000);
+				} catch (Exception e) {
+					Log.e(TAG, "checkTime.wait: ", e);
+				}
+			}
+		}
+		Log.d(TAG, "BTP time's up in: " + Thread.currentThread());
+		checkResult.postValue(new InitialCheck(CheckType.TIME, CheckResult.WARN, ""));
+
+	}
 }

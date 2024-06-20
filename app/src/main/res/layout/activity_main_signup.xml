@@ -127,7 +127,7 @@
 					
 					<CheckBox
 						android:layout_width="0dp"
-						android:layout_weight="3"
+						android:layout_weight="2"
 						android:layout_height="48dp"
 						android:id="@+id/cb_agreed"
 						android:text="@string/str_confirm_policy"

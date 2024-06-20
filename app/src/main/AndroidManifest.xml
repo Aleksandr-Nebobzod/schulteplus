@@ -24,12 +24,10 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/Theme.SchultePlus.Fullscreen"
-		android:versionCode="25"
+		android:versionCode="26"
 		android:versionName="Entada"
 		tools:targetApi="33">
-		<activity
-			android:name=".SplashActivity"
-			android:exported="false" />
+
 		<activity
 			android:name=".ui.SplashActivity"
 			android:exported="true"
@@ -62,17 +60,20 @@
 			android:name=".ui.LoginActivity"
 			android:exported="false"
 			android:theme="@style/Theme.SchultePlus.Login"
-			android:windowSoftInputMode="adjustNothing"></activity>
+			android:windowSoftInputMode="adjustNothing" />
+			
 		<activity
 			android:name=".ui.SignupActivity"
 			android:theme="@style/Theme.SchultePlus.Login"
-			android:windowSoftInputMode="adjustNothing"></activity>
+			android:windowSoftInputMode="adjustNothing" />
+		
 		<activity
 			android:name=".ui.schulte.SchulteActivity"
 			android:configChanges="orientation|keyboardHidden|screenSize"
 			android:exported="false"
 			android:label="@string/title_activity_schulte"
 			android:theme="@style/Theme.SchultePlus.Fullscreen" />
+		
 		<activity
 			android:name=".ui.basics.BasicsActivity"
 			android:configChanges="orientation|keyboardHidden|screenSize"
@@ -88,5 +89,4 @@
 			</intent-filter>
 		</activity>
 	</application>
-
 </manifest>

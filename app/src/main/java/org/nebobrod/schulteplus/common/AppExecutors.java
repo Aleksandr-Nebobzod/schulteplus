@@ -34,7 +34,7 @@ public class AppExecutors {
 	@Inject
 	public AppExecutors() {
 		this.networkIO = Executors.newSingleThreadExecutor(r -> new Thread(r, "NetworkIOThread"));
-		this.diskIO = Executors.newFixedThreadPool(3, r -> new Thread(r, "DiskIOThread"));
+		this.diskIO = Executors.newFixedThreadPool(5, r -> new Thread(r, "DiskIOThread"));
 		this.mainThread = new MainThreadExecutor();
 	}
 

@@ -9,20 +9,23 @@
 package org.nebobrod.schulteplus.ui;
 
 import static org.nebobrod.schulteplus.Utils.animThrob;
-import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.AppExecutors;
 import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.common.NetworkConnectivity;
+import org.nebobrod.schulteplus.common.SnackBarManager;
 import org.nebobrod.schulteplus.data.UserHelper;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -30,7 +33,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+
+import java.util.Arrays;
 
 import javax.inject.Inject;
 
@@ -41,13 +47,16 @@ public class SplashActivity extends AppCompatActivity {
 	private static final long TEST_TIME_ALLOWED = 8000L; // 8 sec is maximum splash time
 
 	private SplashViewModel viewModel;
-	private boolean[] testsCompleted = new boolean[4];
+	private boolean[] testsCompleted = new boolean[5];
+	private SplashViewModel.InitialCheck[] initialChecks = new SplashViewModel.InitialCheck[5];
+	UserHelper userHelper;
 
 	private View ivBackground, clTextHolder;
 	private ImageView iv01App, iv02User, iv03Verified, iv04Network, iv05Data;
 	private TextView tvVendor, tvStatus;
 	private Animation zoomHyper;
 	private ColorStateList cstGreen, cstYellow, cstRed;
+	private SnackBarManager snackBarManager;
 
 	@Inject
 	NetworkConnectivity networkConnectivity;
@@ -59,13 +68,21 @@ public class SplashActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_splash);
+		snackBarManager = new SnackBarManager(this).setPostponed(true);
 		initializeUI();
 
 		viewModel = new ViewModelProvider(this).get(SplashViewModel.class);
 
+		viewModel.getUserHelperLD().observe(this, userHelper -> {
+			if (userHelper != null) SplashActivity.this.userHelper = userHelper;
+		});
+
 		// Watch for Checks results
 		viewModel.getCheckResult().observe(this, result -> {
-			android.util.Log.d(TAG, "getCheckResult().observe: ");
+			Log.d(TAG, "getCheckResult().observe: " + result);
+			testsCompleted[result.getType().ordinal()] = true;
+			initialChecks[result.getType().ordinal()] = result;
+
 			switch (result.getType()) {
 				case APP:
 					handleAppCheckResult(result);
@@ -79,16 +96,19 @@ public class SplashActivity extends AppCompatActivity {
 				case DATA:
 					handleDataCheckResult(result);
 					break;
+				case TIME:
+					handleTimeCheckResult(result);
+
+					break;
 			}
-			testsCompleted[result.getType().ordinal()] = true;
 
 			evaluateResults();
 
 		});
 
 		// Watch for Checks passed
-		viewModel.getSplashState().observe(this, splashState -> {
-			android.util.Log.d(TAG, "getSplashState().observe: " + splashState);
+/*		viewModel.getSplashState().observe(this, splashState -> {
+			Log.d(TAG, "getSplashState().observe: " + splashState);
 			switch (splashState) {
 				case FINISH:
 
@@ -96,7 +116,7 @@ public class SplashActivity extends AppCompatActivity {
 				default:
 					break;
 			}
-		});
+		});*/
 
 		// Set up a listener to start the process once the view is fully laid out
 		final View rootView = findViewById(android.R.id.content);
@@ -114,6 +134,16 @@ public class SplashActivity extends AppCompatActivity {
 		animStart();
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (viewModel != null) {
+			viewModel.onCleared();
+			this.getViewModelStore().clear();
+		}
+		Log.d("SplashActivity", "Activity destroyed");
+	}
+
 	private void initializeUI() {
 		clTextHolder = findViewById(R.id.cl_text_holder);
 		zoomHyper = AnimationUtils.loadAnimation(this, R.anim.hyperspace_jump);
@@ -124,12 +154,22 @@ public class SplashActivity extends AppCompatActivity {
 		iv05Data = findViewById(R.id.iv_05_data);
 		tvStatus = findViewById(R.id.tv_status);
 		tvVendor = findViewById(R.id.tv_vendor);
+		tvVendor.setOnClickListener(view -> {
+			// Little cheat-code
+			Toast.makeText(this, "Run Demo User...", Toast.LENGTH_LONG).show();
+			new Handler(Looper.getMainLooper()).postDelayed(() -> {
+				runMainActivity(null);
+				this.finish();
+			}, 1000);
+		});
+
 		cstRed = ColorStateList.valueOf(getColor(R.color.light_grey_A_red));
 		cstYellow = ColorStateList.valueOf(getColor(R.color.light_grey_A_yellow));
 		cstGreen = ColorStateList.valueOf(getColor(R.color.light_grey_A_green));
 	}
 
 	private void handleAppCheckResult(SplashViewModel.InitialCheck check) {
+		Log.d(TAG, "handleAppCheckResult: " + check);
 		switch (check.getResult()) {
 			case OK:
 				// no-op
@@ -137,13 +177,11 @@ public class SplashActivity extends AppCompatActivity {
 				break;
 			case WARN:
 				iv01App.setImageTintList(cstYellow);
-				showSnackBarConfirmation(this, check.getMessage(), view -> {
-					// Confirmed deprecating but OK
-				});
+				snackBarManager.queueMessage(check.getMessage(), null);
 				break;
 			case ERROR:
 				iv01App.setImageTintList(cstRed);
-				showSnackBarConfirmation(this, check.getMessage(), view -> {
+				snackBarManager.queueMessage(check.getMessage(), view -> {
 					finishAffinity();
 					System.exit(0);
 				});
@@ -153,7 +191,9 @@ public class SplashActivity extends AppCompatActivity {
 	}
 
 	private void handleUserCheckResult(SplashViewModel.InitialCheck check) {
-		UserHelper userHelper = viewModel.getUserHelper();
+
+		Log.d(TAG, "handleUserCheckResult: " + check);
+
 		switch (check.getResult()) {
 			case OK:
 				// no-op
@@ -164,11 +204,18 @@ public class SplashActivity extends AppCompatActivity {
 				iv02User.setImageTintList(cstGreen);
 				iv03Verified.setImageTintList(cstRed);
 
+				if (userHelper == null) {
+					iv02User.setImageTintList(cstRed);
+					Log.w(TAG, "handleUserCheckResult: NO USERHELPER");
+					viewModel.postCheckResult(new SplashViewModel.InitialCheck(SplashViewModel.CheckType.USER, SplashViewModel.CheckResult.ERROR, ""));
+					break;
+				}
+
 				Log.d(TAG, "run NO verified, user: " + userHelper); // How can we get userHelper from Viewmodel here?
 				String strMessage = userHelper.getName() + ", "
 						+ getString(R.string.msg_user_unverified);
 				// User has to confirm he isn't verified
-				showSnackBarConfirmation(this, strMessage, new View.OnClickListener() {
+				snackBarManager.queueMessage(strMessage, new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
 						// And here we can even set  InitialCheck.result = OK
@@ -194,6 +241,7 @@ public class SplashActivity extends AppCompatActivity {
 
 	private void handleNetworkCheckResult(SplashViewModel.InitialCheck check) {
 
+		Log.d(TAG, "handleNetworkCheckResult: " + check);
 		if (check.getResult() == SplashViewModel.CheckResult.OK) {
 			iv04Network.setImageTintList(cstGreen);
 		} else {
@@ -203,13 +251,28 @@ public class SplashActivity extends AppCompatActivity {
 		animThrob(iv04Network, null);
 	}
 
-	private void handleDataCheckResult(SplashViewModel.InitialCheck result) {
+	private void handleDataCheckResult(SplashViewModel.InitialCheck check) {
 
-		animThrob(iv05Data,null);
+		Log.d(TAG, "handleDataCheckResult: " + check);
 		iv05Data.setImageTintList(true ? cstGreen : cstRed);
+		animThrob(iv05Data,null);
+	}
+
+	private void handleTimeCheckResult(SplashViewModel.InitialCheck check) {
+		if (check.getResult() == SplashViewModel.CheckResult.WARN) {
+			Toast.makeText(this, getString(R.string.msg_tests_failed), Toast.LENGTH_LONG).show();
+			new Handler(Looper.getMainLooper()).postDelayed(() -> {
+				if (userHelper == null) {
+					runActivity(LoginActivity.class);
+				} else {
+					runMainActivity(userHelper);
+				}
+			}, 1000);
+		}
 	}
 
 	private void evaluateResults() {
+		Log.d(TAG, "evaluateResults: " + Arrays.toString(testsCompleted));
 		boolean allTestsCompleted = true;
 		for (boolean completed : testsCompleted) {
 			if (!completed) {
@@ -219,7 +282,16 @@ public class SplashActivity extends AppCompatActivity {
 		}
 
 		if (allTestsCompleted) {
-			runMainActivity(viewModel.getUserHelper());
+
+			snackBarManager.setPostponed(false).showAllQueue(() -> {
+				if (initialChecks[SplashViewModel.CheckType.USER.ordinal()].getResult() == SplashViewModel.CheckResult.ERROR
+						|| userHelper == null) {
+					runActivity(LoginActivity.class);
+				} else {
+					runMainActivity(userHelper);
+				}
+			});
+
 		}
 	}
 
@@ -230,14 +302,14 @@ public class SplashActivity extends AppCompatActivity {
 
 	private void runActivity(Class<?> cls) {
 		Intent intent = new Intent(this, cls);
+		this.finish();
 		startActivity(intent);
-		finish();
 	}
 	private void runMainActivity(UserHelper user) {
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.putExtra("user", user);
+		this.finish();
 		startActivity(intent);
-		finish();
 	}
 }
 

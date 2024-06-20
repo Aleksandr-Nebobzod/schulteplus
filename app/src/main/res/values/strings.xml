@@ -198,15 +198,15 @@
 	<string name="prf_user_logoff_description">Leave the app unauthorized</string>
 	<string name="txt_welcome_back">Welcome back</string>
 	<string name="lbl_ver">ver.:</string>
-	<string name="lbl_vendor">Conscious rover</string>
-	<string name="msg_selfcheck">Selfcheck...</string>
+	<string name="lbl_vendor">Smart Rovers</string>
+	<string name="msg_selfcheck">Self check...</string>
 	<string name="msg_network_connection">Network connection</string>
 	<string name="msg_app_consistency">App consistency</string>
 	<string name="msg_internet">Internet</string>
 	<string name="msg_datasources">Datasourcses</string>
 	<string name="msg_user">User</string>
 	<string name="msg_veryfied">Veryfied</string>
-	<string name="msg_tests_failed">Some tests failed</string>
+	<string name="msg_tests_failed">Some tests failed.</string>
 	<string name="txt_continue_ex">Continue exercise</string>
 	<string name="prf_title_online">Online</string>
 	<string name="lbl_datasource_local">local</string>
@@ -245,7 +245,7 @@
 	<string name="lbl_about_oss">Open source notices</string>
 	<string name="lbl_about_license">License</string>
 	<string name="str_about_license_html_source">licenses-en.html</string>
-	<string name="lbl_about_user_data_policy">Privacy</string>
+	<string name="lbl_about_user_data_policy">User data policy</string>
 	<string name="str_about_user_data_policy_html_source">user_data_policy-en.html</string>
 	<string name="str_logoff_caution">You are able to log off and delete your account on main preferences menu</string>
 	<string name="err_result_validity">Error of result validation. No stat update.</string>
@@ -254,10 +254,10 @@
 	<string name="msg_user_must_login">User must be logged in</string>
 	<string name="txt_common_mailbox" translatable="false">\@att.org</string>
 	<string name="msg_user_data_renewed">User data renewed</string>
-	<string name="str_confirm_policy">Documents Agreed:</string>
+	<string name="str_confirm_policy">I agree:</string>
 	<string name="msg_username_updated">Username has been successfully updated for new records</string>
 	<string name="msg_user_email_will_change">Your profile email will change with next log in</string>
-	<string name="lbl_about_user_agreement">Agreement</string>
+	<string name="lbl_about_user_agreement">Conditions</string>
 	<string name="str_about_user_agreement_html_source">user_agreement-en.html</string>
 	<string name="src_exDescriptionUrl">http://attplus.in/schulte/en/ex_description/</string>
 	<string name="hint_main_fab_title">The Launch Button</string>

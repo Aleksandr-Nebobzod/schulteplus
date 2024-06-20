@@ -13,32 +13,31 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	tools:context=".ui.home.HomeFragment"
-	android:backgroundTint="@color/black" >
+	android:background="@color/black" >
 	
 	<ImageView
 		android:id="@+id/iv_bacground"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:src="@drawable/bg_02_news_img"
-		app:layout_constraintTop_toTopOf="parent"
+		android:layout_height="match_parent"
 		android:clickable="true"
-		android:visibility="visible"
 		android:contentDescription="@string/txt_news"
-		/>
+		android:src="@drawable/bg_02_news_img"
+		android:visibility="visible"
+		app:layout_constraintTop_toTopOf="parent" />
+	
 	<TextView
 		android:id="@+id/text_home"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_margin="62dp"
-		android:paddingLeft="256dp"
-		android:paddingBottom="32dp"
+		android:layout_marginEnd="10dp"
 		android:autoLink="web"
 		android:linksClickable="true"
+		android:paddingLeft="256dp"
+		android:paddingBottom="40dp"
 		android:text="Объявление"
 		android:textAlignment="center"
 		android:textColor="@color/light_blue_A200"
 		android:textSize="12sp"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		/>
+		app:layout_constraintEnd_toEndOf="@+id/iv_bacground" />
 </androidx.constraintlayout.widget.ConstraintLayout>

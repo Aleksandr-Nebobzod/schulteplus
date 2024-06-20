@@ -22,6 +22,7 @@ import org.nebobrod.schulteplus.common.Log;
 
 import androidx.annotation.Nullable;
 
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.inject.Inject;
@@ -48,18 +49,20 @@ public class NetworkConnectivity {
 		appExecutors.getNetworkIO().execute(() -> {
 			Log.d(TAG, "checkInternetConnection: " + Thread.currentThread());
 			if (isNetworkAvailable()) {
-				HttpsURLConnection connection = null;
+				HttpURLConnection connection = null;
+				//HttpsURLConnection connection = null;
 				try {
-//					String spec = UserFbData.DB_URL;
-//					String spec =  (specUrl == null ? "https://www.google.com/humans.txt" : specUrl);
-//					connection = (HttpsURLConnection) new URL("https://clients3.google.com/generate_204").openConnection();
-//					connection = (HttpsURLConnection) new URL(spec).openConnection();
-					connection = (HttpsURLConnection) new URL("https://www.google.com/humans.txt").openConnection();
-					connection.setRequestProperty("User-Agent", "Android");
+					String spec =  (specUrl == null ? "http://www.google.com/humans.txt" : specUrl);
+					connection = (HttpURLConnection) new URL(spec).openConnection();
+					// connection = (HttpsURLConnection) new URL("https://clients3.google.com/generate_204").openConnection();
+					// connection = (HttpsURLConnection) new URL("https://www.google.com/humans.txt").openConnection();
+
+					//connection.setRequestProperty("User-Agent", "Android");
+					connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
 					connection.setRequestProperty("Connection", "close");
-					connection.setConnectTimeout(1000);
+					connection.setConnectTimeout(3000);
 //					connection.setReadTimeout (10 * 100);
-//					connection.connect();
+					connection.connect();
 
 					boolean isConnected = connection.getResponseCode() == 200; // && connection.getContentLength() == 286 for humans.txt;
 					postCallback(isConnected, callback);

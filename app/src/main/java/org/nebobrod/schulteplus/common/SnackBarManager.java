@@ -8,47 +8,68 @@
 
 package org.nebobrod.schulteplus.common;
 
-import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
-
 import android.app.Activity;
 import android.view.View;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import org.nebobrod.schulteplus.R;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SnackBarManager {
+	private static final String TAG = "SplashViewModel";
 
 	private Queue<MessageItem> messageQueue = new LinkedList<>();
+	private boolean isPostponed = false;
 	private boolean isShowingMessage = false;
 	private Activity activity;
+	private ExecutorService executorService;
 
 	public SnackBarManager(Activity activity) {
 		this.activity = activity;
+		this.executorService = Executors.newSingleThreadExecutor();
 	}
 
-	public void queueMessage(String message, View.OnClickListener onClickListener) {
-		messageQueue.add(new MessageItem(message, onClickListener));
-		if (!isShowingMessage) {
-			showMessageFromQueue();
+	public boolean isPostponed() {
+		return isPostponed;
+	}
+
+	public SnackBarManager setPostponed(boolean postponed) {
+		isPostponed = postponed;
+		if (!isPostponed) {
+			showAllQueue(null);
 		}
+		return this; // Return the current instance for chaining
 	}
 
-	private void showMessageFromQueue() {
-		if (!messageQueue.isEmpty()) {
-			isShowingMessage = true;
-			MessageItem item = messageQueue.poll();
-			showSnackBarConfirmation(activity, item.message, view -> {
-				if (item.onClickListener != null) {
-					item.onClickListener.onClick(view);
-				}
-				isShowingMessage = false;
+	public void showAllQueue(OnCompleteListener listener) {
+		executorService.execute(() -> {
+			Log.i(TAG, "showAllQueue, execute, isPostponed: " + isPostponed);
+			while (!messageQueue.isEmpty() && !isPostponed) {
 				showMessageFromQueue();
-			});
-		} else {
-			isShowingMessage = false;
-		}
+				// Pause to allow Snackbar to be displayed properly
+				try {
+					Thread.sleep(500); // Adjust sleep duration as needed
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			if (listener != null) {
+				listener.onComplete();
+			}
+		});
 	}
 
+	public Queue<MessageItem> getMessageQueue() {
+		return messageQueue;
+	}
 
 	private static class MessageItem {
 		String message;
@@ -58,5 +79,75 @@ public class SnackBarManager {
 			this.message = message;
 			this.onClickListener = onClickListener;
 		}
+
+		@Override
+		public String toString() {
+			return "MessageItem{" +
+					"message='" + message + '\'' +
+					", onClickListener=" + onClickListener +
+					'}';
+		}
+	}
+
+	public void queueMessage(String message, View.OnClickListener onClickListener) {
+		messageQueue.add(new MessageItem(message, onClickListener));
+		if (!isShowingMessage && !isPostponed) {
+			showMessageFromQueue();
+		}
+	}
+
+	private void showMessageFromQueue() {
+		Log.i(TAG, "showMessageFromQueue, isPostponed: " + isPostponed + " isShowingMessage:" + isShowingMessage);
+		if (isPostponed || isShowingMessage) {
+			return;
+		}
+
+		if (!messageQueue.isEmpty()) {
+			isShowingMessage = true;
+			MessageItem item = messageQueue.poll();
+			Log.i(TAG, "showMessageFromQueue: " + item);
+
+			activity.runOnUiThread(() -> {
+				showSnackBarConfirmation(activity, item.message, view -> {
+					if (item.onClickListener != null) {
+						item.onClickListener.onClick(view);
+					}
+					isShowingMessage = false;
+					showMessageFromQueue();
+				});
+			});
+		} else {
+			isShowingMessage = false;
+		}
+	}
+
+	public static void showSnackBarConfirmation(Activity activity, String message, @Nullable View.OnClickListener okListener) {
+		View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+		if (rootView == null) {
+			Log.w("SnackBarManager", "showSnackBarConfirmation: Root view is null");
+			return;
+		}
+		if (!rootView.isShown()) {
+			Log.w("showSnackBarConfirmation", "Root view is not shown");
+			return;
+		}
+
+		Snackbar snackbar = Snackbar.make(rootView, message, Snackbar.LENGTH_INDEFINITE);
+
+		/*if (okListener == null) {
+			okListener = view -> snackbar.dismiss();
+		}*/
+		snackbar.setAction(activity.getString(R.string.lbl_ok), okListener);
+
+		View snackbarView = snackbar.getView();
+		TextView tv = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+		tv.setMaxLines(7);
+
+		snackbar.show();
+		Log.d(TAG, "Snackbar shown: " + message.substring(15) + " !!! " + snackbar.isShownOrQueued());
+	}
+
+	public interface OnCompleteListener {
+		void onComplete();
 	}
 }

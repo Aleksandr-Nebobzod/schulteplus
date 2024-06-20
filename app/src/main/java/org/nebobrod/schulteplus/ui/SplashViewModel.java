@@ -143,7 +143,7 @@ public class SplashViewModel extends ViewModel {
 		super.onCleared();
 		// Cancel ongoing tasks, close connections, etc.
 		if (appExecutors != null) {
-			//appExecutors.shutdown();
+			appExecutors = null;
 		}
 		Log.d("SplashViewModel", "ViewModel cleared");
 	}
@@ -205,7 +205,7 @@ public class SplashViewModel extends ViewModel {
 
 					};
 					new Handler(Looper.getMainLooper()).post(() -> {
-						checkResult.postValue(new InitialCheck(CheckType.APP, result[0], message[0]));
+						checkResult.setValue(new InitialCheck(CheckType.APP, result[0], message[0]));
 					});
 
 					// Update the necessary AdminNotes:
@@ -217,7 +217,7 @@ public class SplashViewModel extends ViewModel {
 					result[0] = CheckResult.OK;
 					message[0] = "";
 					new Handler(Looper.getMainLooper()).post(() -> {
-						checkResult.postValue(new InitialCheck(CheckType.APP, result[0], message[0]));
+						checkResult.setValue(new InitialCheck(CheckType.APP, result[0], message[0]));
 					});
 
 					// Update the all AdminNotes:
@@ -264,8 +264,8 @@ public class SplashViewModel extends ViewModel {
 								//checkResult.postValue(new InitialCheck(CheckType.USER, result[0], message[0]));
 							}
 							new Handler(Looper.getMainLooper()).post(() -> {
-								userHelperLD.postValue(userHelper);
-								checkResult.postValue(new InitialCheck(CheckType.USER, result[0], message[0]));
+								userHelperLD.setValue(userHelper);
+								checkResult.setValue(new InitialCheck(CheckType.USER, result[0], message[0]));
 							});
 						}
 					});
@@ -283,11 +283,11 @@ public class SplashViewModel extends ViewModel {
 			if (isConnected) {
 				result[0] = CheckResult.OK;
 				new Handler(Looper.getMainLooper()).post(() -> {
-					checkResult.postValue(new InitialCheck(CheckType.NETWORK, result[0], message[0]));
+					checkResult.setValue(new InitialCheck(CheckType.NETWORK, result[0], message[0]));
 				});
 			} else {
 				new Handler(Looper.getMainLooper()).post(() -> {
-					checkResult.postValue(new InitialCheck(CheckType.NETWORK, result[0], message[0]));
+					checkResult.setValue(new InitialCheck(CheckType.NETWORK, result[0], message[0]));
 				});
 			}
 		}, "http://attplus.in/schulte/ru/attention_schulte_plus_info_ru.html");
@@ -301,7 +301,7 @@ public class SplashViewModel extends ViewModel {
 		// Simulate data check
 //		checkResult.postValue(new InitialCheck(CheckType.DATA, CheckResult.OK, ""));
 		new Handler(Looper.getMainLooper()).post(() -> {
-			checkResult.postValue(new InitialCheck(CheckType.DATA, CheckResult.OK, ""));
+			checkResult.setValue(new InitialCheck(CheckType.DATA, CheckResult.OK, ""));
 		});
 	}
 
@@ -312,7 +312,7 @@ public class SplashViewModel extends ViewModel {
 		// initial set flag to OK (to not prevent other tests)
 //		checkResult.postValue(new InitialCheck(CheckType.TIME, CheckResult.OK, ""));
 		new Handler(Looper.getMainLooper()).post(() -> {
-			checkResult.postValue(new InitialCheck(CheckType.TIME, CheckResult.OK, ""));
+			checkResult.setValue(new InitialCheck(CheckType.TIME, CheckResult.OK, ""));
 		});
 
 		// wait for set flag to WARN
@@ -327,7 +327,8 @@ public class SplashViewModel extends ViewModel {
 			}
 		}
 		Log.d(TAG, "BTP time's up in: " + Thread.currentThread());
-		checkResult.postValue(new InitialCheck(CheckType.TIME, CheckResult.WARN, ""));
-
+		new Handler(Looper.getMainLooper()).post(() -> {
+			checkResult.setValue(new InitialCheck(CheckType.TIME, CheckResult.WARN, ""));
+		});
 	}
 }

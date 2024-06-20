@@ -262,14 +262,19 @@ public class SplashActivity extends AppCompatActivity {
 		if (check.getResult() == SplashViewModel.CheckResult.WARN) {
 			Toast.makeText(this, getString(R.string.msg_tests_failed), Toast.LENGTH_LONG).show();
 			new Handler(Looper.getMainLooper()).postDelayed(() -> {
-				if (userHelper == null) {
-					runActivity(LoginActivity.class);
-				} else {
-					runMainActivity(userHelper);
-				}
+				snackBarManager.showAllQueue(this::finishActivityBasedOnUserHelper);
 			}, 1000);
 		}
 	}
+
+	private void finishActivityBasedOnUserHelper() {
+		if (userHelper == null) {
+			runActivity(LoginActivity.class);
+		} else {
+			runMainActivity(userHelper);
+		}
+	}
+
 
 	private void evaluateResults() {
 		Log.d(TAG, "evaluateResults: " + Arrays.toString(testsCompleted));
@@ -282,16 +287,16 @@ public class SplashActivity extends AppCompatActivity {
 		}
 
 		if (allTestsCompleted) {
-
 			snackBarManager.setPostponed(false).showAllQueue(() -> {
-				if (initialChecks[SplashViewModel.CheckType.USER.ordinal()].getResult() == SplashViewModel.CheckResult.ERROR
-						|| userHelper == null) {
-					runActivity(LoginActivity.class);
-				} else {
-					runMainActivity(userHelper);
-				}
+				new Handler(Looper.getMainLooper()).post(() -> {
+					if (initialChecks[SplashViewModel.CheckType.USER.ordinal()].getResult() == SplashViewModel.CheckResult.ERROR
+							|| userHelper == null) {
+						runActivity(LoginActivity.class);
+					} else {
+						runMainActivity(userHelper);
+					}
+				});
 			});
-
 		}
 	}
 

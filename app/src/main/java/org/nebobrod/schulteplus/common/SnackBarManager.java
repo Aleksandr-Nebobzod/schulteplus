@@ -9,6 +9,8 @@
 package org.nebobrod.schulteplus.common;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/** Organizes snack bar queue, store them until {@link SnackBarManager#isPostponed} becomes true -- shows in chain and run finishing listener*/
 public class SnackBarManager {
 	private static final String TAG = "SplashViewModel";
 
@@ -49,22 +52,9 @@ public class SnackBarManager {
 		return this; // Return the current instance for chaining
 	}
 
-	public void showAllQueue(OnCompleteListener listener) {
-		executorService.execute(() -> {
-			Log.i(TAG, "showAllQueue, execute, isPostponed: " + isPostponed);
-			while (!messageQueue.isEmpty() && !isPostponed) {
-				showMessageFromQueue();
-				// Pause to allow Snackbar to be displayed properly
-				try {
-					Thread.sleep(500); // Adjust sleep duration as needed
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			if (listener != null) {
-				listener.onComplete();
-			}
-		});
+	/** Method to check if queue is empty and no messages are being shown */
+	public boolean isClear() {
+		return messageQueue.isEmpty() && !isShowingMessage;
 	}
 
 	public Queue<MessageItem> getMessageQueue() {
@@ -119,6 +109,26 @@ public class SnackBarManager {
 		} else {
 			isShowingMessage = false;
 		}
+	}
+
+	public void showAllQueue(OnCompleteListener listener) {
+		executorService.execute(() -> {
+			Log.i(TAG, "showAllQueue, execute, isPostponed: " + isPostponed);
+			while (!isClear()) {
+				if (!isPostponed) {
+					showMessageFromQueue();
+				}
+				// Pause to allow Snackbar to be displayed properly
+				try {
+					Thread.sleep(500); // Adjust sleep duration as needed
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			if (listener != null) {
+				new Handler(Looper.getMainLooper()).post(listener::onComplete);
+			}
+		});
 	}
 
 	public static void showSnackBarConfirmation(Activity activity, String message, @Nullable View.OnClickListener okListener) {

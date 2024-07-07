@@ -64,8 +64,6 @@ import java.util.concurrent.Executor;
 public class LoginActivity extends AppCompatActivity {
 	private static final String TAG = "Login";
 
-	private static final String DB_PATH = "users";
-
 	FirebaseAuth fbAuth;
 	FirebaseUser fbUser;
 

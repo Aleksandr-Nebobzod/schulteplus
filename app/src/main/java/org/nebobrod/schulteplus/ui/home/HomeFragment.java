@@ -8,13 +8,13 @@
 
 package org.nebobrod.schulteplus.ui.home;
 
-import static org.nebobrod.schulteplus.common.Const.SHOWN_03_STATA;
-import static org.nebobrod.schulteplus.common.Const.SHOWN_04_NEWS;
+import static org.nebobrod.schulteplus.Utils.timeStampToDateLocal;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,40 +23,60 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetSequence;
-
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
-import org.nebobrod.schulteplus.common.ExerciseRunner;
+import org.nebobrod.schulteplus.common.SnackBarManager;
+import org.nebobrod.schulteplus.data.AdminNote;
+import org.nebobrod.schulteplus.data.DataOrmRepo;
 import org.nebobrod.schulteplus.databinding.FragmentHomeBinding;
-import org.nebobrod.schulteplus.ui.TapTargetViewWr;
+
+import java.util.List;
 
 public class HomeFragment extends Fragment {
+	private static final String TAG = "HomeFragment";
 
 	private FragmentHomeBinding binding;
+	HomeViewModel homeViewModel;
+	View root;
+	ImageView ivBackpic;
+	TextView textHome;
+	TextView tvNews;
+	SnackBarManager snackBarManager;
 
 	public View onCreateView(@NonNull LayoutInflater inflater,
 							 ViewGroup container, Bundle savedInstanceState) {
-		HomeViewModel homeViewModel =
-				new ViewModelProvider(this).get(HomeViewModel.class);
+		homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
 		binding = FragmentHomeBinding.inflate(inflater, container, false);
-		View root = binding.getRoot();
+		root = binding.getRoot();
 
-		final TextView textView = binding.textHome;
-		textView.setText(R.string.txt_news);
-		homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+		tvNews = binding.tvNewsIndicator;
+		snackBarManager = new SnackBarManager(requireActivity()).setPostponed(true);
 
-		// Go to myurl.com when clicking on logo
-		ImageView img = binding.ivBacground;
+		textHome = binding.textHome;
+		textHome.setText(R.string.txt_news);
+		homeViewModel.getText().observe(getViewLifecycleOwner(), textHome::setText);
 
-		img.setOnClickListener(new View.OnClickListener() {
+		// Go to myurl.com when clicking on the dummy picture
+		ivBackpic = binding.ivBackpic;
+		ivBackpic.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Utils.openWebPage(getResources().getString(R.string.src_home_ipir_vk_url), getContext());;
+				Utils.openWebPage(getResources().getString(R.string.src_psychonetics_social_media), getContext());
 			}
 		});
+
+		homeViewModel.init();
+/*		root.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+			@Override
+			public void onGlobalLayout() {
+				// Start the data process
+				homeViewModel.init();
+
+				// Remove the listener to prevent it from being called multiple times
+				root.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+			}
+		});*/
 
 		return root;
 	}
@@ -64,17 +84,36 @@ public class HomeFragment extends Fragment {
 	/**
 	 * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
 	 * has returned, but before any saved state has been restored in to the view.
-	 * This gives subclasses a chance to initialize themselves once
-	 * they know their view hierarchy has been completely created.  The fragment's
-	 * view hierarchy is not however attached to its parent at this point.
-	 *
-	 * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-	 * @param savedInstanceState If non-null, this fragment is being re-constructed
-	 *                           from a previous saved state as given here.
 	 */
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+
+		homeViewModel.getmNewsIndicator().observe(getViewLifecycleOwner(), s -> {
+
+			// Update clickable TextView News Indicator
+			tvNews.setText(s);
+			if (s.equals(getString(R.string.msg_news_reminder_yes))) {
+
+				loadMessages(homeViewModel.getmAdminNotes().getValue());
+
+				tvNews.setTextColor(getResources().getColor(R.color.light_grey_A_red, null));
+				tvNews.setOnClickListener(view1 -> {
+					snackBarManager.setPostponed(false).showAllQueue(() -> {
+
+						// No news:
+						tvNews.setTextColor(getResources().getColor(R.color.light_grey_A, null));
+						tvNews.setText(R.string.msg_news_reminder_no);
+						tvNews.setOnClickListener(null);
+					});
+				});
+			} else {
+				tvNews.setTextColor(getResources().getColor(R.color.light_grey_A, null));
+				tvNews.setText(R.string.msg_news_reminder_no);
+				tvNews.setOnClickListener(null);
+			}
+		});
+
 
 		// Onboarding intro
 /*		if (ExerciseRunner.isShowIntro() &&
@@ -94,6 +133,24 @@ public class HomeFragment extends Fragment {
 						public void onSequenceCanceled(TapTarget lastTarget) { }
 					}).start();
 		}*/
+	}
+
+	private void loadMessages(List<AdminNote> list) {
+
+		String _message = "...";
+		for (AdminNote an : list) {
+			_message = timeStampToDateLocal(an.getTimeStamp()) +
+					": <b>" + an.getTitle() +
+					"</b><br>" + an.getMessage();
+			snackBarManager.queueMessage(_message, new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					AdminNote anUpdated = an.clone();
+					anUpdated.setTimeStampConfirmed(Utils.timeStampU());
+					new DataOrmRepo<>(AdminNote.class).create(anUpdated);
+				}
+			});
+		}
 	}
 
 	@Override

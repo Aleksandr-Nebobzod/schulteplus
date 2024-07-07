@@ -17,7 +17,7 @@
 	<androidx.appcompat.widget.Toolbar
 		android:id="@+id/tb_custom"
 		android:layout_width="match_parent"
-		android:layout_height="20dp"
+		android:layout_height="wrap_content"
 		android:elevation="4dp"
 		android:gravity="center"
 		
@@ -28,57 +28,67 @@
 		<TextView
 			android:id="@+id/toolbar_title"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/lbl_schulte_stats"
+			android:layout_height="28dp"
+			android:text="@string/lbl_schulte_status"
 			android:textColor="@color/light_grey_6"
-			 />
+			android:textScaleX=".8"
+			android:textSize="18sp" />
 		
 		<LinearLayout
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
-			android:weightSum="4"
-			android:layout_gravity="fill"
+			android:layout_gravity="end"
 			android:gravity="center_horizontal"
-			android:orientation="horizontal">
+			android:orientation="horizontal"
+			android:weightSum="4">
+<!--			android:layout_marginStart="30dp"-->
 			
 			
 			<TextView
 				android:id="@+id/tv_expected_turn"
 				android:layout_width="32dp"
-				android:layout_height="20dp"
-				android:layout_weight="1"
+				android:layout_height="28dp"
 				android:layout_margin="0dp"
+				android:layout_weight="1"
 				android:gravity="right"
-				android:text="1" />
+				android:text="1"
+				android:textColor="@color/colorPrimary"
+				android:textSize="18sp"
+				android:textStyle="bold" />
 			
 			<TextView
 				android:id="@+id/tv_counter"
 				android:layout_width="32dp"
-				android:layout_height="20dp"
-				android:layout_weight="1"
+				android:layout_height="28dp"
 				android:layout_margin="0dp"
+				android:layout_weight="1"
 				android:gravity="right"
-				android:text="0" />
+				android:text="0"
+				android:textColor="@color/colorPrimary"
+				android:textSize="18sp" />
 			
 			<TextView
 				android:id="@+id/tv_mistakes"
 				android:layout_width="32dp"
-				android:layout_height="20dp"
-				android:layout_weight="1"
+				android:layout_height="28dp"
 				android:layout_margin="0dp"
+				android:layout_weight="1"
 				android:gravity="right"
-				android:textColor="@color/light_blue_600"
-				android:text="0" />
+				android:text="0"
+				android:textColor="@color/colorError"
+				android:textSize="18sp" />
 			
 			<Chronometer
 				android:id="@+id/chm_time"
 				android:layout_width="64dp"
-				android:layout_height="20dp"
+				android:layout_height="28dp"
 				android:layout_gravity="right"
-				android:paddingHorizontal="4dp"
 				android:countDown="false"
 				android:format="%s"
-				android:gravity="center" />
+				android:gravity="center"
+				android:paddingHorizontal="4dp"
+				android:textColor="@color/colorPrimary"
+				android:textSize="18sp" />
 		</LinearLayout>
 	
 	</androidx.appcompat.widget.Toolbar>

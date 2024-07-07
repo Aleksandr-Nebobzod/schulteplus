@@ -86,10 +86,12 @@ public class BasicSettings extends PreferenceFragmentCompat {
 					.targets(
 //							new TapTargetViewWr(this, view, getString(R.string.hint_base_settings_title), getString(R.string.hint_base_settings_title)).getTapTarget()
 							TapTarget.forBounds(new Rect(200, 100, 200, 100), getString(R.string.hint_base_settings_title), getString(R.string.hint_base_settings_desc))
-									.outerCircleColor(R.color.black)
-									.outerCircleAlpha(0.96f)
+									.outerCircleAlpha(0.9f)
+									.outerCircleColor(R.color.purple_700)
+									.textColor(R.color.light_grey_A_yellow)
+									.targetRadius(150)
 									.transparentTarget(true)
-									.cancelable(false)
+									.cancelable(true)
 					)
 					.listener(new TapTargetSequence.Listener() {
 						// This listener will tell us when interesting(tm) events happen in regards

@@ -8,6 +8,7 @@
 
 package org.nebobrod.schulteplus.data;
 
+import static org.nebobrod.schulteplus.Utils.hasFieldName;
 import static org.nebobrod.schulteplus.Utils.intFromString;
 import static org.nebobrod.schulteplus.common.Const.QUERY_COMMON_LIMIT;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
@@ -354,7 +355,7 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 					taskCompletionSource.setResult(result); // Success
 				} else {
 					String errorMessage = "No entity found with id: " + _docName;
-					Log.w(TAG, errorMessage);
+					Log.w(TAG + " read: ", errorMessage);
 					taskCompletionSource.setException(new NoSuchElementException(errorMessage)); // Error
 				}
 			} catch (java.sql.SQLException e) {
@@ -371,6 +372,7 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 				try {
 					callable.call();
 				} catch (Exception e) {
+					Log.w(TAG, "read, run: " + e.getMessage());
 					taskCompletionSource.setException(e); // Rise exception callable
 				}
 			}
@@ -455,7 +457,7 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 		return taskCompletionSource.getTask();
 	}
 
-	/** Loads list of entities to an appropriate table of loal DB (updates if exists) */
+	/** Loads list of entities to an appropriate table of local DB (updates if exists) */
 	public Task<Void> load(@NonNull List<TEntity> list) {
 
 		final TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
@@ -492,6 +494,4 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 
 		return taskCompletionSource.getTask();
 	}
-
-
 }

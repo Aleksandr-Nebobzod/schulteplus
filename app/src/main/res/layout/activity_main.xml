@@ -13,6 +13,24 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 	
+	<com.google.android.material.appbar.AppBarLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/app_bar_layout"
+		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+		
+		<androidx.appcompat.widget.Toolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="?attr/colorPrimaryVariant"
+			/>
+<!--			android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+<!--			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"-->
+	</com.google.android.material.appbar.AppBarLayout>
+	
+
+<!--	This is miraculously prevent a bug of app backgrounding on missing touch-->
 	<View
 		android:id="@+id/touch_outside"
 		android:layout_width="match_parent"
@@ -21,7 +39,7 @@
 	<FrameLayout
 		android:id="@+id/bottom_sheet"
 		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-		app:behavior_peekHeight="480dp"
+		app:behavior_peekHeight="580dp"
 		app:behavior_hideable="true"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
@@ -29,56 +47,63 @@
 		<!-- orignal content view goes here -->
 	
 	</FrameLayout>
-
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:id="@+id/container"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent" >
-<!--	android:paddingTop="?attr/actionBarSize"-->
-
-	<com.google.android.material.bottomnavigation.BottomNavigationView
-		android:id="@+id/nav_view"
-		android:layout_width="0dp"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="5dp"
-		android:layout_marginEnd="5dp"
-		android:background="?android:attr/windowBackground"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toRightOf="parent"
-		app:menu="@menu/bottom_nav_menu" />
 	
-	<com.google.android.material.floatingactionbutton.FloatingActionButton
-		android:id="@+id/fabLaunch"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		app:elevation="10dp"
-		android:layout_marginBottom="32dp"
-		android:contentDescription="Launch"
-		android:src="@drawable/ic_rocket_launch_24"
-		android:background="@color/colorPrimary"
-		android:tooltipText="Launch"
-		app:labelVisibilityMode="labeled"
-		app:layout_constraintBottom_toBottomOf="@id/nav_view"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toRightOf="parent"
-		app:maxImageSize="40dp" />
-<!--	android:tint="@color/colorPrimary"-->
-<!--	android:backgroundTint="@color/white"-->
-<!--	android:foregroundTint="@color/colorPrimary"-->
-<!--	app:rippleColor="@color/colorPrimaryVariant"-->
-	
-	<fragment
-		android:id="@+id/nav_host_fragment_activity_main"
-		android:name="androidx.navigation.fragment.NavHostFragment"
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/container"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		app:defaultNavHost="true"
-		app:layout_constraintBottom_toTopOf="@id/nav_view"
-		app:layout_constraintLeft_toLeftOf="parent"
-		app:layout_constraintRight_toRightOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		app:navGraph="@navigation/mobile_navigation" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+		android:paddingTop="?attr/actionBarSize">
+		
+		<com.google.android.material.bottomnavigation.BottomNavigationView
+			android:id="@+id/nav_view"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:background="@color/colorPrimaryVariant"
+			app:itemIconTint="@color/sp_mtrl_navigation_bar_colored_item_tint"
+			app:itemTextColor="@color/colorPrimary"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:menu="@menu/bottom_nav_menu" />
+	<!--		android:background="?android:attr/windowBackground"-->
+	<!--		android:background="@color/colorPrimaryVariant"-->
+		
+		
+		<com.google.android.material.floatingactionbutton.FloatingActionButton
+			android:id="@+id/fabLaunch"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="32dp"
+			android:contentDescription="Launch"
+			android:src="@drawable/ic_rocket_launch_24"
+			android:tooltipText="Launch"
+			app:backgroundTint="?attr/colorPrimary"
+			app:borderWidth="0dp"
+			app:elevation="10dp"
+			app:labelVisibilityMode="labeled"
+			app:layout_constraintBottom_toBottomOf="@id/nav_view"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:maxImageSize="40dp"
+			app:tint="?attr/colorOnPrimary" />
+	<!--		android:background="@color/colorPrimary"-->
+	<!--		android:tint="@color/design_default_color_primary"-->
+	<!--	-->
+	<!--	android:backgroundTint="@color/white"-->
+	<!--	android:foregroundTint="@color/colorPrimary"-->
+	<!--	app:rippleColor="@color/colorPrimaryVariant"-->
+		
+		<fragment
+			android:id="@+id/nav_host_fragment_activity_main"
+			android:name="androidx.navigation.fragment.NavHostFragment"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			app:defaultNavHost="true"
+			app:layout_behavior="@string/appbar_scrolling_view_behavior"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toTopOf="@id/nav_view"
+			app:layout_constraintLeft_toLeftOf="parent"
+			app:layout_constraintRight_toRightOf="parent"
+			app:navGraph="@navigation/mobile_navigation" />
+	</androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

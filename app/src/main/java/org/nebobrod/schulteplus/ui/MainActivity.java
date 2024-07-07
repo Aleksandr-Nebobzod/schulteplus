@@ -31,6 +31,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -91,7 +92,11 @@ public class MainActivity extends AppCompatActivity {
 		// if no user at all
 		runner = ( null != userHelper ? ExerciseRunner.getInstance(userHelper) : ExerciseRunner.getInstance());
 
-		//ActionBar
+		// Init Toolbar
+		Toolbar toolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+
+		//ActionBar as a toolbar
 		androidx.appcompat.app.ActionBar mainActionBar = this.getSupportActionBar();
 		int abColor =  getWindow().getStatusBarColor();
 		mainActionBar.setLogo(R.drawable.ic_ab_schulte_plus);
@@ -174,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
 					String exDescriptionLocalUrl = getResources().getString(R.string.src_exDescriptionUrl) + exType + ".html";
 					try {
-						Utils.openWebPage(exDescriptionLocalUrl, getApplicationContext());
+						Utils.openWebPage(exDescriptionLocalUrl, MainActivity.this);
 						return true;
 					} catch (Exception e) {
 						Log.e(TAG, "web page opening url: " + exDescriptionLocalUrl, e);
@@ -218,17 +223,18 @@ public class MainActivity extends AppCompatActivity {
 			new TapTargetSequence(this)
 					.targets(
 							new TapTargetViewWr(this, fabLaunch, getString(R.string.hint_main_fab_title), getString(R.string.hint_main_fab_desc)).getTapTarget(),
-							new TapTargetViewWr(this, findViewById(R.id.navigation_basics), getString(R.string.hint_main_basics_title), getString(R.string.hint_main_basics_desc)).getTapTarget(),
-							new TapTargetViewWr(this, findViewById(R.id.navigation_schulte), getString(R.string.hint_main_schulte_title), getString(R.string.hint_main_schulte_desc)).getTapTarget(),
-							new TapTargetViewWr(this, findViewById(R.id.navigation_dashboard), getString(R.string.hint_main_dashboard_title), getString(R.string.hint_main_dashboard_desc)).getTapTarget(),
-							new TapTargetViewWr(this, findViewById(R.id.navigation_home), getString(R.string.hint_main_home_title), getString(R.string.hint_main_home_desc)).getTapTarget(),
+							//new TapTargetViewWr(this, findViewById(R.id.navigation_basics), getString(R.string.hint_main_basics_title), getString(R.string.hint_main_basics_desc)).getTapTarget(),
+							//new TapTargetViewWr(this, findViewById(R.id.navigation_schulte), getString(R.string.hint_main_schulte_title), getString(R.string.hint_main_schulte_desc)).getTapTarget(),
+							//new TapTargetViewWr(this, findViewById(R.id.navigation_dashboard), getString(R.string.hint_main_dashboard_title), getString(R.string.hint_main_dashboard_desc)).getTapTarget(),
+							//new TapTargetViewWr(this, findViewById(R.id.navigation_home), getString(R.string.hint_main_home_title), getString(R.string.hint_main_home_desc)).getTapTarget(),
 
 							TapTarget.forBounds(getTopRightCornerRect(this), getString(R.string.hint_main_settings_title), getString(R.string.hint_main_settings_desc))
-									//.icon(null)
-									.outerCircleColor(R.color.black)
-									.outerCircleAlpha(0.96f)
+									.outerCircleAlpha(0.9f)
+									.outerCircleColor(R.color.purple_700)
+									.textColor(R.color.light_grey_D_yellow)
+									.targetRadius(150)
 									.transparentTarget(true)
-									.cancelable(false)
+									.cancelable(true)
 					)
 					.listener(new TapTargetSequence.Listener() {
 						// This listener will tell us when interesting(tm) events happen in regards

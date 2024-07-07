@@ -238,8 +238,13 @@ public class DataFirestoreRepo<TEntity extends Identifiable<String>> implements 
 						QuerySnapshot querySnapshot = task.getResult();
 						if (task.isSuccessful()) {
 							for (QueryDocumentSnapshot document : querySnapshot) {
-								Log.d(TAG, document.getId() + " => " + document.getData());
-								result.add(document.toObject(entityClass));
+								try {
+									Log.d(TAG, document.getId() + " => " + document.getData());
+									result.add(document.toObject(entityClass));
+								} catch (Exception e) {
+									android.util.Log.e(TAG, "then ERROR getting doc: " + document.getId(), e);
+									throw new RuntimeException(e);
+								}
 							}
 							if (result.size() > 0) {
 								result.sort(Comparator.comparingLong(TEntity::getTimeStamp).reversed());

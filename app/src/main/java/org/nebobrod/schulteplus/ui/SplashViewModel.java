@@ -112,6 +112,7 @@ public class SplashViewModel extends ViewModel {
 		}
 	}
 
+	/***********getters and setters**********/
 	public LiveData<SplashState> getSplashState() {
 		return splashState;
 	}
@@ -126,10 +127,6 @@ public class SplashViewModel extends ViewModel {
 
 	public MutableLiveData<UserHelper> getUserHelperLD() {
 		return userHelperLD;
-	}
-
-	public UserHelper getUserHelper() {
-		return userHelperLD.getValue();
 	}
 
 	/**
@@ -148,6 +145,7 @@ public class SplashViewModel extends ViewModel {
 		Log.d("SplashViewModel", "ViewModel cleared");
 	}
 
+	/** initializing */
 	public void startSplashProcess() {
 		Log.d(TAG, "startSplashProcess: ");
 		splashState.setValue(SplashState.START);
@@ -171,6 +169,7 @@ public class SplashViewModel extends ViewModel {
 		// appExecutors.mainThread().execute(this::waitForAllChecks);
 	}
 
+	/******* run Checks by Type *******/
 	private void checkApp() {
 		Log.d(TAG, "checkApp: ");
 		splashState.postValue(SplashState.APP_CHECK);
@@ -183,9 +182,19 @@ public class SplashViewModel extends ViewModel {
 			public void onComplete(@NonNull Task<List<AdminNote>> task) {
 				if (task.isSuccessful()) {
 					List<AdminNote> list = task.getResult();
-					int verDeprecated = list.get(0).getVerDeprecated();
-					int verDeprecating = list.get(0).getVerDeprecating();
-					int verAppLatest = list.get(0).getVerAppLatest();
+					int verDeprecated = 0;
+					int verDeprecating = 0;
+					int verAppLatest = 0;
+					int i = 0;
+					for (; i < list.size(); i++) {
+						verDeprecated = list.get(i).getVerDeprecated();
+						verDeprecating = list.get(i).getVerDeprecating();
+						verAppLatest = list.get(i).getVerAppLatest();
+						// skip non-version-content
+						if (0 != verDeprecated * verDeprecating * verAppLatest) {
+							break;
+						}
+					}
 					if (getVersionCode() <= verDeprecated) {
 						// result ERROR
 						result[0] = CheckResult.ERROR;
@@ -236,7 +245,7 @@ public class SplashViewModel extends ViewModel {
 		FirebaseAuth fbAuth = FirebaseAuth.getInstance();
 		FirebaseUser user = fbAuth.getCurrentUser();
 		if (user == null) {
-			// No user detected so don't call UserFbData
+			// No user detected so just skip UserHelper
 			checkResult.postValue(new InitialCheck(CheckType.USER, result[0], message[0]));
 		} else {
 			String strMessage;

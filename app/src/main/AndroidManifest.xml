@@ -5,11 +5,24 @@
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+	
+	<queries>
+		<!-- We need to open web-links-->
+		<intent>
+			<action android:name="android.intent.action.VIEW" />
+			<data android:scheme="http" />
+		</intent>
+		<intent>
+			<action android:name="android.intent.action.VIEW" />
+			<data android:scheme="https" />
+		</intent>
+	</queries>
 	
 	<supports-screens
-		android:largeScreens="true"
-		android:normalScreens="true"
 		android:smallScreens="false"
+		android:normalScreens="true"
+		android:largeScreens="true"
 		android:xlargeScreens="true" />
 	
 	<application
@@ -23,10 +36,11 @@
 		android:label="@string/app_name"
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
-		android:theme="@style/Theme.SchultePlus.Fullscreen"
-		android:versionCode="26"
+		android:theme="@style/Theme.SchultePlus"
+		android:versionCode="31"
 		android:versionName="Entada"
 		tools:targetApi="33">
+<!--		.Fullscreen-->
 
 		<activity
 			android:name=".ui.SplashActivity"

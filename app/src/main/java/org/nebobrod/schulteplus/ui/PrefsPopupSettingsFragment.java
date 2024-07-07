@@ -23,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.core.content.ContextCompat;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -54,7 +55,14 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_popup_settings, container, false);
+		// return inflater.inflate(R.layout.fragment_popup_settings, container, false);
+		View view = inflater.inflate(R.layout.fragment_popup_settings, container, false);
+
+		if (view != null) {
+			view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorBackground));
+		}
+
+		return view;
 	}
 
 	@Override

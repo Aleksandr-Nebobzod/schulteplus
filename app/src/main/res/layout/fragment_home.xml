@@ -60,10 +60,11 @@
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Under Construction"
+		android:text="Under Construction\n(no scroll yet)"
 		android:rotation="-25"
 		android:textColor="@color/light_grey_A_purple"
-		android:textSize="35sp"
+		android:background="@color/black_overlay_7"
+		android:textSize="25sp"
 		android:textStyle="bold"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"

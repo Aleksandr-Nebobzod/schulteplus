@@ -37,8 +37,8 @@
 	<color name="light_blue_900">#0275AE</color>
 	<color name="light_blue_A200">#FF40C4FF</color>
 	<color name="light_red_A200">#FF7878</color>
-	<color name="semi_grey_6">#66666666</color>
 	<color name="semi_grey_4">#44444444</color>
+	<color name="semi_grey_6">#66666666</color>
 	<color name="semi_white">#66FFFFFF</color>
 	<color name="light_grey_1">#111111</color>
 	<color name="light_grey_1_blue">#11112B</color>
@@ -63,7 +63,9 @@
 	<color name="light_grey_D_purple">#D3ACFF</color>
 	<color name="light_grey_D_yellow">#DADA70</color>
 	<color name="light_blue_A400">#FF00B0FF</color>
-	<color name="black_overlay">#66000000</color>
+	<color name="black_overlay_3">#30000000</color>
+	<color name="black_overlay_7">#70000000</color>
+	<color name="black_overlay_A">#A0000000</color>
 	
 <!--	FirebaseUI default:-->
 	<color name="material_green_50">#E8F5E9</color>

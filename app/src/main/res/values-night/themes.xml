@@ -29,7 +29,7 @@
 		
 		<!-- Default text color -->
 		<item name="android:textColor">@color/colorPrimary</item>
-		<!-- Default text color seconary -->
+		<!-- Default text color secondary -->
 		<item name="android:textColorSecondary">@color/colorOnSecondary</item>
 		
 		<!-- Default text style -->

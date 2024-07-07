@@ -85,10 +85,7 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = super.onCreateView(inflater, container, savedInstanceState);
-
-
 		Log.d(TAG, "onCreateView: " + view.toString());
-
 		return view;
 	}
 
@@ -97,17 +94,18 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 		super.onViewCreated(view, savedInstanceState);
 
 		/** Onboarding intro */
-
 		if (ExerciseRunner.isShowIntro() &&
 				(0 == (ExerciseRunner.getShownIntros() & SHOWN_02_SCHULTE))) {
 			new TapTargetSequence(requireActivity())
 					.targets(
 //							new TapTargetViewWr(this, view, getString(R.string.hint_schulte_settings_title), getString(R.string.hint_schulte_settings_desc)).getTapTarget()
 							TapTarget.forBounds(new Rect(200, 100, 200, 100), getString(R.string.hint_schulte_settings_title), getString(R.string.hint_schulte_settings_desc))
-									.outerCircleColor(R.color.black)
 									.outerCircleAlpha(0.9f)
+									.outerCircleColor(R.color.purple_700)
+									.textColor(R.color.light_grey_A_yellow)
+									.targetRadius(150)
 									.transparentTarget(true)
-									.cancelable(false)
+									.cancelable(true)
 					)
 					.listener(new TapTargetSequence.Listener() {
 						// This listener will tell us when interesting(tm) events happen in regards
@@ -181,7 +179,6 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 	@Override
 	public void onPause() {
 		super.onPause();
-		// TODO: 16.01.2024 probably here bundle is needed for surfaceView 
 		ExerciseRunner.savePreferences();
 	}
 
@@ -376,10 +373,8 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setVisible(allowed);
 		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setEnabled(allowed);
 
-//		((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(!allowed);
-//		((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(allowed);
-//		((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setChecked(!allowed);
-//		((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setEnabled(allowed);
+		((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(allowed);
+		((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setEnabled(allowed);
 
 //		((SeekBarPreference) findPreference(KEY_PRF_PROB_SURFACE)).setEnabled(action);
 //		((SwitchPreference) findPreference(KEY_PRF_PROB_ZERO)).setEnabled(action);
@@ -393,7 +388,6 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 //			((SeekBarPreference) findPreference(KEY_PRF_PROB_X)).setValue(0);
 //			((SeekBarPreference) findPreference(KEY_PRF_PROB_Y)).setValue(0);
 		}
-
 	}
 
 	private void updatePrefScreen(){
@@ -421,13 +415,14 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 			case KEY_PRF_EX_S1:
 				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(true);
 				((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setEnabled(true);
+				enableOptions(true);
 				// check if is Ratings
 				if (runner.isRatings()) {
 					enableOptions(false);
+					findPreference(KEY_PRF_RATINGS).setEnabled(true);
 					runner.setX((byte) 5);
 					runner.setY((byte) 5);
 				} else { // enable options PreferenceCategory for ease levels
-					enableOptions(true);
 					runner.setX((byte) ((androidx.preference.SeekBarPreference) findPreference(KEY_X_SIZE)).getValue());
 					runner.setY((byte) ((androidx.preference.SeekBarPreference) findPreference(KEY_Y_SIZE)).getValue());
 					// set hinted to runner
@@ -438,21 +433,25 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 			case KEY_PRF_EX_S2:
 				runner.setX((byte) 7);
 				runner.setY((byte) 7);
-				// disable options PreferenceCategory for hard levels
-//				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
-//				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(false);
-//				((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setChecked(true);
-//				((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setEnabled(false);
+				// set options and disable PreferenceCategory for hard levels
+				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
+				((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setChecked(true);
+				((SwitchPreference) findPreference(KEY_PRF_HINTED)).setChecked(false);
 				enableOptions(false);
 				break;
 			case KEY_PRF_EX_S3:
 				runner.setX((byte) 10);
 				runner.setY((byte) 10);
-				// disable options PreferenceCategory for hard levels
+				// set options and disable PreferenceCategory for hard levels
+				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
+				((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setChecked(true);
+				((SwitchPreference) findPreference(KEY_PRF_HINTED)).setChecked(false);
 				enableOptions(false);
 				break;
 			case KEY_PRF_EX_S4:
-				// disable options PreferenceCategory for hard levels
+				// set options and disable PreferenceCategory for hard levels
+				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
+				((SwitchPreference) findPreference(KEY_PRF_HINTED)).setChecked(false);
 				enableOptions(false);
 				break;
 			default:
@@ -504,6 +503,7 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 		return list;
 	}
 
+	/** For the customised DrawerPreference -- surfaceView*/
 	@Override
 	public void onCallback(@Nullable SurfaceView sView) {
 		if (null != sView) {

@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.core.text.HtmlCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -152,6 +153,8 @@ public class SnackBarManager {
 		View snackbarView = snackbar.getView();
 		TextView tv = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
 		tv.setMaxLines(7);
+		// repeat:
+		tv.setText(HtmlCompat.fromHtml(message, HtmlCompat.FROM_HTML_MODE_LEGACY));
 
 		snackbar.show();
 		Log.d(TAG, "Snackbar shown: " + message.substring(15) + " !!! " + snackbar.isShownOrQueued());

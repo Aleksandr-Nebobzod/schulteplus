@@ -84,6 +84,7 @@ public class DashboardFragment extends Fragment {
 			root.setOnClickListener(view -> {});
 
 		spDashboard = binding.spDashboard;		// Spinner
+		spDashboard.setBackgroundColor(getRes().getColor(R.color.light_grey_A, null));
 		setDashboardSpinner(spDashboard);
 
 		rgSource = binding.rgSource;			// RadioGroup report Filter
@@ -288,7 +289,7 @@ public class DashboardFragment extends Fragment {
 				(0 == (ExerciseRunner.getShownIntros() & SHOWN_03_STATA))) {
 			new TapTargetSequence(requireActivity())
 					.targets(
-							new TapTargetViewWr(this, elvChart, getString(R.string.hint_stata_dashboard_title), getString(R.string.hint_main_fab_desc)).getTapTarget(),
+							new TapTargetViewWr(this, elvChart, getString(R.string.hint_stata_dashboard_title), getString(R.string.hint_stata_dashboard_desc)).getTapTarget(),
 							new TapTargetViewWr(this, spDashboard, getString(R.string.hint_stata_dashboard_spinner_title), getString(R.string.hint_stata_dashboard_spinner_desc)).getTapTarget(),
 							new TapTargetViewWr(this, rgSource, getString(R.string.hint_stata_source_title), getString(R.string.hint_stata_source_desc)).getTapTarget()
 					)

@@ -10,6 +10,7 @@ package org.nebobrod.schulteplus.data;
 
 import static org.nebobrod.schulteplus.Utils.durationCut;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
+import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.timeStampToDateLocal;
 import static org.nebobrod.schulteplus.Utils.timeStampToTimeLocal;
 import static org.nebobrod.schulteplus.common.Const.LAYOUT_GROUP_FLAG;
@@ -32,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -186,7 +188,7 @@ public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
 		// Put the dialog layout to bottom of the screen
 		Window window = alertDialog.getWindow();
 		WindowManager.LayoutParams wlp = window.getAttributes();
-		wlp.gravity = Gravity.BOTTOM;
+		wlp.gravity = Gravity.CENTER_VERTICAL;
 //		wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
 		window.setAttributes(wlp);
 
@@ -267,15 +269,17 @@ public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
 				// redesign OK by template
 				btnRedesign[0] = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
 				btnRedesign[0].setLayoutParams(btnOk.getLayoutParams());
-				btnRedesign[0].setBackground(AppCompatResources.getDrawable(context1, R.drawable.bg_button));
-				btnRedesign[0].setTextAppearance(R.style.button3d);
+//				btnRedesign[0].setBackground(AppCompatResources.getDrawable(context1, R.drawable.bg_button));
+				btnRedesign[0].setBackgroundColor(getRes().getColor(R.color.colorPrimaryVariant, null));
+//				btnRedesign[0].setTextAppearance(R.style.button3d);
 				btnRedesign[0].setAllCaps(false);
 				btnRedesign[0].setWidth(btnOk.getWidth()-10);
 				// redesign Cancel by template
 				btnRedesign[0] = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 				btnRedesign[0].setLayoutParams(btnCancel.getLayoutParams());
-				btnRedesign[0].setBackground(AppCompatResources.getDrawable(context1, R.drawable.bg_button));
-				btnRedesign[0].setTextAppearance(R.style.button3d);
+//				btnRedesign[0].setBackground(AppCompatResources.getDrawable(context1, R.drawable.bg_button));
+				btnRedesign[0].setBackgroundColor(getRes().getColor(R.color.colorPrimaryVariant, null));
+//				btnRedesign[0].setTextAppearance(R.style.button3d);
 				btnRedesign[0].setAllCaps(false);
 				btnRedesign[0].setWidth(btnCancel.getWidth()-10);
 			}
@@ -331,7 +335,11 @@ public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
 
 		// Show keyboard
 		if (resultLiveData != null) {
+			etNote.requestFocus();
 			alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+			// Show the keyboard
+			InputMethodManager imm = (InputMethodManager) context1.getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.showSoftInput(etNote, InputMethodManager.SHOW_IMPLICIT);
 		}
 
 		alertDialog.show();

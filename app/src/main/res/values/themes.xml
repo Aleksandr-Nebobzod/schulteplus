@@ -8,7 +8,12 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
 	<!-- Base application theme. -->
-	<style name="Theme.SchultePlus" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+<!--	<style name="Theme.SchultePlus" parent="Base.V14.Theme.Material3.Light">-->
+<!--	<style name="Theme.SchultePlus" parent="Theme.AppCompat.DayNight">-->
+<!--	<style name="Theme.SchultePlus" parent="Base.Theme.AppCompat">-->
+<!--	<style name="Theme.SchultePlus" parent="Base.Theme.AppCompat.Light.DarkActionBar">-->
+<!--	<style name="Theme.SchultePlus" parent="Theme.MaterialComponents.Light.DarkActionBar">-->
+	<style name="Theme.SchultePlus" parent="Theme.MaterialComponents.Light.NoActionBar">
 		<!-- Primary brand color. -->
 		<item name="colorPrimary">@color/colorPrimary</item>
 		<item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
@@ -17,45 +22,34 @@
 		<item name="colorSecondary">@color/colorSecondary</item>
 		<item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
 		<item name="colorOnSecondary">@color/colorOnSecondary</item>
+		
+		<item name="android:colorBackground">@color/colorBackground</item>
+		<item name="colorError">@color/colorError</item>
+		
+		<!-- Default text color -->
+		<item name="android:textColor">@color/colorPrimary</item>
+		<!-- Default text color seconary -->
+		<item name="android:textColorSecondary">@color/colorOnSecondary</item>
+		
+		<!-- Default text style -->
+		<item name="android:textAppearance">@style/AppTextStyle</item>
+<!--		<item name="android:textColorLinkInverse">@style/AppTextStyle</item>-->
+<!--		<item name="android:textColorLink">@style/AppTextStyle</item>-->
+		
+		<!-- Background color for the window -->
+<!--		<item name="android:windowBackground">@color/colorOnPrimary</item>-->
+		
 		<!-- Status bar color. -->
-		<item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-		<!-- Customize your theme here. -->
-		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
-	</style>
-	
-	
-	<style name="Theme.SchultePlus.Login" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-<!--	<style name="Theme.SchultePlus.Login" parent="Theme.AppCompat.DayNight.NoActionBar">-->
-		<!-- Primary brand color. -->
-		<item name="colorPrimary">@color/light_grey_4</item>
-		<item name="colorPrimaryVariant">@color/light_grey_6</item>
-		<item name="colorOnPrimary">@color/white</item>
+		<item name="android:statusBarColor">?attr/colorPrimary</item>
 		
-		<!-- Secondary brand color. -->
-		<item name="colorSecondary">@color/light_grey_A</item>
-		<item name="colorSecondaryVariant">@color/light_grey_8</item>
-		<item name="colorOnSecondary">@color/black</item>
-		
-		<item name="android:windowNoTitle">true</item>
-		<item name="android:windowActionBar">false</item>
+		<!-- ActionBar -->
+<!--		<item name="actionBarStyle">@style/MainActionBar</item>-->
 		
 		<!-- Customize your theme here. -->
 		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
-
-		<item name="alertDialogTheme">@style/Theme.AppCompat.Dialog</item>
 	</style>
 	
-	<style name="Theme.SchultePlus.FullscreenStart" parent="Theme.AppCompat.Light.NoActionBar">
-		<item name="android:windowNoTitle">true</item>
-		<item name="android:windowActionBar">false</item>
-		<item name="android:windowFullscreen">true</item>
-		<item name="android:windowContentOverlay">@null</item>
-		<item name="android:windowBackground">@drawable/bg_login02</item>
-		
-		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
-	</style>
-	
-	<style name="Theme.SchultePlus.Fullscreen" parent="Theme.AppCompat.Light.NoActionBar">
+	<style name="Theme.SchultePlus.Fullscreen" parent="Theme.SchultePlus">
 		<item name="android:windowNoTitle">true</item>
 		<item name="android:windowActionBar">false</item>
 		<item name="android:windowFullscreen">true</item>
@@ -63,6 +57,8 @@
 		
 		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
 	</style>
+	<!--		<item name="windowActionBar">false</item>-->
+	<!--		<item name="windowNoTitle">true</item>-->
 	
 	<style name="ThemeOverlay.SchultePlus.FullscreenContainer" parent="">
 		<item name="android:windowActionBar">false</item>
@@ -70,4 +66,57 @@
 		<item name="fullscreenTextColor">@color/light_grey_6</item>
 		<item name="switchStyle">@style/Widget.MaterialComponents.Light.ActionBar.Solid</item>
 	</style>
+	
+	<style name="Theme.SchultePlus.FullscreenStart" parent="Theme.SchultePlus.Fullscreen">
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowActionBar">false</item>
+		<item name="android:windowBackground">@drawable/bg_login02</item>
+		
+		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
+	</style>
+	
+	<style name="Theme.SchultePlus.Login" parent="Theme.SchultePlus.Fullscreen">
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowActionBar">false</item>
+		<item name="android:windowBackground">@drawable/bg_login02</item>
+		
+		<!-- Primary brand color. -->
+<!--		<item name="colorPrimary">@color/light_grey_4</item>-->
+<!--		<item name="colorPrimaryVariant">@color/light_grey_6</item>-->
+<!--		<item name="colorOnPrimary">@color/white</item>-->
+		
+		<!-- Secondary brand color. -->
+<!--		<item name="colorSecondary">@color/light_grey_A</item>-->
+<!--		<item name="colorSecondaryVariant">@color/light_grey_8</item>-->
+<!--		<item name="colorOnSecondary">@color/black</item>-->
+		
+		<item name="android:textAppearance">@style/AppTextStyle</item>
+		
+		<!-- Background color for views -->
+		<item name="android:colorBackground">@color/colorBackground</item>
+		
+		<!-- Surface color for cards, dialogs, etc. -->
+		<item name="colorSurface">@color/colorSurface</item>
+
+		
+		
+<!--		<item name="android:backgroundTint">@color/semi_white</item>-->
+<!--		<item name="android:textColor">@color/black</item>-->
+<!--		<item name="android:textColorHint">@color/light_grey_2</item>-->
+<!--		-->
+<!--		<item name="android:drawableStart">@color/light_blue_4</item>-->
+<!--		<item name="android:drawableEnd">@color/light_blue_4</item>-->
+<!--		<item name="startIconTint">@color/light_blue_4</item>-->
+<!--		<item name="endIconTint">@color/light_blue_4</item>-->
+		
+
+		
+		<!-- Customize your theme here. -->
+		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
+
+		<item name="alertDialogTheme">@style/Theme.AppCompat.Dialog</item>
+	</style>
+
+	
+
 </resources>

@@ -9,7 +9,9 @@
 
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	app:layout="@layout/preferences_common_layout"  >
+	android:background="@color/colorSecondary"
+	>
+<!--	app:layout="@layout/preferences_common_layout"-->
 	
 	<PreferenceCategory app:key="prf_menu_user" app:title="@string/menu_user_short" app:icon="@drawable/ic_baseline_perm_identity_24" >
 		<EditTextPreference app:key="prf_level"

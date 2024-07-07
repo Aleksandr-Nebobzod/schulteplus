@@ -37,7 +37,7 @@
 <!--		<item name="android:textColorLink">@style/AppTextStyle</item>-->
 		
 		<!-- Background color for the window -->
-<!--		<item name="android:windowBackground">@color/colorOnPrimary</item>-->
+		<item name="android:windowBackground">@color/colorBackground</item>
 		
 		<!-- Status bar color. -->
 		<item name="android:statusBarColor">?attr/colorPrimary</item>

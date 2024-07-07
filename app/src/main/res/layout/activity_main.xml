@@ -24,13 +24,14 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:background="?attr/colorPrimaryVariant"
+			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 			/>
 <!--			android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-<!--			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"-->
 	</com.google.android.material.appbar.AppBarLayout>
 	
 
 <!--	This is miraculously prevent a bug of app backgrounding on missing touch-->
+<!--	And click out of bottom_sheet-->
 	<View
 		android:id="@+id/touch_outside"
 		android:layout_width="match_parent"
@@ -38,11 +39,13 @@
 	
 	<FrameLayout
 		android:id="@+id/bottom_sheet"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@color/colorSecondary"
 		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
 		app:behavior_peekHeight="580dp"
 		app:behavior_hideable="true"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		>
 		
 		<!-- orignal content view goes here -->
 	

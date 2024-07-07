@@ -35,6 +35,8 @@
 		<SwitchPreference app:key="prf_sw_hints" app:title="@string/lbl_hints" app:summary="@string/lbl_hints_sum" app:defaultValue="true" app:enabled="true" app:persistent="true" app:icon="@drawable/ic_notifications_black_24dp" />
 		
 		<PreferenceCategory app:key="prf_empty_row" app:title="" app:persistent="false" app:summary=" "/>
+		<PreferenceCategory app:key="prf_empty_row2" app:title="" app:persistent="false" app:summary=" "/>
+		<PreferenceCategory app:key="prf_empty_row3" app:title="👍" app:persistent="false" app:summary=" "/>
 	</PreferenceCategory>
 	
 </PreferenceScreen>

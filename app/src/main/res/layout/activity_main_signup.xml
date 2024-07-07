@@ -14,9 +14,10 @@
 	android:layout_height="match_parent"
 	android:orientation="vertical"
 	android:gravity="center"
-	android:background="@drawable/bg_login02"
 	android:hapticFeedbackEnabled="true"
 	tools:context=".ui.SignupActivity">
+<!--	android:background="@drawable/bg_login02"-->
+<!--	android:theme="@style/Theme.SchultePlus.Login"-->
 	
 	<ScrollView
 		android:layout_width="match_parent"
@@ -25,16 +26,20 @@
 		<androidx.cardview.widget.CardView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			style="@style/CardViewSurfaceStyle"
+			android:layout_gravity="center_horizontal"
 			android:layout_margin="5dp"
 			app:cardCornerRadius="20dp"
-			android:backgroundTint="@color/semi_white"
-			android:elevation="25dp">
+			android:elevation="25dp" >
+<!--			android:backgroundTint="@color/semi_white"-->
 			
 			<LinearLayout
-				android:layout_width="match_parent"
+				android:layout_width="wrap_content"
+				android:minWidth="300dp"
 				android:layout_height="match_parent"
 				android:orientation="vertical"
-				android:layout_gravity="center_vertical"
+				android:layout_gravity="center"
+				android:gravity="center"
 				android:padding="15dp"
 				android:background="@drawable/border02"
 				android:alpha="1" >
@@ -42,26 +47,27 @@
 				<TextView
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
+					style="@style/AppTextStyle"
 					android:text="@string/title_signup"
 					android:textAlignment="center"
 					android:textSize="32sp"
-					android:textStyle="bold"/>
+					android:textStyle="bold" />
 				
 				<EditText
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:id="@+id/et_email"
 					android:minHeight="56dp"
+					android:theme="@style/Theme.SchultePlus"
 					android:autofillHints="emailAddress"
 					android:inputType="textEmailAddress"
 					android:layout_marginTop="32dp"
 					android:background="@drawable/border02"
-					android:backgroundTint="@color/semi_white"
 					android:padding="12dp"
 					android:hint="@string/hint_email"
 					android:drawableStart="@drawable/ic_baseline_email_24"
 					android:drawablePadding="10dp"
-					android:textColor="@color/black"
+					android:backgroundTint="@color/semi_white"
 					android:layout_marginBottom="6dp"/>
 				
 				<com.google.android.material.textfield.TextInputLayout
@@ -75,15 +81,15 @@
 					<com.google.android.material.textfield.TextInputEditText
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
+						android:id="@+id/et_name"
 						android:hint="@string/hint_login"
 						android:autofillHints="username"
-						android:id="@+id/et_name"
 						android:minHeight="48dp"
 						android:background="@drawable/border02"
-						android:backgroundTint="@color/semi_white"
 						android:drawableStart="@drawable/ic_baseline_perm_identity_24"
 						android:drawablePadding="4dp"
-						android:textColor="@color/black"/>
+						android:backgroundTint="@color/semi_white"
+						/>
 				</com.google.android.material.textfield.TextInputLayout>
 				
 				<com.google.android.material.textfield.TextInputLayout
@@ -103,10 +109,10 @@
 						android:inputType="textPassword"
 						android:minHeight="48dp"
 						android:background="@drawable/border02"
-						android:backgroundTint="@color/semi_white"
 						android:drawableStart="@drawable/ic_baseline_lock_24"
 						android:drawablePadding="4dp"
-						android:textColor="@color/black"/>
+						android:backgroundTint="@color/semi_white"
+						/>
 				</com.google.android.material.textfield.TextInputLayout>
 				
 				<com.google.android.material.button.MaterialButton
@@ -127,8 +133,9 @@
 					
 					<CheckBox
 						android:layout_width="0dp"
-						android:layout_weight="2"
+						android:layout_weight="1"
 						android:layout_height="48dp"
+						style="@style/AppTextStyle"
 						android:id="@+id/cb_agreed"
 						android:text="@string/str_confirm_policy"
 						android:checked="false"
@@ -138,55 +145,64 @@
 						android:layout_width="0dp"
 						android:layout_weight="1"
 						android:layout_height="48dp"
+						android:gravity="center"
 						android:id="@+id/tv_policy"
 						android:text="@string/lbl_about_user_data_policy"
-						android:textSize="12sp"
-						android:textColor="@color/purple_500"
+						android:textSize="14sp"
 						android:textStyle="bold"
+						android:theme="@style/Theme.SchultePlus"
+						android:textColor="@color/colorPrimary"
 						android:clickable="true"/>
 					
 					<TextView
 						android:layout_width="0dp"
 						android:layout_weight="1"
 						android:layout_height="48dp"
+						android:gravity="end"
 						android:id="@+id/tv_agreement"
 						android:text="@string/lbl_about_user_agreement"
-						android:textSize="12sp"
+						android:textSize="14sp"
 						android:textAlignment="viewEnd"
-						android:textColor="@color/purple_500"
 						android:textStyle="bold"
+						android:theme="@style/Theme.SchultePlus"
+						android:textColor="@color/colorPrimary"
 						android:clickable="true"/>
 				</LinearLayout>
 				
 				<TextView
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
+					style="@style/AppTextStyle"
 					android:id="@+id/tv_confirmation_caution"
 					android:textSize="14sp"
 					android:text="@string/str_confirmation_caution"
-					android:gravity="left"
+					android:gravity="start"
 					android:textStyle="italic"
 					android:layout_marginTop="8dp"
 					/>
 				
+<!--				WIDEST ELEMENT TO CONTROL PARENT CARD_VIEW-->
 				<TextView
-					android:layout_width="match_parent"
+					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
+					style="@style/AppTextStyle"
+					android:maxWidth="600dp"
 					android:id="@+id/tv_logoff_caution"
 					android:textSize="14sp"
 					android:text="@string/str_logoff_caution"
-					android:gravity="left"
+					android:gravity="start"
 					android:textStyle="italic"
 					android:layout_marginTop="8dp"
 					/>
 				
 				<TextView
-					android:layout_width="match_parent"
+					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
+					android:maxWidth="600dp"
 					android:id="@+id/tv_go_off"
-					android:textSize="16sp"
+					android:textSize="18sp"
 					android:minHeight="48dp"
-					android:textColor="@color/purple_500"
+					android:textColor="@color/colorPrimary"
 					android:text="@string/str_signup_go_off"
 					android:gravity="center"
 					android:layout_marginTop="8dp"
@@ -197,13 +213,15 @@
 					android:id="@+id/bt_unwrap_extra"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_gravity="right"
+					android:layout_gravity="end"
 					android:contentDescription="unwrap extra"
 					android:elevation="10dp"
-					android:scaleX="2"
-					android:scaleY="2"
+					android:scaleX="4"
+					android:scaleY="4"
+					android:padding="5dp"
 					android:src="@drawable/ic_baseline_arrow_drop_down_24"
-					android:theme="@style/Theme.SchultePlus" />
+					android:theme="@style/Theme.SchultePlus"
+					app:tint="@color/colorPrimary" />
 				
 				<LinearLayout
 					android:id="@+id/ll_extras"
@@ -216,6 +234,7 @@
 						android:id="@+id/tv_alternative_reg"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
+						android:enabled="false"
 						android:layout_margin="6dp"
 						android:clickable="true"
 						android:maxLines="3"
@@ -249,13 +268,14 @@
 						android:id="@+id/bt_wrap_extra"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_gravity="right"
+						android:layout_gravity="end"
 						android:layout_marginTop="10dp"
 						android:contentDescription="wrap extra"
-						android:scaleX="2"
-						android:scaleY="2"
+						android:scaleX="4"
+						android:scaleY="4"
+						android:padding="5dp"
+						app:tint="@color/colorPrimary"
 						android:src="@drawable/ic_baseline_arrow_drop_up_24" />
-					<!--						app:tint="@color/purple_500"-->
 				
 				</LinearLayout>
 				<TextView

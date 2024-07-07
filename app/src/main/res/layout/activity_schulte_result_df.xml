@@ -13,7 +13,9 @@
 	android:id="@+id/loResultDialog"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:background="@drawable/ic_border_thick">
+	android:theme="@style/Theme.AppCompat.Light.Dialog.Alert"
+	android:background="@drawable/ic_border_thick"
+	>
 	
 	
 	<TextView
@@ -100,8 +102,6 @@
 		app:layout_constraintStart_toStartOf="@+id/imageView"
 		/>
 	
-
-	
 	<TableLayout
 		android:id="@+id/table_psychometry"
 		android:layout_width="match_parent"
@@ -130,7 +130,7 @@
 				android:scrollbarAlwaysDrawVerticalTrack="true"
 				android:textColor="@color/black"
 				android:textColorHint="@color/light_grey_D"
-				android:textSize="12sp"
+				android:textSize="16sp"
 				android:typeface="monospace" />
 			<androidx.appcompat.widget.SwitchCompat
 				android:id="@+id/sw_data_provided"
@@ -228,7 +228,7 @@
 		android:padding="5dp"
 		android:text="Here is some custom message"
 		android:textAlignment="textEnd"
-		android:textColor="@color/light_grey_D"
+		android:textColor="@color/colorOnPrimary"
 		android:textSize="14sp"
 		
 		
@@ -258,10 +258,11 @@
 			android:layout_weight="3"
 			android:text="@string/lbl_ok"
 			android:textSize="20sp"
-			android:fontFamily="sans-serif-condensed-light"
-			style="@style/button3d"
-			
+			android:elevation="5dp"
 			/>
+<!--			style="@style/button3d"-->
+<!--			android:background="@drawable/bg_button"-->
+<!--			android:fontFamily="sans-serif-condensed-light"-->
 		
 		<Button
 			android:id="@+id/btnCancel"
@@ -272,9 +273,10 @@
 			android:text="@string/lbl_no"
 			android:textSize="20sp"
 			android:elevation="5dp"
-			android:background="@drawable/bg_button"
 			/>
-		
+<!--			style="@style/button3d"-->
+<!--			android:background="@drawable/bg_button"-->
+	
 	</LinearLayout>
 	
 	<SeekBar

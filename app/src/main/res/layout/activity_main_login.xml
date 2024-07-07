@@ -14,12 +14,11 @@
 	android:layout_height="match_parent"
 	android:layout_marginBottom="0dp"
 	android:paddingBottom="0dp"
-	android:background="@drawable/bg_login02"
 	android:gravity="center"
 	android:hapticFeedbackEnabled="true"
 	android:orientation="vertical"
 	tools:context=".ui.LoginActivity">
-	
+<!--	android:background="@drawable/bg_login02"-->
 	
 	<ScrollView
 		android:layout_width="match_parent"
@@ -28,23 +27,25 @@
 		<androidx.cardview.widget.CardView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			style="@style/CardViewSurfaceStyle"
 			android:layout_margin="5dp"
-			android:backgroundTint="@color/semi_white"
 			android:elevation="35dp"
 			app:cardCornerRadius="20dp">
-			
-
+<!--			android:backgroundTint="@color/semi_white"-->
 			
 			<LinearLayout
-				android:layout_width="match_parent"
+				android:layout_width="wrap_content"
+				android:minWidth="300dp"
 				android:layout_height="match_parent"
-				android:layout_gravity="center_vertical"
+				android:layout_gravity="center"
+				android:gravity="center"
 				android:alpha="1"
 				android:background="@drawable/border02"
 				android:orientation="vertical"
 				android:padding="15dp">
 				
 				<TextView
+					style="@style/AppTextStyle"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:text="@string/title_login"
@@ -66,9 +67,10 @@
 					android:autofillHints="emailAddress"
 					android:importantForAutofill="auto"
 					android:padding="12dp"
-					android:textColor="@color/black"
 					android:visibility="visible"
-					android:layout_marginBottom="6dp"/>
+					android:layout_marginBottom="6dp"
+					android:inputType="textEmailAddress" />
+<!--				android:textColor="@color/black"-->
 				
 				<EditText
 					android:id="@+id/et_name"
@@ -83,8 +85,9 @@
 					android:hint="@string/hint_login"
 					android:padding="12dp"
 					android:textColor="@color/black"
-					
-					android:text="username" android:visibility="gone" />
+					android:text="username" android:visibility="gone"
+					android:autofillHints="username"
+					android:inputType="textPersonName" />
 				
 				<com.google.android.material.textfield.TextInputLayout
 					android:layout_width="match_parent"
@@ -109,11 +112,8 @@
 						android:autofillHints="password"
 						android:importantForAutofill="auto"
 						android:textColor="@color/black" />
-					
+				
 				</com.google.android.material.textfield.TextInputLayout>
-				
-				
-
 				
 				<com.google.android.material.button.MaterialButton
 					android:id="@+id/bt_go_on"
@@ -125,30 +125,47 @@
 					app:cornerRadius="25dp"
 					app:elevation="5dp" />
 				
+<!--					android:maxWidth="600dp"-->
 				<TextView
 					android:id="@+id/tv_go_off"
-					android:layout_width="match_parent"
+					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:minHeight="48dp"
 					android:clickable="true"
 					android:gravity="center"
 					android:maxLines="3"
 					android:text="@string/str_login_go_off"
-					android:textColor="@color/purple_500"
-					android:textSize="16sp"
+					android:textColor="@color/colorError"
+					android:textSize="18sp"
 					android:textStyle="bold" />
+				
+<!--				THE WIDEST ELEMENT TO CONTROL PARENT CARD_VIEW-->
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					style="@style/AppTextStyle"
+					android:maxWidth="600dp"
+					android:id="@+id/tv_logoff_caution"
+					android:textSize="14sp"
+					android:text="@string/str_logoff_caution"
+					android:gravity="start"
+					android:textStyle="italic"
+					android:layout_marginTop="8dp"
+					/>
 				
 				<ImageView
 					android:id="@+id/bt_unwrap_extra"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_gravity="right"
+					android:layout_gravity="end"
 					android:contentDescription="unwrap extra"
 					android:elevation="10dp"
-					android:scaleX="2"
-					android:scaleY="2"
+					android:scaleX="4"
+					android:scaleY="4"
+					android:padding="5dp"
+					app:tint="@color/colorPrimary"
 					android:src="@drawable/ic_baseline_arrow_drop_down_24"
-					android:theme="@style/Theme.SchultePlus" />
+					/>
 				<!--					app:tint="@color/purple_500"-->
 				
 				<LinearLayout
@@ -166,7 +183,7 @@
 						android:clickable="true"
 						android:maxLines="3"
 						android:text="@string/lbl_reset_password"
-						android:textColor="@color/purple_500"
+						android:textColor="@color/colorPrimary"
 						android:textSize="16sp" />
 					<TextView
 						android:id="@+id/tv_resend_verification_email"
@@ -177,7 +194,7 @@
 						android:clickable="true"
 						android:maxLines="3"
 						android:text="@string/lbl_resend_verification_email"
-						android:textColor="@color/purple_500"
+						android:textColor="@color/colorPrimary"
 						android:textSize="16sp" />
 					<TextView
 						android:id="@+id/tv_delete_account"
@@ -187,7 +204,7 @@
 						android:clickable="true"
 						android:maxLines="3"
 						android:text="@string/lbl_delete_account"
-						android:textColor="@color/purple_500"
+						android:textColor="@color/colorPrimary"
 						android:textSize="16sp" />
 
 					
@@ -195,11 +212,13 @@
 						android:id="@+id/bt_wrap_extra"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_gravity="right"
+						android:layout_gravity="end"
 						android:layout_marginTop="10dp"
 						android:contentDescription="wrap extra"
-						android:scaleX="2"
-						android:scaleY="2"
+						android:scaleX="4"
+						android:scaleY="4"
+						android:padding="5dp"
+						app:tint="@color/colorPrimary"
 						android:src="@drawable/ic_baseline_arrow_drop_up_24" />
 					<!--						app:tint="@color/purple_500"-->
 				

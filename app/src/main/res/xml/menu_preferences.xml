@@ -8,7 +8,8 @@
   -->
 
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:android="http://schemas.android.com/apk/res/android">
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	app:layout="@layout/preferences_common_layout"  >
 	
 	<PreferenceCategory app:key="prf_menu_user" app:title="@string/menu_user_short" app:icon="@drawable/ic_baseline_perm_identity_24" >
 		<EditTextPreference app:key="prf_level"
@@ -17,6 +18,7 @@
 			app:title="@string/prf_level_title"
 			app:summary="@string/prf_level_summary"
 			app:enabled="false"/>
+		
 		<!--			app:useSimpleSummaryProvider="true"-->
 		<SeekBarPreference app:key="prf_current_level"
 			app:defaultValue="1"

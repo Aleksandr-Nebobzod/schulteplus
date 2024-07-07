@@ -8,6 +8,22 @@
   -->
 
 <resources>
+	<!-- Primary brand colors -->
+	<color name="colorPrimary">@color/light_grey_2_blue</color>
+	<color name="colorPrimaryVariant">@color/light_grey_A_blue</color>
+	<color name="colorOnPrimary">@color/white</color>
+	<!-- Secondary brand colors -->
+	<color name="colorSecondary">@color/light_grey_2</color>
+	<color name="colorSecondaryVariant">@color/light_grey_A</color>
+	<color name="colorOnSecondary">@color/light_grey_8</color>
+	
+	<color name="colorBackground">@color/light_grey_D</color>
+	<color name="colorError">@color/light_grey_8_red</color>
+<!--	<color name="colorBackground">@color/light_grey_A_blue</color>-->
+	<color name="colorSurface">@color/semi_white</color>
+	
+	<color name="spinnerTextColor">@color/light_grey_2</color>
+	
 	<color name="transparent">#00000000</color>
 	<color name="purple_200">#FFBB86FC</color>
 	<color name="purple_500">#FF6200EE</color>
@@ -20,10 +36,16 @@
 	<color name="light_blue_600">#005C88</color>
 	<color name="light_blue_900">#0275AE</color>
 	<color name="light_blue_A200">#FF40C4FF</color>
+	<color name="light_red_A200">#FF7878</color>
 	<color name="semi_grey_6">#66666666</color>
+	<color name="semi_grey_4">#44444444</color>
 	<color name="semi_white">#66FFFFFF</color>
+	<color name="light_grey_1">#111111</color>
+	<color name="light_grey_1_blue">#11112B</color>
 	<color name="light_grey_2">#222222</color>
 	<color name="light_grey_2_red">#623232</color>
+	<color name="light_grey_8_red">#880000</color>
+	<color name="bright_grey_A_red">#AA4040</color>
 	<color name="light_grey_2_green">#225222</color>
 	<color name="light_grey_2_blue">#224292</color>
 	<color name="light_grey_4">#444444</color>
@@ -32,10 +54,14 @@
 	<color name="light_grey_8">#888888</color>
 	<color name="light_grey_A">#AAAAAA</color>
 	<color name="light_grey_A_red">#DAAAAA</color>
-	<color name="light_grey_A_blue">#7AAAFF</color>
 	<color name="light_grey_A_green">#AADAAA</color>
-	<color name="light_grey_A_yellow">#DADA70</color>
+	<color name="light_grey_A_blue">#7AAAFF</color>
+	<color name="light_grey_A_purple">#B577FB</color>
+	<color name="light_grey_A_yellow">#CACA80</color>
 	<color name="light_grey_D">#DDDDDD</color>
+	<color name="light_grey_D_blue">#89C8FF</color>
+	<color name="light_grey_D_purple">#D3ACFF</color>
+	<color name="light_grey_D_yellow">#DADA70</color>
 	<color name="light_blue_A400">#FF00B0FF</color>
 	<color name="black_overlay">#66000000</color>
 	
@@ -51,5 +77,7 @@
 	<color name="prob_color99">#30FFAC</color>
 	<color name="prob_color11">#FFFFFF</color>
 	
+	<color name="secondary_color_day">#FF6200EE</color>
+	<color name="secondary_color_night">#D14AFF</color>
 
 </resources>

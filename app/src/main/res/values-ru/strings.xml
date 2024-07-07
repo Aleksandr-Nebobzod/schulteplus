@@ -64,7 +64,7 @@
 	<string name="menu_contact_long">Написать в техподдержку</string>
 	<string name="menu_contact_short">Контакты</string>
 	<string name="menu_data_sharing_long">Согласие на обмен результатами</string>
-	<string name="menu_how_mistakes_long">Показыать ошибки</string>
+	<string name="menu_how_mistakes_long">Показывать ошибки</string>
 	<string name="lbl_options">Параметры</string>
 	<string name="prf_title_app">Приложение</string>
 	<string name="prf_title_data">Делиться данными</string>
@@ -95,7 +95,7 @@
 	<string name="prf_level_title">Уровень</string>
 	<string name="prf_level_summary">Ваш максимально достигнутый уровень</string>
 	<string name="prf_hours_title">Часов</string>
-	<string name="prf_hours_summary">Количество добытых \'минуток\' сложенных в часы практик</string>
+	<string name="prf_hours_summary">Количество добытых \'минуток\', сложенных в часы практик</string>
 	<string name="txt_schulte_description">Здесь представлены основные упражнения по методике Шульте</string>
 	<string name="lbl_schulte_1_sequence">Первичный поток</string>
 	<string name="lbl_schulte_1_sequence_sum">Вам следует найти все значения восходящей последовательности</string>
@@ -104,23 +104,24 @@
 	<string name="lbl_rating">Рейтинги</string>
 	<string name="lbl_rating_sum_on">Ваши опции сопоставимы с другими участниками. Ваши результаты могут быть записаны на Доске почёта.</string>
 	<string name="lbl_rating_sum_off">Режим для разнообразия персональных тренировок. Ваши результаты хранятся в личной странице достижений.</string>
-	<string name="lbl_schulte_2_sequence">Воздух и Пламя (7х7)</string>>
-	<string name="lbl_schulte_2_sequence_sum">Вас ожидают две последовательности: Голубая растёт с 1 до 25, Красная уменьшаетася с 24 до 1.</string>
-	<string name="lbl_schulte_3_sequence">Четыре времени года (10х10)</string>
-	<string name="lbl_schulte_3_sequence_sum">Последовательности: Вверх, Вниз, Сходится, Расходится,.. Не свихнуться бы!</string>
-	<string name="lbl_hints">Подсказки</string>
+	<string name="lbl_schulte_2_sequences">Воздух и Пламя (7х7)</string>>
+	<string name="lbl_schulte_2_sequences_sum">Вас ожидают две последовательности: Голубая растёт с 1 до 25, Красная уменьшаетася с 24 до 1.</string>
+	<string name="lbl_schulte_3_sequences">Четыре времени года (10х10)</string>
+	<string name="lbl_schulte_3_sequences_sum">Последовательности: Вверх, Вниз, Сходится, Расходится,.. Не свихнуться бы!</string>
+	<string name="lbl_schulte_4_mishmash">Мешанина!</string>
+	<string name="lbl_schulte_4_mishmash_sum">Что ж, попробуй найти их всех, таких уникальных</string>
+	<string name="lbl_hints">Cтатус</string>
 	<string name="lbl_hints_sum">Подсветки, напоминатели и хронометраж интересны новичкам.</string>
 	<string name="lbl_symbol_type">Тип символа в ячейке</string>
-	<string name="lbl_schulte_4_sequence">Мешанина!</string>
-	<string name="lbl_schulte_4_sequence_sum">Что ж, попробуй найти их всех, таких уникальных</string>
 	<string name="lbl_shuffle">Перемешать, но не взбалтывать!</string>
 	<string name="lbl_shuffle_sum_on">Каждый ход вас ожидает новое поле</string>
 	<string name="lbl_shuffle_sum_off">Поле остаётся неизменным, пока не вспашешь всё</string>
 	<string name="prf_menu_about_url_sum">На нашем веб-сайте больше подробностей</string>
+	<string name="src_psychonetics_social_media">https://vk.com/public216345855</string>
 	<string name="title_activity_schulte">Шульте+ Таблицы</string>
 	<string name="lbl_distraction">✓</string>
 	<string name="lbl_back">◁</string>
-	<string name="lbl_schulte_stats">След, Ходов, Ошибок, Время: </string>
+	<string name="lbl_schulte_status">След, Ходов, Ошибок, Время: </string>
 	<string name="title_signup">Регистрация</string>
 	<string name="hint_login">Имя пользователя (псевдоним)</string>
 	<string name="hint_email">адрес эл.почты</string>
@@ -130,7 +131,7 @@
 	<string name="str_login_go_off">Нет учётной записи?\nПерейти к регистрации!</string>
 	<string name="title_login">Вход</string>
 	<string name="msg_username_empty">Имя не может быть пустым</string>
-	<string name="msg_password_rules">Пароль должен содеражать: 6–15 симолов: латинские буквы, арабские цифры, знаки ~!@#$%^*()+=</string>
+	<string name="msg_password_rules">Пароль должен содержать: 6–15 символов: латинские буквы, арабские цифры, знаки ~!@#$%^*()+=</string>
 	<string name="msg_username_wrong">Имя пользователя неверно</string>
 	<string name="msg_password_wrong">Пароль неверен</string>
 	<string name="msg_user_signed_up">регистрация успешна</string>
@@ -222,9 +223,9 @@
 	<string name="msg_proceed_to_password_reentry">Выйти из системы и продолжить с подтверждением пароля?</string>
 	<string name="lbl_about_oss">Уведомления об открытом исходном коде</string>
 	<string name="lbl_about_license">Лицензионное соглашение</string>
-	<string name="str_about_license_html_source">licenses-ru.html</string>
+	<string name="str_about_license_html_source">ru/licenses-ru.html</string>
 	<string name="lbl_about_user_data_policy">Политика конфиден-циальности</string>
-	<string name="str_about_user_data_policy_html_source">user_data_policy-ru.html</string>
+	<string name="str_about_user_data_policy_html_source">ru/user_data_policy-ru.html</string>
 	<string name="str_logoff_caution">Вы сможете выйти из системы и удалить аккаунт в главном меню</string>
 	<string name="err_result_validity">Результат упражнения не валидирован.</string>
 	<string name="msg_user_data_failed">Трудности с получением данных</string>
@@ -235,10 +236,15 @@
 	<string name="msg_username_updated">Имя пользователя успешно обновлено для новых записей</string>
 	<string name="msg_user_email_will_change">Адрес email Вашей учётной записи будет обновлён при следующем входе</string>
 	<string name="lbl_about_user_agreement">Условия использования</string>
-	<string name="str_about_user_agreement_html_source">user_agreement-ru.html</string>
+	<string name="str_about_user_agreement_html_source">ru/user_agreement-ru.html</string>
 	<string name="src_exDescriptionUrl">http://attplus.in/schulte/ru/ex_description/</string>
 	<string name="hint_main_fab_title">Кнопка Пуск!</string>
-	<string name="hint_main_fab_desc">После выбора упражнения и настроек запустить:\n• Упражнение (нажатие)\n• Веб справка (долгое нажатие)</string>
+	<!--	nbsp неразрывный пробел-->
+	<string name="hint_main_fab_desc">После выбора упражнения и настроек запустить:
+		\n• Упражнение (нажатие)
+		\n• Веб справка (долгое нажатие)
+		\nЧетыре кнопки ниже: •&#160;Статистика •&#160;Базовые упражнения •&#160;Шульте •&#160;Новости
+	</string>
 	<string name="hint_main_basics_title">База</string>
 	<string name="hint_main_basics_desc">Настройки для базовых упражнений</string>
 	<string name="hint_main_schulte_title">Шульте</string>
@@ -248,18 +254,18 @@
 	<string name="hint_main_home_title">Новости</string>
 	<string name="hint_main_home_desc">Анонсы Внимание Шульте Плюс и дружественных каналов</string>
 	<string name="hint_main_settings_title">Настройки профиля и приложения</string>
-	<string name="hint_main_settings_desc">Упраляйте лигами и конфиденциальностью, следите за подробностями О приложении</string>
+	<string name="hint_main_settings_desc">Управляйте лигами и конфиденциальностью, следите за подробностями\nО приложении, справка</string>
 	<string name="prf_title_show_intro">Знакомимся с функциями</string>
 	<string name="hint_base_settings_title">Настройки пространства База</string>
-	<string name="hint_base_settings_desc">Вы можете выбрать:\n• Тип упражнения (чекбокс)\n• Использовать или нет Подсказки\n• И пользуйтесь долгим нажатием на кнопке Пуск для Веб-справки</string>
+	<string name="hint_base_settings_desc">Вы можете выбрать:\n• Тип упражнения (чекбокс)\n• Отображение Статуса\n• (и пользуйтесь долгим нажатием на кнопке Пуск для Веб-справки)</string>
 	<string name="hint_schulte_settings_title">Настройки пространства Шульте</string>
-	<string name="hint_schulte_settings_desc">Вы можете выбрать:\n• Тип упражнения (чекбокс)\n• Использовать или нет Подсказки\n• И многое другое (долгим нажатием на кнопке Пуск для Веб-справки -- НАСТОЯТЕЛЬНО рекомендуем)</string>
+	<string name="hint_schulte_settings_desc">Вы можете выбрать:\n• Тип упражнения (чекбокс)\n• Отображение Статуса\n• И многое другое (долгим нажатием на кнопке Пуск для Веб-справки -- НАСТОЯТЕЛЬНО рекомендуем)</string>
 	<string name="hint_base_space_title">Пространство База</string>
 	<string name="hint_base_space_desc">Такое минималистичное пространство\n• Слева [✓] кнопка Событие\n• Справа [◁] кнопка Завершить\n• Между ними Счётчик и Таймер если Подсказки "Да"\n(вне Упражнения пользуйтесь долгим нажатием на кнопке Пуск для Веб-справки)</string>
 	<string name="hint_schulte_space_title">Пространство Шульте</string>
 	<string name="hint_schulte_space_desc">Просто нажимайте Ячейки в соответствии с Последовательностью\nПросто Долгое нажатие на любой Ячейке если забыли Последовательность\n• Упражнение завершается само по завершении Последовательности\n• Кнопка [◁] Назад Вашего устройства прерывает Упражнение\n• Сверху Счётчики и Таймер если Подсказки "Да"\n(вне Упражнения пользуйтесь долгим нажатием на кнопке Пуск для Веб-справки -- НАСТОЯТЕЛЬНО рекомендуем)</string>
 	<string name="hint_stata_dashboard_title">Аналитическая панель</string>
-	<string name="hint_stata_dashboard_desc">Это пространство отображает Ваши истрические данные.\n• Некоторые данные сокращены (строка Заметок к упражнению) и отображаются по Долгому нажатию\n• Также Долгим нажатием данные Аналитики копируются в буфер, обеспечивая возможность сохранять их для более мощных аналитических инструментов на ПК.</string>
+	<string name="hint_stata_dashboard_desc">Это пространство отображает Ваши исторические данные.\n• Некоторые данные сокращены (строка Заметок к упражнению расширяется по Долгому нажатию\n• Также Долгим нажатием данные копируются в буфер, можете сохранять их для более мощных аналитических инструментов на ПК.</string>
 	<string name="hint_stata_dashboard_spinner_title">Список Аналитик</string>
 	<string name="hint_stata_dashboard_spinner_desc">Выберите данные о Достижениях или Результатах упражнений по их Типу</string>
 	<string name="hint_stata_source_title">Источник данных</string>
@@ -275,5 +281,6 @@
 		<br />-- <b>Желаете ли вы остаться?</b>]]></string>
 	<string name="msg_app_deprecated">Ваше приложение версии %1$d является устаревшим. Мы рекомендуем обновить приложение до версии %2$d. Это приложение будет закрыто. \nУвидимся в обновлении!</string>
 	<string name="msg_app_deprecating">Ваше приложение версии %1$d устаревает. Мы рекомендуем обновить приложение до версии %2$d иначе вскоре вы не сможете запускать своё приложение.</string>
-
+	<string name="msg_news_reminder_yes">Есть непрочитанные уведомления!</string>
+	<string name="msg_news_reminder_no">Непрочитанных уведомлений нет</string>
 </resources>

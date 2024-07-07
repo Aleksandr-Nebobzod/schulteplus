@@ -17,10 +17,8 @@ import org.nebobrod.schulteplus.common.STable;
 import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.ExResultArrayAdapter;
-import org.nebobrod.schulteplus.ui.TapTargetViewWr;
 
 import static org.nebobrod.schulteplus.Utils.*;
-import static org.nebobrod.schulteplus.common.Const.SHOWN_05_BASE_SPACE;
 import static org.nebobrod.schulteplus.common.Const.SHOWN_06_SCHULTE_SPACE;
 
 import androidx.activity.OnBackPressedCallback;
@@ -68,7 +66,7 @@ public class SchulteActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_schulte02);
+		setContentView(R.layout.activity_schulte);
 		// lock orientation
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
 		Intent intent = getIntent();
@@ -196,11 +194,12 @@ public class SchulteActivity extends AppCompatActivity {
 			new TapTargetSequence(this)
 					.targets(
 							TapTarget.forBounds(new Rect(200, 100, 200, 100), getString(R.string.hint_schulte_space_title), getString(R.string.hint_schulte_space_desc))
-									//.icon(null)
-									.outerCircleColor(R.color.black)
 									.outerCircleAlpha(0.9f)
+									.outerCircleColor(R.color.black)
+									.textColor(R.color.light_grey_A)
+									.targetRadius(200)
 									.transparentTarget(true)
-									.cancelable(false)
+									.cancelable(true)
 					)
 					.listener(new TapTargetSequence.Listener() {
 						@Override

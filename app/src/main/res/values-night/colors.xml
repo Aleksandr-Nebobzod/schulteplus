@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (c) "Smart Rovers" 2024.
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2024  "Smart Rovers"
   ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
   ~ http://www.apache.org/licenses/LICENSE-2.0
   ~
@@ -8,17 +9,20 @@
 
 <resources>
 	<!-- Primary brand colors -->
-	<color name="colorPrimary">@color/light_grey_2_blue</color>
-	<color name="colorPrimaryVariant">@color/black</color>
-	<color name="colorOnPrimary">@color/light_grey_A_yellow</color>
+<!--	<color name="colorPrimary">#BB86FC</color>-->
+	<color name="colorPrimary">@color/light_grey_D_blue</color>
+	<color name="colorPrimaryVariant">#3700B3</color>
+<!--	<color name="colorOnPrimary">#000000</color>-->
+	<color name="colorOnPrimary">@color/white </color>
 	<!-- Secondary brand colors -->
-	<color name="colorSecondary">@color/light_grey_A_blue</color>
-	<color name="colorSecondaryVariant">@color/light_blue_600</color>
+	<color name="colorSecondary">#018786</color>
+	<color name="colorSecondaryVariant">#03DAC6</color>
 	<color name="colorOnSecondary">@color/light_grey_D</color>
 	
+	<color name="colorBackground">@color/light_grey_1_blue</color>
+	<color name="colorError">@color/light_red_A200</color>
+	<color name="spinnerTextColor">@color/light_grey_D_blue</color>
 	
-	<color name="colorOnSecondary2">#ffe6e1e5</color>
-	
-	
+	<color name="colorSurface">@color/semi_grey_4</color>
 
 </resources>

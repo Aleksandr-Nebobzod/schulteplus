@@ -18,7 +18,7 @@ import java.io.Serializable;
  * Data-class keeps notes from
  */
 @DatabaseTable(tableName = "adminNote")
-public class AdminNote implements Serializable, Identifiable<String> {
+public class AdminNote implements Serializable, Identifiable<String>, Cloneable {
 
 	private static final String TAG = "AdminNote";
 
@@ -91,7 +91,7 @@ public class AdminNote implements Serializable, Identifiable<String> {
 	}
 
 	public String getUidAddress() {
-		return uidAddress;
+		return uidAddress == null ? "" : uidAddress;
 	}
 
 	public void setUidAddress(String uidAddress) {
@@ -160,6 +160,30 @@ public class AdminNote implements Serializable, Identifiable<String> {
 
 	public void setTimeStampConfirmed(long timeStampConfirmed) {
 		this.timeStampConfirmed = timeStampConfirmed;
+	}
+
+	@Override
+	public AdminNote clone() {
+
+		try {
+			AdminNote cloned = (AdminNote) super.clone();
+
+			cloned.id = this.id;
+			cloned.uak = this.uak;
+			cloned.uidAddress = this.uidAddress;
+			cloned.title = this.title;
+			cloned.message = this.message;
+			cloned.appendix = this.appendix;
+			cloned.timeStamp = this.timeStamp;
+			cloned.verAppLatest = this.verAppLatest;
+			cloned.verDeprecating = this.verDeprecating;
+			cloned.verDeprecated = this.verDeprecated;
+			cloned.timeStampConfirmed = this.timeStampConfirmed;
+
+			return cloned;
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(TAG + " clone ERROR", e);
+		}
 	}
 
 	@Override

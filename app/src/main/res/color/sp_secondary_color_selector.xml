@@ -6,11 +6,7 @@
   ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
   -->
 
-<WebView
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:layout_marginTop="120dp"
-	android:background="@drawable/border02"
-	android:foregroundTint="@color/colorOnSecondary"
-	/>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:color="@color/secondary_color_day" android:state_enabled="true" />
+	<item android:color="@color/secondary_color_night" android:state_enabled="false" />
+</selector>

@@ -56,7 +56,7 @@ public class TapTargetViewWr {
 				.tintTarget(true)								// Whether to tint the target view's color
 				.transparentTarget(true)						// Specify whether the target is transparent (displays the content underneath)
 				//.icon(ContextCompat.getDrawable(this, R.drawable.ic_circles_rb))                     // Specify a custom drawable to draw as the target
-				.targetRadius(60);								// Specify the target radius (in dp);
+				.targetRadius(80);								// Specify the target radius (in dp);
 
 	}
 

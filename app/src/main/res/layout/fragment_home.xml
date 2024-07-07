@@ -12,11 +12,11 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".ui.home.HomeFragment"
-	android:background="@color/black" >
+	android:background="@color/black"
+	tools:context=".ui.home.HomeFragment">
 	
 	<ImageView
-		android:id="@+id/iv_bacground"
+		android:id="@+id/iv_backpic"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:clickable="true"
@@ -26,18 +26,67 @@
 		app:layout_constraintTop_toTopOf="parent" />
 	
 	<TextView
-		android:id="@+id/text_home"
-		android:layout_width="wrap_content"
+		android:id="@+id/tv_news_indicator"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginEnd="10dp"
+		android:background="@color/colorBackground"
+		android:fontFamily="serif-monospace"
+		android:padding="10dp"
+		android:text="@string/msg_news_reminder_no"
+		android:textAlignment="viewEnd"
+		android:textSize="18sp"
+		android:textStyle="bold"
+		app:layout_constraintTop_toTopOf="@+id/iv_backpic" />
+	<!--		android:textColor="@color/light_grey_A"-->
+	<!--		android:background="@color/black_overlay"-->
+	
+	<TextView
+		android:id="@+id/text_home"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="36dp"
 		android:autoLink="web"
 		android:linksClickable="true"
-		android:paddingLeft="256dp"
-		android:paddingBottom="40dp"
-		android:text="Объявление"
+		android:padding="10dp"
+		android:text="@string/txt_news"
 		android:textAlignment="center"
-		android:textColor="@color/light_blue_A200"
-		android:textSize="12sp"
+		android:textColor="@color/light_grey_A_purple"
+		android:textSize="14sp"
+		app:layout_constraintEnd_toEndOf="@+id/iv_backpic"
+		app:layout_constraintStart_toEndOf="@+id/guideline"
+		app:layout_constraintTop_toBottomOf="@id/br_top" />
+	
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Under Construction"
+		android:rotation="-25"
+		android:textColor="@color/light_grey_A_purple"
+		android:textSize="35sp"
+		android:textStyle="bold"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="@+id/iv_bacground" />
+		/>
+	
+	<androidx.constraintlayout.widget.Barrier
+		android:id="@+id/br_top"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		app:barrierDirection="top"
+		app:constraint_referenced_ids="iv_backpic"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+	
+	
+	<androidx.constraintlayout.widget.Guideline
+		android:id="@+id/guideline"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		app:layout_constraintGuide_percent="0.6" />
+	
 </androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -8,6 +8,8 @@
 
 package org.nebobrod.schulteplus.common;
 
+import static org.nebobrod.schulteplus.Utils.getRes;
+
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
@@ -15,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
+
+import org.nebobrod.schulteplus.R;
 
 
 public class GridAdapter extends BaseAdapter {
@@ -78,6 +82,7 @@ public class GridAdapter extends BaseAdapter {
 //			 Log.d(TAG, "itemHeight: " + itemHeight);
 //			 view.setLayoutParams(new GridView.LayoutParams(new ViewGroup.LayoutParams(itemHeight, itemHeight)));
 		view.setLayoutParams(new GridView.LayoutParams(new ViewGroup.LayoutParams(itemWidth, itemHeight)));
+		view.setTextColor(getRes().getColor(R.color.light_grey_2, null));
 		view.setTextSize((Math.min(itemWidth, itemHeight) / (-1.3F * textScale + 5)));
 
 

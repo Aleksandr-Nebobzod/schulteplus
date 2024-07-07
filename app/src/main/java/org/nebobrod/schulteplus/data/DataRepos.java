@@ -213,10 +213,12 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataR
 						throw new ExecutionException(new RuntimeException("No actual user record in any repository!"));
 					} else if (ormTimestamp > latestFsUser.getTimeStamp()) {
 						userHelper = ormUser; 			// Used local db offline
+						Log.w(TAG, "getLatestUserHelper, fsRepo.create: " +  userHelper);
 						fsRepo.create(userHelper);
 					} else {
 						userHelper = latestFsUser; 		// fresh data from another device
 						userHelper.setUak(ormUak);
+						Log.w(TAG, "getLatestUserHelper, new UAK, fsRepo.create: " +  userHelper);
 						ormRepo.create(userHelper); 	// Copy fresh central data to local DB
 					}
 				}
@@ -257,16 +259,21 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataR
 						taskCompletionSource.setException(new RuntimeException("fetchAdminNotes: No data loaded from the server."));
 						return;
 					}
+					Log.d(TAG, "fetchAdminNotes, onComplete, loaded: " + list.size());
+
 					List<AdminNote> filteredList = list.stream()
 							.filter(note -> note.getTimeStamp() > sinceTimeStamp)
 							.collect(Collectors.toList());
+					Log.d(TAG, "fetchAdminNotes, onComplete, after filter: " + filteredList.size());
 
 					new DataOrmRepo<>(entityClass).load((List<TEntity>) filteredList).addOnCompleteListener(new OnCompleteListener<Void>() {
 						@Override
 						public void onComplete(@NonNull Task<Void> task) {
 							if (task.isSuccessful()) {
+								Log.d(TAG, "fetchAdminNotes, onComplete, loaded onto ORM ");
 								taskCompletionSource.setResult(null); // Success
 							} else {
+								Log.w(TAG, "fetchAdminNotes, onComplete, ERROR loading onto ORM ");
 								taskCompletionSource.setException(task.getException()); // Error
 							}
 						}

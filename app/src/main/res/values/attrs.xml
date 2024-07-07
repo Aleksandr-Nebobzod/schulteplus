@@ -11,4 +11,7 @@
 		<attr name="fullscreenBackgroundColor" format="color" />
 		<attr name="fullscreenTextColor" format="color" />
 	</declare-styleable>
+	
+	<attr name="buttonStyle" format="reference" />
+	
 </resources>

@@ -84,7 +84,7 @@
 		android:id="@+id/tv_group_header"
 		style="@style/tv_list_header"
 		android:background="@color/transparent"
-		android:textColor="@color/light_grey_4"
+		android:textColor="@color/colorPrimary"
 		android:text="2023.12.24"
 		android:visibility="gone"
 		app:layout_constraintStart_toStartOf="parent"
@@ -185,9 +185,9 @@
 	
 	<TextView
 		android:id="@+id/tv_note_full"
+		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
-		style="@style/tv_list_item"
-		android:lines="0"
+		android:textColor="@color/colorPrimary"
 		android:maxLines="5"
 		android:visibility="gone"
 		android:background="@color/transparent"
@@ -197,6 +197,8 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@id/ll_item"
 		/>
+<!--		style="@style/tv_list_item"-->
+<!--	android:lines="0"-->
 <!--	android:clickable="true"-->
 </androidx.constraintlayout.widget.ConstraintLayout>
 

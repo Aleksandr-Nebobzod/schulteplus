@@ -10,6 +10,7 @@ package org.nebobrod.schulteplus.ui;
 
 
 import static org.nebobrod.schulteplus.Utils.getTopRightCornerRect;
+import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
 import static org.nebobrod.schulteplus.common.Const.SHOWN_00_MAIN;
 
 import org.nebobrod.schulteplus.Utils;
@@ -23,11 +24,21 @@ import org.nebobrod.schulteplus.ui.schulte.SchulteActivity;
 
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.appupdate.AppUpdateOptions;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.UpdateAvailability;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
@@ -39,6 +50,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -51,12 +63,15 @@ import android.widget.Toast;
  */
 public class MainActivity extends AppCompatActivity {
 	public static final String TAG = "MainActivity";
-//	private static MainActivity instance;
-
-	UserHelper userHelper;
+	private static final String PLAY_STORE_TAG = "com.android.vending";
 
 	private ActivityMainBinding binding;
-	ExerciseRunner runner;
+	private UserHelper userHelper;
+
+	private AppUpdateManager appUpdateManager;
+	private ActivityResultLauncher<IntentSenderRequest> appUpdateLauncher;
+
+	private ExerciseRunner runner;
 	private FloatingActionButton fabLaunch;
 
 	@Override
@@ -83,14 +98,51 @@ public class MainActivity extends AppCompatActivity {
 		binding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
-
+		// get userHelper from Intent
 		if(getIntent() != null & getIntent().hasExtra("user")) {
 			userHelper = (UserHelper) getIntent().getExtras().getSerializable("user");
 		}
 
-
 		// if no user at all
 		runner = ( null != userHelper ? ExerciseRunner.getInstance(userHelper) : ExerciseRunner.getInstance());
+
+		// Check the updates
+		{
+			PackageManager packageManager = this.getPackageManager();
+			String packageName = this.getPackageName();
+			String installerName = packageManager.getInstallerPackageName(packageName);
+			Log.w(TAG, "PLAY_STORE_OR NOT installerName: " + installerName);
+
+			// Check for official version Update
+			appUpdateManager = AppUpdateManagerFactory.create(this);
+			appUpdateLauncher = registerForActivityResult(
+					new ActivityResultContracts.StartIntentSenderForResult(),
+					result -> {
+						if (result.getResultCode() != RESULT_OK) {
+							String errMessage = getString(R.string.msg_unable_reach_update);
+							Log.w(TAG, "onCreate, StartIntentSenderForResult: " + errMessage);
+							showSnackBarConfirmation(MainActivity.this, errMessage, null);
+						}
+					});
+
+			// Returns an intent object that you use to check for an update.
+			Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+
+			// Checks that the platform will allow the specified type of update.
+			appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+				if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+						// This example applies an immediate update.
+						&& appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+					// Request the update.
+					appUpdateManager.startUpdateFlowForResult(
+							// Pass the intent that is returned by 'getAppUpdateInfo()'.
+							appUpdateInfo,
+							appUpdateLauncher,
+							AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build());
+				}
+			});
+
+		}
 
 		// Init Toolbar
 		Toolbar toolbar = findViewById(R.id.toolbar);
@@ -218,6 +270,20 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+
+		// continue installation in case of interrupted update is found
+		appUpdateManager.getAppUpdateInfo().addOnSuccessListener(
+				appUpdateInfo -> {
+					if (appUpdateInfo.updateAvailability()
+							== UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+						appUpdateManager.startUpdateFlowForResult(
+								appUpdateInfo,
+								appUpdateLauncher,
+								AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build());
+					}
+				});
+
+		// Onboarding hints
 		if (ExerciseRunner.isShowIntro() &&
 				(0 == (ExerciseRunner.getShownIntros() & SHOWN_00_MAIN))) {
 			new TapTargetSequence(this)

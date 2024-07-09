@@ -41,11 +41,12 @@
 		android:id="@+id/bottom_sheet"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:background="@color/colorSecondary"
+		style="@style/preferenceScreen"
 		app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
 		app:behavior_peekHeight="580dp"
 		app:behavior_hideable="true"
 		>
+<!--		android:background="@color/colorSecondary"-->
 		
 		<!-- orignal content view goes here -->
 	

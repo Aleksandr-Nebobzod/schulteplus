@@ -31,7 +31,7 @@
 	</style>
 	
 	<style name="AppTextStyle" parent="TextAppearance.AppCompat">
-		<item name="android:textColor">@color/colorOnSecondary</item>
+		<item name="android:textColor">@color/colorSecondary</item>
 	</style>
 	
 	<style name="CardViewSurfaceStyle" parent="Widget.MaterialComponents.CardView">
@@ -158,6 +158,17 @@
 		<item name="android:padding">2sp</item>
 		<item name="android:textSize">16sp</item>
 		<item name="android:textColor">@color/colorPrimary</item>
+		<item name="android:background">@color/colorBackground</item>
+	</style>
+	
+	<style name="preferenceScreen" parent="Theme.SchultePlus">
+		<item name="android:textColor">@color/colorPrimary</item>
+		<item name="android:titleTextColor">@color/colorPrimary</item>
+		
+		<item name="colorSecondary">@color/spinnerTextColor</item>
+<!--		<item name="app:summaryTextColor">@color/yourSummaryColor</item>-->
+		<item name="android:textColorHighlight">@color/spinnerTextColor</item>
+		<item name="android:textColorSecondary">@color/colorPrimary</item>
 		<item name="android:background">@color/colorBackground</item>
 	</style>
 </resources>

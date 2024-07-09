@@ -74,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
 	ImageView btUnwrapExtra, btWrapExtra;
 	LinearLayout llExtras;
 	TextView tvResendVerEmail, tvResetPassword, tvDeleteAccount;
+	boolean tvResendVerEmailFlag = false;
 	ProgressBar progressBar;
 	boolean signInPressed = false; // this is to prevent Instant Verification of FirebaseAuth
 
@@ -110,6 +111,7 @@ public class LoginActivity extends AppCompatActivity {
 		btGoOn.setOnClickListener(view -> {
 			String email = etEmail.getText().toString().trim();
 			String password = etPassword.getText().toString().trim();
+			final String[] resMessage = {""};
 
 			// Check name & pass, extract user data from db,
 			if (!validateEmail() | !validateName() | !validatePassword()){
@@ -127,8 +129,23 @@ public class LoginActivity extends AppCompatActivity {
 						@Override
 						public void onSuccess(AuthResult authResult) {
 
-							// check an account for correct login (repo copies)
-							String uid = Objects.requireNonNull(authResult.getUser()).getUid();
+							fbUser = authResult.getUser();
+							if (tvResendVerEmailFlag) {
+								fbUser.sendEmailVerification()
+										.addOnCompleteListener(new OnCompleteListener<Void>() {
+											@Override
+											public void onComplete(@NonNull Task<Void> taskVerifSent) {
+												if (taskVerifSent.isSuccessful()) {
+													resMessage[0] += " " + getString(R.string.msg_user_verif_sent);
+												} else {
+													resMessage[0] += " " + getString(R.string.msg_user_verif_not_sent);
+												}
+												Toast.makeText(LoginActivity.this, resMessage[0], Toast.LENGTH_LONG).show();
+											}
+										});
+							}
+							// check the freshest account for correct login (repo copies)
+							String uid = Objects.requireNonNull(fbUser).getUid();
 							DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
 							repos.getLatestUserHelper(intStringHash(uid))
 									.addOnCompleteListener(task -> {
@@ -192,10 +209,11 @@ public class LoginActivity extends AppCompatActivity {
 			public void onClick(View view) {
 				String email = etEmail.getText().toString().trim();
 
-				if (!validateEmail()){
+				if (!validateEmail() | !validatePassword()){
 					// do nothing (input errors are handled in validation functions
 				} else {
-					// TODOne: 25.03.2024  can't resend Email for non-authorised users
+					tvResendVerEmailFlag = true;
+					btGoOn.performClick();
 				}
 			}
 		});

@@ -13,9 +13,9 @@
 	<color name="colorPrimaryVariant">@color/light_grey_A_blue</color>
 	<color name="colorOnPrimary">@color/white</color>
 	<!-- Secondary brand colors -->
-	<color name="colorSecondary">@color/light_grey_2</color>
-	<color name="colorSecondaryVariant">@color/light_grey_A</color>
-	<color name="colorOnSecondary">@color/light_grey_8</color>
+	<color name="colorSecondary">@color/teal_200</color>
+	<color name="colorSecondaryVariant">@color/teal_700</color>
+	<color name="colorOnSecondary">@color/light_grey_D_blue</color>
 	
 	<color name="colorBackground">@color/light_grey_D</color>
 	<color name="colorError">@color/light_grey_8_red</color>

@@ -17,11 +17,16 @@ import org.nebobrod.schulteplus.common.NetworkConnectivity;
 import org.nebobrod.schulteplus.common.SnackBarManager;
 import org.nebobrod.schulteplus.data.UserHelper;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +41,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.appupdate.AppUpdateOptions;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.UpdateAvailability;
+
 import java.util.Arrays;
 
 import javax.inject.Inject;
@@ -43,8 +56,6 @@ import javax.inject.Inject;
 public class SplashActivity extends AppCompatActivity {
 
 	private static final String TAG = "SplashActivity";
-
-	private static final long TEST_TIME_ALLOWED = 8000L; // 8 sec is maximum splash time
 
 	private SplashViewModel viewModel;
 	private boolean[] testsCompleted = new boolean[5];
@@ -105,18 +116,6 @@ public class SplashActivity extends AppCompatActivity {
 			evaluateResults();
 
 		});
-
-		// Watch for Checks passed
-/*		viewModel.getSplashState().observe(this, splashState -> {
-			Log.d(TAG, "getSplashState().observe: " + splashState);
-			switch (splashState) {
-				case FINISH:
-
-					break;
-				default:
-					break;
-			}
-		});*/
 
 		// Set up a listener to start the process once the view is fully laid out
 		final View rootView = findViewById(android.R.id.content);
@@ -224,7 +223,6 @@ public class SplashActivity extends AppCompatActivity {
 						viewModel.postCheckResult(new SplashViewModel.InitialCheck(
 								SplashViewModel.CheckType.USER,
 								SplashViewModel.CheckResult.OK, "Verification informed"));
-
 					}
 				});
 				break;

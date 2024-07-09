@@ -37,8 +37,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	 * Suggested Copy/Paste code. Everything from here to the done block.
 	 ************************************************/
 
+	private static final String TAG = "DatabaseHelper";
 	private static final String DATABASE_NAME = "schulte_plus.db";
-
 	private static final int DATABASE_VERSION = getVersionCode();
 
 	private Dao<AdminNote, Integer> adminNoteDao = null;
@@ -69,7 +69,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, UserHelper.class);
 			TableUtils.createTable(connectionSource, AdminNote.class);
 		} catch (SQLException e) {
-			Log.e(DatabaseHelper.class.getName(), "Unable to create datbases", e);
+			Log.e(TAG, "Unable to create datbases", e);
 		}
 	}
 
@@ -88,17 +88,40 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase sqliteDatabase, ConnectionSource connectionSource, int oldVer, int newVer) {
 		try {
-			TableUtils.dropTable(connectionSource, Achievement.class, true);
+/*			TableUtils.dropTable(connectionSource, Achievement.class, true);
 			TableUtils.dropTable(connectionSource, ExResult.class, true);
 			TableUtils.dropTable(connectionSource, Turn.class, true);
 			TableUtils.dropTable(connectionSource, UserHelper.class, true);
 			TableUtils.dropTable(connectionSource, AdminNote.class, true);
+			*/ // this was for wipe update of structure and clear data
+
+			// Temporary tables for keep data
+			sqliteDatabase.execSQL("ALTER TABLE Achievement RENAME TO tmp_Achievement;");
+			sqliteDatabase.execSQL("ALTER TABLE ExResult RENAME TO tmp_ExResult;");
+			sqliteDatabase.execSQL("ALTER TABLE Turn RENAME TO tmp_Turn;");
+			sqliteDatabase.execSQL("ALTER TABLE UserHelper RENAME TO tmp_UserHelper;");
+			sqliteDatabase.execSQL("ALTER TABLE AdminNote RENAME TO tmp_AdminNote;");
+
+			// New tables
 			onCreate(sqliteDatabase, connectionSource);
-		} catch (SQLException e) {
-			Log.e(
-					DatabaseHelper.class.getName(),
-					"Unable to upgrade database from version " + oldVer + " to new " + newVer,
-					e);
+
+			// get new bulk data
+			sqliteDatabase.execSQL("INSERT INTO Achievement SELECT * FROM tmp_Achievement;");
+			sqliteDatabase.execSQL("INSERT INTO ExResult SELECT * FROM tmp_ExResult;");
+			sqliteDatabase.execSQL("INSERT INTO Turn SELECT * FROM tmp_Turn;");
+			sqliteDatabase.execSQL("INSERT INTO UserHelper SELECT * FROM tmp_UserHelper;");
+			sqliteDatabase.execSQL("INSERT INTO AdminNote SELECT * FROM tmp_AdminNote;");
+
+			// Remove the Temporary tables
+			sqliteDatabase.execSQL("DROP TABLE tmp_Achievement;");
+			sqliteDatabase.execSQL("DROP TABLE tmp_ExResult;");
+			sqliteDatabase.execSQL("DROP TABLE tmp_Turn;");
+			sqliteDatabase.execSQL("DROP TABLE tmp_UserHelper;");
+			sqliteDatabase.execSQL("DROP TABLE tmp_AdminNote;");
+
+		} catch (android.database.SQLException e) {
+			Log.e(TAG, "Unable to upgrade database from version " +
+							oldVer + " to new " + newVer, e);
 		}
 	}
 

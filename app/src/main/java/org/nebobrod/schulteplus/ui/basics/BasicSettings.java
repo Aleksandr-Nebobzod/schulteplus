@@ -15,7 +15,9 @@ import static org.nebobrod.schulteplus.Utils.getRes;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -73,6 +75,13 @@ public class BasicSettings extends PreferenceFragmentCompat {
 		runner.setHinted(((androidx.preference.SwitchPreference) findPreference(KEY_PRF_HINTED)).isChecked());
 
 		super.onResume();
+	}
+
+	@NonNull
+	@Override
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		container.getContext().setTheme(R.style.preferenceScreen);
+		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
 	@Override

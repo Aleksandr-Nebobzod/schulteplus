@@ -177,6 +177,7 @@ public class SplashViewModel extends ViewModel {
 		final CheckResult[] result = {CheckResult.ERROR};
 		final String[] message = new String[1];
 
+		// Notes from the Server
 		new DataOrmRepo<>(AdminNote.class).getListByField("uak", DataRepository.WhereCond.EQ, "0").addOnCompleteListener(new OnCompleteListener<List<AdminNote>>() {
 			@Override
 			public void onComplete(@NonNull Task<List<AdminNote>> task) {
@@ -211,7 +212,6 @@ public class SplashViewModel extends ViewModel {
 						// version is OK:
 						result[0] = CheckResult.OK;
 						message[0] = "Version check is OK";
-
 					};
 					new Handler(Looper.getMainLooper()).post(() -> {
 						checkResult.setValue(new InitialCheck(CheckType.APP, result[0], message[0]));
@@ -234,6 +234,9 @@ public class SplashViewModel extends ViewModel {
 				}
 			}
 		});
+
+		// And try to run google app-update
+
 	}
 
 	private void checkUser() {

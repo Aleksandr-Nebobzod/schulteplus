@@ -120,7 +120,7 @@
 	<string name="lbl_rating">Ratings</string>
 	<string name="lbl_rating_sum_on">Your settings gets comparable to other members\' settings. Your scores might be written to the Wall of Fame.</string>
 	<string name="lbl_rating_sum_off">This settings are for variety of personal training. Your scores are saved into your Achievements table.</string>
-	<string name="lbl_schulte_2_sequences">Air and Fire (7х7)</string>>
+	<string name="lbl_schulte_2_sequences">Ice and Fire (7х7)</string>>
 	<string name="lbl_schulte_2_sequences_sum">Two sequences are waiting: Blue grows from 1 and Red wanes from 24</string>
 	<string name="lbl_schulte_3_sequences">Four Seasons (10х10)</string>
 	<string name="lbl_schulte_3_sequences_sum">For sequences: Up, Down, Convergent, Divergent...  That might make you mad for starters</string>
@@ -306,5 +306,6 @@
 	<string name="msg_app_deprecating">Your app version is %1$d which goes deprecated soon. We recommend you to upgrade your app to version %2$d otherwise you won\'t be able to run the app soon.</string>
 	<string name="msg_news_reminder_yes">There are some unread notes for you</string>
 	<string name="msg_news_reminder_no">There are no unread notes for you</string>
+	<string name="msg_unable_reach_update">Unable to reach update</string>
 
 </resources>

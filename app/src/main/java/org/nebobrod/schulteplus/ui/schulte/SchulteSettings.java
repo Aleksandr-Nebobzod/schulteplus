@@ -85,6 +85,7 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = super.onCreateView(inflater, container, savedInstanceState);
+		container.getContext().setTheme(R.style.preferenceScreen);
 		Log.d(TAG, "onCreateView: " + view.toString());
 		return view;
 	}
@@ -102,7 +103,7 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 							TapTarget.forBounds(new Rect(200, 100, 200, 100), getString(R.string.hint_schulte_settings_title), getString(R.string.hint_schulte_settings_desc))
 									.outerCircleAlpha(0.9f)
 									.outerCircleColor(R.color.purple_700)
-									.textColor(R.color.light_grey_A_yellow)
+									.textColor(R.color.light_grey_D_yellow)
 									.targetRadius(150)
 									.transparentTarget(true)
 									.cancelable(true)

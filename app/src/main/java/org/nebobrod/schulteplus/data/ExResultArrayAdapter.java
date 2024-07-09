@@ -9,6 +9,7 @@
 package org.nebobrod.schulteplus.data;
 
 import static org.nebobrod.schulteplus.Utils.durationCut;
+import static org.nebobrod.schulteplus.Utils.durationMinutes;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.timeStampToDateLocal;

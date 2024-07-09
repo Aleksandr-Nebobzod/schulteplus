@@ -52,15 +52,24 @@ import java.util.Objects;
 
 public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 	public static final String TAG = "PrefsPopupSettingsFragment";
+
+	@Override
+	public void onCreate(@Nullable Bundle savedInstanceState) {
+		setStyle(AppCompatDialogFragment.STYLE_NORMAL, R.style.preferenceScreen);
+		super.onCreate(savedInstanceState);
+	}
+
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		// return inflater.inflate(R.layout.fragment_popup_settings, container, false);
+//		container.getContext().setTheme(R.style.preferenceScreen);
 		View view = inflater.inflate(R.layout.fragment_popup_settings, container, false);
 
-		if (view != null) {
+
+/*		if (view != null) {
 			view.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorBackground));
-		}
+		}*/
 
 		return view;
 	}

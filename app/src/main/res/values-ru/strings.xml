@@ -104,7 +104,7 @@
 	<string name="lbl_rating">Рейтинги</string>
 	<string name="lbl_rating_sum_on">Ваши опции сопоставимы с другими участниками. Ваши результаты могут быть записаны на Доске почёта.</string>
 	<string name="lbl_rating_sum_off">Режим для разнообразия персональных тренировок. Ваши результаты хранятся в личной странице достижений.</string>
-	<string name="lbl_schulte_2_sequences">Воздух и Пламя (7х7)</string>>
+	<string name="lbl_schulte_2_sequences">Лёд и Пламень (7х7)</string>>
 	<string name="lbl_schulte_2_sequences_sum">Вас ожидают две последовательности: Голубая растёт с 1 до 25, Красная уменьшаетася с 24 до 1.</string>
 	<string name="lbl_schulte_3_sequences">Четыре времени года (10х10)</string>
 	<string name="lbl_schulte_3_sequences_sum">Последовательности: Вверх, Вниз, Сходится, Расходится,.. Не свихнуться бы!</string>
@@ -283,4 +283,5 @@
 	<string name="msg_app_deprecating">Ваше приложение версии %1$d устаревает. Мы рекомендуем обновить приложение до версии %2$d иначе вскоре вы не сможете запускать своё приложение.</string>
 	<string name="msg_news_reminder_yes">Есть непрочитанные уведомления!</string>
 	<string name="msg_news_reminder_no">Непрочитанных уведомлений нет</string>
+	<string name="msg_unable_reach_update">Нет возможности получить обновление</string>
 </resources>

@@ -189,7 +189,7 @@ public final class Utils extends Application {
 		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter);
 	}
 	public static  String timeStampToTimeLocal(long ts) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss"); // use correct format ('S' for milliseconds)
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm"); // use correct format ('ss' fro seconds 'S' for milliseconds)
 		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter)  ;
 	}
 	public static  String timeStampFormattedShortUtc(long ts) {
@@ -213,6 +213,13 @@ public final class Utils extends Application {
 	public static String durationCut (long millis) {
 		int s = (int) (millis / 1000);
 		return String.format(Locale.ENGLISH, "%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
+	}
+	/**
+	 * @return String 9999
+	 */
+	public static String durationMinutes (long millis) {
+		int s = (int) (millis / 1000 / 60);
+		return String.format(Locale.ENGLISH, "%d", s );
 	}
 
 	/**

@@ -28,18 +28,19 @@
 	<application
 		android:name=".Utils"
 		android:allowBackup="true"
+		android:fullBackupContent="@xml/backup_rules"
 		android:configChanges="orientation|screenSize"
 		android:dataExtractionRules="@xml/data_extraction_rules"
-		android:fullBackupContent="@xml/backup_rules"
 		android:hardwareAccelerated="false"
-		android:icon="@mipmap/ic_launcher"
+		android:icon="@mipmap/ic_launcher_round"
 		android:label="@string/app_name"
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/Theme.SchultePlus"
-		android:versionCode="31"
+		android:versionCode="33"
 		android:versionName="Entada"
 		tools:targetApi="33">
+<!--		android:icon="@mipmap/ic_launcher"-->
 <!--		.Fullscreen-->
 
 		<activity

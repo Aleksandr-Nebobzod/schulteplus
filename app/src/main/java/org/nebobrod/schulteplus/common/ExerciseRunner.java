@@ -67,6 +67,7 @@ public class ExerciseRunner {
 	private static byte xSize = 5, ySize = 5;
 	private static boolean ratings = false; 	// Limitation of Settings
 	private static boolean hinted = true;
+	private static boolean countDown = true;
 	private static boolean shuffled = true;
 	private static String symbolType = "number"; // See string-array name="symbol_type_values"
 	private static int fontScale = 0; 			// {-1, 0, 1}
@@ -151,6 +152,7 @@ public class ExerciseRunner {
 
 			if (ratings) {
 				hinted = false;
+				countDown = false;
 				shuffled = true;
 				switch (exType){
 //					case KEY_PRF_EX_S1: xSize = ySize = 5; break; // see default
@@ -162,6 +164,7 @@ public class ExerciseRunner {
 				probEnabled = false; probDx = probDy = probW = 0D;
 			} else {
 				hinted = sharedPreferences.getBoolean(KEY_PRF_HINTED, true);
+				countDown = sharedPreferences.getBoolean(KEY_PRF_COUNT_DOWN, true);
 				shuffled = sharedPreferences.getBoolean(KEY_PRF_SHUFFLE, true);
 				xSize = (byte) sharedPreferences.getInt(KEY_X_SIZE, 5);
 				ySize = (byte) sharedPreferences.getInt(KEY_Y_SIZE, 5);
@@ -347,6 +350,30 @@ public class ExerciseRunner {
 
 	public void setHinted(boolean hinted) {
 		ExerciseRunner.hinted = hinted;
+	}
+
+	public static boolean isCountDown() {
+		return countDown;
+	}
+
+	public static void setCountDown(boolean count_down) {
+		ExerciseRunner.countDown = count_down;
+	}
+
+	public static String getSymbolType() {
+		return symbolType;
+	}
+
+	public static void setSymbolType(String symbolType) {
+		ExerciseRunner.symbolType = symbolType;
+	}
+
+	public static int getFontScale() {
+		return fontScale;
+	}
+
+	public static void setFontScale(int fontScale) {
+		ExerciseRunner.fontScale = fontScale;
 	}
 
 	public static double probDx() {

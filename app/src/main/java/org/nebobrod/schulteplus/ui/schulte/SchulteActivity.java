@@ -8,6 +8,7 @@
 
 package org.nebobrod.schulteplus.ui.schulte;
 
+import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.common.GridAdapter;
@@ -19,6 +20,8 @@ import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.ExResultArrayAdapter;
 
 import static org.nebobrod.schulteplus.Utils.*;
+import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_COLOR_BLUE;
+import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_COLOR_RED;
 import static org.nebobrod.schulteplus.common.Const.SHOWN_06_SCHULTE_SPACE;
 
 import androidx.activity.OnBackPressedCallback;
@@ -75,6 +78,7 @@ public class SchulteActivity extends AppCompatActivity {
 			finish();
 		}
 
+		repos = new DataRepos(ExResult.class);
 		runner = ExerciseRunner.getInstance();
 		boolean feedbackHaptic = runner.getPrefHaptic();
 		boolean feedbackSound = runner.getPrefSound();
@@ -84,7 +88,7 @@ public class SchulteActivity extends AppCompatActivity {
 			public void handleOnBackPressed() {
 				ExResultArrayAdapter.feedbackDialog(SchulteActivity.this,
 						null,
-						getRes().getString(R.string.txt_ex_not_done) + "! " + getRes().getString(R.string.txt_continue_ex) + "?",
+						getRes().getString(R.string.txt_ex_not_done) + "! " + getRes().getString(R.string.txt_continue_ex),
 						null,
 						(dialogInterface, i) -> finish());
 			}
@@ -107,29 +111,20 @@ public class SchulteActivity extends AppCompatActivity {
 						" levelOfEmotion: " + resultLiveData.getValue().getLevelOfEmotion() +
 						" sbEnergyLevel: " + resultLiveData.getValue().getLevelOfEnergy());
 				ExerciseRunner.complete();
-				exercise.reset();
+/*				exercise.reset();
 				exToolbar.init();
-				mAdapter.notifyDataSetChanged();
+				mAdapter.notifyDataSetChanged();*/
+				initArea();
 			}
 		};
 
 		// Prepare exercise
 		mGrid = (GridView)findViewById(R.id.gvArea);
-		ExerciseRunner.getInstance();
-		ExerciseRunner.loadPreference(); // TODO: 03.05.2024 check necessity
-		exercise = new STable( runner.getX(), runner.getY(), ExerciseRunner.probDx(), ExerciseRunner.probDy(), ExerciseRunner.probW());
-		ExerciseRunner.setExercise(exercise);
-		repos = new DataRepos(ExResult.class);
+		//ExerciseRunner.getInstance();
+		//ExerciseRunner.loadPreference(); // TODO: 03.05.2024 check necessity
 
-		// Toolbar for exercise initiation (if hints are chosen)
-		exToolbar = new ExToolbar(findViewById(R.id.tb_custom));
+		initArea();
 
-		// Prepare exercise field
-		mGrid.setNumColumns(exercise.getX());
-		mGrid.setEnabled(true);
-		mAdapter = new GridAdapter(this, exercise, ExerciseRunner.isSquared(), ExerciseRunner.getPrefTextScale());
-		mGrid.setAdapter(mAdapter);
-		mGrid.setLongClickable(true);
 
 		// Animate expected Cell (if lost)
 		mGrid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -159,27 +154,31 @@ public class SchulteActivity extends AppCompatActivity {
 						ExerciseRunner.setExResult(Objects.requireNonNull(resultLiveData.getValue()));
 						ExResultArrayAdapter.feedbackDialog(SchulteActivity.this,
 								resultLiveData,
-								getRes().getString(R.string.txt_ex_done_1) + "! " + getRes().getString(R.string.txt_continue_ex) + "?",
+								getRes().getString(R.string.txt_ex_done_1) + "! " + getRes().getString(R.string.txt_continue_ex),
 								restartListener,
 								cancelListener);
 
 //						newExerciseDialog(exercise.getResults().toMap() + pHtml() + pHtml() + bHtml(getRes().getString(R.string.txt_one_more_q)));
 					} else { // continue ex
-						exercise.shuffle();
-						mAdapter.notifyDataSetChanged();
+						if (ExerciseRunner.isShuffled()) {
+							exercise.shuffle(); // if shuffle option in user Prefs
+							mAdapter.notifyDataSetChanged();
+						}
+						// Update status bar
+						exToolbar.refresh(exercise);
 					}
 				// Display an error
 				} else if (ExerciseRunner.isHinted()) {
 					exToolbar.plusMistake();
+					exToolbar.refresh(exercise);
 					setViewZOrder((ViewGroup) adapterView, view, true);
 					animThrob(view, Color.valueOf(getColor(R.color.light_grey_A_red)));
 				}
-				exToolbar.setHintExpectedTurn(exercise.getExpectedValue());
-				exToolbar.setHintCounter(exercise.journal.size() - 1);
 				Log.d(TAG, "onItemClick: " + exercise.journal.get(exercise.journal.size() - 1));
 			}
 		});
 	}
+
 
 	@Override
 	protected void onResume() {
@@ -213,13 +212,6 @@ public class SchulteActivity extends AppCompatActivity {
 					}).start();
 		}
 	}
-/*
-	@Override
-	public void onBackPressed() {
-
-		// TODOne: 29.04.2024 check what to change for deprecated:
-		super.onBackPressed();
-	}*/
 
 	@Override
 	public void onConfigurationChanged(@NonNull Configuration newConfig) {
@@ -231,7 +223,7 @@ public class SchulteActivity extends AppCompatActivity {
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		// Read values from the "savedInstanceState"-object and put them in your textview
-		exToolbar.refresh();
+		exToolbar.refresh(exercise);
 	}
 
 	@Override
@@ -240,10 +232,46 @@ public class SchulteActivity extends AppCompatActivity {
 		super.onSaveInstanceState(outState);
 	}
 
+	/**
+	 * On start preparations
+	 */
+	private void initArea() {
+		exercise = new STable( runner.getX(), runner.getY(), ExerciseRunner.probDx(), ExerciseRunner.probDy(), ExerciseRunner.probW());
+		ExerciseRunner.setExercise(exercise);
+
+		// Toolbar for exercise initiation (if hints are chosen)
+		exToolbar = new ExToolbar(findViewById(R.id.tb_custom));
+
+		// Prepare exercise field
+		mGrid.setNumColumns(exercise.getX());
+		mGrid.setEnabled(true);
+		mAdapter = new GridAdapter(this, exercise, ExerciseRunner.isSquared(), ExerciseRunner.getPrefTextScale());
+		mGrid.setAdapter(mAdapter);
+		mGrid.setLongClickable(true);
+
+		if (ExerciseRunner.isCountDown()) {
+			Utils.countdownDialog(this, new Runnable() {
+				@Override
+				public void run() {
+					exercise.shuffle();
+					mAdapter.notifyDataSetChanged();
+				}
+			});
+		} else {
+			exercise.shuffle();
+			mAdapter.notifyDataSetChanged();
+		}
+
+	}
+
+	/**
+	 * Exercise area toolbar
+	 */
 	class ExToolbar {
 		 androidx.appcompat.widget.Toolbar toolbar;
 		 TextView tvExpectedTurn, tvCounter, tvMistakes;
-		 int hintExpectedTurn, hintCounter, hintMistakes;
+		 int hintCounter, hintMistakes;
+		 String hintExpectedTurn;
 		 Chronometer chmTime;
 
 		public ExToolbar(Toolbar toolbar) {
@@ -253,16 +281,14 @@ public class SchulteActivity extends AppCompatActivity {
 
 		private void init() {
 			hintCounter = hintMistakes = 0;
-			hintExpectedTurn = exercise.getExpectedValue();
-
 			tvExpectedTurn = toolbar.findViewById(R.id.tv_expected_turn);
-			tvExpectedTurn.setText("" + hintExpectedTurn);
 			tvCounter = toolbar.findViewById(R.id.tv_counter);
-			tvCounter.setText("0");
 			tvMistakes = toolbar.findViewById(R.id.tv_mistakes);
-			tvMistakes.setText("0");
 			chmTime = toolbar.findViewById(R.id.chm_time);
-			chmTime.setBase(SystemClock.elapsedRealtime());
+			refresh(exercise);
+			if (ExerciseRunner.isCountDown()) {
+				chmTime.setBase(SystemClock.elapsedRealtime() + 4000);
+			}
 			chmTime.start();
 
 			if (runner.isHinted()) {
@@ -272,25 +298,25 @@ public class SchulteActivity extends AppCompatActivity {
 			}
 		}
 
-		private void refresh() {
-			tvExpectedTurn.setText("" + exercise.getExpectedValue());
+		private void refresh(STable exercise) {
+			setHintCounter(exercise.journal.size() - 1);
+			if (KEY_SYMBOL_TYPE_COLOR_RED.equals(ExerciseRunner.getSymbolType()) ||
+					KEY_SYMBOL_TYPE_COLOR_BLUE.equals(ExerciseRunner.getSymbolType())) {
+				setHintExpectedColor(exercise.getExpectedColor());
+				tvExpectedTurn.setText(exercise.getExpectedValue() + "");
+			} else {
+				setHintExpectedTurn(exercise.getExpectedText());
+			}
 			tvCounter.setText("" + hintCounter);
 			tvMistakes.setText("" + hintMistakes);
-//			chmTime.setBase(SystemClock.elapsedRealtime());
-			chmTime.start();
 		}
 
-		public int getHintExpectedTurn() {
-			return hintExpectedTurn;
-		}
-
-		public void setHintExpectedTurn(int hintExpectedTurn) {
+		public void setHintExpectedTurn(String hintExpectedTurn) {
 			this.hintExpectedTurn = hintExpectedTurn;
 			tvExpectedTurn.setText("" + hintExpectedTurn);
 		}
-
-		public int getHintCounter() {
-			return hintCounter;
+		public void setHintExpectedColor(int hintExpectedColor) {
+			tvExpectedTurn.setBackgroundColor(hintExpectedColor);
 		}
 
 		public void setHintCounter(int hintCounter) {

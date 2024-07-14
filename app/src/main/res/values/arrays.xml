@@ -33,7 +33,6 @@
 		<item>gcb_bas_necker_cube</item>
 		<item>gcb_bas_necker_cylinder</item>
 		<item>gcb_bas_necker_ball</item>
-		
 	</string-array>
 	
 	<string-array name="sound_modes_entries" translatable="true">
@@ -49,16 +48,282 @@
 	</string-array>
 	
 	<string-array name="symbol_type_entries" translatable="true">
-		<item>Number</item>
-		<item>Letter</item>
-		<item>Color</item>
+		<item>Number Arabic</item>
+		<item>Number Roman</item>
+		<item>Letter Latin</item>
+		<item>Letter Cyrillic</item>
+		<item>Letter Devanagari</item>
+		<item>Color Red</item>
+		<item>Color Blue</item>
 	</string-array>
 	
 	<string-array name="symbol_type_values" translatable="false">
 		<item>number</item>
-		<item>letter</item>
-		<item>color</item>
+		<item>number_rome</item>
+		<item>letter_latin</item>
+		<item>letter_cyrillic</item>
+		<item>letter_devanagari</item>
+		<item>color_red</item>
+		<item>color_blue</item>
 	</string-array>
+	
+	<string-array name="number_rome" translatable="false">
+		<item>01 = I</item>
+		<item>02 = II</item>
+		<item>03 = III</item>
+		<item>04 = IV</item>
+		<item>05 = V</item>
+		<item>06 = VI</item>
+		<item>07 = VII</item>
+		<item>08 = VIII</item>
+		<item>09 = IX</item>
+		<item>10 = X</item>
+		<item>11 = XI</item>
+		<item>12 = XII</item>
+		<item>13 = XIII</item>
+		<item>14 = XIV</item>
+		<item>15 = XV</item>
+		<item>16 = XVI</item>
+		<item>17 = XVII</item>
+		<item>18 = XVIII</item>
+		<item>19 = XIX</item>
+		<item>20 = XX</item>
+		<item>21 = XXI</item>
+		<item>22 = XXII</item>
+		<item>23 = XXIII</item>
+		<item>24 = XXIV</item>
+		<item>25 = XXV</item>
+		<item>26 = XXVI</item>
+		<item>27 = XXVII</item>
+		<item>28 = XXVIII</item>
+		<item>29 = XXIX</item>
+		<item>30 = XXX</item>
+		<item>31 = XXXI</item>
+		<item>32 = XXXII</item>
+		<item>33 = XXXIII</item>
+		<item>34 = XXXIV</item>
+		<item>35 = XXXV</item>
+		<item>36 = XXXVI</item>
+		<item>37 = XXXVII</item>
+		<item>38 = XXXVIII</item>
+		<item>39 = XXXIX</item>
+		<item>40 = XL</item>
+		<item>41 = XLI</item>
+		<item>42 = XLII</item>
+		<item>43 = XLIII</item>
+		<item>44 = XLIV</item>
+		<item>45 = XLV</item>
+		<item>46 = XLVI</item>
+		<item>47 = XLVII</item>
+		<item>48 = XLVIII</item>
+		<item>49 = XLIX</item>
+		<item>50 = L</item>
+		<item>51 = LI</item>
+		<item>52 = LII</item>
+		<item>53 = LIII</item>
+		<item>54 = LIV</item>
+		<item>55 = LV</item>
+		<item>56 = LVI</item>
+		<item>57 = LVII</item>
+		<item>58 = LVIII</item>
+		<item>59 = LIX</item>
+		<item>60 = LX</item>
+		<item>61 = LXI</item>
+		<item>62 = LXII</item>
+		<item>63 = LXIII</item>
+		<item>64 = LXIV</item>
+		<item>65 = LXV</item>
+		<item>66 = LXVI</item>
+		<item>67 = LXVII</item>
+		<item>68 = LXVIII</item>
+		<item>69 = LXIX</item>
+		<item>70 = LXX</item>
+		<item>71 = LXXI</item>
+		<item>72 = LXXII</item>
+		<item>73 = LXXIII</item>
+		<item>74 = LXXIV</item>
+		<item>75 = LXXV</item>
+		<item>76 = LXXVI</item>
+		<item>77 = LXXVII</item>
+		<item>78 = LXXVIII</item>
+		<item>79 = LXXIX</item>
+		<item>80 = LXXX</item>
+		<item>81 = LXXXI</item>
+		<item>82 = LXXXII</item>
+		<item>83 = LXXXIII</item>
+		<item>84 = LXXXIV</item>
+		<item>85 = LXXXV</item>
+		<item>86 = LXXXVI</item>
+		<item>87 = LXXXVII</item>
+		<item>88 = LXXXVIII</item>
+		<item>89 = LXXXIX</item>
+		<item>90 = XC</item>
+		<item>91 = XCI</item>
+		<item>92 = XCII</item>
+		<item>93 = XCIII</item>
+		<item>94 = XCIV</item>
+		<item>95 = XCV</item>
+		<item>96 = XCVI</item>
+		<item>97 = XCVII</item>
+		<item>98 = XCVIII</item>
+		<item>99 = XCIX</item>
+		<item>00 = C</item>
+	</string-array>
+	
+	<string-array name="letter_latin" translatable="false">
+		<item>A</item>
+		<item>B</item>
+		<item>C</item>
+		<item>D</item>
+		<item>E</item>
+		<item>F</item>
+		<item>G</item>
+		<item>H</item>
+		<item>I</item>
+		<item>J</item>
+		<item>K</item>
+		<item>L</item>
+		<item>M</item>
+		<item>N</item>
+		<item>O</item>
+		<item>P</item>
+		<item>Q</item>
+		<item>R</item>
+		<item>S</item>
+		<item>T</item>
+		<item>U</item>
+		<item>V</item>
+		<item>W</item>
+		<item>X</item>
+		<item>Y</item>
+		<item>Z</item>
+	</string-array>
+	
+	<string-array name="letter_cyrillic" translatable="false">
+		<item>А</item>
+		<item>Б</item>
+		<item>В</item>
+		<item>Г</item>
+		<item>Д</item>
+		<item>Е</item>
+		<item>Ё</item>
+		<item>Ж</item>
+		<item>З</item>
+		<item>И</item>
+		<item>Й</item>
+		<item>К</item>
+		<item>Л</item>
+		<item>М</item>
+		<item>Н</item>
+		<item>О</item>
+		<item>П</item>
+		<item>Р</item>
+		<item>С</item>
+		<item>Т</item>
+		<item>У</item>
+		<item>Ф</item>
+		<item>Х</item>
+		<item>Ц</item>
+		<item>Ч</item>
+		<item>Ш</item>
+		<item>Щ</item>
+		<item>Ъ</item>
+		<item>Ы</item>
+		<item>Ь</item>
+		<item>Э</item>
+		<item>Ю</item>
+		<item>Я</item>
+	</string-array>
+	
+	<string-array name="letter_devanagari" translatable="false">
+		<item>अ [a]</item>
+		<item>आ [aa]</item>
+		<item>इ [e]</item>
+		<item>ई [i]</item>
+		<item>उ [u]</item>
+		<item>ऊ [oo]</item>
+		<item>ए [a]</item>
+		<item>ऐ [ae]</item>
+		<item>ओ [o]</item>
+		<item>औ [ao]</item>
+		<item>अं [am]</item>
+		<item>अः [a:]</item>
+		<item>ऋ [ri]</item>
+		<item>ॠ [rr]</item>
+		<item>ा [aa]</item>
+		<item>ि [i]</item>
+		<item>ी [ii]</item>
+		<item>ु [u]</item>
+		<item>ू [uu]</item>
+		<item>ृ [r]</item>
+		<item>ॄ [rr]</item>
+		<item>ॅ [e]</item>
+		<item>ॆ [e]</item>
+		<item>े [e]</item>
+		<item>ै [ai]</item>
+		<item>ॉ [o]</item>
+		<item>ॊ [o]</item>
+		<item>ो [o]</item>
+		<item>ौ </item>
+		<item>क [k]</item>
+		<item>ख [kha]</item>
+		<item>ग [g]</item>
+		<item>घ [gha]</item>
+		<item>ङ [nga]</item>
+		<item>च [ca]</item>
+		<item>छ [chha]</item>
+		<item>ज [ja]</item>
+		<item>झ [jha]</item>
+		<item>ञ [nya]</item>
+		<item>ट [ta]</item>
+		<item>ठ [thh]</item>
+		<item>ड [da]</item>
+		<item>ढ [dh]</item>
+		<item>ण [n]</item>
+		<item>त [t]</item>
+		<item>थ [tha]</item>
+		<item>द [d]</item>
+		<item>ध [dha]</item>
+		<item>न [na]</item>
+		<item>प [p]</item>
+		<item>फ [fa]</item>
+		<item>ब [b]</item>
+		<item>भ [bha]</item>
+		<item>म [ma]</item>
+		<item>य [y]</item>
+		<item>र [r]</item>
+		<item>ल [la]</item>
+		<item>व [v]</item>
+		<item>श [sha]</item>
+		<item>ष [shha]</item>
+		<item>स [sa]</item>
+		<item>ह [ha]</item>
+		<item>क्ष [ksh]</item>
+		<item>त्र [tra]</item>
+		<item>ज्ञ [gya]</item>
+		<item>० [zero]</item>
+		<item>१ [1]</item>
+		<item>२ [2]</item>
+		<item>३ [3]</item>
+		<item>४ [4]</item>
+		<item>५ [5]</item>
+		<item>६ [6]</item>
+		<item>७ [7]</item>
+		<item>८ [8]</item>
+		<item>९ [9]</item>
+		<item>.</item>
+	</string-array>
+	
+	<array name="color_red" translatable="false">
+		<item>#FF7E7E</item>
+		<item>#500000</item>
+	</array>
+	
+	<array name="color_blue" translatable="false">
+		<item>#80A0FF</item>
+		<item>#001050</item>
+	</array>
+	
 	
 	<string-array name="probabilities" translatable="true">
 		<item>Impossibly</item>

@@ -28,7 +28,9 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.DropDownPreference;
 import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
@@ -43,7 +45,6 @@ import com.getkeepsafe.taptargetview.TapTargetSequence;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.STable;
-import org.nebobrod.schulteplus.ui.TapTargetViewWr;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -201,7 +202,6 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 		}
 
 		if (KEY_PRF_PROB_ENABLED.equals(preference.getKey())) {
-
 			enableProbability(((SwitchPreference) preference).isChecked());
 		}
 
@@ -212,6 +212,9 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 		return super.onPreferenceTreeClick(preference);
 	}
 
+	/**
+	 * @param action true for turn on probability mgmt
+	 */
 	@SuppressLint("ClickableViewAccessibility")
 	private void enableProbability(boolean action) {
 		((Preference) findPreference(KEY_PRF_PROB_DRAWER)).setEnabled(action);
@@ -249,8 +252,6 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 					return false;
 				}
 			});
-
-
 		} else {
 			try {
 				Canvas canvas = surfaceView.getHolder().lockCanvas();
@@ -376,6 +377,8 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 
 		((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(allowed);
 		((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setEnabled(allowed);
+//		((DropDownPreference) findPreference(KEY_PRF_SYMBOLS)).setEnabled(allowed);
+		((ListPreference) findPreference(KEY_PRF_SYMBOLS)).setEnabled(allowed);
 
 //		((SeekBarPreference) findPreference(KEY_PRF_PROB_SURFACE)).setEnabled(action);
 //		((SwitchPreference) findPreference(KEY_PRF_PROB_ZERO)).setEnabled(action);
@@ -409,7 +412,6 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 		exType.setText(chosen.getKey());
 		runner.setExType(exType.getText().toString()); // set exType into the runner from invisible EditTextPreference field
 		runner.setRatings(((SwitchPreference) findPreference(KEY_PRF_RATINGS)).isChecked());
-//		runner.setSquared(((SwitchPreference) findPreference(KEY_PRF_SQUARED)).isChecked());
 
 		// set X & Y to runner
 		switch (chosen.getKey()){
@@ -428,7 +430,10 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 					runner.setY((byte) ((androidx.preference.SeekBarPreference) findPreference(KEY_Y_SIZE)).getValue());
 					// set hinted to runner
 					runner.setHinted(((androidx.preference.SwitchPreference) findPreference(KEY_PRF_HINTED)).isChecked());
+					runner.setCountDown(((androidx.preference.SwitchPreference) findPreference(KEY_PRF_COUNT_DOWN)).isChecked());
 					runner.setSquared(((androidx.preference.SwitchPreference) findPreference(KEY_PRF_SQUARED)).isChecked());
+//					runner.setSymbolType(((DropDownPreference) findPreference(KEY_PRF_SYMBOLS)).getValue());
+					runner.setSymbolType(((ListPreference) findPreference(KEY_PRF_SYMBOLS)).getValue());
 				}
 				break;
 			case KEY_PRF_EX_S2:
@@ -438,6 +443,7 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
 				((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setChecked(true);
 				((SwitchPreference) findPreference(KEY_PRF_HINTED)).setChecked(false);
+				((SwitchPreference) findPreference(KEY_PRF_COUNT_DOWN)).setChecked(false);
 				enableOptions(false);
 				break;
 			case KEY_PRF_EX_S3:
@@ -447,6 +453,7 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 				((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setChecked(true);
 				((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setChecked(true);
 				((SwitchPreference) findPreference(KEY_PRF_HINTED)).setChecked(false);
+				((SwitchPreference) findPreference(KEY_PRF_COUNT_DOWN)).setChecked(false);
 				enableOptions(false);
 				break;
 			case KEY_PRF_EX_S4:
@@ -461,7 +468,6 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 				// enable options PreferenceCategory for ease levels
 				enableOptions(true);
 		}
-
 	}
 
 	/**

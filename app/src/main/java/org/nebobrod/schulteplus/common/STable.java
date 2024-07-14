@@ -8,19 +8,23 @@
 
 package org.nebobrod.schulteplus.common;
 
-import static org.nebobrod.schulteplus.Utils.timeStampU;
-import static org.nebobrod.schulteplus.common.Const.AVERAGE_IDLE_LIMIT;
-import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_B0;
-import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S0;
-import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S1;
-import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S2;
-import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S3;
+import static org.nebobrod.schulteplus.Utils.interpolateColors;
+import static org.nebobrod.schulteplus.Utils.stringRepeat;
+import static org.nebobrod.schulteplus.common.Const.*;
 import static org.nebobrod.schulteplus.Utils.bHtml;
 import static org.nebobrod.schulteplus.Utils.cHtml;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.pHtml;
 import static org.nebobrod.schulteplus.Utils.tHtml;
+
+import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.data.DataOrmRepo;
+import org.nebobrod.schulteplus.data.ExResult;
+import org.nebobrod.schulteplus.data.ExResultBasics;
+import org.nebobrod.schulteplus.data.ExResultSchulte;
+import org.nebobrod.schulteplus.data.Turn;
+import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -30,14 +34,6 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
-
-import org.nebobrod.schulteplus.R;
-import org.nebobrod.schulteplus.data.DataOrmRepo;
-import org.nebobrod.schulteplus.data.ExResult;
-import org.nebobrod.schulteplus.data.ExResultBasics;
-import org.nebobrod.schulteplus.data.ExResultSchulte;
-import org.nebobrod.schulteplus.data.Turn;
-import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,10 +48,12 @@ import java.util.Random;
 public class STable extends Exercise {
 	public static final String TAG = "STable";
 
-	private ArrayList<Double> probabilities = new ArrayList<>();
-	private double probabilitiesSum = 0;
 	private ArrayList<SCell> area = new ArrayList<>();
 	private int xSize, ySize;
+	private ArrayList<Object> template = new ArrayList<>(xSize * ySize);
+
+	private double probabilitiesSum = 0;
+	private ArrayList<Double> probabilities = new ArrayList<>();
 	/** shift of coordinate-center for probabilities */
 	private double dX, dY;
 	/** surface for probabilities
@@ -85,17 +83,68 @@ public class STable extends Exercise {
 			this.w = 0;
 		}
 
+		// prepare template for cells text or color
+		Object[] sourceArray;
+		Object letter = "";
+		int[] colorSourceArray;
+		int[] colorArray;
+		switch (ExerciseRunner.getSymbolType()) {
+			case KEY_SYMBOL_TYPE_NUMBER_ROME:
+				sourceArray = getRes().getStringArray(R.array.number_rome);
+				for (int i = 0; i < xSize * ySize; i++) {
+					// it takes values from sourceArray by circle (if length of source is not enough)
+					template.add(sourceArray[i % (sourceArray.length)].toString().substring(5));
+				}
+				break;
+			case KEY_SYMBOL_TYPE_LETTER_LATIN:
+				sourceArray = getRes().getStringArray(R.array.letter_latin);
+				for (int i = 0; i < xSize * ySize; i++) {
+					// it takes values from sourceArray by circle (if length of source is not enough)
+					letter = sourceArray[i % (sourceArray.length)] +
+							stringRepeat(".", i / (sourceArray.length));
+					template.add(letter);
+				}
+				break;
+			case KEY_SYMBOL_TYPE_LETTER_CYRILLIC:
+				sourceArray = getRes().getStringArray(R.array.letter_cyrillic);
+				for (int i = 0; i < xSize * ySize; i++) {
+					// it takes values from sourceArray by circle (if length of source is not enough)
+					letter = sourceArray[i % (sourceArray.length)] +
+							stringRepeat(".", i / (sourceArray.length));
+					template.add(letter);
+				}
+				break;
+			case KEY_SYMBOL_TYPE_LETTER_DEVANAGARI:
+				sourceArray = getRes().getStringArray(R.array.letter_devanagari);
+				for (int i = 0; i < xSize * ySize; i++) {
+					// it takes values from sourceArray by circle (if length of source is not enough)
+					letter = sourceArray[i % (sourceArray.length)] +
+							stringRepeat(".", i / (sourceArray.length));
+					template.add(letter);
+				}
+				break;
+			case KEY_SYMBOL_TYPE_COLOR_RED:
+				colorSourceArray = getRes().getIntArray (R.array.color_red);
+				colorArray = interpolateColors((int)colorSourceArray[0], (int)colorSourceArray[1], xSize * ySize);
+				for (int i : colorArray) {
+					template.add(i);
+				}
+				break;
+			case KEY_SYMBOL_TYPE_COLOR_BLUE:
+				colorSourceArray = getRes().getIntArray (R.array.color_blue);
+				colorArray = interpolateColors((int)colorSourceArray[0], (int)colorSourceArray[1], xSize * ySize);
+				for (int i : colorArray) {
+					template.add(i);
+				}
+				break;
+			default: 	// KEY_SYMBOL_TYPE_NUMBER
+				for (int i = 0; i < xSize * ySize; i++) {
+					// it takes values from cicle
+					template.add(i+1);
+				}
+		}
 		this.reset();
 	}
-
-/*	public STable() {
-		if (ExerciseRunner.isRatings()) {
-			new STable(ExerciseRunner.getInstance().getX(), ExerciseRunner.getInstance().getY());
-		} else {
-			ExerciseRunner.loadPreference();
-			new STable(ExerciseRunner.getInstance().getX(), ExerciseRunner.getInstance().getY(), ExerciseRunner.probDx(), ExerciseRunner.probDy(), ExerciseRunner.probW());
-		}
-	}*/
 
 	public void reset()
 	{
@@ -104,13 +153,21 @@ public class STable extends Exercise {
 		probabilities = fillProbabilities (xSize, ySize, dX, dY, w);
 		random = new Random();
 		area.clear();
+		int current = 0;
 		for (int x = xSize; x > 0; x--){
 			for (int y = ySize; y > 0; y--){
 				area.add(new SCell(x, y, value++));
+				if (KEY_SYMBOL_TYPE_COLOR_RED.equals(ExerciseRunner.getSymbolType()) ||
+						KEY_SYMBOL_TYPE_COLOR_BLUE.equals(ExerciseRunner.getSymbolType())) {
+					area.get(current).setColor((int) template.get(current));
+				} else {
+					area.get(current).setText(template.get(current) + "");
+				}
+				current++;
 			}
 		}
 		expectedValue = 1;
-		shuffle();
+
 
 		// prepare parent
 		{
@@ -144,7 +201,9 @@ public class STable extends Exercise {
 	 * mono, two-colored sequences, four-colored sequences
 	 */
 	public TextView setViewContent (TextView view, int position) {
-		int value = area.get(position).getValue();
+		SCell cell = area.get(position);
+		int value = cell.getValue();
+		String strValue = "";
 		@ColorInt int color;
 		//		 https://stackoverflow.com/questions/51719485/adding-border-to-textview-programmatically
 		Drawable img = AppCompatResources.getDrawable(getAppContext(), R.drawable.ic_border);
@@ -152,18 +211,33 @@ public class STable extends Exercise {
 
 		switch (ExerciseRunner.getExType()){
 			case KEY_PRF_EX_S1:
-//				view.setText(value); // value keeps its sequence
-//				color = ContextCompat.getColor(getAppContext(), R.color.transparent);
+				switch (ExerciseRunner.getSymbolType()) {
+					case KEY_SYMBOL_TYPE_NUMBER_ROME:
+					case KEY_SYMBOL_TYPE_LETTER_LATIN:
+					case KEY_SYMBOL_TYPE_LETTER_CYRILLIC:
+					case KEY_SYMBOL_TYPE_LETTER_DEVANAGARI:
+						strValue = cell.getText();
+						break;
+					case KEY_SYMBOL_TYPE_COLOR_RED:
+					case KEY_SYMBOL_TYPE_COLOR_BLUE:
+						color = cell.getColor();
+						break;
+					default: 	// KEY_SYMBOL_TYPE_NUMBER
+		//				view.setText(value); // value keeps its sequence
+		//				color = ContextCompat.getColor(getAppContext(), R.color.transparent);
+						strValue = value + "";
+				}
 				break;
 			case KEY_PRF_EX_S2:
-				if (value % 2 != 0) { // odd
-					value = 1 + value / 2; // 1:25 red
+				if (value % 2 != 0) { 		// odd
+					value = 1 + value / 2; 	// 1:25 red
 					color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_blue);
-				} else { // even
+				} else { 					// even
 					value = 25 - value / 2; // 24:1 blue
 					color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_red);
 				}
 //				img.setColorFilter(Color.valueOf(getColor(R.color.light_grey_A_red)).toArgb(), PorterDuff.Mode.SRC_IN);
+				strValue = value + "";
 				break;
 			case KEY_PRF_EX_S3:
 				switch (value % 4) {
@@ -185,10 +259,11 @@ public class STable extends Exercise {
 						color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_yellow);
 						break;
 				}
+				strValue = value + "";
 				break;
 			default:
 		}
-		view.setText("" + value);
+		view.setText(strValue);
 		img.setColorFilter(color, PorterDuff.Mode.DST_ATOP);
 		view.setBackground(img);
 
@@ -335,9 +410,6 @@ public class STable extends Exercise {
 	 */
 	public void shuffle() 	{
 
-		if (!ExerciseRunner.isShuffled()) return; // if no-shuffle option in user Prefs
-
-
 		ArrayList<SCell> clonedArea = (ArrayList<SCell>) area.clone();
 
 		{ // uniform distribution:
@@ -368,7 +440,8 @@ public class STable extends Exercise {
 			}
 			Log.d(TAG, "shuffle: caughtPosition: " + caughtPosition + " expectedValue: " + expectedValue  + " " );
 //			area.indexOf(caughtPosition);
-			/** define the victim Cell, where we move the N which occupies necessary caughtPosition */
+
+			// define the victim Cell, where we move the N which occupies necessary caughtPosition
 			if (area.get(caughtPosition).getValue() != expectedValue) {
 				for (int k = 0; k < area.size(); k++) {
 					if (area.get(k).getValue() == expectedValue) {
@@ -379,12 +452,6 @@ public class STable extends Exercise {
 					}
 				}
 			}
-//			int changedPosition = 0;
-//			do {
-//				changedPosition = r.nextInt(area.size());
-//			} while (changedPosition == caughtPosition);
-
-
 		}
 	}
 
@@ -424,6 +491,15 @@ public class STable extends Exercise {
 		return i;
 	}
 
+	public SCell getSCellByValue(int value) {
+		for (SCell cell : area) {
+			if (cell.getValue() == value) {
+				return cell;
+			}
+		}
+		return null; // Если объект не найден, вернуть null или выбросить исключение
+	}
+
 	public SCell getSCell(int x, int y) {
 		return area.get(x * this.xSize + y * this.ySize);
 	}
@@ -433,6 +509,8 @@ public class STable extends Exercise {
 	public int getY() { return ySize; }
 
 	public int getExpectedValue() { return expectedValue; }
+	public String getExpectedText() { return getSCellByValue(expectedValue).getText(); }
+	public int getExpectedColor() { return getSCellByValue(expectedValue).getColor(); }
 
 	@Override
 	boolean validateResult() {

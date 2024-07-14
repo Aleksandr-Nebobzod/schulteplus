@@ -55,7 +55,7 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
-		setStyle(AppCompatDialogFragment.STYLE_NORMAL, R.style.preferenceScreen);
+//		setStyle(AppCompatDialogFragment.STYLE_NORMAL, R.style.preferenceScreen);
 		super.onCreate(savedInstanceState);
 	}
 
@@ -63,7 +63,6 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		// return inflater.inflate(R.layout.fragment_popup_settings, container, false);
-//		container.getContext().setTheme(R.style.preferenceScreen);
 		View view = inflater.inflate(R.layout.fragment_popup_settings, container, false);
 
 

@@ -13,8 +13,8 @@
 	<color name="colorPrimaryVariant">@color/light_grey_A_blue</color>
 	<color name="colorOnPrimary">@color/white</color>
 	<!-- Secondary brand colors -->
-	<color name="colorSecondary">@color/teal_200</color>
-	<color name="colorSecondaryVariant">@color/teal_700</color>
+	<color name="colorSecondary">@color/light_grey_4_purple</color>
+	<color name="colorSecondaryVariant">@color/teal_200</color>
 	<color name="colorOnSecondary">@color/light_grey_D_blue</color>
 	
 	<color name="colorBackground">@color/light_grey_D</color>
@@ -22,7 +22,7 @@
 <!--	<color name="colorBackground">@color/light_grey_A_blue</color>-->
 	<color name="colorSurface">@color/semi_white</color>
 	
-	<color name="spinnerTextColor">@color/light_grey_2</color>
+	<color name="spinnerTextColor">@color/light_grey_4_blue</color>
 	
 	<color name="transparent">#00000000</color>
 	<color name="purple_200">#FFBB86FC</color>
@@ -47,8 +47,11 @@
 	<color name="light_grey_8_red">#880000</color>
 	<color name="bright_grey_A_red">#AA4040</color>
 	<color name="light_grey_2_green">#225222</color>
-	<color name="light_grey_2_blue">#224292</color>
+	<color name="light_grey_2_blue">#1E397E</color>
+	<color name="light_grey_2_purple">#40294C</color>
 	<color name="light_grey_4">#444444</color>
+	<color name="light_grey_4_blue">#3B499E</color>
+	<color name="light_grey_4_purple">#533E6A</color>
 	<color name="light_grey_6">#666666</color>
 	<color name="light_grey_6_blue">#2A5CDA</color>
 	<color name="light_grey_8">#888888</color>
@@ -62,6 +65,7 @@
 	<color name="light_grey_D_blue">#89C8FF</color>
 	<color name="light_grey_D_purple">#D3ACFF</color>
 	<color name="light_grey_D_yellow">#DADA70</color>
+	<color name="light_grey_F_blue">#C9DEF1</color>
 	<color name="light_blue_A400">#FF00B0FF</color>
 	<color name="black_overlay_3">#30000000</color>
 	<color name="black_overlay_7">#70000000</color>

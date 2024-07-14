@@ -27,23 +27,16 @@
 			/>
 		
 		<Preference
-			app:key="prf_about"
+			app:key="prf_about_feedback"
 			app:summary="@string/prf_sum_feedback"
 			app:title="@string/prf_title_feedback"
-			android:icon="@drawable/ic_baseline_email_24">
-
-			<intent android:action="android.intent.action.VIEW"
-				android:data="@string/src_menu_about_email">
-				<extra android:name="android.intent.extra.TEXT"
-					android:value="Ваше сообщение разработчикам Put your message to vendor " />
-				<extra android:name="android.intent.extra.SUBJECT"
-					android:value="Schulte Plus обращение / feedback" />
-			</intent>
-		</Preference>
+			android:icon="@drawable/ic_baseline_email_24"
+			app:persistent="false" />
+		
 		<Preference
 			app:key="prf_click_button"
 			app:title="@string/prf_sum_feedback"
-			app:layout="@layout/layout_image_button"
+			app:layout="@layout/z_layout_image_button"
 			app:isPreferenceVisible="false">
 		</Preference>
 		

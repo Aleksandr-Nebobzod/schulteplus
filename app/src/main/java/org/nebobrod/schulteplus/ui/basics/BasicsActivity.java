@@ -236,7 +236,7 @@ public class BasicsActivity extends AppCompatActivity {
 				// Call Dialog
 				ExResultArrayAdapter.feedbackDialog(BasicsActivity.this,
 						resultLiveData,
-						getRes().getString(R.string.txt_continue_ex) + "?",
+						getRes().getString(R.string.txt_continue_ex),
 						okListener,
 						cancelListener);
 			}

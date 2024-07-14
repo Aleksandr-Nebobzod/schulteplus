@@ -20,6 +20,9 @@ public class SCell {
 	private int	value;
 	/** x,y are a bit extra here 'cos they are recalculated each shuffle() */
 	private int x,y;
+	/** text form of visible value */
+	private String text = "";
+	private int color= 0xFFFFFF;
 
 /*	private byte sequence = SEQ1_SINGLE; // by default it's for 5x5 ex.
 	private boolean isPassed = false; // set "true" for cell's been out of the game
@@ -29,6 +32,7 @@ public class SCell {
 		this.x = x;
 		this.y = y;
 		this.value = value;
+		this.text = value + "";
 	}
 
 	@NonNull
@@ -53,7 +57,23 @@ public class SCell {
 		this.value = value;
 	}
 
-/*	public boolean isPassed() {
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public int getColor() {
+		return color;
+	}
+
+	public void setColor(int color) {
+		this.color = color;
+	}
+
+	/*	public boolean isPassed() {
 		return isPassed;
 	}
 

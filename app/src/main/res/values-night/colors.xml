@@ -21,7 +21,7 @@
 	
 	<color name="colorBackground">@color/light_grey_1_blue</color>
 	<color name="colorError">@color/light_red_A200</color>
-	<color name="spinnerTextColor">@color/light_grey_D_blue</color>
+	<color name="spinnerTextColor">@color/light_grey_F_blue</color>
 	
 	<color name="colorSurface">@color/semi_grey_4</color>
 

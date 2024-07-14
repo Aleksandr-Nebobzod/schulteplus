@@ -10,7 +10,10 @@ package org.nebobrod.schulteplus.ui;
 
 import static com.google.android.gms.common.GooglePlayServicesUtil.isGooglePlayServicesAvailable;
 
+import static org.nebobrod.schulteplus.Utils.timeStampU;
+
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -25,6 +28,7 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.common.Log;
 
 /**
@@ -46,6 +50,51 @@ public class PrefsAboutFragment extends PreferenceFragmentCompat {
 
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.menu_about_pref);
+
+		// Send Feedback
+		getPreferenceManager()
+				.findPreference("prf_about_feedback")
+				.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+					@Override
+					public boolean onPreferenceClick(@NonNull Preference preference) {
+						String email = getResources().getString(R.string.src_menu_about_email);
+						String subject = getResources().getString(R.string.src_menu_about_subject);
+						String body = getResources().getString(R.string.src_menu_about_body);
+						String chooserTitle = getResources().getString(R.string.src_menu_about_chooser_title);
+
+						body += "\n========================";
+						long ts = timeStampU();
+						body += "\ntimeStampU: " + ts;
+						body += "\ntimeStampLocal: " + Utils.timeStampLocal(ts);
+						body += "\nversionCode: " + Utils.getVersionCode();
+						body += "\nscreenFactor: " + Utils.getScreenFactor();
+						body += "\ncurrentOsVersion: " + Utils.currentOsVersion();
+						body += "\n" + ExerciseRunner.getUserHelper();
+						body += "\n========================";
+
+						/*Uri uri = Uri.parse("mailto:" + Uri.encode(email))
+								.buildUpon()
+								.appendQueryParameter("subject", subject)
+								.appendQueryParameter("body", body)
+								.build();
+
+						Intent emailIntent = new Intent(Intent.ACTION_SENDTO, uri);
+						emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+						emailIntent.putExtra(Intent.EXTRA_CC, new String[]{email});*/
+
+						Intent emailIntent = new Intent(Intent.ACTION_SEND);
+						emailIntent.setType("message/rfc822");
+						emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+						emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+						emailIntent.putExtra(Intent.EXTRA_TEXT, body);
+
+						//emailIntent.putExtra(Intent.EXTRA_HTML_TEXT, body); //If you are using HTML in your body text
+//						startActivity(Intent.createChooser(emailIntent, chooserTitle));
+						startActivity(emailIntent);
+
+						return true;
+					}
+				});
 
 		// Go to web site
 		getPreferenceManager()

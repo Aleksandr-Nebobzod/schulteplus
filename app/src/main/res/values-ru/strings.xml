@@ -105,11 +105,11 @@
 	<string name="lbl_rating_sum_on">Ваши опции сопоставимы с другими участниками. Ваши результаты могут быть записаны на Доске почёта.</string>
 	<string name="lbl_rating_sum_off">Режим для разнообразия персональных тренировок. Ваши результаты хранятся в личной странице достижений.</string>
 	<string name="lbl_schulte_2_sequences">Лёд и Пламень (7х7)</string>>
-	<string name="lbl_schulte_2_sequences_sum">Вас ожидают две последовательности: Голубая растёт с 1 до 25, Красная уменьшаетася с 24 до 1.</string>
+	<string name="lbl_schulte_2_sequences_sum">Вас ожидают две последовательности: Голубая растёт с 1 до 25, Красная убывает с 24 до 1.</string>
 	<string name="lbl_schulte_3_sequences">Четыре времени года (10х10)</string>
-	<string name="lbl_schulte_3_sequences_sum">Последовательности: Вверх, Вниз, Сходится, Расходится,.. Не свихнуться бы!</string>
+	<string name="lbl_schulte_3_sequences_sum">Последовательности: Растёт, Убывает, Сходится, Расходится,.. Не свихнуться бы!</string>
 	<string name="lbl_schulte_4_mishmash">Мешанина!</string>
-	<string name="lbl_schulte_4_mishmash_sum">Что ж, попробуй найти их всех, таких уникальных</string>
+	<string name="lbl_schulte_4_mishmash_sum">Попробуй найти их всех, таких уникальных</string>
 	<string name="lbl_hints">Cтатус</string>
 	<string name="lbl_hints_sum">Подсветки, напоминатели и хронометраж интересны новичкам.</string>
 	<string name="lbl_symbol_type">Тип символа в ячейке</string>
@@ -121,7 +121,10 @@
 	<string name="title_activity_schulte">Шульте+ Таблицы</string>
 	<string name="lbl_distraction">✓</string>
 	<string name="lbl_back">◁</string>
-	<string name="lbl_schulte_status">След, Ходов, Ошибок, Время: </string>
+	<string name="lbl_schulte_status_next">След</string>
+	<string name="lbl_schulte_status_counter">Ходов</string>
+	<string name="lbl_schulte_status_mistakes">Ошибок</string>
+	<string name="lbl_schulte_status_time">Время</string>
 	<string name="title_signup">Регистрация</string>
 	<string name="hint_login">Имя пользователя (псевдоним)</string>
 	<string name="hint_email">адрес эл.почты</string>
@@ -178,7 +181,7 @@
 	<string name="prf_user_logoff_description">Закрыть приложение, очистить данные автовхода</string>
 	<string name="txt_welcome_back">С возвращением</string>
 	<string name="lbl_ver">версия:</string>
-	<string name="lbl_vendor">Conscious rover</string>
+	<string name="lbl_vendor">SMART ROVERS</string>
 	<string name="msg_selfcheck">Старт…</string>
 	<string name="msg_network_connection">Сетевое подключение</string>
 	<string name="msg_app_consistency">Целостность приложения</string>
@@ -187,7 +190,7 @@
 	<string name="msg_user">Пользователь</string>
 	<string name="msg_veryfied">Подтверждено</string>
 	<string name="msg_tests_failed">Не все тесты успешны</string>
-	<string name="txt_continue_ex">Продолжить тренировку</string>
+	<string name="txt_continue_ex">Желаете ли вы продолжить тренировку?</string>
 	<string name="prf_title_online">Онлайн</string>
 	<string name="lbl_datasource_www">Все</string>
 	<string name="lbl_datasource_local">Мои</string>
@@ -284,4 +287,12 @@
 	<string name="msg_news_reminder_yes">Есть непрочитанные уведомления!</string>
 	<string name="msg_news_reminder_no">Непрочитанных уведомлений нет</string>
 	<string name="msg_unable_reach_update">Нет возможности получить обновление</string>
+	<string name="src_menu_about_subject">Шульте Плюс, обращение</string>
+	<string name="src_menu_about_chooser_title">Направить письмо через...</string>
+	<string name="src_menu_about_body">Ваше сообщение разработчику:\n\n\n\n
+		(пожалуйста, не удаляйте следующую техническую информацию)\n
+	</string>
+	<string name="lbl_count_down">Обратный отсчёт</string>
+	<string name="lbl_count_down_sum">Пауза перед запуском упражнения</string>
+	<string name="txt_psychonetics"><u>ПСИХОНЕТИКА</u></string>
 </resources>

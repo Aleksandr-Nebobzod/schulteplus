@@ -61,15 +61,17 @@
 <!--	not used in v0.30-->
 	<style name="button3d" parent="@style/Widget.MaterialComponents.Button.TextButton">
 		<item name="android:gravity">center_vertical|center_horizontal</item>
-		<item name="android:textColor">@color/colorPrimary</item>
-		<item name="android:shadowColor">@color/colorSecondary</item>
+		<item name="android:layout_height">56dp</item>
+		<item name="android:textColor">@color/light_grey_D</item>
+		<item name="android:shadowColor">@color/black</item>
 		<item name="android:shadowDx">2</item>
 		<item name="android:shadowDy">2</item>
 		<item name="android:shadowRadius">2</item>
 		<item name="android:textSize">20sp</item>
 		<item name="android:fontFamily">monospace</item>
 		<item name="android:textAllCaps">false</item>
-		<item name="android:background">@drawable/bg_button</item>
+<!--		<item name="android:background">@color/light_grey_8</item>-->
+<!--		<item name="android:background">@drawable/bg_button</item>-->
 	</style>
 	
 
@@ -155,20 +157,65 @@
 	</style>
 	
 	<style name="spinnerDropDownItemStyle">
-		<item name="android:padding">2sp</item>
+		<item name="android:padding">8sp</item>
 		<item name="android:textSize">16sp</item>
 		<item name="android:textColor">@color/colorPrimary</item>
 		<item name="android:background">@color/colorBackground</item>
+		<item name="android:checkMark">?android:attr/listChoiceIndicatorSingle</item>
+		<item name="android:ellipsize">end</item>
+		<item name="android:singleLine">true</item>
+	</style>
+	
+	<style name="alertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog">
+<!--	<style name="alertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">-->
+<!--		<item name="android:windowBackground">@drawable/ic_border</item>-->
+		<item name="android:colorPrimary">@color/light_grey_4</item>
+		<item name="android:colorPrimaryDark">@color/light_grey_2_blue</item>
+		<item name="android:colorAccent">@color/light_grey_2_green</item>
+		<item name="android:colorControlActivated">@color/light_grey_8_red</item>
+		
+		
+		<item name="materialButtonStyle">@style/button3d</item>
+		
+		<item name="android:windowBackground">@drawable/ic_border</item>
+		
+		
 	</style>
 	
 	<style name="preferenceScreen" parent="Theme.SchultePlus">
 		<item name="android:textColor">@color/colorPrimary</item>
-		<item name="android:titleTextColor">@color/colorPrimary</item>
+		<item name="android:textColorSecondary">@color/spinnerTextColor</item>			<!--Summary Text-->
+		<item name="android:colorControlActivated">@color/colorSecondary</item>		<!--Switch On-->
+		<item name="android:textColorTertiary">@color/colorError</item>
 		
-		<item name="colorSecondary">@color/spinnerTextColor</item>
+<!--		<item name="android:windowBackground">@drawable/ic_border_thick</item>-->
+		<item name="android:windowBackground">@drawable/ic_border</item>
+		
+		<!--NOT WORKING ATTRIBUTES:-->
+<!--		<item name="android:actionMenuTextColor">@color/colorPrimary</item>-->
+<!--		<item name="android:color">@color/colorPrimary</item>-->
+<!--		<item name="android:colorAccent">@color/colorPrimary</item>-->
+<!--		<item name="android:colorActivatedHighlight">@color/colorPrimary</item>-->
+<!--		<item name="android:colorButtonNormal">@color/colorPrimary</item>-->
+<!--		<item name="android:colorControlHighlight">@color/colorPrimary</item>-->
+<!--		<item name="android:colorControlNormal">@color/colorPrimary</item>-->
+<!--		<item name="android:titleTextColor">@color/spinnerTextColor</item>-->
+<!--		<item name="android:colorFocusedHighlight">@color/colorPrimary</item>-->
+<!--		<item name="android:colorForeground">@color/spinnerTextColor</item>-->
+<!--		<item name="android:colorPrimary">@color/spinnerTextColor</item>-->
+<!--		<item name="android:colorSecondary">@color/spinnerTextColor</item>-->
+<!--		<item name="android:editTextColor">@color/spinnerTextColor</item>-->
+<!--		<item name="android:effectColor">@color/spinnerTextColor</item>		Only API31+-->
+<!--		<item name="android:fillColor">@color/spinnerTextColor</item>-->
+<!--		<item name="android:keyTextColor">@color/spinnerTextColor</item>-->
+<!--		<item name="android:textColorHighlight">@color/spinnerTextColor</item>-->
+<!--		<item name="android:textColorTertiary">@color/colorPrimary</item>-->
+
+<!--		<item name="android:colo">@color/spinnerTextColor</item>-->
+		<!--		<item name="colorSecondary">@color/spinnerTextColor</item>
+				<item name="android:textColorHighlight">@color/spinnerTextColor</item>
+				<item name="android:background">@color/colorBackground</item>--> 		<!--THIS I GUESS BLOCKS DRAWING 240712-->
 <!--		<item name="app:summaryTextColor">@color/yourSummaryColor</item>-->
-		<item name="android:textColorHighlight">@color/spinnerTextColor</item>
-		<item name="android:textColorSecondary">@color/colorPrimary</item>
-		<item name="android:background">@color/colorBackground</item>
 	</style>
+
 </resources>

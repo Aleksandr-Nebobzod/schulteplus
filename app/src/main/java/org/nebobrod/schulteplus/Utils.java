@@ -80,6 +80,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 public final class Utils extends Application {
@@ -788,16 +790,19 @@ public final class Utils extends Application {
 
 		// Screen width category
 		int screenCategory;
-		if (screenWidthInches >= 9.0F) {
+		if (screenWidthInches >= 6.0F) {
 			// Очень большие устройства (Extra Large)
-			screenCategory = 4;
-		} else if (screenWidthInches >= 6.0F) {
-			// Большие устройства (Large)
-			screenCategory = 3;
+			screenCategory = 5;
 		} else if (screenWidthInches >= 4.0F) {
+			// Большие устройства (Large)
+			screenCategory = 4;
+		} else if (screenWidthInches >= 3.2F) {
+			// Средние устройства+ (Medium+)
+			screenCategory = 3;
+		} else if (screenWidthInches >= 2.0F) {
 			// Средние устройства (Medium)
 			screenCategory = 2;
-		} else if (screenWidthInches >= 2.0F) {
+		} else if (screenWidthInches >= 1.5F) {
 			// Малые устройства (Small)
 			screenCategory = 1;
 		} else {
@@ -934,7 +939,7 @@ public final class Utils extends Application {
 										  String strMessage,
 										  @Nullable DialogInterface.OnClickListener okListener,
 										  @Nullable DialogInterface.OnClickListener cancelListener) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(newContext, androidx.appcompat.R.style.Theme_AppCompat); // Theme_AppCompat_Dialog_Alert
+		AlertDialog.Builder builder = new AlertDialog.Builder(newContext, R.style.alertDialogTheme); 	// androidx.appcompat.Theme_AppCompat_Dialog_Alert
 
 		final FrameLayout frameView = new FrameLayout(newContext);
 		builder.setView(frameView);
@@ -955,7 +960,7 @@ public final class Utils extends Application {
 
 		// Variables
 		LayoutInflater inflater = alertDialog.getLayoutInflater();
-		View layout = inflater.inflate(R.layout.activity_schulte_result_df, frameView);
+		View layout = inflater.inflate(R.layout.dialog_result_feedback, frameView);
 		TextView txtTitle, txtMessage;
 		TableRow tbRow;
 		TableLayout tbPsychometry;
@@ -1001,15 +1006,17 @@ public final class Utils extends Application {
 				// redesign OK by template
 				btnRedesign[0] = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
 				btnRedesign[0].setLayoutParams(btnOk.getLayoutParams());
-				btnRedesign[0].setBackground(Utils.getRes().getDrawable(R.drawable.bg_button, newContext.getTheme()));
+//				btnRedesign[0].setBackground(Utils.getRes().getDrawable(R.drawable.bg_button, newContext.getTheme()));
 //				btnRedesign[0].setTextAppearance(R.style.button3d);
+				btnRedesign[0].setBackgroundColor(getRes().getColor(R.color.light_grey_8, null));
 				btnRedesign[0].setAllCaps(false);
 				btnRedesign[0].setWidth(btnOk.getWidth()-10);
 				// redesign Cancel by template
 				btnRedesign[0] = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 				btnRedesign[0].setLayoutParams(btnCancel.getLayoutParams());
-				btnRedesign[0].setBackground(AppCompatResources.getDrawable(newContext, R.drawable.bg_button));
+//				btnRedesign[0].setBackground(AppCompatResources.getDrawable(newContext, R.drawable.bg_button));
 //				btnRedesign[0].setTextAppearance(R.style.button3d);
+				btnRedesign[0].setBackgroundColor(getRes().getColor(R.color.light_grey_8, null));
 				btnRedesign[0].setAllCaps(false);
 				btnRedesign[0].setWidth(btnCancel.getWidth()-10);
 			}
@@ -1059,4 +1066,133 @@ public final class Utils extends Application {
 		return result;
 	}
 
+	/**
+	 * Show dialog, disappearing after 3 sec and after that execute runnable
+	 * @param context1
+	 */
+	public static void countdownDialog(Context context1, Runnable runnable) {
+		AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context1);
+
+		final FrameLayout frameView = new FrameLayout(context1);
+		builder.setView(frameView);
+
+		final AlertDialog alertDialog = builder.create();
+		alertDialog.setCancelable(false);
+		alertDialog.setCanceledOnTouchOutside(false);
+		alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		alertDialog.getWindow().setDimAmount(0.4F);
+
+		// Put the dialog layout to center of the screen
+		Window window = alertDialog.getWindow();
+		WindowManager.LayoutParams wlp = window.getAttributes();
+		wlp.gravity = Gravity.CENTER;
+		window.setAttributes(wlp);
+		window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+
+		// Variables
+		LayoutInflater inflater = alertDialog.getLayoutInflater();
+		View layout = inflater.inflate(R.layout.dialog_countdown, frameView);
+		TextView counter;
+
+		counter = layout.findViewById(R.id.tv_counter);
+
+		alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+			@Override
+			public void onShow(DialogInterface dialogInterface) {
+/*				final long startTime = System.currentTimeMillis();
+
+				final Handler handler = new Handler();
+				final Timer timer = new Timer();
+
+				timer.schedule(new TimerTask() {
+					@Override
+					public void run() {
+						long currentTime = System.currentTimeMillis();
+						long remainingTime = 4000 - (currentTime - startTime);
+						int roundedTime = (int) Math.ceil(remainingTime / 1000);
+						String newCounterText = String.valueOf(roundedTime);
+
+						if (!counter.getText().toString().equals(newCounterText)) {
+							counter.setText(newCounterText);
+						}
+
+						if (remainingTime == 0) {
+							timer.cancel();
+							alertDialog.dismiss();
+							runnable.run();
+						}
+					}
+				}, 0, 200); // Execute every 200 milliseconds (0.2 seconds)*/
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						long timeLeft = 3900;
+						long finishTime = System.currentTimeMillis() + timeLeft;
+
+						while (timeLeft > 0) { // 4 seconds
+							try {
+								Thread.sleep(200); // 0.2 seconds
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+
+							timeLeft = finishTime - System.currentTimeMillis();
+							final long secondsElapsed = timeLeft / 1000;
+
+							// Update the counter on the UI thread
+							if (secondsElapsed != Integer.parseInt((String) counter.getText())) {
+								((Activity) context1).runOnUiThread(new Runnable() {
+									@Override
+									public void run() {
+										counter.setText(String.valueOf(secondsElapsed));
+										animThrob(counter, null);
+									}
+								});
+							}
+						}
+
+						// Dismiss the dialog and execute the runnable
+						((Activity) context1).runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								alertDialog.dismiss();
+								runnable.run();
+							}
+						});
+					}
+				}).start();
+
+			}
+		});
+
+		alertDialog.show();
+	}
+
+	public static int[] interpolateColors(int startColor, int endColor, int steps) {
+		int[] colors = new int[steps];
+
+		float[] startRGB = new float[3];
+		float[] endRGB = new float[3];
+
+		Color.colorToHSV(startColor, startRGB);
+		Color.colorToHSV(endColor, endRGB);
+
+		for (int i = 0; i < steps; i++) {
+			float ratio = (float) i / (steps - 1);
+			int red = (int) ((Color.red(endColor) - Color.red(startColor)) * ratio + Color.red(startColor));
+			int green = (int) ((Color.green(endColor) - Color.green(startColor)) * ratio + Color.green(startColor));
+			int blue = (int) ((Color.blue(endColor) - Color.blue(startColor)) * ratio + Color.blue(startColor));
+			colors[i] = Color.rgb(red, green, blue);
+		}
+
+		return colors;
+	}
+	public static String stringRepeat(String str, int times) {
+		StringBuilder builder = new StringBuilder(times * str.length());
+		for (int i = 0; i < times; i++) {
+			builder.append(str);
+		}
+		return builder.toString();
+	}
 }

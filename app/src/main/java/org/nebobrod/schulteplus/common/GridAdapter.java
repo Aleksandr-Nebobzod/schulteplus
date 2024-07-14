@@ -82,7 +82,7 @@ public class GridAdapter extends BaseAdapter {
 //			 Log.d(TAG, "itemHeight: " + itemHeight);
 //			 view.setLayoutParams(new GridView.LayoutParams(new ViewGroup.LayoutParams(itemHeight, itemHeight)));
 		view.setLayoutParams(new GridView.LayoutParams(new ViewGroup.LayoutParams(itemWidth, itemHeight)));
-		view.setTextColor(getRes().getColor(R.color.light_grey_2, null));
+		view.setTextColor(getRes().getColor(R.color.light_grey_2, getRes().newTheme()));
 		view.setTextSize((Math.min(itemWidth, itemHeight) / (-1.3F * textScale + 5)));
 
 

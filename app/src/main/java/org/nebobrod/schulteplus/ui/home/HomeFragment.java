@@ -40,6 +40,7 @@ public class HomeFragment extends Fragment {
 	View root;
 	ImageView ivBackpic;
 	TextView textHome;
+	TextView tvLink;
 	TextView tvNews;
 	SnackBarManager snackBarManager;
 
@@ -51,6 +52,7 @@ public class HomeFragment extends Fragment {
 		root = binding.getRoot();
 
 		tvNews = binding.tvNewsIndicator;
+
 		snackBarManager = new SnackBarManager(requireActivity()).setPostponed(true);
 
 		textHome = binding.textHome;
@@ -59,7 +61,9 @@ public class HomeFragment extends Fragment {
 
 		// Go to myurl.com when clicking on the dummy picture
 		ivBackpic = binding.ivBackpic;
-		ivBackpic.setOnClickListener(new View.OnClickListener() {
+		tvLink = binding.tvLink;
+
+		tvLink.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				Utils.openWebPage(getResources().getString(R.string.src_psychonetics_social_media), getContext());

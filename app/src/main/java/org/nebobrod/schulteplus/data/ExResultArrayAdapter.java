@@ -9,7 +9,6 @@
 package org.nebobrod.schulteplus.data;
 
 import static org.nebobrod.schulteplus.Utils.durationCut;
-import static org.nebobrod.schulteplus.Utils.durationMinutes;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.timeStampToDateLocal;
@@ -50,6 +49,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.lifecycle.MutableLiveData;
+
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -165,7 +166,8 @@ public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
 									  String strMessage,
 									  @Nullable DialogInterface.OnClickListener okListener,
 									  @Nullable DialogInterface.OnClickListener cancelListener) {
-		AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context1);
+//		AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context1);
+		AlertDialog.Builder builder = new AlertDialog.Builder(context1, R.style.alertDialogTheme);
 		ExResult resultClone;
 		Map<String, String> resultsMap = null;
 
@@ -186,7 +188,7 @@ public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
 		alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		alertDialog.getWindow().setDimAmount(0.2F);
 
-		// Put the dialog layout to bottom of the screen
+		// Put the dialog layout to center of the screen
 		Window window = alertDialog.getWindow();
 		WindowManager.LayoutParams wlp = window.getAttributes();
 		wlp.gravity = Gravity.CENTER_VERTICAL;
@@ -195,7 +197,7 @@ public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
 
 		// Variables
 		LayoutInflater inflater = alertDialog.getLayoutInflater();
-		View layout = inflater.inflate(R.layout.activity_schulte_result_df, frameView);
+		View layout = inflater.inflate(R.layout.dialog_result_feedback, frameView);
 		TextView txtTitle, txtMessage;
 		TableLayout tb;
 		TextView txtKey, txtValue, txtKeyNew, txtValueNew;
@@ -206,7 +208,8 @@ public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
 		SeekBar sbEmotionalLevel, sbEnergyLevel;
 		SeekBar.OnSeekBarChangeListener seekBarChangeListener;
 		Button btnOk, btnCancel;	// These template buttons are invisible on  inflated layout
-		final Button[] btnRedesign = new Button[1];
+//		final Button[] btnRedesign = new Button[1];
+		final MaterialButton[] btnRedesign = new MaterialButton[1];
 
 		// Initiating controls
 		txtTitle = layout.findViewById(R.id.txtTitle);
@@ -268,19 +271,21 @@ public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
 			@Override
 			public void onShow(DialogInterface dialogInterface) {
 				// redesign OK by template
-				btnRedesign[0] = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+				btnRedesign[0] = (MaterialButton) alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
 				btnRedesign[0].setLayoutParams(btnOk.getLayoutParams());
 //				btnRedesign[0].setBackground(AppCompatResources.getDrawable(context1, R.drawable.bg_button));
-				btnRedesign[0].setBackgroundColor(getRes().getColor(R.color.colorPrimaryVariant, null));
-//				btnRedesign[0].setTextAppearance(R.style.button3d);
+//				btnRedesign[0].setBackgroundColor(getRes().getColor(R.color.colorPrimaryVariant, null));
+				btnRedesign[0].setBackgroundColor(getRes().getColor(R.color.light_grey_8, null));
+				btnRedesign[0].setTextAppearance(R.style.button3d);
 				btnRedesign[0].setAllCaps(false);
 				btnRedesign[0].setWidth(btnOk.getWidth()-10);
+
 				// redesign Cancel by template
-				btnRedesign[0] = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+				btnRedesign[0] = (MaterialButton)  alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
 				btnRedesign[0].setLayoutParams(btnCancel.getLayoutParams());
-//				btnRedesign[0].setBackground(AppCompatResources.getDrawable(context1, R.drawable.bg_button));
-				btnRedesign[0].setBackgroundColor(getRes().getColor(R.color.colorPrimaryVariant, null));
-//				btnRedesign[0].setTextAppearance(R.style.button3d);
+//				btnRedesign[0].setBackground(getRes().getDrawable(R.drawable.ic_border_thick, context1.getTheme()));
+				btnRedesign[0].setBackgroundColor(getRes().getColor(R.color.light_grey_8, null));
+				btnRedesign[0].setTextAppearance(R.style.button3d);
 				btnRedesign[0].setAllCaps(false);
 				btnRedesign[0].setWidth(btnCancel.getWidth()-10);
 			}

@@ -45,6 +45,15 @@
 		<!-- ActionBar -->
 <!--		<item name="actionBarStyle">@style/MainActionBar</item>-->
 		
+		<!--Preferences screens theme UNSTABLE-->
+<!--		<item name="preferenceTheme">@style/preferenceScreen</item>-->
+		
+		<!-- Include dialog theme -->
+<!--		<item name="alertDialogTheme">@style/alertDialogTheme</item>-->
+<!--		<item name="android:dialogTheme">@style/alertDialogTheme</item>-->
+		
+		<item name="android:dropDownListViewStyle">@style/alertDialogTheme</item>
+		
 		<!-- Customize your theme here. -->
 		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
 	</style>
@@ -57,8 +66,25 @@
 		
 		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
 	</style>
-	<!--		<item name="windowActionBar">false</item>-->
-	<!--		<item name="windowNoTitle">true</item>-->
+	
+	
+	<style name="Theme.SchultePlus.FullscreenLite" parent="Theme.MaterialComponents.Light.NoActionBar">
+<!--		For Android 10 and newer-->
+		<item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowActionBar">false</item>
+		<item name="android:windowFullscreen">true</item>
+		<item name="android:windowContentOverlay">@null</item>
+		
+<!--		<item name="colorPrimary">@color/colorPrimary</item>
+		<item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+		<item name="colorOnPrimary">@color/colorOnPrimary</item>-->
+		<item name="fullscreenBackgroundColor">@color/white</item>
+		<item name="fullscreenTextColor">@color/light_grey_4_blue</item>
+		
+		<item name="alertDialogTheme">@style/alertDialogTheme</item>
+	
+	</style>
 	
 	<style name="ThemeOverlay.SchultePlus.FullscreenContainer" parent="">
 		<item name="android:windowActionBar">false</item>
@@ -114,9 +140,6 @@
 		<!-- Customize your theme here. -->
 		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
 
-		<item name="alertDialogTheme">@style/Theme.AppCompat.Dialog</item>
 	</style>
-
 	
-
 </resources>

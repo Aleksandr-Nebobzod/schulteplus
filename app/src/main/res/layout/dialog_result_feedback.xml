@@ -13,7 +13,7 @@
 	android:id="@+id/loResultDialog"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:theme="@style/Theme.AppCompat.Light.Dialog.Alert"
+	android:theme="@style/alertDialogTheme"
 	android:background="@drawable/ic_border_thick"
 	>
 	
@@ -132,6 +132,7 @@
 				android:textColorHint="@color/light_grey_D"
 				android:textSize="16sp"
 				android:typeface="monospace" />
+			
 			<androidx.appcompat.widget.SwitchCompat
 				android:id="@+id/sw_data_provided"
 				android:layout_width="0dp"
@@ -242,7 +243,7 @@
 	<LinearLayout
 		android:id="@+id/ll_buttons"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="64dp"
 		android:orientation="horizontal"
 		android:visibility="gone"
 		app:layout_constraintEnd_toEndOf="parent"
@@ -253,21 +254,21 @@
 		<Button
 			android:id="@+id/btnOK"
 			android:layout_width="wrap_content"
-			android:layout_height="48dp"
+			android:layout_height="64dp"
 			android:layout_marginHorizontal="5dp"
-			android:layout_weight="3"
+			android:layout_weight="2"
 			android:text="@string/lbl_ok"
 			android:textSize="20sp"
+			style="@style/button3d"
 			android:elevation="5dp"
 			/>
-<!--			style="@style/button3d"-->
 <!--			android:background="@drawable/bg_button"-->
 <!--			android:fontFamily="sans-serif-condensed-light"-->
 		
 		<Button
 			android:id="@+id/btnCancel"
 			android:layout_width="wrap_content"
-			android:layout_height="48dp"
+			android:layout_height="64dp"
 			android:layout_marginHorizontal="5dp"
 			android:layout_weight="1"
 			android:text="@string/lbl_no"

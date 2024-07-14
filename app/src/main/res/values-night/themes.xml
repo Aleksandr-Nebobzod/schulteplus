@@ -45,6 +45,14 @@
 		<!-- ActionBar -->
 <!--		<item name="actionBarStyle">@style/MainActionBar</item>-->
 		
+		<!--Preferences screens theme UNSTABLE -->
+<!--		<item name="preferenceTheme">@style/preferenceScreen</item>-->
+		
+		<!-- Include dialog theme -->
+<!--		<item name="alertDialogTheme">@style/alertDialogTheme</item>-->
+<!--		<item name="android:dialogTheme">@style/alertDialogTheme</item>-->
+		<item name="android:dropDownListViewStyle">@style/alertDialogTheme</item>
+		
 		<!-- Customize your theme here. -->
 		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
 	</style>
@@ -96,18 +104,6 @@
 		<!-- Default text color -->
 		<item name="android:textColor">@color/colorOnPrimary</item>
 		<item name="android:textAppearance">@style/AppTextStyle</item>
-		
-<!--		<item name="android:colorSurface">@color/semi_grey_4</item>-->
-<!--		<item name="android:background">@drawable/bg_login02</item>-->
-<!--		<item name="android:colorBackground">@color/semi_grey_4</item>-->
-<!--		<item name="android:backgroundTint">@color/semi_grey_4</item>-->
-<!--		<item name="android:textColor">@color/light_grey_D</item>-->
-<!--		<item name="android:textColorHint">@color/light_grey_8</item>-->
-<!--		-->
-<!--		<item name="android:drawableStart">@color/light_blue_A400</item>-->
-<!--		<item name="android:drawableEnd">@color/light_blue_A400</item>-->
-<!--		<item name="startIconTint">@color/light_blue_A400</item>-->
-<!--		<item name="endIconTint">@color/light_blue_A400</item>-->
 		
 		<item name="android:windowNoTitle">true</item>
 		<item name="android:windowActionBar">false</item>

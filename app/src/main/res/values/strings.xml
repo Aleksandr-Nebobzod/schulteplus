@@ -136,11 +136,14 @@
 	<string name="prf_menu_about_url_sum">Visit and get additional resources</string>
 	<string name="src_psychonetics_social_media">https://psychology.fandom.com/wiki/Oleg_Bakhtiyarov</string>
 	<string name="src_menu_about_url" translatable="true">https://tinyurl.com/schulte-plus</string>
-	<string name="src_menu_about_email" translatable="false">"mailto:support@attplus.in"</string>
+	<string name="src_menu_about_email" translatable="false">"support@attplus.in"</string>
 	<string name="title_activity_schulte">Schulte+ Tables</string>
 	<string name="lbl_distraction">✓</string>
 	<string name="lbl_back">◁</string>
-	<string name="lbl_schulte_status">Next, Turns, Wrong, Time: </string>
+	<string name="lbl_schulte_status_next">Next</string>
+	<string name="lbl_schulte_status_counter">Turns</string>
+	<string name="lbl_schulte_status_mistakes">Wrong</string>
+	<string name="lbl_schulte_status_time">Time</string>
 	<string name="title_signup">Sign Up</string>
 	<string name="hint_login">Username (pseudonym)</string>
 	<string name="hint_email">email address</string>
@@ -197,7 +200,7 @@
 	<string name="prf_user_logoff">Log off</string>
 	<string name="prf_user_logoff_description">Leave the app unauthorized</string>
 	<string name="txt_welcome_back">Welcome back</string>
-	<string name="lbl_ver">ver.:</string>
+	<string name="lbl_ver">version:</string>
 	<string name="lbl_vendor">Smart Rovers</string>
 	<string name="msg_selfcheck">Self check...</string>
 	<string name="msg_network_connection">Network connection</string>
@@ -207,7 +210,7 @@
 	<string name="msg_user">User</string>
 	<string name="msg_veryfied">Veryfied</string>
 	<string name="msg_tests_failed">Some tests failed.</string>
-	<string name="txt_continue_ex">Continue exercise</string>
+	<string name="txt_continue_ex">Would you like to continue exercise?</string>
 	<string name="prf_title_online">Online</string>
 	<string name="lbl_datasource_local">local</string>
 	<string name="lbl_datasource_www">www</string>
@@ -307,5 +310,13 @@
 	<string name="msg_news_reminder_yes">There are some unread notes for you</string>
 	<string name="msg_news_reminder_no">There are no unread notes for you</string>
 	<string name="msg_unable_reach_update">Unable to reach update</string>
+	<string name="src_menu_about_subject">Schulte Plus feedback</string>
+	<string name="src_menu_about_chooser_title">Send email by...</string>
+	<string name="src_menu_about_body">Your message to vendor:\n\n\n\n
+		(please do not remove the following technical info)\n
+	</string>
+	<string name="lbl_count_down">Count down</string>
+	<string name="lbl_count_down_sum">Pause before exercise started</string>
+	<string name="txt_psychonetics"><u>PSYCHONETICS</u></string>
 
 </resources>

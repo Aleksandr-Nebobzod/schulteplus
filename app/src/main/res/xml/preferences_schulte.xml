@@ -10,6 +10,7 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	app:iconSpaceReserved="false">
+	
 	<EditTextPreference app:key="prf_ex_type" app:title="Exercise Type" app:useSimpleSummaryProvider="true"	app:isPreferenceVisible="false" />
 	
 	<PreferenceCategory app:title="@string/title_schulte" >
@@ -24,12 +25,25 @@
 		<SwitchPreference app:key="prf_sw_ratings" app:title="@string/lbl_rating" app:summaryOn="@string/lbl_rating_sum_on" android:summaryOff="@string/lbl_rating_sum_off" app:defaultValue="false" app:enabled="true" app:dependency="gcb_schulte_1_sequence" />
 		
 		<PreferenceCategory app:key="prf_cat_options" app:title="@string/lbl_options" app:enabled="true" app:isPreferenceVisible="true">
-			<SwitchPreference app:key="prf_sw_hints" app:title="@string/lbl_hints" app:summary="@string/lbl_hints_sum" app:defaultValue="true" app:enabled="true" app:icon="@drawable/ic_notifications_black_24dp" />
+<!--			app:icon="@drawable/ic_notifications_black_24dp"-->
+			<SwitchPreference app:key="prf_sw_hints" app:title="@string/lbl_hints" app:summary="@string/lbl_hints_sum" app:defaultValue="true" app:enabled="true" />
+			<SwitchPreference app:key="prf_sw_count_down" app:title="@string/lbl_count_down" app:summary="@string/lbl_count_down_sum" app:defaultValue="true" app:enabled="true" />
 			<SwitchPreference app:key="prf_sw_shuffle" app:title="@string/lbl_shuffle" app:summaryOn="@string/lbl_shuffle_sum_on" android:summaryOff="@string/lbl_shuffle_sum_off" app:defaultValue="true" app:enabled="true" />
 			<SeekBarPreference app:key="prf_x_size" app:title="@string/x_size" app:defaultValue="5" app:min="1" android:max="10" app:showSeekBarValue="true" />
 			<SeekBarPreference app:key="prf_y_size" app:title="@string/y_size" app:defaultValue="5" app:min="1" android:max="10" app:showSeekBarValue="true" />
 			<SwitchPreference app:key="prf_squared" app:title="@string/lbl_squared" app:defaultValue="false" app:enabled="true" app:persistent="true" />
-			<DropDownPreference app:key="prf_symbol_type" app:title="@string/lbl_symbol_type" app:entries="@array/symbol_type_entries" app:entryValues="@array/symbol_type_values" app:defaultValue="@string/str_number" app:useSimpleSummaryProvider="true" app:enabled="false" />
+<!--			<android.support.v7.preference.DropDownPreference-->
+<!--			<androidx.preference.DropDownPreference-->
+			<androidx.preference.ListPreference
+				app:key="prf_symbol_type"
+				app:title="@string/lbl_symbol_type"
+				app:entries="@array/symbol_type_entries"
+				app:entryValues="@array/symbol_type_values"
+				app:defaultValue="@string/str_number"
+				app:useSimpleSummaryProvider="true"
+				app:dialogTitle="@string/lbl_symbol_type"
+				app:enabled="true" />
+<!--				app:dialogLayout="@layout/dialog_list"  ONLY FOR CUSTOM CLASS??-->
 			
 			<PreferenceCategory app:key="prf_cat_prob" android:title="@string/lbl_Probabilities"  app:initialExpandedChildrenCount="0">
 				<SwitchPreference app:key="prf_prob_enabled"  app:summaryOn="@string/lbl_prob_enabled"  app:summaryOff="@string/lbl_prob_disabled" app:defaultValue="false" />

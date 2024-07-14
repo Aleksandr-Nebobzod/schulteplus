@@ -37,7 +37,7 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/Theme.SchultePlus"
-		android:versionCode="33"
+		android:versionCode="36"
 		android:versionName="Entada"
 		tools:targetApi="33">
 <!--		android:icon="@mipmap/ic_launcher"-->
@@ -87,19 +87,17 @@
 			android:configChanges="orientation|keyboardHidden|screenSize"
 			android:exported="false"
 			android:label="@string/title_activity_schulte"
-			android:theme="@style/Theme.SchultePlus.Fullscreen" />
+			android:theme="@style/Theme.SchultePlus.FullscreenLite" />
 		
 		<activity
 			android:name=".ui.basics.BasicsActivity"
 			android:configChanges="orientation|keyboardHidden|screenSize"
 			android:exported="true"
 			android:label="@string/title_activity_basics"
-			android:theme="@style/Theme.SchultePlus.Fullscreen">
+			android:theme="@style/Theme.SchultePlus.FullscreenLite">
 			<intent-filter>
 				<action android:name="android.intent.action.SEND" />
-				
 				<category android:name="android.intent.category.DEFAULT" />
-				
 				<data android:mimeType="image/*" />
 			</intent-filter>
 		</activity>

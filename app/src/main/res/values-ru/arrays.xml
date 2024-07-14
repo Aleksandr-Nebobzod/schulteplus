@@ -17,9 +17,13 @@
 	</string-array>
 	
 	<string-array name="symbol_type_entries" translatable="true">
-		<item>Число</item>
-		<item>Буква</item>
-		<item>Цвет</item>
+		<item>Числа Арабские</item>
+		<item>Числа Римские</item>
+		<item>Буквы Латинские</item>
+		<item>Буквы Кириллица</item>
+		<item>Буквы Деванагари</item>
+		<item>Цвет Красный</item>
+		<item>Цвет Синий</item>
 	</string-array>
 	
 	<string-array name="probabilities" translatable="true">

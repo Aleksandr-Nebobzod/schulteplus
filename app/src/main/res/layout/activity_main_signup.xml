@@ -67,7 +67,7 @@
 					android:hint="@string/hint_email"
 					android:drawableStart="@drawable/ic_baseline_email_24"
 					android:drawablePadding="10dp"
-					android:backgroundTint="@color/semi_white"
+					android:backgroundTint="@color/semi_white_bright"
 					android:layout_marginBottom="6dp"/>
 				
 				<com.google.android.material.textfield.TextInputLayout
@@ -88,7 +88,7 @@
 						android:background="@drawable/border02"
 						android:drawableStart="@drawable/ic_baseline_perm_identity_24"
 						android:drawablePadding="4dp"
-						android:backgroundTint="@color/semi_white"
+						android:backgroundTint="@color/semi_white_bright"
 						/>
 				</com.google.android.material.textfield.TextInputLayout>
 				
@@ -111,7 +111,7 @@
 						android:background="@drawable/border02"
 						android:drawableStart="@drawable/ic_baseline_lock_24"
 						android:drawablePadding="4dp"
-						android:backgroundTint="@color/semi_white"
+						android:backgroundTint="@color/semi_white_bright"
 						/>
 				</com.google.android.material.textfield.TextInputLayout>
 				
@@ -128,45 +128,63 @@
 				<LinearLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
+					android:background="@color/semi_grey_dark_4"
 					android:orientation="horizontal"
+					android:layout_marginTop="10dp"
 					android:layout_gravity="center_vertical">
 					
 					<CheckBox
 						android:layout_width="0dp"
 						android:layout_weight="1"
-						android:layout_height="48dp"
-						style="@style/AppTextStyle"
+						android:layout_height="match_parent"
+						android:textColor="@color/colorError"
+						android:textStyle="bold"
+						android:textSize="14sp"
 						android:id="@+id/cb_agreed"
 						android:text="@string/str_confirm_policy"
 						android:checked="false"
 						/>
 					
-					<TextView
+					<LinearLayout
 						android:layout_width="0dp"
-						android:layout_weight="1"
-						android:layout_height="48dp"
-						android:gravity="center"
-						android:id="@+id/tv_policy"
-						android:text="@string/lbl_about_user_data_policy"
-						android:textSize="14sp"
-						android:textStyle="bold"
-						android:theme="@style/Theme.SchultePlus"
-						android:textColor="@color/colorPrimary"
-						android:clickable="true"/>
+						android:layout_weight="2"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						android:layout_gravity="fill_vertical">
+						
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_weight="1"
+							android:layout_height="0dp"
+							android:paddingVertical="5dp"
+							android:gravity="end"
+							android:minHeight="48dp"
+							android:id="@+id/tv_policy"
+							android:text="@string/lbl_about_user_data_policy"
+							android:textSize="16sp"
+							android:textStyle="bold"
+							android:theme="@style/Theme.SchultePlus"
+							android:textColor="@color/colorPrimary"
+							android:clickable="true"/>
+						
+						<TextView
+							android:layout_width="match_parent"
+							android:layout_weight="1"
+							android:layout_height="0dp"
+							android:paddingVertical="5dp"
+							android:minHeight="48dp"
+							android:gravity="end"
+							android:id="@+id/tv_agreement"
+							android:text="@string/lbl_about_user_agreement"
+							android:textSize="16sp"
+							android:textAlignment="viewEnd"
+							android:textStyle="bold"
+							android:theme="@style/Theme.SchultePlus"
+							android:textColor="@color/colorPrimary"
+							android:clickable="true"/>
+					</LinearLayout>
 					
-					<TextView
-						android:layout_width="0dp"
-						android:layout_weight="1"
-						android:layout_height="48dp"
-						android:gravity="end"
-						android:id="@+id/tv_agreement"
-						android:text="@string/lbl_about_user_agreement"
-						android:textSize="14sp"
-						android:textAlignment="viewEnd"
-						android:textStyle="bold"
-						android:theme="@style/Theme.SchultePlus"
-						android:textColor="@color/colorPrimary"
-						android:clickable="true"/>
+
 				</LinearLayout>
 				
 				<TextView

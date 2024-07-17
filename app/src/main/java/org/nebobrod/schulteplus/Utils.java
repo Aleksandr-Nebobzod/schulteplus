@@ -49,6 +49,7 @@ import android.view.animation.ScaleAnimation;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -862,7 +863,11 @@ public final class Utils extends Application {
 			}
 		}
 
+		// WebView and scale
 		WebView view = (WebView) LayoutInflater.from(context).inflate(R.layout.dialog_one_webview, null);
+		WebSettings webSettings = view.getSettings();
+		webSettings.setTextZoom(200);
+
 		String fileName = getRes().getString(htmlSourceName);
 
 		view.setWebViewClient(new WebViewClient() {
@@ -1169,6 +1174,13 @@ public final class Utils extends Application {
 		alertDialog.show();
 	}
 
+	/**
+	 * Makes array of colors equally spread between start and end
+	 * @param startColor
+	 * @param endColor
+	 * @param steps
+	 * @return
+	 */
 	public static int[] interpolateColors(int startColor, int endColor, int steps) {
 		int[] colors = new int[steps];
 
@@ -1195,4 +1207,47 @@ public final class Utils extends Application {
 		}
 		return builder.toString();
 	}
+
+	/**
+	 * THREE methods to get math brightness and contrast (Google requirements by W3C for WCAG 2.0)
+	 * @param color1 as 0x88A0FF
+	 * @param color2 as 0x7C160E
+	 * @return
+	 */
+	public static double contrastRatio(int color1, int color2) {
+		double luminance1 = relativeLuminance(color1);
+		double luminance2 = relativeLuminance(color2);
+		double brighter = Math.max(luminance1, luminance2);
+		double darker = Math.min(luminance1, luminance2);
+		double ratio = (brighter + 0.05) / (darker + 0.05);
+		System.out.printf("Contrast Ratio: %.2f%n", ratio);
+		return ratio;
+	}
+
+	/**
+	 * by W3C for WCAG 2.0
+	 * @param color
+	 * @return
+	 */
+	public static double relativeLuminance(int color) {
+		int r = (color >> 16) & 0xFF;
+		int g = (color >> 8) & 0xFF;
+		int b = color & 0xFF;
+		return 0.2126 * channelLuminance(r) +
+				0.7152 * channelLuminance(g) +
+				0.0722 * channelLuminance(b);
+	}
+
+	/**
+	 * @param channel one color 0-255
+	 * @return Luminance by W3C for WCAG 2.0
+	 */
+	public static double channelLuminance(int channel) {
+		double channelNormalized = channel / 255.0;
+		return channelNormalized <= 0.03928
+				? channelNormalized / 12.92
+				: Math.pow((channelNormalized + 0.055) / 1.055, 2.4);
+	}
+
+
 }

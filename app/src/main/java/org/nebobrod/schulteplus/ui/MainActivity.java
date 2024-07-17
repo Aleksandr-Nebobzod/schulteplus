@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 		//ActionBar as a toolbar
 		androidx.appcompat.app.ActionBar mainActionBar = this.getSupportActionBar();
 		int abColor =  getWindow().getStatusBarColor();
-		mainActionBar.setLogo(R.drawable.ic_ab_schulte_plus);
+		mainActionBar.setLogo(R.drawable.ic_logo_100);
 		mainActionBar.setDisplayUseLogoEnabled(true);
 		mainActionBar.setDisplayShowHomeEnabled(true);
 

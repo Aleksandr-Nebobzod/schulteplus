@@ -92,14 +92,14 @@ public class STable extends Exercise {
 			case KEY_SYMBOL_TYPE_NUMBER_ROME:
 				sourceArray = getRes().getStringArray(R.array.number_rome);
 				for (int i = 0; i < xSize * ySize; i++) {
-					// it takes values from sourceArray by circle (if length of source is not enough)
+					// it takes values from sourceArray by circle (if size of source is not enough)
 					template.add(sourceArray[i % (sourceArray.length)].toString().substring(5));
 				}
 				break;
 			case KEY_SYMBOL_TYPE_LETTER_LATIN:
 				sourceArray = getRes().getStringArray(R.array.letter_latin);
 				for (int i = 0; i < xSize * ySize; i++) {
-					// it takes values from sourceArray by circle (if length of source is not enough)
+					// it takes values from sourceArray by circle (if size of source is not enough)
 					letter = sourceArray[i % (sourceArray.length)] +
 							stringRepeat(".", i / (sourceArray.length));
 					template.add(letter);
@@ -108,7 +108,7 @@ public class STable extends Exercise {
 			case KEY_SYMBOL_TYPE_LETTER_CYRILLIC:
 				sourceArray = getRes().getStringArray(R.array.letter_cyrillic);
 				for (int i = 0; i < xSize * ySize; i++) {
-					// it takes values from sourceArray by circle (if length of source is not enough)
+					// it takes values from sourceArray by circle (if size of source is not enough)
 					letter = sourceArray[i % (sourceArray.length)] +
 							stringRepeat(".", i / (sourceArray.length));
 					template.add(letter);
@@ -117,8 +117,9 @@ public class STable extends Exercise {
 			case KEY_SYMBOL_TYPE_LETTER_DEVANAGARI:
 				sourceArray = getRes().getStringArray(R.array.letter_devanagari);
 				for (int i = 0; i < xSize * ySize; i++) {
-					// it takes values from sourceArray by circle (if length of source is not enough)
-					letter = sourceArray[i % (sourceArray.length)] +
+					// it takes values from sourceArray by circle (if size of source is not enough)
+					// 1-st symbol for devanagari
+					letter = ((String)sourceArray[i % (sourceArray.length)]).substring(0, 1) +
 							stringRepeat(".", i / (sourceArray.length));
 					template.add(letter);
 				}

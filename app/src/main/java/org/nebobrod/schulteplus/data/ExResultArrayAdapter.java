@@ -43,6 +43,7 @@ import android.widget.SeekBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -290,6 +291,15 @@ public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
 				btnRedesign[0].setWidth(btnCancel.getWidth()-10);
 			}
 		});
+
+		// Check Demo user
+		if (ExerciseRunner.KEY_DEFAULT_USER_PREF.equals(ExerciseRunner.uid)) {
+//			Toast.makeText(requireActivity(), getRes().getString(R.string.msg_cant_change_demo_account), Toast.LENGTH_SHORT).show();
+			etNote.setHint(R.string.msg_cant_change_demo_account);
+			etNote.setEnabled(false);
+		}
+
+		// Proceed
 
 		// check if notes entered manually
 		etNote.addTextChangedListener(new TextWatcher() {

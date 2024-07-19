@@ -323,7 +323,12 @@ public class SignupActivity extends AppCompatActivity {
 		tvContinueUnregistered.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				startActivity(new Intent(SignupActivity.this, MainActivity.class));
+				Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+				intent.putExtra("email", "support@attplus.in");
+				intent.putExtra("password", "support");
+				startActivity(intent);
+				finish();
+
 			}
 		});
 

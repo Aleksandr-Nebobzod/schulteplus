@@ -269,7 +269,7 @@
 						android:maxLines="3"
 						android:text="@string/lbl_continue_anonymously"
 						android:textColor="@color/light_grey_4"
-						android:textSize="16sp" />
+						android:textSize="16sp" android:enabled="false" android:visibility="gone" />
 					
 					<TextView
 						android:id="@+id/tv_continue_unregistered"

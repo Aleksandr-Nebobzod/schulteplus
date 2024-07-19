@@ -854,9 +854,9 @@ public final class Utils extends Application {
 	 * Shows content of html-file
 	 * @param htmlSourceName string that keeps name of html-file for multi language purpose (like R.string.str_about_license_html_source)
 	 */
-	public static void displayHtmlAlertDialog(Context context, @StringRes int htmlSourceName) {
-		if (context instanceof Activity) {
-			Activity activity = (Activity) context;
+	public static void displayHtmlAlertDialog(Context context1, @StringRes int htmlSourceName) {
+		if (context1 instanceof Activity) {
+			Activity activity = (Activity) context1;
 			if (activity.isFinishing() || activity.isDestroyed()) {
 				Log.w(TAG, "displayHtmlAlertDialog: Activity is not valid for displaying dialog.");
 				return;
@@ -864,9 +864,10 @@ public final class Utils extends Application {
 		}
 
 		// WebView and scale
-		WebView view = (WebView) LayoutInflater.from(context).inflate(R.layout.dialog_one_webview, null);
-		WebSettings webSettings = view.getSettings();
-		webSettings.setTextZoom(200);
+		WebView view = (WebView) LayoutInflater.from(context1).inflate(R.layout.dialog_one_webview, null);
+/*		WebSettings webSettings = view.getSettings();
+		webSettings.setTextZoom(200);*/
+
 
 		String fileName = getRes().getString(htmlSourceName);
 
@@ -874,14 +875,23 @@ public final class Utils extends Application {
 			@Override
 			public void onPageFinished(WebView view, String url) {
 				super.onPageFinished(view, url);
-				Log.i("Utils", "Page loaded successfully: " + url);
-				// This variant shows smaller window:
+				Log.i("Utils.displayHtmlAlertDialog", "Page loaded successfully: " + url);
+
+				Activity activity = (Activity) context1;
+				if (activity == null || activity.isFinishing() || activity.isDestroyed()) {
+					Log.w("Utils.displayHtmlAlertDialog#onPageFinished", "Activity lost: " + context1);
+					return;
+				}
+
+				view.getSettings().setTextZoom(170);
 /*				androidx.appcompat.app.AlertDialog alertDialog =
 						new AlertDialog.Builder(context, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert)
 								.setView(view)
 								.setPositiveButton(android.R.string.ok, null)
-								.show();*/
-				Dialog dialog = new Dialog(context, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+								.show();*/ // -- This variant shows smaller window
+
+				// This one is fullscreen window
+				Dialog dialog = new Dialog(context1, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
 				dialog.setContentView(view);
 				dialog.show();
 			}
@@ -904,22 +914,23 @@ public final class Utils extends Application {
 				if (url.startsWith("mailto:")) {
 					Intent intent = new Intent(Intent.ACTION_SENDTO);
 					intent.setData(Uri.parse(url));
-					if (intent.resolveActivity(context.getPackageManager()) != null) {
-						context.startActivity(intent);
+					if (intent.resolveActivity(context1.getPackageManager()) != null) {
+						context1.startActivity(intent);
 					} else {
 						/* no-op */
 					}
 					return true;
 				} else if (url.startsWith("http://") || url.startsWith("https://")) {
 					Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-					if (intent.resolveActivity(context.getPackageManager()) != null) {
-						context.startActivity(intent);
+					if (intent.resolveActivity(context1.getPackageManager()) != null) {
+						context1.startActivity(intent);
 					} else {
 						/* no-op */
 					}
 					return true;
 				} else {
 					// if nor a "mailto:", neither "http://" or "https://"... WebView
+					Log.w("Utils shouldOverrideUrlLoading", "strange URL: " + url);
 					return false;
 				}
 			}

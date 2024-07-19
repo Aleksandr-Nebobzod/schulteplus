@@ -9,6 +9,7 @@
 package org.nebobrod.schulteplus.ui;
 
 
+import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.getTopRightCornerRect;
 import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
 import static org.nebobrod.schulteplus.common.Const.SHOWN_00_MAIN;
@@ -34,6 +35,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
 import com.google.android.play.core.appupdate.AppUpdateOptions;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -322,5 +324,23 @@ public class MainActivity extends AppCompatActivity {
 						}
 					}).start();
 		}
+	}
+
+	@Override
+	protected void onStop() {
+		// Check Demo user
+		if (ExerciseRunner.KEY_DEFAULT_USER_PREF.equals(ExerciseRunner.uid)) {
+			FirebaseAuth.getInstance().signOut();
+		}
+		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy() {
+		// Check Demo user
+		if (ExerciseRunner.KEY_DEFAULT_USER_PREF.equals(ExerciseRunner.uid)) {
+			FirebaseAuth.getInstance().signOut();
+		}
+		super.onDestroy();
 	}
 }

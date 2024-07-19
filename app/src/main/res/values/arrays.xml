@@ -53,8 +53,8 @@
 		<item>Letter Latin</item>
 		<item>Letter Cyrillic</item>
 		<item>Letter Devanagari</item>
-		<item>Color Red</item>
-		<item>Color Blue</item>
+		<item>Color Scarlett -- Bulgarian rose</item>
+		<item>Color Azure -- Sapphire</item>
 	</string-array>
 	
 	<string-array name="symbol_type_values" translatable="false">
@@ -315,13 +315,13 @@
 	</string-array>
 	
 	<array name="color_red" translatable="false">
-		<item>#FF7E7E</item>
-		<item>#500000</item>
+		<item>#FF2400</item>
+		<item>#480607</item>
 	</array>
 	
 	<array name="color_blue" translatable="false">
-		<item>#80A0FF</item>
-		<item>#001050</item>
+		<item>#007FFF</item>
+		<item>#082567</item>
 	</array>
 	
 	

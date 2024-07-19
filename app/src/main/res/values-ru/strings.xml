@@ -123,7 +123,7 @@
 	<string name="lbl_back">◁</string>
 	<string name="lbl_schulte_status_next">След</string>
 	<string name="lbl_schulte_status_counter">Ходов</string>
-	<string name="lbl_schulte_status_mistakes">Ошибок</string>
+	<string name="lbl_schulte_status_mistakes">Мимо</string>
 	<string name="lbl_schulte_status_time">Время</string>
 	<string name="title_signup">Регистрация</string>
 	<string name="hint_login">Имя пользователя (псевдоним)</string>
@@ -227,7 +227,7 @@
 	<string name="lbl_about_oss">Уведомления об открытом исходном коде</string>
 	<string name="lbl_about_license">Лицензионное соглашение</string>
 	<string name="str_about_license_html_source">ru/licenses-ru.html</string>
-	<string name="lbl_about_user_data_policy">Политика конфиден-циальности</string>
+	<string name="lbl_about_user_data_policy">Политика конфиденциальности</string>
 	<string name="str_about_user_data_policy_html_source">ru/user_data_policy-ru.html</string>
 	<string name="str_logoff_caution">Вы сможете выйти из системы и удалить аккаунт в главном меню</string>
 	<string name="err_result_validity">Результат упражнения не валидирован.</string>
@@ -295,4 +295,5 @@
 	<string name="lbl_count_down">Обратный отсчёт</string>
 	<string name="lbl_count_down_sum">Пауза перед запуском упражнения</string>
 	<string name="txt_psychonetics"><u>ПСИХОНЕТИКА</u></string>
+	<string name="msg_cant_change_demo_account">Пожалуйста, зарегистрируйтесь в Шульте Плюс для доступа к этой функциональности</string>
 </resources>

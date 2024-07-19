@@ -15,7 +15,7 @@
 <!--	<color name="colorOnPrimary">#000000</color>-->
 	<color name="colorOnPrimary">@color/white </color>
 	<!-- Secondary brand colors -->
-	<color name="colorSecondary">@color/teal_200</color>
+	<color name="colorSecondary">@color/teal_100</color>
 	<color name="colorSecondaryVariant">@color/teal_700</color>
 	<color name="colorOnSecondary">@color/light_grey_D</color>
 	
@@ -23,6 +23,6 @@
 	<color name="colorError">@color/light_red_A200</color>
 	<color name="spinnerTextColor">@color/light_grey_F_blue</color>
 	
-	<color name="colorSurface">@color/semi_grey_4</color>
+	<color name="colorSurface">@color/semi_grey_dark_4</color>
 
 </resources>

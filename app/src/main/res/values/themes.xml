@@ -109,7 +109,7 @@
 		<!-- Primary brand color. -->
 <!--		<item name="colorPrimary">@color/light_grey_4</item>-->
 <!--		<item name="colorPrimaryVariant">@color/light_grey_6</item>-->
-<!--		<item name="colorOnPrimary">@color/white</item>-->
+		<item name="colorOnPrimary">@color/white</item>
 		
 		<!-- Secondary brand color. -->
 <!--		<item name="colorSecondary">@color/light_grey_A</item>-->

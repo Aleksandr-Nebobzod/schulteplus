@@ -186,6 +186,12 @@ public class LoginActivity extends AppCompatActivity {
 			}
 		});
 
+		// Unregistered login with Demo account
+		if ("support@attplus.in".equals(etEmail.getText().toString())) {
+			lockForDemo();
+			btGoOn.performClick();
+		}
+
 		tvGoOff.setOnClickListener(new View.OnClickListener()	{
 			@Override
 			public void onClick(View view) {
@@ -270,9 +276,22 @@ public class LoginActivity extends AppCompatActivity {
 		});
 	}
 
+	private void lockForDemo() {
+		btUnwrapExtra.setEnabled(false);
+		etEmail.setEnabled(false);
+		etPassword.setEnabled(false);
+		tvResetPassword.setEnabled(false);
+		tvDeleteAccount.setEnabled(false);
+	}
+
 
 	private boolean validateEmail()	{
 		String val = etEmail.getText().toString().trim();
+
+		if ("support@attplus.in".equals(val)) {
+			lockForDemo();
+		}
+
 		if (val.isEmpty()) {
 			etEmail.setError(getString(R.string.msg_email_empty));
 			return false;

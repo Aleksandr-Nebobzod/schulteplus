@@ -318,5 +318,6 @@
 	<string name="lbl_count_down">Count down</string>
 	<string name="lbl_count_down_sum">Pause before exercise started</string>
 	<string name="txt_psychonetics"><u>PSYCHONETICS</u></string>
+	<string name="msg_cant_change_demo_account">Please register your own Schulte Plus account to access this function</string>
 
 </resources>

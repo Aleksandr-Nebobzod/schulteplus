@@ -49,6 +49,7 @@ import android.view.animation.ScaleAnimation;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -853,30 +854,44 @@ public final class Utils extends Application {
 	 * Shows content of html-file
 	 * @param htmlSourceName string that keeps name of html-file for multi language purpose (like R.string.str_about_license_html_source)
 	 */
-	public static void displayHtmlAlertDialog(Context context, @StringRes int htmlSourceName) {
-		if (context instanceof Activity) {
-			Activity activity = (Activity) context;
+	public static void displayHtmlAlertDialog(Context context1, @StringRes int htmlSourceName) {
+		if (context1 instanceof Activity) {
+			Activity activity = (Activity) context1;
 			if (activity.isFinishing() || activity.isDestroyed()) {
 				Log.w(TAG, "displayHtmlAlertDialog: Activity is not valid for displaying dialog.");
 				return;
 			}
 		}
 
-		WebView view = (WebView) LayoutInflater.from(context).inflate(R.layout.dialog_one_webview, null);
+		// WebView and scale
+		WebView view = (WebView) LayoutInflater.from(context1).inflate(R.layout.dialog_one_webview, null);
+/*		WebSettings webSettings = view.getSettings();
+		webSettings.setTextZoom(200);*/
+
+
 		String fileName = getRes().getString(htmlSourceName);
 
 		view.setWebViewClient(new WebViewClient() {
 			@Override
 			public void onPageFinished(WebView view, String url) {
 				super.onPageFinished(view, url);
-				Log.i("Utils", "Page loaded successfully: " + url);
-				// This variant shows smaller window:
+				Log.i("Utils.displayHtmlAlertDialog", "Page loaded successfully: " + url);
+
+				Activity activity = (Activity) context1;
+				if (activity == null || activity.isFinishing() || activity.isDestroyed()) {
+					Log.w("Utils.displayHtmlAlertDialog#onPageFinished", "Activity lost: " + context1);
+					return;
+				}
+
+				view.getSettings().setTextZoom(170);
 /*				androidx.appcompat.app.AlertDialog alertDialog =
 						new AlertDialog.Builder(context, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert)
 								.setView(view)
 								.setPositiveButton(android.R.string.ok, null)
-								.show();*/
-				Dialog dialog = new Dialog(context, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+								.show();*/ // -- This variant shows smaller window
+
+				// This one is fullscreen window
+				Dialog dialog = new Dialog(context1, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
 				dialog.setContentView(view);
 				dialog.show();
 			}
@@ -899,22 +914,23 @@ public final class Utils extends Application {
 				if (url.startsWith("mailto:")) {
 					Intent intent = new Intent(Intent.ACTION_SENDTO);
 					intent.setData(Uri.parse(url));
-					if (intent.resolveActivity(context.getPackageManager()) != null) {
-						context.startActivity(intent);
+					if (intent.resolveActivity(context1.getPackageManager()) != null) {
+						context1.startActivity(intent);
 					} else {
 						/* no-op */
 					}
 					return true;
 				} else if (url.startsWith("http://") || url.startsWith("https://")) {
 					Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-					if (intent.resolveActivity(context.getPackageManager()) != null) {
-						context.startActivity(intent);
+					if (intent.resolveActivity(context1.getPackageManager()) != null) {
+						context1.startActivity(intent);
 					} else {
 						/* no-op */
 					}
 					return true;
 				} else {
 					// if nor a "mailto:", neither "http://" or "https://"... WebView
+					Log.w("Utils shouldOverrideUrlLoading", "strange URL: " + url);
 					return false;
 				}
 			}
@@ -1169,6 +1185,13 @@ public final class Utils extends Application {
 		alertDialog.show();
 	}
 
+	/**
+	 * Makes array of colors equally spread between start and end
+	 * @param startColor
+	 * @param endColor
+	 * @param steps
+	 * @return
+	 */
 	public static int[] interpolateColors(int startColor, int endColor, int steps) {
 		int[] colors = new int[steps];
 
@@ -1195,4 +1218,47 @@ public final class Utils extends Application {
 		}
 		return builder.toString();
 	}
+
+	/**
+	 * THREE methods to get math brightness and contrast (Google requirements by W3C for WCAG 2.0)
+	 * @param color1 as 0x88A0FF
+	 * @param color2 as 0x7C160E
+	 * @return
+	 */
+	public static double contrastRatio(int color1, int color2) {
+		double luminance1 = relativeLuminance(color1);
+		double luminance2 = relativeLuminance(color2);
+		double brighter = Math.max(luminance1, luminance2);
+		double darker = Math.min(luminance1, luminance2);
+		double ratio = (brighter + 0.05) / (darker + 0.05);
+		System.out.printf("Contrast Ratio: %.2f%n", ratio);
+		return ratio;
+	}
+
+	/**
+	 * by W3C for WCAG 2.0
+	 * @param color
+	 * @return
+	 */
+	public static double relativeLuminance(int color) {
+		int r = (color >> 16) & 0xFF;
+		int g = (color >> 8) & 0xFF;
+		int b = color & 0xFF;
+		return 0.2126 * channelLuminance(r) +
+				0.7152 * channelLuminance(g) +
+				0.0722 * channelLuminance(b);
+	}
+
+	/**
+	 * @param channel one color 0-255
+	 * @return Luminance by W3C for WCAG 2.0
+	 */
+	public static double channelLuminance(int channel) {
+		double channelNormalized = channel / 255.0;
+		return channelNormalized <= 0.03928
+				? channelNormalized / 12.92
+				: Math.pow((channelNormalized + 0.055) / 1.055, 2.4);
+	}
+
+
 }

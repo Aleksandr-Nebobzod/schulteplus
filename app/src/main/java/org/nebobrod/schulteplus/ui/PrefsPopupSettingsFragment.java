@@ -38,6 +38,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
+import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.common.Const.*;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
@@ -123,9 +124,16 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 				case "prf_user_logoff":
 					FirebaseAuth.getInstance().signOut();
 					getActivity().finishAndRemoveTask();
+					getActivity().finish();
 					return true; // makes not necessary of break;
 
 				case "prf_user_delete":
+
+					// Check Demo user
+					if (ExerciseRunner.KEY_DEFAULT_USER_PREF.equals(ExerciseRunner.uid)) {
+						Toast.makeText(requireActivity(), getRes().getString(R.string.msg_cant_change_demo_account), Toast.LENGTH_SHORT).show();
+						return true;
+					}
 
 					// Confirmation
 					Snackbar.make(getView(), getRes().getString(R.string.msg_proceed_to_password_reentry), Snackbar.LENGTH_INDEFINITE)
@@ -222,6 +230,13 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 
 				// String values assignment
 				case KEY_USER_NAME:
+					// Check Demo user
+					if (ExerciseRunner.KEY_DEFAULT_USER_PREF.equals(ExerciseRunner.uid)) {
+						Toast.makeText(requireActivity(), getRes().getString(R.string.msg_cant_change_demo_account), Toast.LENGTH_SHORT).show();
+						break;
+					}
+
+					// Proceed
 					oldValue = ExerciseRunner.userName;
 					newValue = ((EditTextPreference) preference).getText();
 					if (newValue == null) {
@@ -244,6 +259,14 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 					}
 					break;
 				case KEY_USER_EMAIL:
+					// Check Demo user
+					if (ExerciseRunner.KEY_DEFAULT_USER_PREF.equals(ExerciseRunner.uid)) {
+						//Toast.makeText(requireActivity(), getRes().getString(R.string.msg_cant_change_demo_account), Toast.LENGTH_SHORT).show();
+						break;
+					}
+
+					// Proceed NOT READY YET, app:enabled="false"
+
 					// preference.setSummary(sharedPrefs.getString(key, "-"));
 					oldValue = ExerciseRunner.userEmail;
 					newValue = ((EditTextPreference) preference).getText();

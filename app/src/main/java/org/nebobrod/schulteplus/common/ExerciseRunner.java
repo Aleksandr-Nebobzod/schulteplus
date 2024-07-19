@@ -37,7 +37,7 @@ import java.util.List;
 public class ExerciseRunner {
 	private static final String TAG = "ExerciseRunner";
 	public static final String KEY_RUNNER = "runner"; //?
-	public static final String KEY_DEFAULT_USER_PREF = "TFKBiTdd7OVYUaplfzDHrXSCixr1";
+	public static final String KEY_DEFAULT_USER_PREF = "AvtKMUW82OhFJnmRN97cTjmG8cs2"; // support@attplus.in
 
 	// exercise related data
 	private static ExerciseRunner instance = null;
@@ -96,7 +96,7 @@ public class ExerciseRunner {
 	/** Check and refresh runtime values for new Exercise */
 	public static ExerciseRunner getInstance() 	{
 
-		if (userHelper == null) userHelper = new UserHelper("TFKBiTdd7OVYUaplfzDHrXSCixr1", "nebobzod@gmail.com", "all", "password", "65ed474536cced3a", "65ed474536cced3a", false);
+		if (userHelper == null) userHelper = new UserHelper("AvtKMUW82OhFJnmRN97cTjmG8cs2", "support@attplus.in", "HOBA", "password", "65ed474536cced3a", "3a362da7", true);
 		return  getInstance(userHelper);
 	}
 	public static ExerciseRunner getInstance(@Nullable UserHelper userHelper) {

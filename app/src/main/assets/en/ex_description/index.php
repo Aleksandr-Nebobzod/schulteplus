@@ -113,11 +113,11 @@
     ?>
 
     <!--page self advertisement inside content-->
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/schulte/ru/add_slogan.html'; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/schulte/en/add_slogan.html'; ?>
 
 </div>
 
 <!-- Footer -->
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/schulte/ru/add_footer.html'; ?>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/schulte/en/add_footer.html'; ?>
 </body>
 </html>

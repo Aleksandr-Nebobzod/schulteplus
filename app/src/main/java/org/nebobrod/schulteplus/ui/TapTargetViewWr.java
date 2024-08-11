@@ -47,7 +47,7 @@ public class TapTargetViewWr {
 				.titleTextSize(20)							// Specify the size (in sp) of the title text
 				.titleTextColor(R.color.light_grey_D)	// Specify the color of the title text
 				.descriptionTextSize(14)					// Specify the size (in sp) of the description text
-				.descriptionTextColor(R.color.light_grey_A_yellow)		// Specify the color of the description text
+				.descriptionTextColor(R.color.bright_F_yellow)	// Specify the color of the description text
 				//.textColor(R.color.light_grey_2_blue) 		// Specify a color for both the title and description text
 				//.textTypeface(Typeface.MONOSPACE)				// Specify a typeface for the text
 				.dimColor(R.color.black)						// If set, will dim behind the view with 30% opacity of the given color

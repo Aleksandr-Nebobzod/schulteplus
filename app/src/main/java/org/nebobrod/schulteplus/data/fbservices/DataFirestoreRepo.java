@@ -210,7 +210,9 @@ public class DataFirestoreRepo<TEntity extends Identifiable<String>> implements 
 		Log.i(TAG, "Applying to  '" + collectionReference.getPath()
 				+ " for list filtered by " + field + " == " + value);
 
-		Query _query = collectionReference.limit(QUERY_COMMON_LIMIT);
+//		Query _query = collectionReference.limit(QUERY_COMMON_LIMIT);
+//		Query _query = collectionReference.limit(1000);
+		Query _query = collectionReference.orderBy("timeStamp", Query.Direction.DESCENDING).limit(QUERY_COMMON_LIMIT);
 
 		if (hasFieldName(entityClass, field)) {
 			_query = _query.whereEqualTo(field, value);

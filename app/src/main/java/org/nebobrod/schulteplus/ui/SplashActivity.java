@@ -17,16 +17,11 @@ import org.nebobrod.schulteplus.common.NetworkConnectivity;
 import org.nebobrod.schulteplus.common.SnackBarManager;
 import org.nebobrod.schulteplus.data.UserHelper;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.IntentSenderRequest;
-import androidx.activity.result.contract.ActivityResultContracts;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,15 +34,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
-import com.google.android.gms.tasks.Task;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
-import com.google.android.play.core.appupdate.AppUpdateManager;
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.appupdate.AppUpdateOptions;
-import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.UpdateAvailability;
 
 import java.util.Arrays;
 
@@ -68,11 +54,6 @@ public class SplashActivity extends AppCompatActivity {
 	private Animation zoomHyper;
 	private ColorStateList cstGreen, cstYellow, cstRed;
 	private SnackBarManager snackBarManager;
-
-	@Inject
-	NetworkConnectivity networkConnectivity;
-	@Inject
-	AppExecutors appExecutors = new AppExecutors();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

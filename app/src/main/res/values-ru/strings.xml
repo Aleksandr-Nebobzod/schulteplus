@@ -130,8 +130,9 @@
 	<string name="hint_email">адрес эл.почты</string>
 	<string name="hint_pass">пароль в Шульте плюс</string>
 	<string name="lbl_go_on">Вперёд!</string>
-	<string name="str_signup_go_off">Уже есть учетная запись?\nПерейти на вход!</string>
-	<string name="str_login_go_off">Нет учётной записи?\nПерейти к регистрации!</string>
+	<string name="str_signup_go_off"><u>Уже есть учетная запись?\nПерейти на вход!</u></string>
+	<string name="str_login_go_off"><u>Нет учётной записи?\nПерейти к регистрации!</u></string>
+<!--	<string name="str_login_go_off"><Data><![CDATA[<u>Нет учётной записи?<br>Перейти к регистрации!</u>]]></Data></string>-->
 	<string name="title_login">Вход</string>
 	<string name="msg_username_empty">Имя не может быть пустым</string>
 	<string name="msg_password_rules">Пароль должен содержать: 6–15 символов: латинские буквы, арабские цифры, знаки ~!@#$%^*()+=</string>
@@ -146,12 +147,12 @@
 	<string name="msg_user_unverified">привет! Ваша регистрация успешно инициирована. Пожалуйста, проверьте эл.почту, сообщение с инструкцией по верификации учётной записи в Шульте плюс.</string>
 	<string name="msg_user_verif_sent">Сообщение с инструкцией для подтверждения выслано на адрес эл.почты.</string>
 	<string name="msg_user_verif_not_sent">Сообщение для подтверждения отправить на адрес эл.почты не удалось.</string>
-	<string name="lbl_reset_password">Сбросить ваш пароль</string>
-	<string name="lbl_resend_verification_email">Повторить Сообщение для подтверждения</string>
+	<string name="lbl_reset_password"><u>Сбросить ваш пароль</u></string>
+	<string name="lbl_resend_verification_email"><u>Повторить Сообщение для подтверждения</u></string>
 	<string name="lbl_continue_anonymously">Продолжить с анонимной регистрацией</string>
-	<string name="lbl_continue_unregistered">Продолжить без регистрации</string>
+	<string name="lbl_continue_unregistered"><u>Продолжить без регистрации</u></string>
 	<string name="str_confirmation_caution">Может понадобиться подтверждение адреса эл.почты</string>
-	<string name="lbl_tv_alternative_reg">Альтернативная регистрация</string>
+	<string name="lbl_tv_alternative_reg"><u>Альтернативная регистрация</u></string>
 	<string name="msg_username_exists">Это имя пользователя занято</string>
 	<string name="msg_user_network_failed">Ошибка доступа к сети. Вы тем не менее можете войти без регистрации.</string>
 	<string name="msg_signin_anonymously_success">SignIn Anonymously:success</string>
@@ -225,9 +226,9 @@
 	<string name="src_menu_about_url">https://tinyurl.com/schulte-plus-ru</string>
 	<string name="msg_proceed_to_password_reentry">Выйти из системы и продолжить с подтверждением пароля?</string>
 	<string name="lbl_about_oss">Уведомления об открытом исходном коде</string>
-	<string name="lbl_about_license">Лицензионное соглашение</string>
+	<string name="lbl_about_license"><u>Лицензионное соглашение</u></string>
 	<string name="str_about_license_html_source">ru/licenses-ru.html</string>
-	<string name="lbl_about_user_data_policy">Политика конфиденциальности</string>
+	<string name="lbl_about_user_data_policy"><u>Политика конфиденциальности</u></string>
 	<string name="str_about_user_data_policy_html_source">ru/user_data_policy-ru.html</string>
 	<string name="str_logoff_caution">Вы сможете выйти из системы и удалить аккаунт в главном меню</string>
 	<string name="err_result_validity">Результат упражнения не валидирован.</string>
@@ -238,7 +239,7 @@
 	<string name="str_confirm_policy">Согласие c:</string>
 	<string name="msg_username_updated">Имя пользователя успешно обновлено для новых записей</string>
 	<string name="msg_user_email_will_change">Адрес email Вашей учётной записи будет обновлён при следующем входе</string>
-	<string name="lbl_about_user_agreement">Условия использования</string>
+	<string name="lbl_about_user_agreement"><u>Условия использования</u></string>
 	<string name="str_about_user_agreement_html_source">ru/user_agreement-ru.html</string>
 	<string name="src_exDescriptionUrl">http://attplus.in/schulte/ru/ex_description/</string>
 	<string name="hint_main_fab_title">Кнопка Пуск!</string>
@@ -296,4 +297,16 @@
 	<string name="lbl_count_down_sum">Пауза перед запуском упражнения</string>
 	<string name="txt_psychonetics"><u>ПСИХОНЕТИКА</u></string>
 	<string name="msg_cant_change_demo_account">Пожалуйста, зарегистрируйтесь в Шульте Плюс для доступа к этой функциональности</string>
+	<string name="str_google_caution">ИЛИ через другой адрес:</string>
+	<string name="hint_signup_agreed_title">Подтверждение требуется</string>
+	<string name="hint_signup_agreed_desc">Пожалуйста, подтвердите согласие с документами:
+		\n•&#160;Политика конфиденциальности
+		\n•&#160;Условия использования
+		\nВы можете также использать демонстрационную учётную запись, в которой есть ограничения данных: раскройте правый-нижний треугольник для дополнительных вариантов
+	</string>
+	<string name="word_or">или</string>
+	<string name="msg_user_need_registration">Перейдите к регистрации для использования этой учетной записи</string>
+	<string name="login_login">Вход</string>
+	<string name="login_confirmation">Запрос сообщения</string>
+	<string name="login_deletion">Удаление</string>
 </resources>

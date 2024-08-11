@@ -37,6 +37,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
 
@@ -367,9 +369,23 @@ public class BasicsActivity extends AppCompatActivity {
 			ImageView ivContent= findViewById(R.id.fullscreen_content);
 			if ("empty".equals(ivContent.getTag())) {
 				String drawableName =  runner.getExType();
+				// sg means simple graphics or static graphics
 				drawableName = "sg_" + drawableName.substring(4);
-				int resourceId = getResources().getIdentifier(drawableName, "drawable", getPackageName());
-				ivContent.setImageResource(resourceId);
+
+				int resourceId;
+				resourceId = getResources().getIdentifier(drawableName, "drawable", getPackageName());
+				if (drawableName.contains("dancing")) {
+					if (resourceId != 0) {
+						Glide.with(this)
+								.asGif()
+								.load(resourceId)
+								.apply(new RequestOptions().placeholder(R.drawable.ic_baseline_cached_24)) // for long loads
+								.into(ivContent); // put GIF into ImageView
+					}
+				} else {
+					ivContent.setImageResource(resourceId);
+				}
+
 				ivContent.setTag(drawableName);
 				}
 		} catch (Exception e) {

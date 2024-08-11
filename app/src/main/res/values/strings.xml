@@ -149,8 +149,8 @@
 	<string name="hint_email">email address</string>
 	<string name="hint_pass">Schulte-plus password</string>
 	<string name="lbl_go_on">Go on</string>
-	<string name="str_signup_go_off">Already have an account?\nGo to login!</string>
-	<string name="str_login_go_off">Do not have an account?\nGo to sign up!</string>
+	<string name="str_signup_go_off"><u>Already have an account?\nGo to login!</u></string>
+	<string name="str_login_go_off"><u>Do not have an account?\nGo to sign up!</u></string>
 	<string name="title_login">Log in</string>
 	<string name="msg_username_empty">The username can\'t be empty</string>
 	<string name="msg_username_wrong">The username seems incorrect</string>
@@ -165,12 +165,12 @@
 	<string name="msg_user_unverified">hi! Your registration has been successfully started. Please, check your email instructions to verify your Schulte plus account.</string>
 	<string name="msg_user_verif_sent">Verification instructions email sent.</string>
 	<string name="msg_user_verif_not_sent">Verification instructions email can\'t be sent.</string>
-	<string name="lbl_reset_password">Reset your password</string>
-	<string name="lbl_resend_verification_email">Resend verification email</string>
+	<string name="lbl_reset_password"><u>Reset your password</u></string>
+	<string name="lbl_resend_verification_email"><u>Resend verification email</u></string>
 	<string name="lbl_continue_anonymously">Continue anonymously (not recommend)</string>
-	<string name="lbl_continue_unregistered">Continue unregistered (not recommend)</string>
+	<string name="lbl_continue_unregistered"><u>Continue unregistered (not recommend)</u></string>
 	<string name="str_confirmation_caution">You might be asked to confirm your email address</string>
-	<string name="lbl_tv_alternative_reg">Alternative registration way</string>
+	<string name="lbl_tv_alternative_reg"><u>Alternative registration way</u></string>
 	<string name="msg_username_exists">This username is busy</string>
 	<string name="msg_user_network_failed">Network access failed. You still able to login temporarily without registration.</string>
 	<string name="msg_signin_anonymously_success">SignIn Anonymously:success</string>
@@ -238,7 +238,7 @@
 	<string name="txt_top_in_month_progress">Top progress in month</string>
 	<string name="txt_datasource_www_hint">Actual in www</string>
 	<string name="txt_datasource_local_hint">Actual on local</string>
-	<string name="lbl_delete_account">Delete account</string>
+	<string name="lbl_delete_account"><u>Delete account</u></string>
 	<string name="txt_delete_account_description">Delete your personal data from all shared application resources and depersonalize all your records. Continue?</string>
 	<string name="msg_delete_account_success">Account data has been removed. Your exercise data are labeled with a dummy name: </string>
 	<string name="msg_delete_account_failed">Cannot remove account</string>
@@ -248,7 +248,7 @@
 	<string name="lbl_about_oss">Open source notices</string>
 	<string name="lbl_about_license">License</string>
 	<string name="str_about_license_html_source">en/licenses-en.html</string>
-	<string name="lbl_about_user_data_policy">User data policy</string>
+	<string name="lbl_about_user_data_policy"><u>User data policy</u></string>
 	<string name="str_about_user_data_policy_html_source">en/user_data_policy-en.html</string>
 	<string name="str_logoff_caution">You are able to log off and delete your account on main preferences menu</string>
 	<string name="err_result_validity">Error of result validation. No stat update.</string>
@@ -260,7 +260,7 @@
 	<string name="str_confirm_policy">I agree:</string>
 	<string name="msg_username_updated">Username has been successfully updated for new records</string>
 	<string name="msg_user_email_will_change">Your profile email will change with next log in</string>
-	<string name="lbl_about_user_agreement">Conditions</string>
+	<string name="lbl_about_user_agreement"><u>Conditions</u></string>
 	<string name="str_about_user_agreement_html_source">en/user_agreement-en.html</string>
 	<string name="src_exDescriptionUrl">http://attplus.in/schulte/en/ex_description/</string>
 	<string name="hint_main_fab_title">The Launch Button</string>
@@ -319,5 +319,17 @@
 	<string name="lbl_count_down_sum">Pause before exercise started</string>
 	<string name="txt_psychonetics"><u>PSYCHONETICS</u></string>
 	<string name="msg_cant_change_demo_account">Please register your own Schulte Plus account to access this function</string>
+	<string name="str_google_caution">OR using email:</string>
+	<string name="hint_signup_agreed_title">Confirmation required</string>
+	<string name="hint_signup_agreed_desc">Please confirm you are agree with:
+		\n•&#160;Data policy
+		\n•&#160;User Agreement
+		\nYou can also use demo-account having personal data restrictions: unwrap bottom-right triangle for more options
+	</string>
+	<string name="word_or">or</string>
+	<string name="msg_user_need_registration">This account need to be registered before</string>
+	<string name="login_login">Log In</string>
+	<string name="login_confirmation">Request Email</string>
+	<string name="login_deletion">Deletion</string>
 
 </resources>

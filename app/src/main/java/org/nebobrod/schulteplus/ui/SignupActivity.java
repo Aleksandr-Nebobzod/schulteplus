@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import org.nebobrod.schulteplus.common.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -27,6 +28,11 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -46,15 +52,18 @@ import org.nebobrod.schulteplus.data.UserHelper;
 import static org.nebobrod.schulteplus.Utils.currentOsVersion;
 import static org.nebobrod.schulteplus.Utils.generateUuidInt;
 import static org.nebobrod.schulteplus.Utils.getVersionCode;
+import static org.nebobrod.schulteplus.Utils.intStringHash;
 import static org.nebobrod.schulteplus.common.Const.NAME_REG_EXP;
 import static org.nebobrod.schulteplus.common.Const.PASSWORD_REG_EXP;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class SignupActivity extends AppCompatActivity {
 	private static final String TAG = "Signup";
 	EditText etEmail, etName, etPassword;
+	SignInButton btSignInGoogle;
 	MaterialButton btGoOn;
 	CheckBox cbAgreed;
 	TextView tvPolicy, tvAgreement, tvGoOff, tvAlternativeReg, tvContinueAnonymously, tvContinueUnregistered;
@@ -62,15 +71,20 @@ public class SignupActivity extends AppCompatActivity {
 	LinearLayout llExtras;
 	DataRepository fsRepo;
 	UserHelper userHelper;
+	FirebaseAuth fbAuth;
+	FirebaseUser fbUser;
 	FirebaseAuth.AuthStateListener mAuthListener;
-	private FirebaseAuth fbAuth;
+	GoogleSignInClient googleSignInClient;
+	GoogleApiClient googleApiClient;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	protected void onCreate(Bundle savedInstanceState01) {
+		super.onCreate(savedInstanceState01);
 		setContentView(R.layout.activity_main_signup);
 
 		fbAuth = FirebaseAuth.getInstance();
+
+		btSignInGoogle = findViewById(R.id.bt_google_sign_in);
 
 		etEmail = findViewById(R.id.et_email);
 		etName = findViewById(R.id.et_name);
@@ -102,34 +116,64 @@ public class SignupActivity extends AppCompatActivity {
 
 		// Choose authentication providers for an alternative registration
 		List<AuthUI.IdpConfig> providers = Arrays.asList(
-				new AuthUI.IdpConfig.EmailBuilder().build());
-		/*
-				new AuthUI.IdpConfig.PhoneBuilder().build(), // -- we can do it later
-				new AuthUI.IdpConfig.GoogleBuilder().build(),
-				new AuthUI.IdpConfig.FacebookBuilder().build(),
-				new AuthUI.IdpConfig.TwitterBuilder().build()
+				new AuthUI.IdpConfig.GoogleBuilder().build()
 		);
-		*/
+		/*
+				new AuthUI.IdpConfig.PhoneBuilder().build(), 
+				new AuthUI.IdpConfig.FacebookBuilder().build(),
+				new AuthUI.IdpConfig.TwitterBuilder().build(),
+				new AuthUI.IdpConfig.EmailBuilder().build(), */ // -- we can do it later
 
 		// Create and launch sign-in intent for an alternative registration
-
 		Intent signInIntent = AuthUI.getInstance()
 				.createSignInIntentBuilder()
 				.setAvailableProviders(providers)
+				.setIsSmartLockEnabled(false)		// this skips unsuccessful blocking (24h after back-arrow)
 				.setTheme(R.style.GreyTheme)
 				.build();
 
+		// Handler for Google registration
 		ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
 				new FirebaseAuthUIActivityResultContract(),
 				(result) -> {
 					// Handle the FirebaseAuthUIAuthenticationResult
-					// ...
-					Log.d(TAG, "AuthUI launcher: " + result);
-					Toast.makeText(SignupActivity.this, "AuthUI launcher: " + result, Toast.LENGTH_LONG).show();
+					fbUser = fbAuth.getCurrentUser();
+					if (result.getResultCode() == AppCompatActivity.RESULT_OK && fbUser !=null) {
+						// create or update account
+						if (result.getIdpResponse().isNewUser()) {
+							runMainActivity(
+									createUserHelper(fbUser, fbUser.getDisplayName(), fbUser.getEmail(), "google_sign_in")
+							);
+						} else {
+							updateUserHelper(fbUser, "google_sign_in", userHelper -> {
+								if (userHelper != null) {
+									Toast.makeText(SignupActivity.this, getString(R.string.msg_user_signed_up_failed), Toast.LENGTH_LONG).show();
+									runMainActivity(userHelper);
+								} else {
+									Toast.makeText(SignupActivity.this, getString(R.string.msg_user_signed_up_failed), Toast.LENGTH_LONG).show();
+								}
+							});
+						}
+						Log.d(TAG, "AuthUI launcher Google OK: " + result);
+					} else {
+						Log.e(TAG, "AuthUI launcher Google ERROR: ", result.getIdpResponse().getError());
+						Toast.makeText(SignupActivity.this, getString(R.string.msg_user_signed_up_failed), Toast.LENGTH_LONG).show();
+					}
 				});
 
+		// Go Register with Google account
+		btSignInGoogle.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if (cbAgreed.isChecked()) {
+					signInLauncher.launch(signInIntent);
+				} else {
+					tapTargetAgreed();
+				}
+			}
+		});
 
-		// Go Register
+		// Go Register with email
 		btGoOn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -138,52 +182,30 @@ public class SignupActivity extends AppCompatActivity {
 				String name = etName.getText().toString().trim();
 				String password = etPassword.getText().toString().trim();
 
+				if (!cbAgreed.isChecked()) {
+					tapTargetAgreed();
+					return;
+				}
+
 				if (!validateEmail() | !validateName() | !validatePassword()){
 					// do nothing (input errors are handled in validation functions
 				} else	{
 
+					// try to create the new account
 					fbAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 						@Override
 						public void onComplete(@NonNull Task<AuthResult> taskAddUser) {
 							if (taskAddUser.isSuccessful()) {
-								resMessage[0] = name + " " + getString(R.string.msg_user_signed_up);
-								fbAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-									@Override
-									public void onComplete(@NonNull Task<Void> taskVerifSent) {
-										if (taskVerifSent.isSuccessful()) {
-											resMessage[0] += " " + getString(R.string.msg_user_verif_sent);
-										} else {
-											resMessage[0] += " " + getString(R.string.msg_user_verif_not_sent);
-										}
-									}
-								});
+								runMainActivity(createUserHelper(fbAuth.getCurrentUser(), name, email, password));
+							} else {
 
-								Log.d(TAG, resMessage[0]);
-
-								// Create the repositories copy of the new UserHelper
-								FirebaseUser fbUser = fbAuth.getCurrentUser();
-								userHelper = new UserHelper(fbUser.getUid(), email, name, password, Utils.getDevId() , Utils.generateUak(),  false);
-								DataRepos repos;
-								repos = new DataRepos<>(UserHelper.class);
-								repos.create(userHelper);		// Since it's a new user
-																// no need to check other records in central repo
-
-								Toast.makeText(SignupActivity.this, resMessage[0], Toast.LENGTH_SHORT).show();
-
-								// registration record
-								AdminNote firstAdminNote = new AdminNote(generateUuidInt(), userHelper.getUak(), userHelper.getUid(), "SignUp", "Android: " + currentOsVersion(), "", userHelper.getTimeStamp(), getVersionCode(), 0, 0, userHelper.getTimeStamp());
-								repos = new DataRepos<>(AdminNote.class);
-								repos.create(firstAdminNote);
-
-								runMainActivity(userHelper);
-							} else { // In case of unsuccessful registration
-
+								// In case of unsuccessful registration
 								if (taskAddUser.getException().getMessage().contains("A network error")){
 									resMessage[0] = name + " " + getString(R.string.msg_user_network_failed);
 								} else {
 									resMessage[0] = name + " " + getString(R.string.msg_user_signed_up_failed) + taskAddUser.getException().getMessage();
 								}
-								Log.d(TAG, resMessage[0]);
+								Log.w(TAG, resMessage[0]);
 								Toast.makeText(SignupActivity.this, resMessage[0], Toast.LENGTH_LONG).show();
 							}
 						}
@@ -197,14 +219,14 @@ public class SignupActivity extends AppCompatActivity {
 			@Override
 			public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 				if (b) {
-					btGoOn.setEnabled(true);
+					Log.i(TAG, "Policy has been accepted");
 					tvAlternativeReg.setEnabled(true);
 				} else {
-					btGoOn.setEnabled(false);
 					tvAlternativeReg.setEnabled(false);
 				}
 			}
 		});
+
 		tvPolicy.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -215,6 +237,7 @@ public class SignupActivity extends AppCompatActivity {
 				}
 			}
 		});
+
 		tvAgreement.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -246,6 +269,8 @@ public class SignupActivity extends AppCompatActivity {
 								public void onComplete(@NonNull Task<Void> task) {
 									if (task.isSuccessful()) {
 										Log.d(TAG, "User profile updated with Name: " + mName);
+									} else {
+										Log.d(TAG, "User profile update Unsuccessful");
 									}
 								}
 							});
@@ -287,6 +312,7 @@ public class SignupActivity extends AppCompatActivity {
 			}
 		});
 
+		// excluded for a while 240630
 		tvContinueAnonymously.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -328,19 +354,117 @@ public class SignupActivity extends AppCompatActivity {
 				intent.putExtra("password", "support");
 				startActivity(intent);
 				finish();
-
 			}
 		});
 
-		tvAlternativeReg.setOnClickListener(new View.OnClickListener()
-		{
+		// excluded adding Google-auth 240802
+		tvAlternativeReg.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View view)
-			{
-				signInLauncher.launch(signInIntent);
+			public void onClick(View view) {
+
+			}
+		});
+	}
+
+	private UserHelper createUserHelper(FirebaseUser fbUser, String name, String email, String password) {
+		String[] resMessage = new String[1];
+
+		resMessage[0] = name + " " + getString(R.string.msg_user_signed_up);
+		fbAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+			@Override
+			public void onComplete(@NonNull Task<Void> taskVerifSent) {
+				if (taskVerifSent.isSuccessful()) {
+					resMessage[0] += " " + getString(R.string.msg_user_verif_sent);
+				} else {
+					resMessage[0] += " " + getString(R.string.msg_user_verif_not_sent);
+				}
 			}
 		});
 
+		Log.d(TAG, resMessage[0]);
+
+		// Create the repositories copy of the new UserHelper
+		userHelper = new UserHelper(fbUser.getUid(), email, name, password, Utils.getDevId() , Utils.generateUak(),  false);
+		DataRepos repos;
+		repos = new DataRepos<>(UserHelper.class);
+		repos.create(userHelper);		// Since it's a new user
+		// no need to check other records in central repo
+
+		Toast.makeText(SignupActivity.this, resMessage[0], Toast.LENGTH_SHORT).show();
+
+		// registration record
+		AdminNote firstAdminNote = new AdminNote(generateUuidInt(), userHelper.getUak(), userHelper.getUid(), "SignUp", "Android: " + currentOsVersion(), "", userHelper.getTimeStamp(), getVersionCode(), 0, 0, userHelper.getTimeStamp());
+		repos = new DataRepos<>(AdminNote.class);
+		repos.create(firstAdminNote);
+		return userHelper;
+	}
+
+	// Define a callback interface
+	public interface UserHelperCallback {
+		void onComplete(UserHelper userHelper);
+	}
+	/**
+	 * having fbUser checks and update user records, go to MainActivity
+	 * @param password takes "google_sign_in" for google sign-in
+	 */
+	private void updateUserHelper(FirebaseUser fbu, String password, UserHelperCallback callback) {
+		// check the freshest account for correct login (repo copies)
+		String uid = Objects.requireNonNull(fbu).getUid();
+		DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
+		repos.getLatestUserHelper(intStringHash(uid))
+				.addOnCompleteListener(task -> {
+					if (task.isSuccessful()) {
+						userHelper = task.getResult();
+						Toast.makeText(SignupActivity.this, getString(R.string.msg_user_data_renewed), Toast.LENGTH_LONG).show();
+						callback.onComplete(userHelper);
+					} else {
+						if (task.getException().getCause() instanceof RuntimeException) {
+							//No actual user record in any repository!
+							Toast.makeText(SignupActivity.this, getString(R.string.msg_user_data_renewed), Toast.LENGTH_LONG).show();
+							UserHelper userHelper = new UserHelper(fbu.getUid(), fbu.getEmail(), fbu.getDisplayName(), password, Utils.getDevId(), Utils.generateUak(), fbu.isEmailVerified());
+
+							// Make Note about a new device LogIn
+							new DataRepos<>(AdminNote.class).create(
+									new AdminNote(generateUuidInt(), userHelper.getUak(), userHelper.getUid(), "LogIn with new device", "Android: " + currentOsVersion(), "", userHelper.getTimeStamp(), getVersionCode(), 0, 0, userHelper.getTimeStamp())
+							);
+							repos.create(userHelper).addOnCompleteListener(new OnCompleteListener<Void>() {
+								@Override
+								public void onComplete(@NonNull Task<Void> task) {
+									callback.onComplete(userHelper);
+								}
+							});
+						} else {
+							Toast.makeText(SignupActivity.this, getString(R.string.err_unknown), Toast.LENGTH_SHORT).show();
+							callback.onComplete(null);
+						}
+					}
+				});
+	}
+	private void tapTargetAgreed() {
+		new TapTargetSequence(this)
+				.targets(new TapTargetViewWr(this,
+						cbAgreed,
+						getString(R.string.hint_signup_agreed_title),
+						getString(R.string.hint_signup_agreed_desc)).getTapTarget()
+				)
+				.listener(new TapTargetSequence.Listener() {
+					// This listener will tell us when interesting(tm) events happen in regards
+					// to the sequence
+					@Override
+					public void onSequenceFinish() {
+						//Toast.makeText(MainActivity.this, "onSequenceFinish", Toast.LENGTH_SHORT).show();
+					}
+
+					@Override
+					public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+						//Toast.makeText(MainActivity.this, "onSequenceStep", Toast.LENGTH_SHORT).show();
+					}
+
+					@Override
+					public void onSequenceCanceled(TapTarget lastTarget) {
+						//Toast.makeText(MainActivity.this, "onSequenceCanceled", Toast.LENGTH_SHORT).show();
+					}
+				}).start();
 	}
 
 	private boolean validateEmail()

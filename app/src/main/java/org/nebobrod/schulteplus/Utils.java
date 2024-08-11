@@ -76,8 +76,10 @@ import org.nebobrod.schulteplus.common.Log;
 
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
+import java.security.SecureRandom;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -1260,5 +1262,15 @@ public final class Utils extends Application {
 				: Math.pow((channelNormalized + 0.055) / 1.055, 2.4);
 	}
 
+	/**
+	 * Security for login options
+	 * @param size
+	 * @return
+	 */
+	public static String generateNonce(int size) {
+		byte[] nonce = new byte[size];
+		new SecureRandom().nextBytes(nonce);
+		return Base64.getUrlEncoder().encodeToString(nonce);
+	}
 
 }

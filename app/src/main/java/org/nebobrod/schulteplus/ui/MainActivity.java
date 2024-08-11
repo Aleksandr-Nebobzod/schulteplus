@@ -9,7 +9,6 @@
 package org.nebobrod.schulteplus.ui;
 
 
-import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.getTopRightCornerRect;
 import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
 import static org.nebobrod.schulteplus.common.Const.SHOWN_00_MAIN;
@@ -153,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
 		//ActionBar as a toolbar
 		androidx.appcompat.app.ActionBar mainActionBar = this.getSupportActionBar();
 		int abColor =  getWindow().getStatusBarColor();
-		mainActionBar.setLogo(R.drawable.ic_logo_100);
+		mainActionBar.setLogo(R.drawable.ic_logo_100_bw);
 		mainActionBar.setDisplayUseLogoEnabled(true);
 		mainActionBar.setDisplayShowHomeEnabled(true);
 

@@ -43,6 +43,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.inject.Inject;
+
 public class SplashViewModel extends ViewModel {
 	private static final String TAG = "SplashViewModel";
 	private static final long SPLASH_STEP_TIME = 300;
@@ -51,8 +53,10 @@ public class SplashViewModel extends ViewModel {
 	private MutableLiveData<SplashState> splashState = new MutableLiveData<>();
 	private MutableLiveData<InitialCheck> checkResult = new MutableLiveData<>();
 	private MutableLiveData<UserHelper> userHelperLD = new MutableLiveData<>();
-	private final ExecutorService executorService = Executors.newFixedThreadPool(5);
 	private Handler mainHandler = new Handler(Looper.getMainLooper());
+	@Inject
+	NetworkConnectivity networkConnectivity;
+	@Inject
 	AppExecutors appExecutors = new AppExecutors();
 
 	public enum SplashState {
@@ -212,7 +216,7 @@ public class SplashViewModel extends ViewModel {
 						// version is OK:
 						result[0] = CheckResult.OK;
 						message[0] = "Version check is OK";
-					};
+					}
 					new Handler(Looper.getMainLooper()).post(() -> {
 						checkResult.setValue(new InitialCheck(CheckType.APP, result[0], message[0]));
 					});
@@ -290,7 +294,7 @@ public class SplashViewModel extends ViewModel {
 		final CheckResult[] result = {CheckResult.ERROR};
 		final String[] message = new String[1];
 
-		NetworkConnectivity networkConnectivity = new NetworkConnectivity(appExecutors, getAppContext());
+		networkConnectivity = new NetworkConnectivity(appExecutors, getAppContext());
 		networkConnectivity.checkInternetConnection((isConnected) -> {
 			if (isConnected) {
 				result[0] = CheckResult.OK;

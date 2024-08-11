@@ -33,6 +33,9 @@
 		<item>gcb_bas_necker_cube</item>
 		<item>gcb_bas_necker_cylinder</item>
 		<item>gcb_bas_necker_ball</item>
+		
+		<item>gcb_bas_dancing_girl</item>
+		<item>gcb_bas_dancing_cat</item>
 	</string-array>
 	
 	<string-array name="sound_modes_entries" translatable="true">

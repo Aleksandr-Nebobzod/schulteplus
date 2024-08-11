@@ -53,22 +53,36 @@
 					android:textSize="32sp"
 					android:textStyle="bold" />
 				
-				<EditText
+				
+				<TextView
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
+					style="@style/AppTextStyle"
+					android:id="@+id/tv_google_caution"
+					android:textSize="14sp"
+					android:text="@string/str_google_caution"
+					android:gravity="center_horizontal"
+					android:textStyle="italic"
+					android:layout_marginTop="8dp"
+					android:visibility="gone"
+					/>
+				
+				<EditText
 					android:id="@+id/et_email"
-					android:minHeight="56dp"
-					android:theme="@style/Theme.SchultePlus"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="16dp"
+					android:layout_marginBottom="6dp"
 					android:autofillHints="emailAddress"
-					android:inputType="textEmailAddress"
-					android:layout_marginTop="32dp"
 					android:background="@drawable/border02"
-					android:padding="12dp"
-					android:hint="@string/hint_email"
+					android:backgroundTint="@color/semi_white_bright"
 					android:drawableStart="@drawable/ic_baseline_email_24"
 					android:drawablePadding="10dp"
-					android:backgroundTint="@color/semi_white_bright"
-					android:layout_marginBottom="6dp"/>
+					android:hint="@string/hint_email"
+					android:inputType="textEmailAddress"
+					android:minHeight="48dp"
+					android:padding="12dp"
+					android:theme="@style/Theme.SchultePlus" />
 				
 				<com.google.android.material.textfield.TextInputLayout
 					android:layout_width="match_parent"
@@ -80,7 +94,7 @@
 					
 					<com.google.android.material.textfield.TextInputEditText
 						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
+						android:layout_height="48dp"
 						android:id="@+id/et_name"
 						android:hint="@string/hint_login"
 						android:autofillHints="username"
@@ -103,7 +117,7 @@
 					
 					<com.google.android.material.textfield.TextInputEditText
 						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
+						android:layout_height="48dp"
 						android:id="@+id/et_pass"
 						android:hint="@string/hint_pass"
 						android:inputType="textPassword"
@@ -121,8 +135,9 @@
 					android:id="@+id/bt_go_on"
 					android:layout_marginTop="16dp"
 					android:text="@string/lbl_go_on"
-					android:enabled="false"
+					android:enabled="true"
 					app:cornerRadius="25dp"
+					app:elevation="5dp"
 					android:shadowRadius="5"/>
 				
 				<LinearLayout
@@ -150,15 +165,14 @@
 						android:layout_weight="2"
 						android:layout_height="wrap_content"
 						android:orientation="vertical"
-						android:layout_gravity="fill_vertical">
+						android:layout_gravity="center_vertical">
 						
+<!--							android:layout_weight="1"-->
 						<TextView
 							android:layout_width="match_parent"
-							android:layout_weight="1"
-							android:layout_height="0dp"
-							android:paddingVertical="5dp"
+							android:layout_height="wrap_content"
 							android:gravity="end"
-							android:minHeight="48dp"
+							android:paddingVertical="5dp"
 							android:id="@+id/tv_policy"
 							android:text="@string/lbl_about_user_data_policy"
 							android:textSize="16sp"
@@ -166,27 +180,37 @@
 							android:theme="@style/Theme.SchultePlus"
 							android:textColor="@color/colorPrimary"
 							android:clickable="true"/>
+<!--						android:paddingVertical="5dp"-->
+<!--						android:minHeight="48dp"-->
 						
+<!--							android:layout_weight="1"-->
 						<TextView
-							android:layout_width="match_parent"
-							android:layout_weight="1"
-							android:layout_height="0dp"
-							android:paddingVertical="5dp"
-							android:minHeight="48dp"
-							android:gravity="end"
 							android:id="@+id/tv_agreement"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:clickable="true"
+							android:gravity="end"
+							android:paddingVertical="5dp"
 							android:text="@string/lbl_about_user_agreement"
-							android:textSize="16sp"
 							android:textAlignment="viewEnd"
-							android:textStyle="bold"
-							android:theme="@style/Theme.SchultePlus"
 							android:textColor="@color/colorPrimary"
-							android:clickable="true"/>
+							android:textSize="16sp"
+							android:textStyle="bold"
+							android:theme="@style/Theme.SchultePlus" />
 					</LinearLayout>
 					
 
 				</LinearLayout>
+	
+				<com.google.android.gms.common.SignInButton
+					android:id="@+id/bt_google_sign_in"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="16dp"
+					android:shadowRadius="5"
+					app:buttonSize="wide" />
 				
+<!--				Removed-->
 				<TextView
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
@@ -197,9 +221,10 @@
 					android:gravity="start"
 					android:textStyle="italic"
 					android:layout_marginTop="8dp"
+					android:visibility="gone"
 					/>
-				
-<!--				WIDEST ELEMENT TO CONTROL PARENT CARD_VIEW-->
+			
+				<!--WIDEST ELEMENT TO CONTROL PARENT CARD_VIEW-->
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -234,6 +259,7 @@
 					android:layout_gravity="end"
 					android:contentDescription="unwrap extra"
 					android:elevation="10dp"
+					android:outlineSpotShadowColor="@color/light_blue_900"
 					android:scaleX="4"
 					android:scaleY="4"
 					android:padding="5dp"
@@ -252,12 +278,13 @@
 						android:id="@+id/tv_alternative_reg"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:enabled="false"
 						android:layout_margin="6dp"
 						android:clickable="true"
 						android:maxLines="3"
 						android:text="@string/lbl_tv_alternative_reg"
-						android:textColor="@color/light_grey_4"
+						android:textColor="@color/colorPrimary"
+						android:textStyle="bold"
+						android:enabled="false"
 						android:textSize="16sp" />
 					
 					<TextView
@@ -269,7 +296,9 @@
 						android:maxLines="3"
 						android:text="@string/lbl_continue_anonymously"
 						android:textColor="@color/light_grey_4"
-						android:textSize="16sp" android:enabled="false" android:visibility="gone" />
+						android:textSize="16sp"
+						android:enabled="false"
+						android:visibility="gone" />
 					
 					<TextView
 						android:id="@+id/tv_continue_unregistered"
@@ -279,7 +308,8 @@
 						android:clickable="true"
 						android:maxLines="3"
 						android:text="@string/lbl_continue_unregistered"
-						android:textColor="@color/light_grey_4"
+						android:textColor="@color/colorPrimary"
+						android:textStyle="bold"
 						android:textSize="16sp" />
 					
 					<ImageView
@@ -300,7 +330,7 @@
 					android:id="@+id/tv_empty"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:textSize="22sp"
+					android:textSize="2sp"
 					android:textAlignment="center"
 					android:text=" ." />
 			

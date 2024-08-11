@@ -70,6 +70,7 @@
 	<color name="light_grey_D_purple">#D3ACFF</color>
 	<color name="light_grey_D_yellow">#DADA70</color>
 	<color name="light_grey_F_blue">#C9DEF1</color>
+	<color name="bright_F_yellow">#FFF869</color>
 	<color name="light_blue_A400">#FF00B0FF</color>
 	<color name="black_overlay_3">#30000000</color>
 	<color name="black_overlay_7">#70000000</color>

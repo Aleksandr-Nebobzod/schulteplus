@@ -18,10 +18,30 @@ import static org.nebobrod.schulteplus.Utils.intStringHash;
 import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
 import static org.nebobrod.schulteplus.common.Const.PASSWORD_REG_EXP;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
+
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.auth.api.identity.SignInClient;
+import com.google.android.gms.auth.api.identity.SignInCredential;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 
 import org.nebobrod.schulteplus.common.AppExecutors;
@@ -43,10 +63,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.nebobrod.schulteplus.R;
@@ -63,12 +81,17 @@ import java.util.concurrent.Executor;
 
 public class LoginActivity extends AppCompatActivity {
 	private static final String TAG = "Login";
+	private static final String NONCE = Utils.generateNonce(16);
+	private static final int RC_SIGN_IN = 2;
 
 	FirebaseAuth fbAuth;
 	FirebaseUser fbUser;
+	ActivityResultLauncher<Intent> googleSignInLauncher;
 
+	TextView tvTitle;
 	EditText etEmail, etName, etPassword;
 	MaterialButton btGoOn;
+	SignInButton btGoogleLogIn;
 	TextView tvGoOff;
 
 	ImageView btUnwrapExtra, btWrapExtra;
@@ -84,14 +107,17 @@ public class LoginActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_login);
 
+		tvTitle = findViewById(R.id.tv_title);
 		etEmail = findViewById(R.id.et_email);
 		etName = findViewById(R.id.et_name);
 		etPassword = findViewById(R.id.et_pass);
 		btGoOn = findViewById(R.id.bt_go_on);
+		btGoogleLogIn = findViewById(R.id.bt_google_log_in);
 		tvGoOff = findViewById(R.id.tv_go_off);
 		progressBar = findViewById(R.id.progress_bar);
 
 		fbAuth = FirebaseAuth.getInstance();
+		GoogleSignInClient googleSignInClient;
 		fbUser = fbAuth.getCurrentUser();
 
 		// Started with credentials?...
@@ -122,8 +148,6 @@ public class LoginActivity extends AppCompatActivity {
 //				progressDialog = ProgressDialog.show(getApplicationContext(),
 //						"Please wait...", "Retrieving data ...", true);
 
-				// TODOne: 01.05.2024   Change UserFbData to userHelper
-
 				fbAuth.signInWithEmailAndPassword(email, password)
 					.addOnSuccessListener(new OnSuccessListener<AuthResult>() {
 						@Override
@@ -144,35 +168,7 @@ public class LoginActivity extends AppCompatActivity {
 											}
 										});
 							}
-							// check the freshest account for correct login (repo copies)
-							String uid = Objects.requireNonNull(fbUser).getUid();
-							DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
-							repos.getLatestUserHelper(intStringHash(uid))
-									.addOnCompleteListener(task -> {
-										if (task.isSuccessful()) {
-											runMainActivity(task.getResult());
-										} else {
-											if (task.getException().getCause() instanceof RuntimeException){
-
-												//No actual user record in any repository!
-												Toast.makeText(LoginActivity.this, getString(R.string.msg_user_data_renewed), Toast.LENGTH_LONG).show();
-												UserHelper userHelper = new UserHelper(fbUser.getUid(), email, "new", password, Utils.getDevId() , Utils.generateUak(),  fbUser.isEmailVerified());
-
-												// Make Note about a new device LogIn
-												new DataRepos<>(AdminNote.class).create(
-														new AdminNote(generateUuidInt(), userHelper.getUak(), userHelper.getUid(), "LogIn", "Android: " + currentOsVersion(), "", userHelper.getTimeStamp(), getVersionCode(), 0, 0, userHelper.getTimeStamp())
-												);
-												repos.create(userHelper).addOnCompleteListener(new OnCompleteListener<Void>() {
-													@Override
-													public void onComplete(@NonNull Task<Void> task) {
-														runMainActivity(userHelper);
-													}
-												});
-											} else {
-												Toast.makeText(LoginActivity.this, getString(R.string.err_unknown), Toast.LENGTH_SHORT).show();
-											}
-										}
-									});
+							loginWithUpdate(fbUser, password);
 						}
 					}).addOnFailureListener(new OnFailureListener() {
 						@Override
@@ -192,6 +188,52 @@ public class LoginActivity extends AppCompatActivity {
 			btGoOn.performClick();
 		}
 
+		// prepare google-related FB Auth account
+		String serverClientId = getResources().getString(
+				getResources().getIdentifier("default_web_client_id", "string", getPackageName()));
+
+		googleSignInClient = GoogleSignIn.getClient(this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+				.requestIdToken(serverClientId)
+				.requestEmail()
+				.build());
+
+		googleSignInLauncher = registerForActivityResult(
+				new ActivityResultContracts.StartActivityForResult(),
+				result -> {
+					if (result.getResultCode() == AppCompatActivity.RESULT_OK) {
+						Intent data = result.getData();
+						Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+						try {
+							GoogleSignInAccount account = task.getResult(ApiException.class);
+							if (account != null) {
+								firebaseAuthWithGoogle(account.getIdToken());
+							}
+						} catch (ApiException e) {
+							Log.e(TAG, "Google sign in failed", e);
+						}
+					}
+				}
+		);
+
+/*		oneTapClient = Identity.getSignInClient(this);
+		signInRequest = BeginSignInRequest.builder()
+				.setGoogleIdTokenRequestOptions(
+						BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+								.setSupported(true)
+								.setServerClientId(serverClientId)
+								.setFilterByAuthorizedAccounts(true)
+								.build())
+				.build();*/ // This is not login this is sign-in
+
+		btGoogleLogIn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Intent signInIntent = googleSignInClient.getSignInIntent();
+				googleSignInLauncher.launch(signInIntent);
+			}
+		});
+
+		// Log In with email and password button
 		tvGoOff.setOnClickListener(new View.OnClickListener()	{
 			@Override
 			public void onClick(View view) {
@@ -223,6 +265,7 @@ public class LoginActivity extends AppCompatActivity {
 				}
 			}
 		});
+
 		tvResetPassword.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -276,8 +319,87 @@ public class LoginActivity extends AppCompatActivity {
 		});
 	}
 
+/*	@Override
+	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (requestCode == RC_SIGN_IN) {
+			try {
+				SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(data);
+				String idToken = credential.getGoogleIdToken();
+				if (idToken != null) {
+					// Authenticate with Firebase
+					firebaseAuthWithGoogle(idToken);
+				}
+			} catch (ApiException e) {
+				Log.e(TAG, "Sign-in failed", e);
+			}
+		}
+	}*/ // Got rid of this due to ActivityResultLauncher not deprecated startActivityForResult
+
+
+	private void firebaseAuthWithGoogle(String idToken) {
+		AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+		FirebaseAuth.getInstance().signInWithCredential(credential)
+				.addOnCompleteListener(this, task -> {
+					if (task.isSuccessful()) {
+						fbUser = FirebaseAuth.getInstance().getCurrentUser();
+						if (fbUser != null) {
+							// Successful sign-in
+							loginWithUpdate(fbUser, "google_sign_in");
+						} else {
+							// Account not linked
+							Toast.makeText(LoginActivity.this, getString(R.string.msg_user_need_registration), Toast.LENGTH_LONG).show();
+						}
+					} else {
+						// Sign-in failed
+						Log.e(TAG, "signInWithCredential:failure", task.getException());
+						// Show message to user
+					}
+				});
+	}
+
+
+	/**
+	 * having fbUser checks and update user records, go to MainActivity
+	 * @param fbu
+	 * @param password takes "google_sign_in" for google sign-in
+	 */
+	private void loginWithUpdate(FirebaseUser fbu, String password) {
+		// check the freshest account for correct login (repo copies)
+		String uid = Objects.requireNonNull(fbu).getUid();
+		DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
+		repos.getLatestUserHelper(intStringHash(uid))
+				.addOnCompleteListener(task -> {
+					if (task.isSuccessful()) {
+						runMainActivity(task.getResult());
+					} else {
+						if (task.getException().getCause() instanceof RuntimeException){
+
+							//No actual user record in any repository!
+							Toast.makeText(LoginActivity.this, getString(R.string.msg_user_data_renewed), Toast.LENGTH_LONG).show();
+							UserHelper userHelper = new UserHelper(fbu.getUid(), fbu.getEmail(), "new", password, Utils.getDevId() , Utils.generateUak(),  fbu.isEmailVerified());
+
+							// Make Note about a new device LogIn
+							new DataRepos<>(AdminNote.class).create(
+									new AdminNote(generateUuidInt(), userHelper.getUak(), userHelper.getUid(), "LogIn with new device", "Android: " + currentOsVersion(), "", userHelper.getTimeStamp(), getVersionCode(), 0, 0, userHelper.getTimeStamp())
+							);
+							repos.create(userHelper).addOnCompleteListener(new OnCompleteListener<Void>() {
+								@Override
+								public void onComplete(@NonNull Task<Void> task) {
+									runMainActivity(userHelper);
+								}
+							});
+						} else {
+							Toast.makeText(LoginActivity.this, getString(R.string.err_unknown), Toast.LENGTH_SHORT).show();
+						}
+					}
+				});
+	}
+
 	private void lockForDemo() {
 		btUnwrapExtra.setEnabled(false);
+		btGoogleLogIn.setEnabled(false);
 		etEmail.setEnabled(false);
 		etPassword.setEnabled(false);
 		tvResetPassword.setEnabled(false);

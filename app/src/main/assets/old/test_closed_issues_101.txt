@@ -1,0 +1,55 @@
+04.07
+links are corrected
+help-webpages on Go-btn fixed for 11+Android
+start-hints quantity decreased
+red registration link on Login-screen
+purple tint and larger unwrap buttons on LogIn & SignUp
+larger status bar in Schulte
+spinner greyed
+DayNight themes started
+alert dialog buttons lost and greyed
+Dozen mistypes are corrected
+enhanced news page layout
+SignUp links are larger
+Click for long description in Dashboard
+Got rid of bothering Toolbar from all except MainActivity
+
+Noticeable  sign Under Construction on the News page
+Enhanced news page layout for big screens
+SignUp links are larger now
+Got rid of bothering Toolbar from all screens except MainActivity
+Resend_verification_email
+Update Availability checker ready
+Settings popup got contrasted
+07.07
+
+In-App-Update Availability changed to Main
+Save local repository on update
+Dashboard Result Layout more visible
+Android full back-up im Manifest
+09.07
+
+Better feedback form
+In-App-Update check
+Email template fixed
+
+Probability dispersion drawer fixed
+Non-shaken mode fixed
+Count down before start is available now
+New Symbols for Schulte Cells added
+Status bar updated (size and showing Letters / Colours)
+Dark Mode not allowed for Basic and Schulte Activities
+13.07
+
+Touch target size and contrast Increased on SignUp screen
+Touch target size double Increased on all WebView screens
+Implementation Issues of fixed height for scalable text fixed
+Contrast ratio significantly increased on SignUp and Login screens
+Toolbar icon refreshed
+16.07
+
+TextZoom of Dialog optimised
+Webview documents' (Policy and Agreement) links are larger
+Blocked for demo account changes and comments
+Linked Unregistered login to a demo-account
+18.07

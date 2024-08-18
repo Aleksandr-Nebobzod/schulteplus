@@ -18,7 +18,7 @@
 	
 	<item
 		android:id="@+id/navigation_basics"
-		android:icon="@drawable/ic_basics2_black_24dp"
+		android:icon="@drawable/ic_bas_necker_cube"
 		android:title="@string/title_basics" />
 	
 	<item
@@ -30,7 +30,7 @@
 	
 	<item
 		android:id="@+id/navigation_schulte"
-		android:icon="@drawable/ic_schulte_black_24dp"
+		android:icon="@drawable/ic_schulte_1_sequence"
 		android:title="@string/title_schulte" />
 
 	<item

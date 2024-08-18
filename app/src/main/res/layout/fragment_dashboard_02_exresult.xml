@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) "Smart Rovers" 2024.
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".ui.dashboard.DashboardFragment00State">
+	
+	<Spinner
+		android:id="@+id/sp_dashboard"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:theme="@style/spinnerItemStyle"
+		android:popupTheme="@style/spinnerDropDownItemStyle"
+		android:layout_marginStart="8dp"
+		android:layout_marginTop="8dp"
+		android:layout_marginEnd="8dp"
+		android:autoSizeTextType="uniform"
+		android:padding="4dp"
+		android:textAlignment="textStart"
+		android:textSize="16sp"
+		android:contentDescription="@string/lbl_dashboard_report"
+		android:entries="@array/ex_type"
+		android:background="@drawable/ic_border"
+		app:layout_constraintBottom_toBottomOf="@+id/hsv_scroller"
+		app:layout_constraintEnd_toStartOf="@+id/hsv_scroller"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:ignore="TouchTargetSizeCheck" />
+	
+	<HorizontalScrollView
+		android:id="@+id/hsv_scroller"
+		android:layout_width="210dp"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+		android:layout_marginEnd="8dp"
+		android:background="@drawable/ic_border"
+		android:scrollbarStyle="insideInset"
+		android:scrollbarAlwaysDrawHorizontalTrack="true"
+		android:scrollbarThumbHorizontal="@drawable/ic_ll_scrollbar_h02"
+		android:scrollbarSize="6dp"
+		app:layout_constraintStart_toEndOf="@id/sp_dashboard"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+		
+		<RadioGroup
+			android:id="@+id/rg_source"
+			android:layout_width="wrap_content"
+			android:layout_height="32dp"
+			android:orientation="horizontal"
+			android:theme="@style/Theme.SchultePlus.Login" >
+			
+			<RadioButton
+				android:id="@+id/rb_local"
+				android:layout_width="70dp"
+				android:layout_height="wrap_content"
+				style="@style/AppTextStyle"
+				android:layout_weight="1"
+				android:textSize="12sp"
+				android:text="@string/lbl_datasource_local"
+				android:hint="@string/txt_datasource_local_hint"
+				tools:ignore="TouchTargetSizeCheck" />
+			<RadioButton
+				android:id="@+id/rb_www"
+				android:layout_width="70dp"
+				android:layout_height="wrap_content"
+				style="@style/AppTextStyle"
+				android:layout_weight="1"
+				android:checked="true"
+				android:textSize="12sp"
+				android:text="@string/lbl_datasource_www"
+				android:hint="@string/txt_datasource_www_hint"
+				tools:ignore="TouchTargetSizeCheck" />
+			<RadioButton
+				android:id="@+id/rb_ex_top_m"
+				android:layout_width="70dp"
+				android:layout_height="wrap_content"
+				style="@style/AppTextStyle"
+				android:layout_weight="1"
+				android:textSize="12sp"
+				android:text="@string/lbl_top_in_month"
+				android:hint="@string/txt_top_in_month_hint"
+				tools:ignore="TouchTargetSizeCheck" android:enabled="false" />
+			<RadioButton
+				android:visibility="gone"
+				android:id="@+id/rb_ac_top_progress"
+				android:layout_width="70dp"
+				android:layout_height="wrap_content"
+				style="@style/AppTextStyle"
+				android:layout_weight="1"
+				android:textSize="12sp"
+				android:text="@string/lbl_top_in_month_progress"
+				android:hint="@string/txt_top_in_month_progress"
+				tools:ignore="TouchTargetSizeCheck" />
+		</RadioGroup>
+		
+	</HorizontalScrollView>
+	
+	<TextView
+		android:id="@+id/tv_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:textStyle="bold|italic"
+		android:text="Dashboard Filtered"
+		android:textAlignment="center"
+		android:layout_marginTop="8dp"
+		app:layout_constraintTop_toBottomOf="@+id/sp_dashboard"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		/>
+	
+	<ListView
+		android:id="@+id/elv_dashboard"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:scrollbarAlwaysDrawHorizontalTrack="true"
+		android:scrollbarAlwaysDrawVerticalTrack="true"
+		android:layout_margin="8dp"
+		android:layout_marginBottom="100dp"
+		android:longClickable="true"
+		tools:listitem="@layout/fragment_dashboard_elv_ex_result"
+		app:layout_constraintTop_toBottomOf="@+id/tv_title"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintBottom_toBottomOf="@id/guideline"
+		/>
+		
+	<androidx.constraintlayout.widget.Guideline
+		android:id="@+id/guideline"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		app:layout_constraintGuide_end="44dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

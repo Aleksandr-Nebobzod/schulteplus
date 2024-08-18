@@ -52,7 +52,7 @@ public class TestUtils {
 
 		// Run Authentication
 		com.google.android.gms.tasks.Task<com.google.firebase.auth.AuthResult> authTask =
-				firebaseAuth.signInWithEmailAndPassword("tester01@attentions.org", "tester01")
+				firebaseAuth.signInWithEmailAndPassword("test01@attplus.in", "test01")
 				.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 					@Override
 					public void onComplete(@NonNull Task<AuthResult> task) {

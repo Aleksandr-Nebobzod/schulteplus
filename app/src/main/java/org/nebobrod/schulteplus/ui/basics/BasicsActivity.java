@@ -9,7 +9,6 @@
 package org.nebobrod.schulteplus.ui.basics;
 
 import static org.nebobrod.schulteplus.Utils.getRes;
-import static org.nebobrod.schulteplus.common.Const.SHOWN_03_STATA;
 import static org.nebobrod.schulteplus.common.Const.SHOWN_05_BASE_SPACE;
 
 import android.annotation.SuppressLint;
@@ -45,10 +44,8 @@ import com.getkeepsafe.taptargetview.TapTargetSequence;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.common.STable;
 import org.nebobrod.schulteplus.Utils;
-import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
-import org.nebobrod.schulteplus.data.ExResultArrayAdapter;
-import org.nebobrod.schulteplus.data.ExResultBasics;
+import org.nebobrod.schulteplus.ui.ExResultArrayAdapter;
 import org.nebobrod.schulteplus.databinding.ActivityBasicsBinding; // TODO: 01.10.2023 figure it out!
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.ui.TapTargetViewWr;

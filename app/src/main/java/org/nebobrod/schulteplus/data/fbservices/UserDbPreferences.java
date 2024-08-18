@@ -38,7 +38,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.R;
-import org.nebobrod.schulteplus.data.UserHelper;
 
 import javax.inject.Singleton;
 
@@ -77,7 +76,7 @@ public class UserDbPreferences {
 		this.uid = ExerciseRunner.GetUid();
 		this.name = runner.getName();
 		this.email = runner.getEmail();
-		this.psyCoins = runner.getPoints();
+		this.psyCoins = runner.getSeconds();
 		this.hours = runner.getHours();
 		this.level = runner.getLevel();
 		this.tsUpdated = runner.getTsUpdated();
@@ -140,7 +139,7 @@ public class UserDbPreferences {
 		objectMap.put("uid", runner.getUid());
 		objectMap.put("name", runner.getName());
 		objectMap.put("email", runner.getEmail());
-		objectMap.put("psyCoins", runner.getPoints());
+		objectMap.put("psyCoins", runner.getSeconds());
 		objectMap.put("hours", runner.getHours());
 		objectMap.put("level", runner.getLevel());
 		objectMap.put("tsUpdated", runner.getTsUpdated());

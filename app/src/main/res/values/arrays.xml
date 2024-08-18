@@ -19,7 +19,7 @@
 	</string-array>
 	
 	<string-array name="ex_type">
-		<item>gcb_achievements</item>
+<!--		<item>gcb_achievements</item>-->
 		<item>gcb_schulte_1_sequence</item>
 		<item>gcb_schulte_2_sequences</item>
 		<item>gcb_schulte_3_sequences</item>
@@ -36,6 +36,12 @@
 		
 		<item>gcb_bas_dancing_girl</item>
 		<item>gcb_bas_dancing_cat</item>
+	</string-array>
+	
+	<string-array name="dashboard_pages" translatable="true">
+		<item>State</item>
+		<item>Achievements</item>
+		<item>Exercises</item>
 	</string-array>
 	
 	<string-array name="sound_modes_entries" translatable="true">

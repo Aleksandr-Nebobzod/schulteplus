@@ -9,6 +9,7 @@
 package org.nebobrod.schulteplus.data;
 
 import static org.nebobrod.schulteplus.Utils.intStringHash;
+import static org.nebobrod.schulteplus.Utils.timeStampFormattedUTC;
 import static org.nebobrod.schulteplus.Utils.timeStampU;
 import static org.nebobrod.schulteplus.Utils.timeStampFormattedLocal;
 
@@ -79,7 +80,7 @@ public class UserHelper implements Serializable, Identifiable<String> {
 		this.level = 1;
 		this.timeStamp = timeStampU();
 
-		this.dateCreated = timeStampFormattedLocal(this.timeStamp);
+		this.dateCreated = timeStampFormattedUTC(this.timeStamp);
 		this.dateChanged = this.dateCreated;
 	}
 
@@ -96,7 +97,7 @@ public class UserHelper implements Serializable, Identifiable<String> {
 		this.timeStamp = timeStampU();
 		this.dateChanged = timeStampFormattedLocal(this.timeStamp);
 	}
-	/** Updates fields except needed at creation */
+	/** Updates status fields only */
 	public void setStatus(int psyCoins, int hours, int level, long timeStamp) {
 
 		this.psyCoins = psyCoins;

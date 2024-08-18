@@ -331,5 +331,12 @@
 	<string name="login_login">Log In</string>
 	<string name="login_confirmation">Request Email</string>
 	<string name="login_deletion">Deletion</string>
+	<string name="lbl_duration_days_together">Days within Schulte Plus</string>
+	<string name="lbl_duration_days_trained">Days of attention</string>
+	<string name="lbl_duration_hours_trained">Hours of practicing</string>
+	<string name="lbl_psycoins_total">Psycoins total</string>
+	<string name="lbl_exercises">Exercises of</string>
+	<string name="txt_no_data">There is nothing to show here now</string>
+	<string name="lbl_rating_letter">R</string>
 
 </resources>

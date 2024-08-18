@@ -17,7 +17,7 @@ import org.nebobrod.schulteplus.common.SCell;
 import org.nebobrod.schulteplus.common.STable;
 import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
-import org.nebobrod.schulteplus.data.ExResultArrayAdapter;
+import org.nebobrod.schulteplus.ui.ExResultArrayAdapter;
 
 import static org.nebobrod.schulteplus.Utils.*;
 import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_COLOR_BLUE;

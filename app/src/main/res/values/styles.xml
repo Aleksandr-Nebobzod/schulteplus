@@ -31,11 +31,22 @@
 	</style>
 	
 	<style name="AppTextStyle" parent="TextAppearance.AppCompat">
+		<item name="android:textColor">@color/colorPrimary</item>
+		<item name="android:textStyle">bold</item>
+		<item name="android:textSize">18sp</item>
+	</style>
+	
+	<style name="AppTextStyleSec" parent="TextAppearance.AppCompat">
 		<item name="android:textColor">@color/colorSecondary</item>
+		<item name="android:textSize">18sp</item>
 	</style>
 	
 	<style name="CardViewSurfaceStyle" parent="Widget.MaterialComponents.CardView">
 		<item name="cardBackgroundColor">?attr/colorSurface</item>
+		<item name="background">@drawable/ic_border</item>
+		<item name="android:layout_margin">10dp</item>
+		<item name="contentPadding">10dp</item>
+		<item name="android:elevation">10dp</item>
 	</style>
 	
 	<!-- Setting window animation -->
@@ -174,12 +185,9 @@
 		<item name="android:colorAccent">@color/light_grey_2_green</item>
 		<item name="android:colorControlActivated">@color/light_grey_8_red</item>
 		
-		
 		<item name="materialButtonStyle">@style/button3d</item>
 		
 		<item name="android:windowBackground">@drawable/ic_border</item>
-		
-		
 	</style>
 	
 	<style name="preferenceScreen" parent="Theme.SchultePlus">

@@ -24,6 +24,10 @@
 		<item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
 		<item name="colorOnSecondary">@color/colorOnSecondary</item>
 		
+		<item name="colorOnPrimarySurface">@color/light_grey_8</item>
+		<item name="colorBackgroundFloating">@color/light_grey_8</item>
+		<item name="colorAccent">@color/colorSecondaryVariant</item>
+		
 		<item name="android:colorBackground">@color/colorBackground</item>
 		<item name="colorError">@color/colorError</item>
 		

@@ -1,0 +1,44 @@
+Configuration cache is an incubating feature.
+Reusing configuration cache.
+
+> Task :app:dependencies
+
+------------------------------------------------------------
+Project ':app'
+------------------------------------------------------------
+
+implementation - Implementation only dependencies for 'main' sources. (n)
++--- com.kizitonwose.calendar:view:2.0.0 (n)
++--- androidx.viewpager2:viewpager2:1.0.0 (n)
++--- com.github.bumptech.glide:glide:4.11.0 (n)
++--- androidx.activity:activity:1.9.0 (n)
++--- androidx.fragment:fragment:1.7.1 (n)
++--- com.google.android.libraries.identity.googleid:googleid:1.1.1 (n)
++--- com.google.android.gms:play-services-auth:16.0.0 (n)
++--- com.google.android.play:app-update:2.1.0 (n)
++--- com.google.android.gms:play-services-oss-licenses:17.1.0 (n)
++--- com.getkeepsafe.taptargetview:taptargetview:1.13.3 (n)
++--- com.google.code.gson:gson:2.10.1 (n)
++--- com.google.firebase:firebase-crashlytics:19.0.3 (n)
++--- com.google.firebase:firebase-analytics:22.0.2 (n)
++--- com.google.firebase:firebase-firestore:25.0.0 (n)
++--- com.firebaseui:firebase-ui-auth:7.2.0 (n)
++--- com.google.firebase:firebase-auth:16.0.3 (n)
++--- com.j256.ormlite:ormlite-android:6.1 (n)
++--- androidx.appcompat:appcompat:1.6.1 (n)
++--- com.google.android.material:material:1.12.0 (n)
++--- androidx.constraintlayout:constraintlayout:2.1.4 (n)
++--- androidx.lifecycle:lifecycle-livedata-ktx:2.4.1 (n)
++--- androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1 (n)
++--- androidx.navigation:navigation-fragment:2.7.7 (n)
++--- androidx.navigation:navigation-ui:2.7.7 (n)
++--- androidx.legacy:legacy-support-v4:1.0.0 (n)
+\--- androidx.preference:preference:1.2.1 (n)
+
+(n) - Not resolved (configuration is not meant to be resolved)
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+BUILD SUCCESSFUL in 1s
+1 actionable task: 1 executed
+Configuration cache entry reused.

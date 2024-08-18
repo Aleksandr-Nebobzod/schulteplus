@@ -23,7 +23,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
-import androidx.core.content.ContextCompat;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -38,7 +37,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
-import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.common.Const.*;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
@@ -202,7 +200,7 @@ public class PrefsPopupSettingsFragment extends AppCompatDialogFragment {
 
 			switch (key) {
 				// integer values assignment
-				case KEY_POINTS:
+				case KEY_SECONDS:
 				case KEY_HOURS:
 				case KEY_PRF_LEVEL:
 				case KEY_PRF_SHOWN_INTROS:

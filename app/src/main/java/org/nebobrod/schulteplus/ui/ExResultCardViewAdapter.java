@@ -9,14 +9,12 @@
 package org.nebobrod.schulteplus.ui;
 
 import static org.nebobrod.schulteplus.Utils.animBlink;
-import static org.nebobrod.schulteplus.Utils.animBlinkText;
 import static org.nebobrod.schulteplus.Utils.durationCut;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.colorMix;
 import org.nebobrod.schulteplus.common.Log;
 
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -82,7 +80,7 @@ public class ExResultCardViewAdapter extends RecyclerView.Adapter<ExResultCardVi
 		holder.exTypeIcon.setImageDrawable(this.getExTypeDrawable(exResult));
 		holder.exDescription.setText(exResult.getExDescription());
 		holder.numValue.setText(durationCut(exResult.getNumValue()));
-		holder.psyCoins.setText(String.valueOf(exResult.getPsycoins()));
+		holder.psyCoins.setText(String.valueOf(exResult.calculatePsycoins()));
 		holder.events.setText(String.valueOf(exResult.getTurns()));
 
 		// see exDescription() in org.nebobrod.schulteplus.common.ExerciseRunner

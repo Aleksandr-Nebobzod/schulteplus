@@ -37,6 +37,9 @@ public class AdminNote implements Serializable, Identifiable<String>, Cloneable 
 	private String title;
 
 	@DatabaseField
+	private String langCode;		// language code for Device
+
+	@DatabaseField
 	private String message;
 
 	@DatabaseField
@@ -104,6 +107,14 @@ public class AdminNote implements Serializable, Identifiable<String>, Cloneable 
 
 	public void setTimeStamp(long timeStamp) {
 		this.timeStamp = timeStamp;
+	}
+
+	public String getLangCode() {
+		return langCode;
+	}
+
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
 	}
 
 	public String getTitle() {

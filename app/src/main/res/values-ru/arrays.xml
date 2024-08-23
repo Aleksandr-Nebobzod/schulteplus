@@ -10,6 +10,12 @@
 
 <resources>
 	
+	<string-array name="dashboard_pages">
+		<item>Статус</item>
+		<item>Достижения</item>
+		<item>Упражнения</item>
+	</string-array>
+	
 	<string-array name="sound_modes_entries">
 		<item>Выкл</item>
 		<item>Обычный</item>

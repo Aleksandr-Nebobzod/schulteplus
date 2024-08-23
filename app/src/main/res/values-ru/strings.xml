@@ -9,8 +9,8 @@
 
 <resources>
 	<string name="app_name">Внимание Шульте Плюс</string>
-	<string name="title_home">Что нового</string>
 	<string name="title_dashboard">Стата</string>
+	<string name="title_news">Что нового</string>
 	<string name="title_notifications">События</string>
 	<string name="title_schulte">Шульте+</string>
 	<string name="title_basics">База</string>
@@ -44,8 +44,8 @@
 	<string name="lbl_bas_pyramidot">Пирамиточка</string>
 	<string name="lbl_bas_necker_cube">Куб Неккера</string>
 	<string name="lbl_bas_necker_cube_double">Двойной Куб Неккера</string>
-	<string name="lbl_bas_necker_ball">Шар Неккера</string>
-	<string name="lbl_bas_necker_cylinder">Цилиндр Неккера</string>
+	<string name="lbl_bas_necker_cylinder">Стакан Ровера</string>
+	<string name="lbl_bas_necker_ball">Шар Ровера</string>
 	<string name="lbl_bas_dancing_girl">Балеринка</string>
 	<string name="lbl_bas_dancing_cat">Кот-Балерун</string>
 	<string name="txt_bas_description">Здесь подобраны простые упражнения, которые сложны тем, что требуют и тренируют устойчивость внимания</string>
@@ -55,7 +55,7 @@
 	<string name="lbl_average">Среднее</string>
 	<string name="lbl_sd">Отклонение</string>
 	<string name="lbl_turns_missed">Ходы мимо</string>
-	<string name="title_activity_basics">Шульте+ Основа</string>
+	<string name="title_activity_basics">Шульте+ База</string>
 	<string name="lbl_bas_khao_manee">Као мани</string>
 	<string name="menu_user_long">Параметры пользователя</string>
 	<string name="menu_user_short">Пользователь</string>
@@ -212,7 +212,7 @@
 	<string name="lbl_level_of_feels_cut">Ч.</string>
 	<string name="lbl_level_of_energy_cut">Э.</string>
 	<string name="lbl_top_in_month">Топ</string>
-	<string name="txt_datasource_local_hint">Актуальные локальные записи</string>
+	<string name="txt_datasource_local_hint">Локальные записи</string>
 	<string name="txt_datasource_www_hint">Актуальные в сети</string>
 	<string name="txt_top_in_month_hint">Лучшие на уровне за месяц</string>
 	<string name="lbl_top_in_month_progress">Прог.</string>
@@ -309,4 +309,18 @@
 	<string name="login_login">Вход</string>
 	<string name="login_confirmation">Запрос сообщения</string>
 	<string name="login_deletion">Удаление</string>
+	<string name="lbl_duration_days_together">Дней с Шульте плюс</string>
+	<string name="lbl_duration_days_trained">Дней внимания</string>
+	<string name="lbl_duration_hours_trained">Часов в практике</string>
+	<string name="lbl_psycoins_total">𝛹-монет всего</string>
+	<string name="lbl_exercises">Упражнения</string>
+	<string name="txt_no_data">Даже и нечего показать тут так-то</string>
+	<string name="lbl_rating_letter">Р</string>
+	<string name="lbl_google_log_in">Вход с гугл-аккаунтом</string>
+	<string name="lbl_email_log_in">Вход с емайл аккаунтом</string>
+	<string name="title_choice">Выбор</string>
+	<string name="txt_choice_description">Выбрать дополнительное пространство упражнений</string>
+	<string name="title_sssr">Сферы</string>
+	<string name="lbl_sssr">Сферы</string>
+	<string name="title_schulte_parents">Шульте -- родителям</string>
 </resources>

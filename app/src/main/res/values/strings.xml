@@ -8,8 +8,8 @@
 
 <resources>
 	<string name="app_name">Schulte Plus</string>
-	<string name="title_home">What\'s up</string>
 	<string name="title_dashboard">Dashboard</string>
+	<string name="title_news">What\'s up</string>
 	<string name="title_notifications">Notifications</string>
 	<string name="title_schulte">Schulte</string>
 	<string name="title_basics">Basics</string>
@@ -61,8 +61,8 @@
 	<string name="lbl_bas_pyramidot">Piramidot</string>
 	<string name="lbl_bas_necker_cube">Necker\'s cube</string>
 	<string name="lbl_bas_necker_cube_double">Necker\'s Cube Doubled</string>
-	<string name="lbl_bas_necker_ball">Necker\'s Ball</string>
-	<string name="lbl_bas_necker_cylinder">Necker\'s Cylinder</string>
+	<string name="lbl_bas_necker_cylinder">Rover\'s Glass</string>
+	<string name="lbl_bas_necker_ball">Rover\'s Ball</string>
 	<string name="lbl_bas_dancing_girl">Dancing Girl</string>
 	<string name="lbl_bas_dancing_cat">Dancing Cat</string>
 	<string name="txt_bas_description">There are very simple therefore hard exercises which are require your stable attention</string>
@@ -331,5 +331,19 @@
 	<string name="login_login">Log In</string>
 	<string name="login_confirmation">Request Email</string>
 	<string name="login_deletion">Deletion</string>
+	<string name="lbl_duration_days_together">Days within Schulte Plus</string>
+	<string name="lbl_duration_days_trained">Days of attention</string>
+	<string name="lbl_duration_hours_trained">Hours of practicing</string>
+	<string name="lbl_psycoins_total">Psycoins total</string>
+	<string name="lbl_exercises">Exercises of</string>
+	<string name="txt_no_data">There is nothing to show here now</string>
+	<string name="lbl_rating_letter">R</string>
+	<string name="lbl_google_log_in">Log in with Google</string>
+	<string name="lbl_email_log_in">Log in with email</string>
+	<string name="title_choice">Choice</string>
+	<string name="txt_choice_description">Chose additional training space</string>
+	<string name="title_sssr">Spheres</string>
+	<string name="lbl_sssr">Spheres</string>
+	<string name="title_schulte_parents">Schulte for parents</string>
 
 </resources>

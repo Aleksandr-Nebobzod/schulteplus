@@ -19,7 +19,7 @@
 	</string-array>
 	
 	<string-array name="ex_type">
-		<item>gcb_achievements</item>
+<!--		<item>gcb_achievements</item>-->
 		<item>gcb_schulte_1_sequence</item>
 		<item>gcb_schulte_2_sequences</item>
 		<item>gcb_schulte_3_sequences</item>
@@ -33,9 +33,16 @@
 		<item>gcb_bas_necker_cube</item>
 		<item>gcb_bas_necker_cylinder</item>
 		<item>gcb_bas_necker_ball</item>
+		<item>gcb_bas_penrose_triangle</item>
 		
 		<item>gcb_bas_dancing_girl</item>
 		<item>gcb_bas_dancing_cat</item>
+	</string-array>
+	
+	<string-array name="dashboard_pages" translatable="true">
+		<item>State</item>
+		<item>Achievements</item>
+		<item>Exercises</item>
 	</string-array>
 	
 	<string-array name="sound_modes_entries" translatable="true">
@@ -350,6 +357,22 @@
 		<item>#FFD463</item>
 		<item>#BFFF47</item>
 		<item>#30FF75</item>
+	</array>
+	<array name="test_colors" translatable="false">
+		<item>#ff6969d6</item>
+		<item>#ff7d7dea</item>
+		<item>#59A800</item>
+		
+		<item>#f0dd</item>
+		
+		<item>#ff59a800</item>
+		<item>#ff47b62c</item>
+		<item>#ff35c458</item>
+		<item>#ff23d384</item>
+		<item>#ff11e1b0</item>
+		<item>#ff00f0dd</item>
+		<item>#4F005C55</item>
+		<item>#D3DFD9</item>
 	</array>
 	
 	<array name="level_of_emotion_values" translatable="false">

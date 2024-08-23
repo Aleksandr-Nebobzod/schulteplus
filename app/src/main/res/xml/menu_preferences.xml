@@ -34,20 +34,20 @@
 			app:dialogMessage="@string/prf_current_level_dialog_message"
 			/>
 		<!--		android:max="2"-->
-		<EditTextPreference app:key="prf_hours" app:title="@string/prf_hours_title" app:isPreferenceVisible="true" android:enabled="false"/>
-		<EditTextPreference app:key="prf_points" app:title="@string/prf_points_title" app:isPreferenceVisible="true" android:enabled="false"/>
+		<EditTextPreference app:key="prf_hours" app:title="@string/prf_hours_title" app:isPreferenceVisible="false" android:enabled="false"/>
+		<EditTextPreference app:key="prf_points" app:title="@string/prf_points_title" app:isPreferenceVisible="false" android:enabled="false"/>
 		<EditTextPreference app:key="prf_user_name" app:title="@string/prf_user_name" app:dialogMessage="@string/prf_user_name_sum" app:useSimpleSummaryProvider="true"  />
 		<EditTextPreference app:key="prf_user_email" app:title="@string/prf_user_email"  app:dialogMessage="@string/prf_user_email_sum" app:useSimpleSummaryProvider="true" app:enabled="false"/>
 		<SwitchPreferenceCompat app:key="prf_title_data" app:title="@string/prf_title_data" app:summary="@string/prf_data_sum"  app:summaryOff="@string/prf_data_sum_off" app:summaryOn="@string/prf_data_on" app:switchTextOn="@string/prf_data_st_on" app:switchTextOff="@string/prf_data_st_off" app:defaultValue="true" app:isPreferenceVisible="false" />
 		<Preference
 			app:key="prf_user_logoff"
 			app:persistent="false"
-			app:title="@string/prf_user_logoff"
+			app:title="@string/prf_user_logoff" app:icon="@drawable/ic_user_logoff"
 			app:summary="@string/prf_user_logoff_description" />
 		<Preference
 			app:key="prf_user_delete"
 			app:persistent="false"
-			app:title="@string/lbl_delete_account"
+			app:title="@string/lbl_delete_account" app:icon="@drawable/ic_user_delete"
 			app:summary="@string/txt_delete_account_description" />
 	
 	</PreferenceCategory>

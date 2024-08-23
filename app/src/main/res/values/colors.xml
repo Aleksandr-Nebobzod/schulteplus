@@ -14,13 +14,16 @@
 	<color name="colorOnPrimary">@color/white</color>
 	<!-- Secondary brand colors -->
 	<color name="colorSecondary">@color/light_grey_2_purple</color>
-	<color name="colorSecondaryVariant">@color/teal_200</color>
+	<color name="colorSecondaryVariant">@color/teal_700</color>
 	<color name="colorOnSecondary">@color/light_grey_D_blue</color>
+	
+	<color name="colorPrimaryDark">@color/light_grey_D</color>
+	<color name="colorOnPrimarySurface">@color/light_grey_4</color>
 	
 	<color name="colorBackground">@color/light_grey_D</color>
 	<color name="colorError">@color/light_grey_8_red</color>
 <!--	<color name="colorBackground">@color/light_grey_A_blue</color>-->
-	<color name="colorSurface">@color/semi_white_bright</color>
+	<color name="color_surface_semi">@color/semi_white_bright</color>
 	
 	<color name="spinnerTextColor">@color/light_grey_4_blue</color>
 	

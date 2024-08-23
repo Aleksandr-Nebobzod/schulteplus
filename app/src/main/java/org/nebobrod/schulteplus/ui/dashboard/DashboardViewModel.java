@@ -8,47 +8,156 @@
 
 package org.nebobrod.schulteplus.ui.dashboard;
 
+import static org.nebobrod.schulteplus.Utils.localDateOfTimeStamp;
+import static org.nebobrod.schulteplus.Utils.timeStampPlusDays;
+
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.data.Achievement;
 import org.nebobrod.schulteplus.data.DataOrmRepo;
 import org.nebobrod.schulteplus.data.DataRepository;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.Identifiable;
+import org.nebobrod.schulteplus.data.fbservices.ConditionEntry;
 import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
+import org.nebobrod.schulteplus.ui.SpCalendarView;
 
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 
 public class DashboardViewModel<TEntity extends Identifiable<String>> extends ViewModel {
 	private static final String TAG = "DashboardViewModel";
 
+	// State data
+	private final MutableLiveData<List<ExResult>> exCalendarLiveData = new MutableLiveData<>();
+	private final MutableLiveData<List<SpCalendarView.DayData>> exContributionsLiveData = new MutableLiveData<>();
+	private final MutableLiveData<Integer> daysLD = new MutableLiveData<>();
+	private final MutableLiveData<Integer> psyCoinsLD = new MutableLiveData<>();
+
+	// detailed list
 	private final MutableLiveData<String> dashboardKey = new MutableLiveData<>();
 	private final MutableLiveData<String> dashboardFilter = new MutableLiveData<>();
-	//private final MutableLiveData<List<? extends ExResult>> resultsLiveData = new MutableLiveData<>();
-	private final MutableLiveData<List<TEntity>> resultsLiveData = new MutableLiveData<>();
+	private final MutableLiveData<List<Achievement>> achievLD = new MutableLiveData<>();
+	private final MutableLiveData<List<TEntity>> exResultLD = new MutableLiveData<>();
 	// private final MutableLiveData<List<Achievement>> achievementsLiveData = new MutableLiveData<>();
 
 
-	// Getting data from DB
-	public void fetchLimitedData() {
-/*		AppExecutors appExecutors = new AppExecutors();
-		appExecutors.getDiskIO().execute(() -> {
-		});*/
+	public LiveData<List<ExResult>> getExCalendarLiveData() {
+		return exCalendarLiveData;
+	}
 
+	public LiveData<List<SpCalendarView.DayData>> getExContributionsLiveData() {
+		return exContributionsLiveData;
+	}
+
+	public MutableLiveData<Integer> getDaysLD() {
+		return daysLD;
+	}
+
+	public MutableLiveData<Integer> getPsyCoinsLD() {
+		return psyCoinsLD;
+	}
+
+	/**
+	 * Getting exercise Calendar data for page 00State Fragment
+	 */
+	public void fetchExCalendar() {
+		long ninetyDaysAgoTimestamp = timeStampPlusDays(-90);
+//		ninetyDaysAgoTimestamp = 1723115774; // 2024-08-08T14:16:14"
+
+		// Get all exResult records not older than 90 days for today
+		new DataFirestoreRepo<ExResult>(ExResult.class).getListByField(
+						new ConditionEntry(
+								ExResult.TIMESTAMP_FIELD_NAME,
+								DataRepository.WhereCond.GE,
+								ninetyDaysAgoTimestamp),
+						new ConditionEntry(
+								ExResult.UID_FIELD_NAME,
+								DataRepository.WhereCond.EQ,
+								ExerciseRunner.getUserHelper().getUid()))
+				.addOnCompleteListener(task -> {
+					if (task.isSuccessful()) {
+						List<ExResult> results = task.getResult();
+
+						// Safety
+						if (results == null) {
+							results = new ArrayList<>();
+						}
+						// Put all data
+						exCalendarLiveData.postValue(task.getResult());
+
+						// Proceed calculations for Calendar and Stata
+						Map<LocalDate, Integer> dayDataMap = new HashMap<>();
+						LocalDate date;
+						Integer psyCoins = 0;
+						Integer psyCoinsSum = 0;
+						for (ExResult res : results) {
+							date = localDateOfTimeStamp(res.getTimeStamp());
+							psyCoins = res.getPsycoins();
+							dayDataMap.merge(date, psyCoins, Integer::sum);
+							psyCoinsSum += psyCoins;
+						}
+						// Put Calendar and Stata
+						// transfer map to list
+						List<SpCalendarView.DayData> dataList = new ArrayList<>();
+						for (Map.Entry<LocalDate, Integer> entry : dayDataMap.entrySet()) {
+							dataList.add(new SpCalendarView.DayData(entry.getKey(), entry.getValue()));
+						}
+						exContributionsLiveData.postValue(dataList);
+						daysLD.postValue(dayDataMap.size());
+						psyCoinsLD.postValue(psyCoinsSum);
+					} else {
+						Log.w(TAG, "onError: ", task.getException());
+					}
+				});
+	}
+
+	public MutableLiveData<List<Achievement>> getAchievLD() {
+		return achievLD;
+	}
+
+	/**
+	 * Getting Achievements data for page 01
+	 */
+	public void fetchAchievements() {
+
+		String _filter = Objects.requireNonNull(dashboardFilter.getValue());
+		if (_filter.equals(Utils.getRes().getString(R.string.lbl_datasource_local))) {
+			List<Achievement> result = (new DataOrmRepo(Achievement.class)).getListLimited(Achievement.class, dashboardKey.getValue());
+//			Log.d(TAG, "fetchResultsLimited: " + results);
+			achievLD.postValue(result);
+		} else if (_filter.equals(Utils.getRes().getString(R.string.lbl_datasource_www))) {
+
+			new DataFirestoreRepo<>(Achievement.class).getListByField()
+					.addOnCompleteListener(task -> {
+						if (task.isSuccessful()) {
+							achievLD.postValue(task.getResult());
+						} else {
+							Log.w(TAG, "fetchAchievements onError: ", task.getException());
+						}
+					});
+		}
+	}
+
+	/**
+	 * Getting ExResults data for page 02
+	 */
+	public void fetchExResults() {
 		Class<? extends Identifiable<String>> clazz;
 		if (dashboardKey.getValue().equals("gcb_achievements")) {
 			clazz = Achievement.class;
@@ -65,7 +174,7 @@ public class DashboardViewModel<TEntity extends Identifiable<String>> extends Vi
 		if (_filter.equals(Utils.getRes().getString(R.string.lbl_datasource_local))) {
 			List<TEntity> result = (new DataOrmRepo(clazz)).getListLimited(clazz, dashboardKey.getValue());
 //			Log.d(TAG, "fetchResultsLimited: " + results);
-			resultsLiveData.postValue(result);
+			exResultLD.postValue(result);
 		} else if (_filter.equals(Utils.getRes().getString(R.string.lbl_datasource_www))) {
 /*			new DataFirestoreRepo<TEntity>(entityClass).getListLimited(new DataRepository.RepoCallback<List<TEntity>>() {
 				@Override
@@ -79,10 +188,11 @@ public class DashboardViewModel<TEntity extends Identifiable<String>> extends Vi
 				}
 			});*/ // that was first try with no filter
 
-			new DataFirestoreRepo<TEntity>(entityClass).getListByField("exType", DataRepository.WhereCond.EQ, dashboardKey.getValue())
+			new DataFirestoreRepo<TEntity>(entityClass).getListByField(
+					new ConditionEntry("exType", DataRepository.WhereCond.EQ, dashboardKey.getValue()))
 					.addOnCompleteListener(task -> {
 						if (task.isSuccessful()) {
-							resultsLiveData.postValue(task.getResult());
+							exResultLD.postValue(task.getResult());
 						} else {
 							Log.w(TAG, "onError: ", task.getException());
 						}
@@ -92,8 +202,8 @@ public class DashboardViewModel<TEntity extends Identifiable<String>> extends Vi
 
 
 	// Getter for LiveData with dataset
-	public LiveData<List<TEntity>> getResultsLiveData() {
-		return resultsLiveData;
+	public LiveData<List<TEntity>> getExResultLD() {
+		return exResultLD;
 	}
 
 	// Other getters & setters

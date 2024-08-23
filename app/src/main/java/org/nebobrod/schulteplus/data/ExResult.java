@@ -8,8 +8,10 @@
 
 package org.nebobrod.schulteplus.data;
 
+import static org.nebobrod.schulteplus.Utils.relativeLuminance;
 import static org.nebobrod.schulteplus.Utils.timeStampFormattedLocal;
 import static org.nebobrod.schulteplus.Utils.timeStampU;
+import static org.nebobrod.schulteplus.common.Const.*;
 
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
@@ -104,6 +106,10 @@ public class ExResult implements Serializable, Identifiable<String> {
 
 	@DatabaseField
 	private float rmsd; 				// Root-mean-square deviation as a sign of stability & rhythm in exercises
+
+	// section of SSSR-exercises data:
+
+	// section of Other-exercises data:
 
 	/** Non-database field for layout elements' visibility control */
 	private String layoutFlag = "";
@@ -346,6 +352,45 @@ public class ExResult implements Serializable, Identifiable<String> {
 		this.levelOfEmotion = levelOfEmotion;
 		this.levelOfEnergy = levelOfEnergy;
 		this.note = note;
+	}
+
+	@Exclude
+	public int getPsycoins() {
+		switch (this.exType) {
+			// Seconss multiplied by hardness
+			case KEY_PRF_EX_B0:
+			case KEY_PRF_EX_B1:
+				return (int) this.numValue / 1000 * 1;
+			case KEY_PRF_EX_B2:
+			case KEY_PRF_EX_B3:
+				return (int) this.numValue / 1000 * 2;
+			case KEY_PRF_EX_B4:
+			case KEY_PRF_EX_B5:
+			case KEY_PRF_EX_B6:
+			case KEY_PRF_EX_B7:
+				return (int) this.numValue / 1000 * 3;
+			case KEY_PRF_EX_B8:
+			case KEY_PRF_EX_B9:
+			case KEY_PRF_EX_BA:
+			case KEY_PRF_EX_BB:
+			case KEY_PRF_EX_BC:
+				return (int) this.numValue / 1000 * 4;
+			case KEY_PRF_EX_BD:
+			case KEY_PRF_EX_BE:
+				return (int) this.numValue / 1000 * 5;
+
+			case KEY_PRF_EX_S0:
+			case KEY_PRF_EX_S1:
+				// number of seconds plus success turns (fine of missed turns) multiplied by hardness
+				return (int) (this.numValue / 1000 + turns - turnsMissed) * 10;
+			case KEY_PRF_EX_S2:
+				return (int) (this.numValue / 1000 + turns - turnsMissed) * 15;
+			case KEY_PRF_EX_S3:
+			case KEY_PRF_EX_S4:
+				return (int) (this.numValue / 1000 + turns - turnsMissed) * 20;
+			default:
+				return (int) this.numValue / 1000;
+		}
 	}
 
 	@Exclude

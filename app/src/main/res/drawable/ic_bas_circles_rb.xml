@@ -6,13 +6,13 @@
   ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
   -->
 
-<vector android:height="24dp" android:viewportHeight="100"
-    android:viewportWidth="100" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="#4C4C46" android:fillType="nonZero"
+<vector android:height="36dp" android:viewportHeight="100"
+    android:viewportWidth="100" android:width="36dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#485BDC" android:fillType="nonZero"
         android:pathData="M75,48m-18.4,0a18.4,18.4 0,1 1,36.8 0a18.4,18.4 0,1 1,-36.8 0"
         android:strokeColor="#000000" android:strokeLineCap="butt"
         android:strokeLineJoin="miter" android:strokeWidth="3.68"/>
-    <path android:fillColor="#4C4C46" android:fillType="nonZero"
+    <path android:fillColor="#CB6B4E" android:fillType="nonZero"
         android:pathData="M30.15,47.94m-18.4,0a18.4,18.4 0,1 1,36.8 0a18.4,18.4 0,1 1,-36.8 0"
         android:strokeColor="#000000" android:strokeLineCap="butt"
         android:strokeLineJoin="miter" android:strokeWidth="3.68"/>

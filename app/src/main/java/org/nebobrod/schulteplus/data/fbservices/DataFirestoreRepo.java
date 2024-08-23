@@ -12,6 +12,9 @@ package org.nebobrod.schulteplus.data.fbservices;
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.hasFieldName;
 import static org.nebobrod.schulteplus.common.Const.QUERY_COMMON_LIMIT;
+import static org.nebobrod.schulteplus.data.DataRepository.WhereCond.EQ;
+import static org.nebobrod.schulteplus.data.DataRepository.WhereCond.GE;
+import static org.nebobrod.schulteplus.data.DataRepository.WhereCond.LE;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.AppExecutors;
@@ -201,35 +204,38 @@ public class DataFirestoreRepo<TEntity extends Identifiable<String>> implements 
 
 	/**
 	 * Applying to {@link TEntity} collection filtering data by equality of:
-	 * @param field
-	 * @param value
+	 * @param entries where builder {@link ConditionEntry}
 	 * @return List limited by {@link org.nebobrod.schulteplus.common.Const#QUERY_COMMON_LIMIT}
 	 */
-	public Task<List<TEntity>> getListByField(@NonNull String field, @NonNull @WhereCond.Condition WhereCond condition, @Nullable Object value) {
+	public Task<List<TEntity>> getListByField(ConditionEntry... entries) {
 		List<TEntity> result = new ArrayList<>();
-		Log.i(TAG, "Applying to  '" + collectionReference.getPath()
-				+ " for list filtered by " + field + " == " + value);
 
-//		Query _query = collectionReference.limit(QUERY_COMMON_LIMIT);
-//		Query _query = collectionReference.limit(1000);
 		Query _query = collectionReference.orderBy("timeStamp", Query.Direction.DESCENDING).limit(QUERY_COMMON_LIMIT);
 
-		if (hasFieldName(entityClass, field)) {
-			_query = _query.whereEqualTo(field, value);
-			switch (condition) {
-				case EQ:
-					_query = _query.whereEqualTo(field, value);
-					break;
-				case GE:
-					_query = _query.whereGreaterThanOrEqualTo(field, value);
-					break;
-				case LE:
-					_query = _query.whereLessThanOrEqualTo(field, value);
-					break;
-				default:
-					throw new IllegalArgumentException("Unsupported condition: " + condition);
+		// Evaluate conditions
+		for (ConditionEntry entry : entries) {
+			String field = entry.getField();
+			WhereCond condition = entry.getCondition();
+			Object value = entry.getValue();
+			Log.i(TAG, "Applying to  '" + collectionReference.getPath()
+					+ " for list filtered by " + field + " " + condition + " " + value);
+			if (hasFieldName(entityClass, field)) {
+				switch (condition) {
+					case EQ:
+						_query = _query.whereEqualTo(field, value);
+						break;
+					case GE:
+						_query = _query.whereGreaterThanOrEqualTo(field, value);
+						break;
+					case LE:
+						_query = _query.whereLessThanOrEqualTo(field, value);
+						break;
+					default:
+						throw new IllegalArgumentException("Unsupported condition: " + condition);
+				}
 			}
 		}
+
 
 		return _query
 				.get().continueWith(bgRunner, new Continuation<QuerySnapshot, List<TEntity>>() {
@@ -251,7 +257,7 @@ public class DataFirestoreRepo<TEntity extends Identifiable<String>> implements 
 							if (result.size() > 0) {
 								result.sort(Comparator.comparingLong(TEntity::getTimeStamp).reversed());
 							} else {
-								Log.w(TAG, "No documents  with field: " + field + " as: " + value);
+								Log.w(TAG, "No documents  for such Where: " + entries);
 								return null;
 							}
 						} else {

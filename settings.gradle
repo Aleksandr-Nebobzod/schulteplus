@@ -5,17 +5,17 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-buildscript {
+/*buildscript {
     ext {
         kotlinVersion = "1.7.0"
     }
-}
+}*/
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-//        maven { url 'https://jitpack.io' }
+        maven { url 'https://jitpack.io' }
     }
 }
 rootProject.name = "Schulte Plus"

@@ -9,8 +9,13 @@
 package org.nebobrod.schulteplus;
 
 
+import static org.nebobrod.schulteplus.common.Const.ANIM_STEP_MILLIS;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
@@ -43,13 +48,14 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -65,7 +71,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.text.HtmlCompat;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -80,11 +85,10 @@ import java.security.SecureRandom;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 
 public final class Utils extends Application {
@@ -181,28 +185,36 @@ public final class Utils extends Application {
 		return Instant.now().getEpochSecond();
 	}
 
+	public static String timeStampFormattedUTC(long ts) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm").withZone(ZoneId.of("UTC"));
+		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts), ZoneId.of("UTC")).format(formatter);
+	}
+
 	public static  String timeStampFormattedLocal(long ts) {
-//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"); // use correct format ('S' for milliseconds)
-		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).toString()  ;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts), ZoneId.systemDefault()).format(formatter);
 	}
-	public static  String timeStampLocal(long ts) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy.MM.dd HH:mm");
-		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter);
-	}
+
 	public static  String timeStampToDateLocal(long ts) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd"); // use correct format ('S' for milliseconds)
-		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter);
+		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts), ZoneId.systemDefault()).format(formatter);
 	}
+	public static LocalDate localDateOfTimeStamp(long timestamp) {
+		return LocalDate.from(Instant.ofEpochMilli(timestamp * 1000).atZone(ZoneId.systemDefault()).toLocalDate());
+	}
+
 	public static  String timeStampToTimeLocal(long ts) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm"); // use correct format ('ss' fro seconds 'S' for milliseconds)
-		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts),  ZoneId.systemDefault()).format(formatter)  ;
+		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts), ZoneId.systemDefault()).format(formatter)  ;
 	}
 	public static  String timeStampFormattedShortUtc(long ts) {
-
-//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"); // use correct format ('S' for milliseconds)
-//		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts), ZoneId.systemDefault()).toString(); // toString(); ... + " " + ZoneId.systemDefault().getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
-		return Instant.ofEpochSecond(ts).toString(); // TODO: 20.12.2023 is it UTC? 
+		return Instant.ofEpochSecond(ts).toString(); // it is UTC (Z in fin)
 	}
+
+	public static long timeStampPlusDays(long daysToAdd) {
+		return LocalDate.now().plusDays(daysToAdd).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() / 1000;
+	}
+
 
 	/**
 	 * @return String H:M:S.ms
@@ -213,12 +225,23 @@ public final class Utils extends Application {
 	}
 
 	/**
-	 * @return String H:M:S
-	 */
-	public static String durationCut (long millis) {
+	 * @return  short String H:M:S of millis duration
+ 	 */
+	public static String durationCut(long millis) {
 		int s = (int) (millis / 1000);
-		return String.format(Locale.ENGLISH, "%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
+		int hours = s / 3600;
+		int minutes = (s % 3600) / 60;
+		int seconds = s % 60;
+
+		if (hours > 0) {
+			// full "h:mm:ss"
+			return String.format(Locale.ENGLISH, "%d:%02d:%02d", hours, minutes, seconds);
+		} else {
+			// small amount "m:ss"
+			return String.format(Locale.ENGLISH, "%d:%02d", minutes, seconds);
+		}
 	}
+
 	/**
 	 * @return String 9999
 	 */
@@ -492,6 +515,8 @@ public final class Utils extends Application {
 	}
 
 	public static void animThrob(View view, @Nullable Color color) {
+		ColorStateList colorBgBefore = view.getBackgroundTintList();
+
 /*		view.animate().scaleX(2).setDuration(500).setStartDelay(0);
 		view.animate().scaleX(1).setDuration(1000).setStartDelay(600);
 		view.animate().scaleYBy(3F).scaleXBy(3F).setDuration(200).setStartDelay(0);
@@ -501,26 +526,25 @@ public final class Utils extends Application {
 				.scaleY(1F)
 				.scaleYBy(0.75F)
 				.setDuration(750)
-				.setStartDelay(0);*/
-//		ColorFilter colorFilter = view.getBackground().getColorFilter();
-		ColorStateList colorBgBefore = view.getBackgroundTintList();
-//		Drawable img = null; // keep as it was before anim
-//		ColorFilter colorFilter = null;
-//		final View tvBefore = view;
+				.setStartDelay(0);
+		ColorFilter colorFilter = view.getBackground().getColorFilter();
+		Drawable img = null; // keep as it was before anim
+		ColorFilter colorFilter = null;
+		final View tvBefore = view;*/
 
 		if (color != null) {
-//			view.setBackgroundTintList(color);
-//			view.setBackgroundColor(getRes().getColor(R.color.light_grey_A_red));
-//			((TextView)view).setTextColor(color.toArgb());
-//			view.getBackground().setColorFilter(Color.parseColor("#ff8800");
-//			drblCurrent.setTint(Color.RED);
-//			drblCurrent.setTintList(ColorStateList.valueOf(getRes().getColor(R.color.light_grey_A_red)));
-//			view.setBackground(drblCurrent);
-//			view.getBackground().setColorFilter(Color.parseColor("#ff8800"), PorterDuff.Mode.SRC_ATOP);
-//			view.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.LIGHTEN);
-//			view.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+/*			view.setBackgroundTintList(color);
+			view.setBackgroundColor(getRes().getColor(R.color.light_grey_A_red));
+			((TextView)view).setTextColor(color.toArgb());
+			view.getBackground().setColorFilter(Color.parseColor("#ff8800");
+			drblCurrent.setTint(Color.RED);
+			drblCurrent.setTintList(ColorStateList.valueOf(getRes().getColor(R.color.light_grey_A_red)));
+			view.setBackground(drblCurrent);
+			view.getBackground().setColorFilter(Color.parseColor("#ff8800"), PorterDuff.Mode.SRC_ATOP);
+			view.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.LIGHTEN);
+			view.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
 
-//			view.getBackground().setColorFilter(color.toArgb(), PorterDuff.Mode.SRC_IN);
+			view.getBackground().setColorFilter(color.toArgb(), PorterDuff.Mode.SRC_IN);*/
 
 		}
 
@@ -529,9 +553,8 @@ public final class Utils extends Application {
 
 
 		ScaleAnimation scaleAnimation1 = new ScaleAnimation(1.0f, 1.5f, 1.0f, 1.5f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-		scaleAnimation1.setDuration(200);
+		scaleAnimation1.setDuration(ANIM_STEP_MILLIS);
 
-		// TODO: 06.03.2024 tried to prevent clipping in gridView but it doesn't help
 		scaleAnimation1.setAnimationListener(new Animation.AnimationListener() {
 			@Override
 			public void onAnimationStart(Animation animation) {
@@ -562,6 +585,69 @@ public final class Utils extends Application {
 			}, 1000L);
 		}*/
 //		if (color != null)  view = tvBefore;
+	}
+
+	/**
+	 * Flip view animation
+	 * @param view
+	 */
+	public static void animFlip(View view) {
+		// 1-st half (0 до 90 degrees)
+		ObjectAnimator flipOut = ObjectAnimator.ofFloat(view, "rotationY", 0f, 90f);
+		flipOut.setDuration(ANIM_STEP_MILLIS);
+		flipOut.setInterpolator(new AccelerateInterpolator());
+
+		// 2-nd half (-90 до 0 degrees)
+		ObjectAnimator flipIn = ObjectAnimator.ofFloat(view, "rotationY", -90f, 0f);
+		flipIn.setDuration(ANIM_STEP_MILLIS);
+		flipIn.setInterpolator(new DecelerateInterpolator());
+
+		flipOut.addListener(new AnimatorListenerAdapter() {
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				// Здесь можно сменить содержимое view, если необходимо, перед "входом" новой стороны
+				// Например, сменить текст, изображение или цвет фона
+				// view.setBackgroundColor(Color.RED);
+
+				// Запускаем вторую часть анимации после завершения первой
+				flipIn.start();
+			}
+		});
+
+		// Запускаем первую часть анимации
+		flipOut.start();
+	}
+
+	/**
+	 * Fade blinking view animation
+	 * @param view
+	 */
+	public static ObjectAnimator animBlink(View view) {
+		ObjectAnimator animator = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f);
+		animator.setDuration(500); // 500 ms for fading in and out
+		animator.setRepeatMode(ValueAnimator.REVERSE);
+		animator.setRepeatCount(ValueAnimator.INFINITE); // Infinite blinking
+		animator.start();
+
+		return animator;
+	}
+
+	/**
+	 * Sharp blinking text in view animation
+	 * @param view
+	 */
+	public static ObjectAnimator animBlinkText(TextView view) {
+		final int RED = 0xffFF8080;
+		final int TRANSPARENT = 0xff8080FF;
+
+		ObjectAnimator animator = ObjectAnimator.ofInt(view, "textColor", RED, TRANSPARENT);
+		animator.setDuration(500); // 500 ms for fading in and out
+		animator.setEvaluator(new ArgbEvaluator());
+		animator.setRepeatMode(ValueAnimator.REVERSE);
+		animator.setRepeatCount(ValueAnimator.INFINITE); // Infinite blinking
+		animator.start();
+
+		return animator;
 	}
 
 	/**
@@ -671,7 +757,7 @@ public final class Utils extends Application {
 		return getAppContext().getResources().getIdentifier(stringId, "string", getAppContext().getPackageName());
 	}
 	
-	public static String getString(String stringId) {
+	public static String getStringByName(String stringId) {
 		int sid = getStringId(stringId);
 		if (sid > 0) {
 			return getAppContext().getResources().getString(sid);
@@ -1187,6 +1273,14 @@ public final class Utils extends Application {
 		alertDialog.show();
 	}
 
+	public static String stringRepeat(String str, int times) {
+		StringBuilder builder = new StringBuilder(times * str.length());
+		for (int i = 0; i < times; i++) {
+			builder.append(str);
+		}
+		return builder.toString();
+	}
+
 	/**
 	 * Makes array of colors equally spread between start and end
 	 * @param startColor
@@ -1213,12 +1307,15 @@ public final class Utils extends Application {
 
 		return colors;
 	}
-	public static String stringRepeat(String str, int times) {
-		StringBuilder builder = new StringBuilder(times * str.length());
-		for (int i = 0; i < times; i++) {
-			builder.append(str);
+
+	// Getting color attribute value from Theme
+	public static int getColorFromTheme(int colorAttr) {
+		TypedValue typedValue = new TypedValue();
+		if (context.getTheme().resolveAttribute(colorAttr, typedValue, true)) {
+			return typedValue.data;
+		} else {
+			throw new IllegalArgumentException("Attribute not found in theme");
 		}
-		return builder.toString();
 	}
 
 	/**
@@ -1262,6 +1359,14 @@ public final class Utils extends Application {
 				: Math.pow((channelNormalized + 0.055) / 1.055, 2.4);
 	}
 
+	public static int colorMix(int color1, int color2, float factor) {
+		int a = (int) (Color.alpha(color1) * (1 - factor) + Color.alpha(color2) * factor);
+		int r = (int) (Color.red(color1) * (1 - factor) + Color.red(color2) * factor);
+		int g = (int) (Color.green(color1) * (1 - factor) + Color.green(color2) * factor);
+		int b = (int) (Color.blue(color1) * (1 - factor) + Color.blue(color2) * factor);
+		return Color.argb(a, r, g, b);
+	}
+
 	/**
 	 * Security for login options
 	 * @param size
@@ -1271,6 +1376,36 @@ public final class Utils extends Application {
 		byte[] nonce = new byte[size];
 		new SecureRandom().nextBytes(nonce);
 		return Base64.getUrlEncoder().encodeToString(nonce);
+	}
+
+	/**
+	 * @return 1-st day of week from the device settings
+	 */
+	public static DayOfWeek getFirstDayOfWeek() {
+		Calendar calendar = Calendar.getInstance(Locale.getDefault());
+
+		int firstDayOfWeek = calendar.getFirstDayOfWeek();
+
+		// Transform into DayOfWeek
+		switch (firstDayOfWeek) {
+			case Calendar.SUNDAY:
+				return DayOfWeek.SUNDAY;
+			case Calendar.MONDAY:
+				return DayOfWeek.MONDAY;
+			case Calendar.TUESDAY:
+				return DayOfWeek.TUESDAY;
+			case Calendar.WEDNESDAY:
+				return DayOfWeek.WEDNESDAY;
+			case Calendar.THURSDAY:
+				return DayOfWeek.THURSDAY;
+			case Calendar.FRIDAY:
+				return DayOfWeek.FRIDAY;
+			case Calendar.SATURDAY:
+				return DayOfWeek.SATURDAY;
+			default:
+				// as most
+				return DayOfWeek.MONDAY;
+		}
 	}
 
 }

@@ -54,8 +54,10 @@ public class ExerciseRunner {
 	public static String userEmail = "";
 	public static boolean showIntro = true; 	// flag on-boarding is necessary TapTargetView
 	public static int shownIntros = 0; 			// flag set for on-boarding TapTargetView
-	public static int points = 0; 				// achieved point (seconds)
+	public static int psycoins = 0; 			// achieved point (in ExResult)
+	public static int seconds = 0; 				// achieved seconds
 	public static int hours = 0; 				// achieved hours
+	public static int daysTrained = 0; 			// trained unique days
 	public static int level = 1; 				// maximum achieved level
 	public static  long timeStamp;				// Timestamp of data updated
 
@@ -63,6 +65,7 @@ public class ExerciseRunner {
 	public static SharedPreferences sharedPreferences;
 	public static boolean sharedData = false; 	// KEY_SEND_DATA
 	public static int currentLevel = 1; 		// level limited by user
+	private static String exSpace = KEY_PFR_EXERCISE_SPACE;
 	private static String exType = "no_exercise";
 	private static byte xSize = 5, ySize = 5;
 	private static boolean ratings = false; 	// Limitation of Settings
@@ -128,7 +131,10 @@ public class ExerciseRunner {
 			uak = sharedPreferences.getString(KEY_USER_APP_KEY, uak);
 			userName = sharedPreferences.getString(KEY_USER_NAME, userName);
 			userEmail = sharedPreferences.getString(KEY_USER_EMAIL, userEmail);
-			points = sharedPreferences.getInt(KEY_POINTS, 0);
+			psycoins = sharedPreferences.getInt(KEY_PSYCOINS, 0);
+			seconds = sharedPreferences.getInt(KEY_SECONDS, 0);
+			hours = sharedPreferences.getInt(KEY_HOURS, 0);
+			daysTrained = sharedPreferences.getInt(KEY_DAYS, 0);
 			level = sharedPreferences.getInt(KEY_PRF_LEVEL, 1);
 			currentLevel = sharedPreferences.getInt(KEY_PRF_CURRENT_LEVEL, 1);
 
@@ -196,8 +202,10 @@ public class ExerciseRunner {
 		editor.putBoolean(	KEY_PRF_ONLINE, online);
 		editor.putInt(		KEY_PRF_SHOWN_INTROS, shownIntros);
 		editor.putBoolean(	KEY_PRF_SHOW_INTRO, showIntro);
-		editor.putInt(		KEY_POINTS, points);
+		editor.putInt(		KEY_PSYCOINS, psycoins);
+		editor.putInt(		KEY_SECONDS, seconds);
 		editor.putInt(		KEY_HOURS, hours);
+		editor.putInt(		KEY_DAYS, daysTrained);
 		editor.putInt(		KEY_PRF_LEVEL, level);
 
 		timeStamp = getTimeStamp();
@@ -254,17 +262,17 @@ public class ExerciseRunner {
 				exResult.setExDescription(exDescription());
 
 				// On the whole spent seconds
-				points = (int) (sharedPreferences.getInt(KEY_POINTS, 0) + exResult.getNumValue() / 1000);
-				achieved.add(AchievementFlags.SECONDS);
-				if (points > 3600){
-					hours += (points / 3600);
-					points = (points % 3600);
+				seconds = (int) (sharedPreferences.getInt(KEY_SECONDS, 0) + exResult.getNumValue() / 1000);
+				achieved.add(AchievementFlags.EXERCISE);
+				if (seconds > 3600){
+					hours += (seconds / 3600);
+					seconds = (seconds % 3600);
 					achieved.add(AchievementFlags.HOURS);
 				}
 
 				// On an hour has been reached
 				hours += sharedPreferences.getInt(KEY_HOURS, 0);
-				int _level = (int) Math.sqrt(hours * 3600 + points);
+				int _level = (int) Math.sqrt(hours * 3600 + seconds);
 				if (_level > level) {
 					level = _level;
 					achieved.add(AchievementFlags.LEVEL);
@@ -275,23 +283,24 @@ public class ExerciseRunner {
 		if (result) {
 			updateExResult();
 			savePreferences();
-			achievedToBothDb(achieved, uid, userName, getTimeStamp());
+			achievedToBothDb(achieved, uid, userName, ExerciseRunner.timeStamp);
 			updateUserHelper();
 		}
 	}
 
-	public static void updateUserHelper() {
-		DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
-
-		userHelper.setStatus(points, hours, level, getTimeStamp());
-		repos.create(userHelper);
-	}
 	private static void updateExResult() {
 		DataRepos<ExResult> repos = new DataRepos<>(ExResult.class);
 
 		setExResult(exercise.getExResult());
 
 		repos.create(exResult);
+	}
+
+	public static void updateUserHelper() {
+		DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
+
+		userHelper.setStatus(psycoins, seconds, hours, daysTrained, level, ExerciseRunner.timeStamp);
+		repos.create(userHelper);
 	}
 
 
@@ -318,8 +327,8 @@ public class ExerciseRunner {
 			Achievement ach = new Achievement();
 			DataRepos<Achievement> repos = new DataRepos<>(Achievement.class);
 			switch (flag) {
-				case SECONDS:
-					ach.set(uid, uak, userName, ts, timeStampFormattedLocal(ts), Utils.getRes().getString(R.string.lbl_mu_second), "" + points, "");
+				case EXERCISE:
+					ach.set(uid, uak, userName, ts, timeStampFormattedLocal(ts), Utils.getRes().getString(R.string.lbl_mu_second), "" + seconds, "");
 					break;
 				case HOURS:
 					ach.set(uid, uak, userName, ts, timeStampFormattedLocal(ts), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
@@ -336,7 +345,14 @@ public class ExerciseRunner {
 		return exType; // may be the var here is redundant
 	}
 
-	public void setExType(String s) {
+	public static void setExSpace(String exSpace) {
+		ExerciseRunner.exSpace = exSpace;
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putString(KEY_PFR_EXERCISE_SPACE, exSpace);
+		editor.commit();
+	}
+
+	public static void setExType(String s) {
 		s = (s.length()<7?"no_exercise":s);
 		exType = s;
 		SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -411,7 +427,7 @@ public class ExerciseRunner {
 		userName = userHelper.getName();
 		userEmail = userHelper.getEmail();
 		uak = userHelper.getUak();
-		points = userHelper.getPsyCoins();
+		seconds = userHelper.getPsyCoins();
 		hours = userHelper.getHours();
 		level = userHelper.getLevel();
 	}
@@ -463,7 +479,10 @@ public class ExerciseRunner {
 	@Override
 	public String toString() {
 		return "ExerciseRunner of " + userName + ", " + userEmail + ", " + uid + " {" +
-				"\npoints=" + points +
+				"\npsycoins=" + psycoins +
+				"\nseconds=" + seconds +
+				"\nhours=" + hours +
+				"\ndaysTrained=" + daysTrained +
 				"\nexType=" + exType +
 				"\nxSize=" + xSize +
 				"\nySize=" + ySize +
@@ -482,7 +501,7 @@ public class ExerciseRunner {
 
 	public String getName() {return userName;}
 	public String getEmail() {return userEmail;}
-	public int getPoints() {return points;}
+	public int getSeconds() {return seconds;}
 	public int getHours() {return hours;}
 	public int getLevel() {return level;}
 	public long getTsUpdated() {return timeStamp;}
@@ -521,8 +540,8 @@ public class ExerciseRunner {
 		ExerciseRunner.seed = seed;
 	}
 
-	public static void setPoints(int points) {
-		ExerciseRunner.points = points;
+	public static void setSeconds(int seconds) {
+		ExerciseRunner.seconds = seconds;
 	}
 
 	public static void setHours(int hours) {

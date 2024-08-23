@@ -15,6 +15,7 @@ import static org.nebobrod.schulteplus.Utils.getVersionCode;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import org.nebobrod.schulteplus.common.Log;
 
@@ -87,6 +88,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase sqliteDatabase, ConnectionSource connectionSource, int oldVer, int newVer) {
+
+		Log.d(TAG, "onUpgrade: STARTED");
+		sqliteDatabase.beginTransaction();
+
 		try {
 /*			TableUtils.dropTable(connectionSource, Achievement.class, true);
 			TableUtils.dropTable(connectionSource, ExResult.class, true);
@@ -106,11 +111,16 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			onCreate(sqliteDatabase, connectionSource);
 
 			// get new bulk data
-			sqliteDatabase.execSQL("INSERT INTO Achievement SELECT * FROM tmp_Achievement;");
-			sqliteDatabase.execSQL("INSERT INTO ExResult SELECT * FROM tmp_ExResult;");
-			sqliteDatabase.execSQL("INSERT INTO Turn SELECT * FROM tmp_Turn;");
-			sqliteDatabase.execSQL("INSERT INTO UserHelper SELECT * FROM tmp_UserHelper;");
-			sqliteDatabase.execSQL("INSERT INTO AdminNote SELECT * FROM tmp_AdminNote;");
+//			sqliteDatabase.execSQL("INSERT INTO Achievement SELECT * FROM tmp_Achievement;");
+			sqliteDatabase.execSQL(generateInsertQuery(sqliteDatabase, "tmp_Achievement", "Achievement"));
+//			sqliteDatabase.execSQL("INSERT INTO ExResult SELECT * FROM tmp_ExResult;");
+			sqliteDatabase.execSQL(generateInsertQuery(sqliteDatabase, "tmp_ExResult", "ExResult"));
+//			sqliteDatabase.execSQL("INSERT INTO Turn SELECT * FROM tmp_Turn;");
+			sqliteDatabase.execSQL(generateInsertQuery(sqliteDatabase, "tmp_Turn", "Turn"));
+//			sqliteDatabase.execSQL("INSERT INTO UserHelper SELECT * FROM tmp_UserHelper;");
+			sqliteDatabase.execSQL(generateInsertQuery(sqliteDatabase, "tmp_UserHelper", "UserHelper"));
+//			sqliteDatabase.execSQL("INSERT INTO AdminNote SELECT * FROM tmp_AdminNote;");
+			sqliteDatabase.execSQL(generateInsertQuery(sqliteDatabase, "tmp_AdminNote", "AdminNote"));
 
 			// Remove the Temporary tables
 			sqliteDatabase.execSQL("DROP TABLE tmp_Achievement;");
@@ -119,9 +129,17 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			sqliteDatabase.execSQL("DROP TABLE tmp_UserHelper;");
 			sqliteDatabase.execSQL("DROP TABLE tmp_AdminNote;");
 
+			// For DEBUG ONLY decrease version 103
+//			sqliteDatabase.execSQL("PRAGMA user_version = 103;");
+
+			sqliteDatabase.setTransactionSuccessful();
+			Log.d(TAG, "onUpgrade: TRY IS DONE");
 		} catch (android.database.SQLException e) {
 			Log.e(TAG, "Unable to upgrade database from version " +
 							oldVer + " to new " + newVer, e);
+		} finally {
+			sqliteDatabase.endTransaction();
+			sqliteDatabase.execSQL("PRAGMA user_version = " + oldVer + ";"); // Set back DB version
 		}
 	}
 
@@ -201,5 +219,28 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			// and finally the DatabaseHelper itself
 			helper = null;
 		}
+	}
+
+	/**
+	 * Provides SQL-query with generated field-list of oldTable
+	 * @param db
+	 * @param oldTable
+	 * @param newTable
+	 */
+	public String generateInsertQuery(SQLiteDatabase db, String oldTable, String newTable) {
+		Cursor cursor = db.rawQuery("PRAGMA table_info(" + oldTable + ");", null);
+
+		StringBuilder columnList = new StringBuilder();
+		while (cursor.moveToNext()) {
+			int columnIndex = cursor.getColumnIndex("name");
+			String columnName = cursor.getString(columnIndex);
+			if (columnList.length() > 0) {
+				columnList.append(", ");
+			}
+			columnList.append(columnName);
+		}
+		cursor.close();
+
+		return "INSERT INTO " + newTable + " (" + columnList.toString() + ") SELECT " + columnList.toString() + " FROM " + oldTable + ";";
 	}
 }

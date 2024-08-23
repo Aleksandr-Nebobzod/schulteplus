@@ -33,11 +33,9 @@ import androidx.lifecycle.ViewModel;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 
 public class DashboardViewModel<TEntity extends Identifiable<String>> extends ViewModel {
@@ -108,7 +106,7 @@ public class DashboardViewModel<TEntity extends Identifiable<String>> extends Vi
 						Integer psyCoinsSum = 0;
 						for (ExResult res : results) {
 							date = localDateOfTimeStamp(res.getTimeStamp());
-							psyCoins = res.getPsycoins();
+							psyCoins = res.calculatePsycoins();
 							dayDataMap.merge(date, psyCoins, Integer::sum);
 							psyCoinsSum += psyCoins;
 						}

@@ -61,7 +61,7 @@ public interface Const {
 	String KEY_SPACE_05_WORD_FLOWS = "gcb_space_word_flow";
 
 	/** PRFs for the schulte space */
-	/* gcb means Group Check Box  */
+	// gcb means Group Check Box
 	String KEY_PRF_EX_S0 = "gcb_sch";
 	String KEY_PRF_EX_S1 = "gcb_schulte_1_sequence";
 	String KEY_PRF_EX_S2 = "gcb_schulte_2_sequences";
@@ -116,6 +116,12 @@ public interface Const {
 	String KEY_PRF_EX_BC = "gcb_bas_penrose_triangle";
 	String KEY_PRF_EX_BD = "gcb_bas_dancing_girl";
 	String KEY_PRF_EX_BE = "gcb_bas_dancing_cat";
+
+	/** PRFs for the sssr space */
+	String KEY_PRF_EX_R0 = "gcb_sssr_main";
+	String KEY_PRF_EX_R1 = "gcb_sssr_intercept01";
+	String KEY_PRF_EX_R2 = "gcb_sssr_intercept02";
+	String KEY_PRF_EX_R3 = "gcb_sssr_intercept03";
 
 	/** Enumerates types of Achievements*/
 	enum AchievementFlags {

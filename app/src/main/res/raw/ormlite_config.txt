@@ -1,5 +1,5 @@
 #
-# generated on 2024/06/21 11:24:39
+# generated on 2024/08/23 10:17:59
 #
 # --table-start--
 dataClass=org.nebobrod.schulteplus.data.Achievement
@@ -52,6 +52,9 @@ fieldName=uidAddress
 # --field-end--
 # --field-start--
 fieldName=title
+# --field-end--
+# --field-start--
+fieldName=langCode
 # --field-end--
 # --field-start--
 fieldName=message
@@ -119,6 +122,9 @@ fieldName=timeStampStart
 fieldName=numValue
 # --field-end--
 # --field-start--
+fieldName=psyCoins
+# --field-end--
+# --field-start--
 fieldName=levelOfEmotion
 # --field-end--
 # --field-start--
@@ -138,6 +144,27 @@ fieldName=average
 # --field-end--
 # --field-start--
 fieldName=rmsd
+# --field-end--
+# --field-start--
+fieldName=flo01
+# --field-end--
+# --field-start--
+fieldName=flo02
+# --field-end--
+# --field-start--
+fieldName=flo03
+# --field-end--
+# --field-start--
+fieldName=flo04
+# --field-end--
+# --field-start--
+fieldName=flo05
+# --field-end--
+# --field-start--
+fieldName=flo06
+# --field-end--
+# --field-start--
+fieldName=flo07
 # --field-end--
 # --table-fields-end--
 # --table-end--
@@ -184,6 +211,9 @@ fieldName=timeStampStart
 fieldName=numValue
 # --field-end--
 # --field-start--
+fieldName=psyCoins
+# --field-end--
+# --field-start--
 fieldName=levelOfEmotion
 # --field-end--
 # --field-start--
@@ -203,6 +233,27 @@ fieldName=average
 # --field-end--
 # --field-start--
 fieldName=rmsd
+# --field-end--
+# --field-start--
+fieldName=flo01
+# --field-end--
+# --field-start--
+fieldName=flo02
+# --field-end--
+# --field-start--
+fieldName=flo03
+# --field-end--
+# --field-start--
+fieldName=flo04
+# --field-end--
+# --field-start--
+fieldName=flo05
+# --field-end--
+# --field-start--
+fieldName=flo06
+# --field-end--
+# --field-start--
+fieldName=flo07
 # --field-end--
 # --table-fields-end--
 # --table-end--
@@ -249,6 +300,9 @@ fieldName=timeStampStart
 fieldName=numValue
 # --field-end--
 # --field-start--
+fieldName=psyCoins
+# --field-end--
+# --field-start--
 fieldName=levelOfEmotion
 # --field-end--
 # --field-start--
@@ -268,6 +322,116 @@ fieldName=average
 # --field-end--
 # --field-start--
 fieldName=rmsd
+# --field-end--
+# --field-start--
+fieldName=flo01
+# --field-end--
+# --field-start--
+fieldName=flo02
+# --field-end--
+# --field-start--
+fieldName=flo03
+# --field-end--
+# --field-start--
+fieldName=flo04
+# --field-end--
+# --field-start--
+fieldName=flo05
+# --field-end--
+# --field-start--
+fieldName=flo06
+# --field-end--
+# --field-start--
+fieldName=flo07
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=org.nebobrod.schulteplus.data.ExResultSssr
+tableName=exresult
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=uak
+# --field-end--
+# --field-start--
+fieldName=seed
+# --field-end--
+# --field-start--
+fieldName=uid
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=timeStamp
+# --field-end--
+# --field-start--
+fieldName=dateTime
+# --field-end--
+# --field-start--
+fieldName=isValid
+# --field-end--
+# --field-start--
+fieldName=exType
+# --field-end--
+# --field-start--
+fieldName=exDescription
+# --field-end--
+# --field-start--
+fieldName=timeStampStart
+# --field-end--
+# --field-start--
+fieldName=numValue
+# --field-end--
+# --field-start--
+fieldName=psyCoins
+# --field-end--
+# --field-start--
+fieldName=levelOfEmotion
+# --field-end--
+# --field-start--
+fieldName=levelOfEnergy
+# --field-end--
+# --field-start--
+fieldName=note
+# --field-end--
+# --field-start--
+fieldName=turns
+# --field-end--
+# --field-start--
+fieldName=turnsMissed
+# --field-end--
+# --field-start--
+fieldName=average
+# --field-end--
+# --field-start--
+fieldName=rmsd
+# --field-end--
+# --field-start--
+fieldName=flo01
+# --field-end--
+# --field-start--
+fieldName=flo02
+# --field-end--
+# --field-start--
+fieldName=flo03
+# --field-end--
+# --field-start--
+fieldName=flo04
+# --field-end--
+# --field-start--
+fieldName=flo05
+# --field-end--
+# --field-start--
+fieldName=flo06
+# --field-end--
+# --field-start--
+fieldName=flo07
 # --field-end--
 # --table-fields-end--
 # --table-end--
@@ -345,7 +509,13 @@ fieldName=verified
 fieldName=psyCoins
 # --field-end--
 # --field-start--
+fieldName=seconds
+# --field-end--
+# --field-start--
 fieldName=hours
+# --field-end--
+# --field-start--
+fieldName=daysTrained
 # --field-end--
 # --field-start--
 fieldName=level

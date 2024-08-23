@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Tasks;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.Const;
 import org.nebobrod.schulteplus.common.Log;
+import org.nebobrod.schulteplus.data.fbservices.ConditionEntry;
 import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
 
 import java.util.List;
@@ -166,7 +167,8 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataR
 		// Get data-set from central repository
 		CompletableFuture<List<UserHelper>> fsFuture = CompletableFuture.supplyAsync(() -> {
 			try {
-				return Tasks.await(fsRepo.getListByField("id", DataRepository.WhereCond.EQ, id));
+				return Tasks.await(fsRepo.getListByField(
+						new ConditionEntry("id", DataRepository.WhereCond.EQ, id)));
 			} catch (ExecutionException | InterruptedException e) {
 				Log.e(TAG, "Firestore Task failed: ", e);
 				return null;
@@ -249,7 +251,8 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataR
 	public Task<Void> fetchAdminNotes(long sinceTimeStamp) {
 		final TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
 
-		new DataFirestoreRepo<>(AdminNote.class).getListByField("uak", DataRepository.WhereCond.EQ, "0").addOnCompleteListener(new OnCompleteListener<List<AdminNote>>() {
+		new DataFirestoreRepo<>(AdminNote.class).getListByField(
+				new ConditionEntry("uak", DataRepository.WhereCond.EQ, "0")).addOnCompleteListener(new OnCompleteListener<List<AdminNote>>() {
 			@Override
 			public void onComplete(@NonNull Task<List<AdminNote>> task) {
 				if (task.isSuccessful()) {

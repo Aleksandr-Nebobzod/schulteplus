@@ -501,12 +501,30 @@ public class DataFirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 
 	@Test
 	public void getListByField() {
-		this.fsRepo = new DataFirestoreRepo<>(UserHelper.class);
-		String field = "id";
-		int value = -990303179; 	// "-990303179.65ed474536cced3a"
+		String field;
+		DataRepository.WhereCond cond;
+		int value;
+
+		// User data by id
+/*		this.fsRepo = new DataFirestoreRepo<>(UserHelper.class);
+		field = "id";
+		cond = DataRepository.WhereCond.EQ;
+ 		value = -990303179; 	// "-990303179.65ed474536cced3a"*/
+
+		// 240815 ExResult range test
+		this.fsRepo = new DataFirestoreRepo<>(ExResult.class);
+		field = ExResult.TIMESTAMP_FIELD_NAME;
+		cond = DataRepository.WhereCond.LE;
+		cond = DataRepository.WhereCond.GE;
+		value = 1723115774; // 2024-08-08T14:16:14"
+		value = 1723593424; // "2024-08-14T02:57:04"
+		value = 1723127270; //"2024-08-08T17:27:50"
+
+
+
 		Task<?> _task;
 
-		_task = fsRepo.getListByField(field, DataRepository.WhereCond.EQ, value).addOnSuccessListener(o -> {
+		_task = fsRepo.getListByField(new ConditionEntry(field, cond, value)).addOnSuccessListener(o -> {
 			Log.d(TAG, "getListByField: " + o);
 			assertTrue(true);
 		}).addOnFailureListener(e -> {

@@ -130,6 +130,7 @@
 						android:layout_weight="1"
 						android:shadowRadius="5"
 						android:text="@string/lbl_go_on"
+						android:contentDescription="@string/lbl_email_log_in"
 						app:cornerRadius="25dp"
 						app:elevation="5dp" />
 					
@@ -147,6 +148,7 @@
 						android:layout_width="wrap_content"
 						android:layout_height="match_parent"
 						android:layout_weight="0"
+						android:contentDescription="@string/lbl_google_log_in"
 						app:buttonSize="icon_only" />
 				
 				</LinearLayout>

@@ -21,7 +21,7 @@ import java.util.Map;
 @DatabaseTable(tableName = "exresult")
 public class ExResultBasics extends ExResult{
 	private static final String TAG = "ExResultBasics";
-	/** No fields yet only numValue & comment are used */
+	/** No fields yet only numValue, emo and comment are used */
 
 	public ExResultBasics(){}
 

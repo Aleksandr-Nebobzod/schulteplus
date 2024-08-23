@@ -14,25 +14,25 @@
 		<Preference app:key="prf_bas_description" app:summary="@string/txt_bas_description" />
 		
 <!--	gcb means Group Check Box -->
-		<CheckBoxPreference app:title="@string/lbl_bas_dot" app:key="gcb_bas_dot" app:defaultValue="true" app:icon="@drawable/ic_basics_dot" app:allowDividerAbove="true"/>
-		<CheckBoxPreference app:title="@string/lbl_bas_dbl_dot" app:key="gcb_bas_dbl_dot" app:defaultValue="false" app:icon="@drawable/ic_basics_double_dot" />
-		<CheckBoxPreference app:title="@string/lbl_bas_pyramidot" app:key="gcb_bas_pyramidot" app:defaultValue="false" app:enabled="true"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_dot" app:key="gcb_bas_dot" app:defaultValue="true" app:icon="@drawable/ic_bas_dot" app:allowDividerAbove="true"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_dbl_dot" app:key="gcb_bas_dbl_dot" app:defaultValue="false" app:icon="@drawable/ic_bas_dbl_dot" />
+		<CheckBoxPreference app:title="@string/lbl_bas_pyramidot" app:key="gcb_bas_pyramidot" app:defaultValue="false" app:icon="@drawable/ic_bas_pyramidot"/>
 
-		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb" app:key="gcb_bas_circles_rb" app:defaultValue="false" app:icon="@drawable/ic_circles_rb"  app:allowDividerAbove="true"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb" app:key="gcb_bas_circles_rb" app:defaultValue="false" app:icon="@drawable/ic_bas_circles_rb"  app:allowDividerAbove="true"/>
 		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb_lined" app:key="gcb_bas_circles_rb_lined" app:defaultValue="false" app:enabled="false" />
-		<CheckBoxPreference app:title="@string/lbl_bas_khao_manee" app:key="gcb_bas_khao_manee" app:defaultValue="false" app:enabled="true"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_khao_manee" app:key="gcb_bas_khao_manee" app:defaultValue="false" app:icon="@drawable/ic_bas_khao_manee" app:enabled="true"/>
 		<CheckBoxPreference app:title="@string/lbl_bas_circles_rb_crossed" app:key="gcb_bas_circles_rb_crossed" app:defaultValue="false" app:enabled="false" app:allowDividerBelow="true"/>
 		
-		<CheckBoxPreference app:title="@string/lbl_bas_necker_cube" app:key="gcb_bas_necker_cube" app:defaultValue="false" app:icon="@drawable/ic_basics2_black_24dp"  app:allowDividerAbove="true"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_necker_cube" app:key="gcb_bas_necker_cube" app:defaultValue="false" app:icon="@drawable/ic_bas_necker_cube"  app:allowDividerAbove="true"/>
 		<CheckBoxPreference app:title="@string/lbl_bas_necker_cylinder" app:key="gcb_bas_necker_cylinder" app:defaultValue="false" app:enabled="true"/>
-		<CheckBoxPreference app:title="@string/lbl_bas_necker_ball" app:key="gcb_bas_necker_ball" app:defaultValue="false" app:enabled="true" app:singleLineTitle="true"/>
-		<CheckBoxPreference app:title="@string/lbl_bas_penrose_triangle" app:key="gcb_bas_penrose_triangle" app:defaultValue="false" app:enabled="false"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_necker_ball" app:key="gcb_bas_necker_ball" app:defaultValue="false" app:enabled="true" app:icon="@drawable/ic_gcb_bas_necker_ball" app:singleLineTitle="true"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_penrose_triangle" app:key="gcb_bas_penrose_triangle" app:defaultValue="false" app:icon="@drawable/ic_bas_penrose_triangle" app:enabled="true"/>
 		
-		<CheckBoxPreference app:title="@string/lbl_bas_dancing_girl" app:key="gcb_bas_dancing_girl" app:defaultValue="false" app:enabled="true"  app:allowDividerAbove="true" />
-		<CheckBoxPreference app:title="@string/lbl_bas_dancing_cat" app:key="gcb_bas_dancing_cat" app:defaultValue="false" app:enabled="true" />
+		<CheckBoxPreference app:title="@string/lbl_bas_dancing_girl" app:key="gcb_bas_dancing_girl" app:defaultValue="false" app:icon="@drawable/ic_bas_dancing_girl" app:enabled="true"  app:allowDividerAbove="true" />
+		<CheckBoxPreference app:title="@string/lbl_bas_dancing_cat" app:key="gcb_bas_dancing_cat" app:defaultValue="false" app:icon="@drawable/ic_bas_dancing_cat" app:enabled="true" />
 		
 		<SwitchPreference app:defaultValue="false" app:key="sw_pref_double" app:enabled="false" app:title="@string/lbl_bas_double" app:summary="@string/lbl_bas_double_desc"  app:allowDividerAbove="true" app:isPreferenceVisible="false" />
-		<SwitchPreference app:key="prf_sw_hints" app:title="@string/lbl_hints" app:summary="@string/lbl_hints_sum" app:defaultValue="true" app:enabled="true" app:persistent="true" app:icon="@drawable/ic_notifications_black_24dp" />
+		<SwitchPreference app:key="prf_sw_hints" app:title="@string/lbl_hints" app:summary="@string/lbl_hints_sum" app:defaultValue="true" app:enabled="true" app:persistent="true" app:icon="@drawable/ic_baseline_notifications_none_24" />
 		
 		<PreferenceCategory app:key="prf_empty_row" app:title="" app:persistent="false" app:summary=" "/>
 		<PreferenceCategory app:key="prf_empty_row2" app:title="" app:persistent="false" app:summary=" "/>

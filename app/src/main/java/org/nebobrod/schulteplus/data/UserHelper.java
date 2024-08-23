@@ -9,6 +9,7 @@
 package org.nebobrod.schulteplus.data;
 
 import static org.nebobrod.schulteplus.Utils.intStringHash;
+import static org.nebobrod.schulteplus.Utils.timeStampFormattedUTC;
 import static org.nebobrod.schulteplus.Utils.timeStampU;
 import static org.nebobrod.schulteplus.Utils.timeStampFormattedLocal;
 
@@ -53,7 +54,11 @@ public class UserHelper implements Serializable, Identifiable<String> {
 	@DatabaseField
 	private int psyCoins;
 	@DatabaseField
-	private int hours;
+	private int seconds;		//	not more 3600
+	@DatabaseField
+	private int hours;			// +1 every 3600 seconds
+	@DatabaseField
+	private int daysTrained;	// +1 for each unique day of even 1 exercise
 	@DatabaseField
 	private int level;
 	@DatabaseField
@@ -79,28 +84,26 @@ public class UserHelper implements Serializable, Identifiable<String> {
 		this.level = 1;
 		this.timeStamp = timeStampU();
 
-		this.dateCreated = timeStampFormattedLocal(this.timeStamp);
+		this.dateCreated = timeStampFormattedUTC(this.timeStamp);
 		this.dateChanged = this.dateCreated;
 	}
 
 	/** Updates all fields except needed at creation */
-	public void set(String email, String name, String password, boolean verified, int psyCoins, int hours, int level) {
+	public void set(String email, String name, String password, boolean verified, int psyCoins, int seconds, int hours, int daysTrained, int level) {
 
 		this.name = name;
 		this.email = email;
 		this.password = String.valueOf(password.hashCode()+password.hashCode());
 		this.verified = verified;
-		this.psyCoins = psyCoins;
-		this.hours = hours;
-		this.level = level;
-		this.timeStamp = timeStampU();
-		this.dateChanged = timeStampFormattedLocal(this.timeStamp);
+		setStatus(psyCoins,  seconds,  hours,  daysTrained,  level,  timeStamp);
 	}
-	/** Updates fields except needed at creation */
-	public void setStatus(int psyCoins, int hours, int level, long timeStamp) {
+	/** Updates status fields only */
+	public void setStatus(int psyCoins, int seconds, int hours, int daysTrained, int level, long timeStamp) {
 
 		this.psyCoins = psyCoins;
+		this.seconds = seconds;
 		this.hours = hours;
+		this.daysTrained = daysTrained;
 		this.level = level;
 		this.timeStamp = timeStamp;
 		this.dateChanged = timeStampFormattedLocal(this.timeStamp);
@@ -191,12 +194,28 @@ public class UserHelper implements Serializable, Identifiable<String> {
 		this.psyCoins = psyCoins;
 	}
 
+	public int getSeconds() {
+		return seconds;
+	}
+
+	public void setSeconds(int seconds) {
+		this.seconds = seconds;
+	}
+
 	public int getHours() {
 		return hours;
 	}
 
 	public void setHours(int hours) {
 		this.hours = hours;
+	}
+
+	public int getDaysTrained() {
+		return daysTrained;
+	}
+
+	public void setDaysTrained(int daysTrained) {
+		this.daysTrained = daysTrained;
 	}
 
 	public int getLevel() {

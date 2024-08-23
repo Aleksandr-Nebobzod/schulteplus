@@ -13,6 +13,8 @@ public interface Const {
 	String NAME_REG_EXP = "^[A-Za-z][[A-Za-z]![0-9]]{3,14}$";
 	String PASSWORD_REG_EXP = "^(?=.*[A-Za-z])[A-Za-z\\d~!@#$%^*()+=]{6,15}$";
 
+	long ANIM_STEP_MILLIS = 200;
+
 	// set of Showing Intro
 	int SHOWN_00_MAIN = 	0b1<<0;
 	int SHOWN_01_BASE = 	0b1<<1;
@@ -33,20 +35,38 @@ public interface Const {
 	byte 	SEQ4_BLUE = 42;
 	byte 	SEQ4_YELLOW = 43;
 	byte 	SEQ4_GREEN = 44;
-	long 	QUERY_COMMON_LIMIT = 25;
-	long 	AVERAGE_IDLE_LIMIT = 300; 					// in seconds
+	long 	QUERY_COMMON_LIMIT = 99;
+	long 	AVERAGE_IDLE_LIMIT = 300; 					// allowed  AFK in seconds
 //1	2	3	4	5	6	7	8	9	10	11	12	13	14	15
 	// set of prf related constants
 	String KEY_USER_APP_KEY = "prf_user_app_key";
 	String KEY_USER_NAME = "prf_user_name";
 	String KEY_USER_EMAIL = "prf_user_email";
 	String KEY_PRF_SHARED_DATA = "prf_title_data";
-	String KEY_POINTS = "prf_points"; 					// number of points earned (seconds + hits + prises)
-	String KEY_HOURS = "prf_hours"; 					// number of hours practicing
+	String KEY_PSYCOINS = "prf_psycoins"; 				// sum of psycoins earned (ExResult.getPsycoins)
+	String KEY_SECONDS = "prf_points"; 					// number of seconds earned (<3600)
+	String KEY_HOURS = "prf_hours"; 					// sum of hours practicing
+	String KEY_DAYS = "prf_days"; 						// number of days with any exercise
 	String KEY_PRF_LEVEL = "prf_level";
 	String KEY_PRF_CURRENT_LEVEL = "prf_current_level";
+	String KEY_PFR_EXERCISE_SPACE = "prf_ex_space";
 	String KEY_TYPE_OF_EXERCISE = "prf_ex_type";
 	String KEY_TS_UPDATED = "prf_ts_updated";
+
+	/** Spaces of bottom menu KEY_PFR_EXERCISE_SPACE */
+	String KEY_SPACE_01_SCHULTE = "gcb_space_schulte";
+	String KEY_SPACE_02_BASICS = "gcb_space_basics";
+	String KEY_SPACE_03_SSSR = "gcb_space_sssr";
+	String KEY_SPACE_04_SCHULTE_PARENTS = "gcb_space_schulte_parents";
+	String KEY_SPACE_05_WORD_FLOWS = "gcb_space_word_flow";
+
+	/** PRFs for the schulte space */
+	/* gcb means Group Check Box  */
+	String KEY_PRF_EX_S0 = "gcb_sch";
+	String KEY_PRF_EX_S1 = "gcb_schulte_1_sequence";
+	String KEY_PRF_EX_S2 = "gcb_schulte_2_sequences";
+	String KEY_PRF_EX_S3 = "gcb_schulte_3_sequences";
+	String KEY_PRF_EX_S4 = "gcb_schulte_4_mishmash";
 
 	String KEY_PRF_RATINGS = "prf_sw_ratings";
 	String KEY_PRF_OPTIONS = "prf_cat_options";
@@ -79,15 +99,8 @@ public interface Const {
 	String KEY_PRF_PROB_Y = "prf_prob_y"; 				// value -10;10 should be divided by 10
 	String KEY_PRF_PROB_SURFACE = "prf_prob_surface"; 	// value 4:10 should be divided by 10
 
-	/** PRFs for the schulte exercises */
-	/* gcb means Group Check Box  */
-	String KEY_PRF_EX_S0 = "gcb_sch";
-	String KEY_PRF_EX_S1 = "gcb_schulte_1_sequence";
-	String KEY_PRF_EX_S2 = "gcb_schulte_2_sequences";
-	String KEY_PRF_EX_S3 = "gcb_schulte_3_sequences";
-	String KEY_PRF_EX_S4 = "gcb_schulte_4_mishmash";
 
-	/** PRFs for the basic exercises */
+	/** PRFs for the basic space */
 	String KEY_PRF_EX_B0 = "gcb_bas";
 	String KEY_PRF_EX_B1 = "gcb_bas_dot";
 	String KEY_PRF_EX_B2 = "gcb_bas_dbl_dot";
@@ -96,7 +109,7 @@ public interface Const {
 	String KEY_PRF_EX_B5 = "gcb_bas_circles_rb_lined";
 	String KEY_PRF_EX_B6 = "gcb_bas_khao_manee";
 	String KEY_PRF_EX_B7 = "gcb_bas_circles_rb_crossed";
-	String KEY_PRF_EX_B8 = "gcb_bas_circles_rb_crossed";
+	String KEY_PRF_EX_B8 = "gcb_bas_squares_colored_crossed";
 	String KEY_PRF_EX_B9 = "gcb_bas_necker_cube";
 	String KEY_PRF_EX_BA = "gcb_bas_necker_cylinder";
 	String KEY_PRF_EX_BB = "gcb_bas_necker_ball";
@@ -106,16 +119,16 @@ public interface Const {
 
 	/** Enumerates types of Achievements*/
 	enum AchievementFlags {
-		/** any period of success exercise in seconds added to log */
-		SECONDS,
+		/** any of success exercise added to log */
+		EXERCISE,
 		/** an Hour of practicing added */
 		HOURS,
 		/** a Level added */
 		LEVEL,
-		/** a Day of practicing added */
+		/** a Day of continuous practicing added */
 		SUSTAIN,
 		/** added if time is less than the least */
-		RECORD_PRIVATE, // this two are for TS of main types
+		RECORD_PRIVATE, // this two are for the speed-type exercises
 		/** added if time is less than the least world-wide */
 		RECORD_PUBLIC,
 		/** added when an aim is reached */

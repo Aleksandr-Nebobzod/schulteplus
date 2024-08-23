@@ -157,6 +157,7 @@
 						android:textSize="14sp"
 						android:id="@+id/cb_agreed"
 						android:text="@string/str_confirm_policy"
+						android:contentDescription="@string/str_confirm_policy"
 						android:checked="false"
 						/>
 					

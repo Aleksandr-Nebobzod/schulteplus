@@ -52,7 +52,7 @@ public class TapTargetViewWr {
 				//.textTypeface(Typeface.MONOSPACE)				// Specify a typeface for the text
 				.dimColor(R.color.black)						// If set, will dim behind the view with 30% opacity of the given color
 				.drawShadow(true)								// Whether to draw a drop shadow or not
-				.cancelable(false)						// Whether tapping outside the outer circle dismisses the view
+				.cancelable(true)						// Whether tapping outside the outer circle dismisses the view
 				.tintTarget(true)								// Whether to tint the target view's color
 				.transparentTarget(true)						// Specify whether the target is transparent (displays the content underneath)
 				//.icon(ContextCompat.getDrawable(this, R.drawable.ic_circles_rb))                     // Specify a custom drawable to draw as the target

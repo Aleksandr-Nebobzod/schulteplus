@@ -65,7 +65,7 @@ public class PrefsAboutFragment extends PreferenceFragmentCompat {
 						body += "\n========================";
 						long ts = timeStampU();
 						body += "\ntimeStampU: " + ts;
-						body += "\ntimeStampLocal: " + Utils.timeStampLocal(ts);
+						body += "\ntimeStampLocal: " + Utils.timeStampFormattedLocal(ts);
 						body += "\nversionCode: " + Utils.getVersionCode();
 						body += "\nscreenFactor: " + Utils.getScreenFactor();
 						body += "\ncurrentOsVersion: " + Utils.currentOsVersion();

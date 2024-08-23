@@ -8,7 +8,6 @@
 
 package org.nebobrod.schulteplus.data;
 
-import static org.nebobrod.schulteplus.Utils.relativeLuminance;
 import static org.nebobrod.schulteplus.Utils.timeStampFormattedLocal;
 import static org.nebobrod.schulteplus.Utils.timeStampU;
 import static org.nebobrod.schulteplus.common.Const.*;
@@ -40,8 +39,6 @@ public class ExResult implements Serializable, Identifiable<String> {
 	public static final String TIMESTAMP_FIELD_NAME = "timeStamp";
 	public static final String DATE_FIELD_NAME = "dateTime";
 	public static final String EXTYPE_FIELD_NAME = "exType";
-
-
 
 	@DatabaseField(generatedId = true)
 	private Integer id; 			// transactID()
@@ -82,6 +79,12 @@ public class ExResult implements Serializable, Identifiable<String> {
 	@DatabaseField
 	private long numValue; 				// used as number of milliseconds, spent through the exercise */
 
+	/** Calculated in {@link #calculatePsycoins()} and kept in UserHelper
+	 * (means cents so they shown 1/100)
+	 */
+	@DatabaseField
+	private int psyCoins;
+
 	/** @see org.nebobrod.schulteplus.R.array#level_of_emotion_values */
 	@DatabaseField
 	private int levelOfEmotion;
@@ -92,7 +95,6 @@ public class ExResult implements Serializable, Identifiable<String> {
 
 	@DatabaseField
 	protected String note;				// user notes
-
 
 	// section of Schulte-exercises data:
 	@DatabaseField
@@ -108,6 +110,27 @@ public class ExResult implements Serializable, Identifiable<String> {
 	private float rmsd; 				// Root-mean-square deviation as a sign of stability & rhythm in exercises
 
 	// section of SSSR-exercises data:
+	@DatabaseField
+	private float flo01;
+
+	@DatabaseField
+	private float flo02;
+
+	@DatabaseField
+	private float flo03;
+
+	@DatabaseField
+	private float flo04;
+
+	@DatabaseField
+	private float flo05;
+
+	@DatabaseField
+	private float flo06;
+
+	@DatabaseField
+	private float flo07;
+
 
 	// section of Other-exercises data:
 
@@ -294,6 +317,70 @@ public class ExResult implements Serializable, Identifiable<String> {
 		this.rmsd = rmsd;
 	}
 
+	public int getPsyCoins() {
+		return psyCoins;
+	}
+
+	public void setPsyCoins(int psyCoins) {
+		this.psyCoins = psyCoins;
+	}
+
+	public float getFlo01() {
+		return flo01;
+	}
+
+	public void setFlo01(float flo01) {
+		this.flo01 = flo01;
+	}
+
+	public float getFlo02() {
+		return flo02;
+	}
+
+	public void setFlo02(float flo02) {
+		this.flo02 = flo02;
+	}
+
+	public float getFlo03() {
+		return flo03;
+	}
+
+	public void setFlo03(float flo03) {
+		this.flo03 = flo03;
+	}
+
+	public float getFlo04() {
+		return flo04;
+	}
+
+	public void setFlo04(float flo04) {
+		this.flo04 = flo04;
+	}
+
+	public float getFlo05() {
+		return flo05;
+	}
+
+	public void setFlo05(float flo05) {
+		this.flo05 = flo05;
+	}
+
+	public float getFlo06() {
+		return flo06;
+	}
+
+	public void setFlo06(float flo06) {
+		this.flo06 = flo06;
+	}
+
+	public float getFlo07() {
+		return flo07;
+	}
+
+	public void setFlo07(float flo07) {
+		this.flo07 = flo07;
+	}
+
 	public String getLayoutFlag() {
 		return layoutFlag;
 	}
@@ -355,9 +442,9 @@ public class ExResult implements Serializable, Identifiable<String> {
 	}
 
 	@Exclude
-	public int getPsycoins() {
+	public int calculatePsycoins() {
 		switch (this.exType) {
-			// Seconss multiplied by hardness
+			// Seconds multiplied by hardness
 			case KEY_PRF_EX_B0:
 			case KEY_PRF_EX_B1:
 				return (int) this.numValue / 1000 * 1;
@@ -388,6 +475,14 @@ public class ExResult implements Serializable, Identifiable<String> {
 			case KEY_PRF_EX_S3:
 			case KEY_PRF_EX_S4:
 				return (int) (this.numValue / 1000 + turns - turnsMissed) * 20;
+			case KEY_PRF_EX_R0:
+				return (int) (500);
+			case KEY_PRF_EX_R1:
+				return (int) (20);
+			case KEY_PRF_EX_R2:
+				return (int) (50);
+			case KEY_PRF_EX_R3:
+				return (int) (100);
 			default:
 				return (int) this.numValue / 1000;
 		}

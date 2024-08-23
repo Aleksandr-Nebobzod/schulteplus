@@ -49,8 +49,24 @@ public interface Const {
 	String KEY_DAYS = "prf_days"; 						// number of days with any exercise
 	String KEY_PRF_LEVEL = "prf_level";
 	String KEY_PRF_CURRENT_LEVEL = "prf_current_level";
+	String KEY_PFR_EXERCISE_SPACE = "prf_ex_space";
 	String KEY_TYPE_OF_EXERCISE = "prf_ex_type";
 	String KEY_TS_UPDATED = "prf_ts_updated";
+
+	/** Spaces of bottom menu KEY_PFR_EXERCISE_SPACE */
+	String KEY_SPACE_01_SCHULTE = "gcb_space_schulte";
+	String KEY_SPACE_02_BASICS = "gcb_space_basics";
+	String KEY_SPACE_03_SSSR = "gcb_space_sssr";
+	String KEY_SPACE_04_SCHULTE_PARENTS = "gcb_space_schulte_parents";
+	String KEY_SPACE_05_WORD_FLOWS = "gcb_space_word_flow";
+
+	/** PRFs for the schulte space */
+	/* gcb means Group Check Box  */
+	String KEY_PRF_EX_S0 = "gcb_sch";
+	String KEY_PRF_EX_S1 = "gcb_schulte_1_sequence";
+	String KEY_PRF_EX_S2 = "gcb_schulte_2_sequences";
+	String KEY_PRF_EX_S3 = "gcb_schulte_3_sequences";
+	String KEY_PRF_EX_S4 = "gcb_schulte_4_mishmash";
 
 	String KEY_PRF_RATINGS = "prf_sw_ratings";
 	String KEY_PRF_OPTIONS = "prf_cat_options";
@@ -83,15 +99,8 @@ public interface Const {
 	String KEY_PRF_PROB_Y = "prf_prob_y"; 				// value -10;10 should be divided by 10
 	String KEY_PRF_PROB_SURFACE = "prf_prob_surface"; 	// value 4:10 should be divided by 10
 
-	/** PRFs for the schulte exercises */
-	/* gcb means Group Check Box  */
-	String KEY_PRF_EX_S0 = "gcb_sch";
-	String KEY_PRF_EX_S1 = "gcb_schulte_1_sequence";
-	String KEY_PRF_EX_S2 = "gcb_schulte_2_sequences";
-	String KEY_PRF_EX_S3 = "gcb_schulte_3_sequences";
-	String KEY_PRF_EX_S4 = "gcb_schulte_4_mishmash";
 
-	/** PRFs for the basic exercises */
+	/** PRFs for the basic space */
 	String KEY_PRF_EX_B0 = "gcb_bas";
 	String KEY_PRF_EX_B1 = "gcb_bas_dot";
 	String KEY_PRF_EX_B2 = "gcb_bas_dbl_dot";

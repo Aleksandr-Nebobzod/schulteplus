@@ -13,7 +13,16 @@
 <!--	<style name="Theme.SchultePlus" parent="Base.Theme.AppCompat">-->
 <!--	<style name="Theme.SchultePlus" parent="Base.Theme.AppCompat.Light.DarkActionBar">-->
 <!--	<style name="Theme.SchultePlus" parent="Theme.MaterialComponents.Light.DarkActionBar">-->
-	<style name="Theme.SchultePlus" parent="Theme.MaterialComponents.Light.NoActionBar">
+<!--	<style name="Theme.SchultePlus" parent="Theme.MaterialComponents.Light.NoActionBar">-->
+<!--	<style name="Theme.SchultePlus" parent="Theme.MaterialComponents.DayNight.NoActionBar">-->
+<!--	<style name="Theme.SchultePlus" parent="Theme.Material3.DayNight.NoActionBar">-->
+<!--	<style name="Theme.SchultePlus" parent="Theme.Material3.DayNight">-->
+<!--	<style name="Theme.SchultePlus" parent="Theme.AppCompat">-->
+<!--	<style name="Theme.SchultePlus" parent="Theme.MaterialComponents.DayNight">-->
+	<style name="Theme.SchultePlus" parent="Theme.Material3.DayNight">
+<!--		<item name="android:windowActionBar">true</item>-->
+<!--		<item name="actionBarStyle">@style/MainActionBar</item>-->
+		<item name="android:windowNoTitle">true</item>
 		<!-- Primary brand color. -->
 		<item name="colorPrimary">@color/colorPrimary</item>
 		<item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
@@ -23,11 +32,13 @@
 		<item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
 		<item name="colorOnSecondary">@color/colorOnSecondary</item>
 		
-		<item name="colorOnPrimarySurface">@color/light_grey_D</item>
+		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+		
+		<item name="colorOnPrimarySurface">@color/colorOnPrimarySurface</item>
 		<item name="colorBackgroundFloating">@color/light_grey_8</item>
 		<item name="colorAccent">@color/colorSecondaryVariant</item>
 		
-		<item name="android:colorBackground">@color/colorBackground</item>
+		<item name="colorBackground">@color/colorBackground</item>
 		<item name="colorError">@color/colorError</item>
 		
 		<!-- Default text color -->
@@ -44,7 +55,7 @@
 		<item name="android:windowBackground">@color/colorBackground</item>
 		
 		<!-- Status bar color. -->
-		<item name="android:statusBarColor">?attr/colorPrimary</item>
+<!--		<item name="android:statusBarColor">?attr/colorPrimary</item>-->
 		
 		<!-- ActionBar -->
 <!--		<item name="actionBarStyle">@style/MainActionBar</item>-->
@@ -58,6 +69,8 @@
 		
 		<item name="android:dropDownListViewStyle">@style/alertDialogTheme</item>
 		
+		<!--background for selected material icons-->
+		<item name="colorSecondaryContainer">@color/colorBackground</item>
 		<!-- Customize your theme here. -->
 		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
 	</style>
@@ -98,7 +111,7 @@
 	</style>
 	
 	<style name="Theme.SchultePlus.FullscreenStart" parent="Theme.SchultePlus.Fullscreen">
-		<item name="android:windowNoTitle">true</item>
+		<item name="windowNoTitle">true</item>
 		<item name="android:windowActionBar">false</item>
 		<item name="android:windowBackground">@drawable/bg_login02</item>
 		
@@ -106,7 +119,7 @@
 	</style>
 	
 	<style name="Theme.SchultePlus.Login" parent="Theme.SchultePlus.Fullscreen">
-		<item name="android:windowNoTitle">true</item>
+		<item name="windowNoTitle">true</item>
 		<item name="android:windowActionBar">false</item>
 		<item name="android:windowBackground">@drawable/bg_login02</item>
 		
@@ -126,7 +139,7 @@
 		<item name="android:colorBackground">@color/colorBackground</item>
 		
 		<!-- Surface color for cards, dialogs, etc. -->
-		<item name="colorSurface">@color/colorSurface</item>
+		<item name="colorSurface">@color/color_surface_semi</item>
 
 		
 		

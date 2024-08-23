@@ -1,0 +1,26 @@
+<!--
+  ~ Copyright (c) "Smart Rovers" 2024.
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto" >
+	
+	<EditTextPreference app:key="prf_ex_space" app:title="Exercise Type" app:useSimpleSummaryProvider="true"	app:isPreferenceVisible="false" />
+
+	<PreferenceCategory app:title="@string/title_choice" >
+		<Preference app:key="prf_bas_description" app:summary="@string/txt_choice_description" />
+		
+<!--	gcb means Group Check Box -->
+		<CheckBoxPreference app:title="@string/title_schulte_parents" app:key="gcb_space_schulte_parents" app:defaultValue="true" app:icon="@drawable/ic_space_schulte" app:allowDividerAbove="true"/>
+		<CheckBoxPreference app:title="@string/title_basics" app:key="gcb_space_basics" app:defaultValue="false" app:icon="@drawable/ic_space_basics"/>
+		<CheckBoxPreference app:title="@string/lbl_sssr" app:key="gcb_space_sssr" app:defaultValue="false" app:icon="@drawable/ic_space_sssr"/>
+		
+		<PreferenceCategory app:key="prf_empty_row" app:title="" app:persistent="false" app:summary=" "/>
+		<PreferenceCategory app:key="prf_empty_row2" app:title="" app:persistent="false" app:summary=" "/>
+		<PreferenceCategory app:key="prf_empty_row3" app:title="👍" app:persistent="false" app:summary=" "/>
+	</PreferenceCategory>
+	
+</PreferenceScreen>

@@ -25,6 +25,7 @@ import org.nebobrod.schulteplus.ui.schulte.SchulteActivity;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -41,9 +42,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
-import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -52,7 +55,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -67,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
 	private static final String PLAY_STORE_TAG = "com.android.vending";
 
 	private ActivityMainBinding binding;
+	BottomNavigationView navView;
+	private AppBarConfiguration appBarConfiguration;
+	private NavController navController;
 	private UserHelper userHelper;
 
 	private AppUpdateManager appUpdateManager;
@@ -85,16 +90,24 @@ public class MainActivity extends AppCompatActivity {
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_settings:
-				((AppCompatDialogFragment) Fragment.instantiate(this, PrefsPopupSettingsFragment.class.getName()))
-						.show(getSupportFragmentManager(), PrefsPopupSettingsFragment.class.getName());
+				((AppCompatDialogFragment) Fragment.instantiate(this, PrefsPopupFragment.class.getName()))
+						.show(getSupportFragmentManager(), PrefsPopupFragment.class.getName());
 				return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
+	/** provides link to Back-button in AppBar */
 	@Override
-	protected void onCreate(Bundle savedMAInstanceState) {
-		super.onCreate(savedMAInstanceState);
+	public boolean onSupportNavigateUp() {
+//		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+		return NavigationUI.navigateUp(navController, appBarConfiguration)
+				|| super.onSupportNavigateUp();
+	}
+
+	@Override
+	protected void onCreate(Bundle savedMAInstanceState01) {
+		super.onCreate(savedMAInstanceState01);
 
 		binding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
@@ -145,16 +158,21 @@ public class MainActivity extends AppCompatActivity {
 
 		}
 
-		// Init Toolbar
-		Toolbar toolbar = findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
+		// Init Toolbar (only for Day-mode)
+/*		if (getSupportActionBar() != null) {
+			getSupportActionBar().hide();
+		}*/
+/*		Toolbar toolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);*/
+
 
 		//ActionBar as a toolbar
-		androidx.appcompat.app.ActionBar mainActionBar = this.getSupportActionBar();
-		int abColor =  getWindow().getStatusBarColor();
+		ActionBar mainActionBar = this.getSupportActionBar();
 		mainActionBar.setLogo(R.drawable.ic_logo_100_bw);
 		mainActionBar.setDisplayUseLogoEnabled(true);
 		mainActionBar.setDisplayShowHomeEnabled(true);
+		mainActionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.bg_appbar));
+		int abColor =  getWindow().getStatusBarColor();
 
 /*
 //		mainActionBar.hide();
@@ -173,20 +191,25 @@ public class MainActivity extends AppCompatActivity {
 //		mainActionBar.setSubtitle("subtitle");
 		//mainActionBar.openOptionsMenu(); */ // -- ActionBar methods tested.
 
-		BottomNavigationView navView = findViewById(R.id.nav_view);
+		navView = findViewById(R.id.nav_view);
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
-		AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-				R.id.navigation_home,
+		appBarConfiguration = new AppBarConfiguration.Builder(
 				R.id.navigation_dashboard,
+				R.id.navigation_home,
 				R.id.navigation_schulte,
-				R.id.navigation_basics)
+				R.id.navigation_plus)
+//				R.id.navigation_basics,
+//				R.id.navigation_choice
 				.build();
-		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+		navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
 		NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 		NavigationUI.setupWithNavController(binding.navView, navController);
 
-		fabLaunch = findViewById(R.id.fabLaunch);
+		BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_plus);
+		badge.setVisible(true); 	// Show badge
+		badge.setNumber(999);
+//		badge.setText("-");
 
 		getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
 			@Override
@@ -201,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
 				.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
 					@Override
 					public void onStateChanged(@NonNull View bottomSheet, int newState) {
-						switch (newState) {
+/*						switch (newState) {
 							case BottomSheetBehavior.STATE_HIDDEN:
 								finish();
 								break;
@@ -209,9 +232,10 @@ public class MainActivity extends AppCompatActivity {
 								getWindow().setStatusBarColor(Color.TRANSPARENT);
 								break;
 							default:
-								getWindow().setStatusBarColor(abColor);
+//								getWindow().setStatusBarColor(abColor);
+								getWindow().setStatusBarColor(Color.TRANSPARENT);
 								break;
-						}
+						}*/
 					}
 					@Override
 					public void onSlide(@NonNull View bottomSheet, float slideOffset) {
@@ -219,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
 					}
 				});
 
+		fabLaunch = findViewById(R.id.fabLaunch);
 		// Show the exercise description
 		fabLaunch.setOnLongClickListener(new View.OnLongClickListener() {
 			@Override
@@ -301,7 +326,6 @@ public class MainActivity extends AppCompatActivity {
 									.textColor(R.color.light_grey_D_yellow)
 									.targetRadius(150)
 									.transparentTarget(true)
-									.cancelable(true)
 					)
 					.listener(new TapTargetSequence.Listener() {
 						// This listener will tell us when interesting(tm) events happen in regards
@@ -342,4 +366,30 @@ public class MainActivity extends AppCompatActivity {
 		}
 		super.onDestroy();
 	}
+
+	private void showPopupMenu(View anchor) {
+		// Create PopupMenu
+		PopupMenu popup = new PopupMenu(MainActivity.this, anchor);
+		popup.getMenuInflater().inflate(R.menu.z_bottom_nav_plus_popup_menu, popup.getMenu());
+
+		// Set listener
+		popup.setOnMenuItemClickListener(item -> {
+			switch (item.getItemId()) {
+				case R.id.navigation_sssr:
+					// Navigate to fragment
+					navController.navigate(R.id.navigation_sssr);
+					return true;
+				case R.id.navigation_basics:
+					// Navigate to fragment
+					navController.navigate(R.id.navigation_basics);
+					return true;
+				default:
+					return false;
+			}
+		});
+
+		// Показываем меню
+		popup.show();
+	}
+
 }

@@ -15,22 +15,27 @@
 	android:theme="@style/Theme.SchultePlus"
 	>
 	
+<!--	AppBar attempted for noactionbar themes-->
+<!--
 	<com.google.android.material.appbar.AppBarLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:id="@+id/app_bar_layout"
 		android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 		
-		<androidx.appcompat.widget.Toolbar
+		<com.google.android.material.appbar.MaterialToolbar
 			android:id="@+id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:background="?attr/colorPrimaryVariant"
-			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+			app:navigationIcon="@drawable/ic_logo_100_bw"
+			android:visibility="visible"
 			/>
-<!--			android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+&lt;!&ndash;			app:popupTheme="@style/ThemeOverlay.AppCompat.Light" &ndash;&gt;
+&lt;!&ndash;			android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"&ndash;&gt;
 	</com.google.android.material.appbar.AppBarLayout>
-	
+-->
+
 
 <!--	This is miraculously prevent a bug of app backgrounding on missing touch-->
 <!--	And click out of bottom_sheet-->
@@ -57,8 +62,8 @@
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:id="@+id/container"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:paddingTop="?attr/actionBarSize">
+		android:layout_height="match_parent" >
+<!--		android:paddingTop="?attr/actionBarSize"-->
 		
 		<com.google.android.material.bottomnavigation.BottomNavigationView
 			android:id="@+id/nav_view"
@@ -67,6 +72,8 @@
 			android:background="@color/colorPrimaryVariant"
 			app:itemIconTint="@color/sp_mtrl_navigation_bar_colored_item_tint"
 			app:itemTextColor="@color/colorPrimary"
+			app:itemRippleColor="@color/teal_100"
+			app:shapeAppearance="@color/colorError"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintLeft_toLeftOf="parent"
 			app:layout_constraintRight_toRightOf="parent"
@@ -85,7 +92,7 @@
 			android:tooltipText="Launch"
 			app:backgroundTint="?attr/colorPrimary"
 			app:borderWidth="0dp"
-			app:elevation="10dp"
+			app:elevation="9dp"
 			app:labelVisibilityMode="labeled"
 			app:layout_constraintBottom_toBottomOf="@id/nav_view"
 			app:layout_constraintLeft_toLeftOf="parent"

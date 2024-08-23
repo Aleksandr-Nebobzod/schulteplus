@@ -17,12 +17,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kizitonwose.calendar.core.CalendarDay;
@@ -34,6 +34,7 @@ import com.kizitonwose.calendar.view.MonthHeaderFooterBinder;
 import com.kizitonwose.calendar.view.ViewContainer;
 
 import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.common.Log;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -44,18 +45,23 @@ import java.util.Locale;
 
 public class SpCalendarView extends CalendarView {
 	private static final String TAG = "SpCalendarView";
-	private static final int CONTRIBUTION_LEVELS = 5;
+	private static final int CONTRIBUTION_LEVELS = 3;
 	private static List<DayData> data;
 	private int maxContribution;
-	private int lowColor = 0x777777;
-	private int highColor = 0x02F4DD;
+//	private int lowColor = 	0x0100F0DD;
+//	private int lowColor = 	0x01005C55;
+//	private int highColor = 0xFF00F0DD;
+//	private int lowColor = 	0xAAFFD5;
+//	private int lowColor = 	0xD3DFD9;
+	private int lowColor = 	0x01FFFFFF;
+	private int highColor = 0x00F0DD;
 	private int[] colors;
+	private int colorBG;
 	private OnDateClickListener dateClickListener;
 
 	public interface OnDateClickListener {
 		void onDateClicked(LocalDate date);
 	}
-
 
 	public SpCalendarView(Context context) {
 		super(context);
@@ -93,6 +99,7 @@ public class SpCalendarView extends CalendarView {
 			super(view);
 			v = view.findViewById(R.id.calendar_day_text);
 			bg = view.findViewById(R.id.calendar_day_bg);
+			bg.setCardElevation(0);
 		}
 
 		public void bind(CalendarDay calendarDay) {
@@ -118,8 +125,14 @@ public class SpCalendarView extends CalendarView {
 				// Colorized background if contributed
 				if (maxContribution > 0) {
 					int level = getDayContribution(calendarDay, data);
-					bg.setCardBackgroundColor(colors[level]);
-//					Log.d(TAG, calendarDay.getDate() + "bind level: " + level + " with bind color: " + Integer.toHexString(colors[level]));
+					if (level > 0) {
+						bg.setCardBackgroundColor(colors[level]);
+//						v.setBackgroundColor(colors[level]);
+//						Log.d(TAG, calendarDay.getDate() + "bind level: " + level + " with bind color: " + Integer.toHexString(colors[level]));
+					} else {
+						bg.setCardBackgroundColor(colorBG);
+//						v.setBackgroundColor(colorBG);
+					}
 				}
 
 				// link Day click
@@ -176,6 +189,8 @@ public class SpCalendarView extends CalendarView {
 				v.setText(monthYear);
 				v.setTypeface(null, Typeface.BOLD);
 				bg.setCardBackgroundColor(Color.parseColor("#00000000")); // Transparent
+				bg.setBackground(null);
+				bg.setStrokeColor(0); 												// Transparent
 				bg.setCardElevation(0F);
 			} else {
 				v.setText("");
@@ -185,6 +200,7 @@ public class SpCalendarView extends CalendarView {
 
 	private void init(Context context) {
 		setupCalendar();
+		colorBG = ContextCompat.getColor(context, R.color.transparent);
 	}
 
 	// Search data of Calendar for brightest colour
@@ -213,12 +229,15 @@ public class SpCalendarView extends CalendarView {
 			return 0;
 		}
 
+		int result;
+
 		// define range base (and check minimal)
 		int base = Math.max(this.maxContribution / CONTRIBUTION_LEVELS, 1);
 		for (DayData dayData : data) {
 			if (calendarDay.getDate().equals(dayData.localDate)) {
-
-				return Math.min((dayData.contribution + base - 1) / base, CONTRIBUTION_LEVELS);
+				result =  Math.min((dayData.contribution + base - 1) / base, CONTRIBUTION_LEVELS);
+				Log.d(TAG, "Contrib: " + calendarDay.getDate() + String.format(" max: %s so current %s gives %s ", maxContribution, dayData.contribution, result));
+				return result;
 			}
 		}
 		return 0;
@@ -241,11 +260,13 @@ public class SpCalendarView extends CalendarView {
 
 		// Today is default
 		LocalDate today = LocalDate.now();
-		if (lowColor != 0 && highColor != 0) {
+		// if both colors 0 then use default
+		if (lowColor != 0 || highColor != 0) {
 			this.lowColor = lowColor;
 			this.highColor = highColor;
 		}
-		this.colors = interpolateColors(lowColor, highColor, CONTRIBUTION_LEVELS + 1);
+		this.colors = interpolateColors(this.lowColor, this.highColor, CONTRIBUTION_LEVELS + 1);
+		this.colors[0] = 0; // transparent for any
 
 		this.data = data;
 		this.maxContribution = findMaxContribution(data);

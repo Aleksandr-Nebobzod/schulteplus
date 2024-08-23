@@ -14,10 +14,13 @@ import static org.nebobrod.schulteplus.Utils.durationCut;
 import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.colorMix;
+import org.nebobrod.schulteplus.common.Log;
 
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +36,11 @@ import org.nebobrod.schulteplus.data.ExResult;
 import java.util.List;
 
 public class ExResultCardViewAdapter extends RecyclerView.Adapter<ExResultCardViewAdapter.ExerciseViewHolder> {
+	private static final String TAG = "ExResultCardViewAdapter";
 
 	private List<ExResult> exerciseList;
+	int colorNegativeEnergy;
+	int colorPositiveEnergy;
 
 	public static class ExerciseViewHolder extends RecyclerView.ViewHolder {
 		private CardView cvExResult;
@@ -118,36 +124,39 @@ public class ExResultCardViewAdapter extends RecyclerView.Adapter<ExResultCardVi
 	 * Determine color based on levelOfEmotion and levelOfEnergy
 	 */
 	private int determineColorOfLevelsEE(int levelOfEmotion, int levelOfEnergy) {
-
+		int result;
 		// Set Energy color bounds
-		int colorNegativeEnergy = Color.parseColor("#777777"); // grey
-		int colorPositiveEnergy = Color.parseColor("#FFFFFF"); // White
+//		boolean isDarkTheme = (getRes().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+		colorNegativeEnergy = Color.parseColor("#ff333333"); // grey
+		colorPositiveEnergy = Color.parseColor("#ffFFFFFF"); // White
 
 		int emotionColor; /*= colorMix(colorNegativeEmotion, colorPositiveEmotion, (float) (levelOfEmotion + 2) / 4);*/
 		switch (levelOfEmotion) {
 			case -2:
-				emotionColor = 0x7777FF;	// Purple
+				emotionColor = 0xff7777FF;	// Purple
 				break;
 			case -1:
-				emotionColor = 0x33AAFF;	// Blue
+				emotionColor = 0xff33AAFF;	// Blue
 				break;
 			case 0:
-				emotionColor = 0xAAFF77;	// Green
+				emotionColor = 0xffAAFF77;	// Green
 				break;
 			case 1:
-				emotionColor = 0xFFF869;	// Yellow AAAA77
+				emotionColor = 0xffFFF869;	// Yellow AAAA77
 				break;
 			case 2:
-				emotionColor = 0xFF7777;	// Red
+				emotionColor = 0xffFF7777;	// Red
 				break;
 			default:
-				emotionColor = 0x777777; // Safety
+				emotionColor = 0xff777777; // Safety
 		}
 
 		int energyColor = colorMix(colorNegativeEnergy, colorPositiveEnergy, (float) (levelOfEnergy + 1) / 2);
 
 		// Final color
-		return colorMix(emotionColor, energyColor, 0.5f);
+		result = colorMix(emotionColor, energyColor, 0.4f);
+		Log.d(TAG, String.format("determineColorOfLevelsEE energyColor %s, colorMix %s", Integer.toHexString(energyColor), Integer.toHexString(result)));
+		return result;
 	}
 
 }

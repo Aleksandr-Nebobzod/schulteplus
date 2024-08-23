@@ -8,19 +8,19 @@
   -->
 
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	>
+	xmlns:android="http://schemas.android.com/apk/res/android">
 	
 	<item
 		android:id="@+id/navigation_dashboard"
-		android:icon="@drawable/ic_dashboard_black_24dp"
+		android:icon="@drawable/ic_space_stata"
 		android:title="@string/title_dashboard" />
 	
 	<item
-		android:id="@+id/navigation_basics"
-		android:icon="@drawable/ic_bas_necker_cube"
-		android:title="@string/title_basics" />
+		android:id="@+id/navigation_home"
+		android:icon="@drawable/ic_space_news"
+		android:title="@string/title_news" />
 	
+<!--middle is empty for FAB	-->
 	<item
 		android:id="@+id/navigation_notifications"
 		android:enabled="false"
@@ -30,12 +30,13 @@
 	
 	<item
 		android:id="@+id/navigation_schulte"
-		android:icon="@drawable/ic_schulte_1_sequence"
+		android:icon="@drawable/ic_space_schulte"
 		android:title="@string/title_schulte" />
-
+	
 	<item
-		android:id="@+id/navigation_home"
-		android:icon="@drawable/ic_home_black_24dp"
-		android:title="@string/title_home" />
+		android:id="@+id/navigation_plus"
+		android:icon="@drawable/ic_space_plus"
+		android:enabled="false"
+		android:title="@string/title_choice" />
 
 </menu>

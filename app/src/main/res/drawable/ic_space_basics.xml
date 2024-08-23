@@ -1,0 +1,62 @@
+<!--
+  ~ Copyright (c) "Smart Rovers" 2024.
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+  <path
+      android:pathData="M33.85,8.41l0,57l57,0l0,-57z"
+      android:strokeLineJoin="round"
+      android:strokeWidth="10"
+      android:fillColor="#00000000"
+      android:fillType="nonZero"
+      android:strokeColor="@color/colorOnPrimarySurface"
+      android:strokeLineCap="round"/>
+  <path
+      android:pathData="M91.15,65.78L70.35,89.89"
+      android:strokeLineJoin="round"
+      android:strokeWidth="10"
+      android:fillColor="#000000"
+      android:fillType="nonZero"
+      android:strokeColor="@color/colorOnPrimarySurface"
+      android:strokeLineCap="round"/>
+  <path
+      android:pathData="M12.84,32.84l0,57l57,0l0,-57z"
+      android:strokeLineJoin="round"
+      android:strokeWidth="10"
+      android:fillColor="#00000000"
+      android:fillType="nonZero"
+      android:strokeColor="@color/colorOnPrimarySurface"
+      android:strokeLineCap="round"/>
+  <path
+      android:pathData="M33.58,8.01L12.78,32.13"
+      android:strokeLineJoin="round"
+      android:strokeWidth="10"
+      android:fillColor="#000000"
+      android:fillType="nonZero"
+      android:strokeColor="@color/colorOnPrimarySurface"
+      android:strokeLineCap="round"/>
+  <path
+      android:pathData="M90.17,8.84L69.37,32.95"
+      android:strokeLineJoin="miter"
+      android:strokeWidth="10"
+      android:fillColor="#000000"
+      android:fillType="nonZero"
+      android:strokeColor="@color/colorOnPrimarySurface"
+      android:strokeLineCap="butt"/>
+  <path
+      android:pathData="M34,65.43L13.2,89.54"
+      android:strokeLineJoin="miter"
+      android:strokeWidth="10"
+      android:fillColor="#000000"
+      android:fillType="nonZero"
+      android:strokeColor="@color/colorOnPrimarySurface"
+      android:strokeLineCap="butt"/>
+</vector>

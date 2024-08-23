@@ -57,7 +57,7 @@ public class ExerciseRunner {
 	public static int psycoins = 0; 			// achieved point (in ExResult)
 	public static int seconds = 0; 				// achieved seconds
 	public static int hours = 0; 				// achieved hours
-	public static int days = 0; 				// achieved days
+	public static int daysTrained = 0; 			// trained unique days
 	public static int level = 1; 				// maximum achieved level
 	public static  long timeStamp;				// Timestamp of data updated
 
@@ -65,6 +65,7 @@ public class ExerciseRunner {
 	public static SharedPreferences sharedPreferences;
 	public static boolean sharedData = false; 	// KEY_SEND_DATA
 	public static int currentLevel = 1; 		// level limited by user
+	private static String exSpace = KEY_PFR_EXERCISE_SPACE;
 	private static String exType = "no_exercise";
 	private static byte xSize = 5, ySize = 5;
 	private static boolean ratings = false; 	// Limitation of Settings
@@ -133,7 +134,7 @@ public class ExerciseRunner {
 			psycoins = sharedPreferences.getInt(KEY_PSYCOINS, 0);
 			seconds = sharedPreferences.getInt(KEY_SECONDS, 0);
 			hours = sharedPreferences.getInt(KEY_HOURS, 0);
-			days = sharedPreferences.getInt(KEY_DAYS, 0);
+			daysTrained = sharedPreferences.getInt(KEY_DAYS, 0);
 			level = sharedPreferences.getInt(KEY_PRF_LEVEL, 1);
 			currentLevel = sharedPreferences.getInt(KEY_PRF_CURRENT_LEVEL, 1);
 
@@ -204,7 +205,7 @@ public class ExerciseRunner {
 		editor.putInt(		KEY_PSYCOINS, psycoins);
 		editor.putInt(		KEY_SECONDS, seconds);
 		editor.putInt(		KEY_HOURS, hours);
-		editor.putInt(		KEY_DAYS, days);
+		editor.putInt(		KEY_DAYS, daysTrained);
 		editor.putInt(		KEY_PRF_LEVEL, level);
 
 		timeStamp = getTimeStamp();
@@ -298,7 +299,7 @@ public class ExerciseRunner {
 	public static void updateUserHelper() {
 		DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
 
-		userHelper.setStatus(seconds, hours, level, ExerciseRunner.timeStamp);
+		userHelper.setStatus(psycoins, seconds, hours, daysTrained, level, ExerciseRunner.timeStamp);
 		repos.create(userHelper);
 	}
 
@@ -344,7 +345,14 @@ public class ExerciseRunner {
 		return exType; // may be the var here is redundant
 	}
 
-	public void setExType(String s) {
+	public static void setExSpace(String exSpace) {
+		ExerciseRunner.exSpace = exSpace;
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putString(KEY_PFR_EXERCISE_SPACE, exSpace);
+		editor.commit();
+	}
+
+	public static void setExType(String s) {
 		s = (s.length()<7?"no_exercise":s);
 		exType = s;
 		SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -471,7 +479,10 @@ public class ExerciseRunner {
 	@Override
 	public String toString() {
 		return "ExerciseRunner of " + userName + ", " + userEmail + ", " + uid + " {" +
+				"\npsycoins=" + psycoins +
 				"\nseconds=" + seconds +
+				"\nhours=" + hours +
+				"\ndaysTrained=" + daysTrained +
 				"\nexType=" + exType +
 				"\nxSize=" + xSize +
 				"\nySize=" + ySize +

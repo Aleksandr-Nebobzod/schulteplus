@@ -104,8 +104,9 @@ public class DashboardFragment00State extends Fragment {
 		tvTitleOfList = binding.tvTitleOfList;
 
 		cView = binding.calendarView;
+//		cView.setupCalendar(null,0,0);
 		cView.setupCalendar(null,
-				MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorOnPrimarySurface, Color.GRAY),
+				MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorSurface, Color.GRAY),
 				MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorAccent, Color.GREEN));
 		cView.scrollToMonth(YearMonth.now());
 		cView.setOnDateClickListener(new SpCalendarView.OnDateClickListener() {

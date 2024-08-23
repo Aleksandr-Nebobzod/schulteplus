@@ -15,7 +15,7 @@
     
     <!-- Внешний квадрат (черный фон) -->
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/colorOnPrimarySurface"
         android:pathData="M20,2L4,2c-1.1,0 -2,0.9 -2,2v16c0,1.1 0.9,2 2,2h16c1.1,0 2,-0.9 2,-2L22,4c0,-1.1 -0.9,-2 -2,-2z" />
     
     <!-- Верхний левый квадрат (голубой) -->

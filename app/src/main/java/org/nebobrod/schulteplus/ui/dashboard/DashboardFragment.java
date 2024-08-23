@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -37,7 +38,7 @@ public class DashboardFragment extends Fragment {
 	private FragmentDashboardBinding binding;
 
 
-	String[] tabTiltles; // Arrays for tab titles
+	String[] tabTitles; // Arrays for tab titles
 
 
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class DashboardFragment extends Fragment {
 		root.setOnClickListener(view -> {});
 
 		// Language independent Values of Exercise Types
-		tabTiltles = getRes().getStringArray(R.array.dashboard_pages);
+		tabTitles = getRes().getStringArray(R.array.dashboard_pages);
 
 		// Link the adapter to ViewPager2
 		dpAdapter = new DashboardPagerAdapter(this);
@@ -64,7 +65,10 @@ public class DashboardFragment extends Fragment {
 
 			@Override
 			public void onConfigureTab(TabLayout.Tab tab, int position) {
-				tab.setText(tabTiltles[position]);
+				TextView customTab = (TextView) LayoutInflater.from(requireContext()).inflate(R.layout.text_view_ellipsized, tabLayout, false);
+				customTab.setText(tabTitles[position]);
+				tab.setCustomView(customTab);
+
 			}
 		});
 		tabLayoutMediator.attach();

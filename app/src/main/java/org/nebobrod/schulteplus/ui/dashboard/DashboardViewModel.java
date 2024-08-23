@@ -32,8 +32,10 @@ import androidx.lifecycle.ViewModel;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -100,20 +102,25 @@ public class DashboardViewModel<TEntity extends Identifiable<String>> extends Vi
 						exCalendarLiveData.postValue(task.getResult());
 
 						// Proceed calculations for Calendar and Stata
-						List<SpCalendarView.DayData> dataList = new ArrayList<>();
+						Map<LocalDate, Integer> dayDataMap = new HashMap<>();
+						LocalDate date;
 						Integer psyCoins = 0;
-						Set<LocalDate> uniqueDaysTrained = new HashSet<>();
+						Integer psyCoinsSum = 0;
 						for (ExResult res : results) {
-							dataList.add(new SpCalendarView.DayData(
-									localDateOfTimeStamp(res.getTimeStamp()),
-									res.getPsycoins()));
-							uniqueDaysTrained.add(localDateOfTimeStamp(res.getTimeStamp()));
-							psyCoins += res.getPsycoins();
+							date = localDateOfTimeStamp(res.getTimeStamp());
+							psyCoins = res.getPsycoins();
+							dayDataMap.merge(date, psyCoins, Integer::sum);
+							psyCoinsSum += psyCoins;
 						}
 						// Put Calendar and Stata
+						// transfer map to list
+						List<SpCalendarView.DayData> dataList = new ArrayList<>();
+						for (Map.Entry<LocalDate, Integer> entry : dayDataMap.entrySet()) {
+							dataList.add(new SpCalendarView.DayData(entry.getKey(), entry.getValue()));
+						}
 						exContributionsLiveData.postValue(dataList);
-						daysLD.postValue(uniqueDaysTrained.size());
-						psyCoinsLD.postValue(psyCoins);
+						daysLD.postValue(dayDataMap.size());
+						psyCoinsLD.postValue(psyCoinsSum);
 					} else {
 						Log.w(TAG, "onError: ", task.getException());
 					}

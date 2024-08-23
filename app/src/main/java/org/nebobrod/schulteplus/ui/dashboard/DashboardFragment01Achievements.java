@@ -157,8 +157,8 @@ public class DashboardFragment01Achievements extends Fragment {
 		});
 
 
-		// Onboarding intro
-		if (ExerciseRunner.isShowIntro() &&
+		// Onboarding intro -- skip on 240819 yet
+/*		if (ExerciseRunner.isShowIntro() &&
 				(0 == (ExerciseRunner.getShownIntros() & SHOWN_03_STATA))) {
 			new TapTargetSequence(requireActivity())
 					.targets(
@@ -175,7 +175,7 @@ public class DashboardFragment01Achievements extends Fragment {
 						@Override
 						public void onSequenceCanceled(TapTarget lastTarget) { }
 					}).start();
-		}
+		}*/
 	}
 
 	@Override

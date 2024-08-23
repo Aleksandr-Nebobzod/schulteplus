@@ -11,19 +11,19 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/mobile_navigation"
-	app:startDestination="@+id/navigation_home">
-
-	<fragment
-		android:id="@+id/navigation_home"
-		android:name="org.nebobrod.schulteplus.ui.home.HomeFragment"
-		android:label="@string/title_home"
-		tools:layout="@layout/fragment_home" />
-
+	app:startDestination="@+id/navigation_dashboard">
+	
 	<fragment
 		android:id="@+id/navigation_dashboard"
 		android:name="org.nebobrod.schulteplus.ui.dashboard.DashboardFragment"
 		android:label="@string/title_dashboard"
 		tools:layout="@layout/fragment_dashboard" />
+
+	<fragment
+		android:id="@+id/navigation_home"
+		android:name="org.nebobrod.schulteplus.ui.home.HomeFragment"
+		android:label="@string/title_news"
+		tools:layout="@layout/fragment_home" />
 
 	<fragment
 		android:id="@+id/navigation_schulte"
@@ -32,10 +32,28 @@
 		/>
 <!--	tools:layout="@layout/fragment_schulte_settings"-->
 	
-	<fragment
-		android:id="@+id/navigation_basics"
-		android:name="org.nebobrod.schulteplus.ui.basics.BasicSettings"
-		android:label="@string/title_basics"
-		/>
-	
+
+	<navigation android:id="@+id/navigation_plus"
+		app:startDestination="@id/navigation_choice"
+		app:route="@string/title_choice" >
+		<fragment android:id="@+id/navigation_choice"
+			android:name="org.nebobrod.schulteplus.ui.PrefsChoiceFragment"
+			android:label="@string/title_choice" />
+		
+		<fragment
+			android:id="@+id/navigation_schulte_parents"
+			android:name="org.nebobrod.schulteplus.ui.schulteparents.Settings"
+			android:label="@string/title_schulte_parents" />
+			
+		<fragment
+			android:id="@+id/navigation_basics"
+			android:name="org.nebobrod.schulteplus.ui.basics.BasicSettings"
+			android:label="@string/title_basics" />
+		<fragment
+			android:id="@+id/navigation_sssr"
+			android:name="org.nebobrod.schulteplus.ui.sssr.SssrSettings"
+			android:label="@string/title_sssr"  />
+
+	</navigation>
+
 </navigation>

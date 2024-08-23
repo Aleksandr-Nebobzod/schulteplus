@@ -42,11 +42,14 @@
 	</style>
 	
 	<style name="CardViewSurfaceStyle" parent="Widget.MaterialComponents.CardView">
-		<item name="cardBackgroundColor">?attr/colorSurface</item>
+		<!-- Turn off stateListAnimator -->
+		<item name="android:stateListAnimator">@null</item>
+		<item name="cardBackgroundColor">@color/color_surface_semi</item>
+		<item name="cardCornerRadius">10dp</item>
 		<item name="background">@drawable/ic_border</item>
 		<item name="android:layout_margin">10dp</item>
-		<item name="contentPadding">10dp</item>
-		<item name="android:elevation">10dp</item>
+		<item name="contentPadding">8dp</item>
+		<item name="cardElevation">2dp</item>
 	</style>
 	
 	<!-- Setting window animation -->

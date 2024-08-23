@@ -15,7 +15,8 @@
 <!--	<style name="Theme.SchultePlus" parent="Base.ThemeOverlay.AppCompat.Dark">-->
 <!--	<style name="Theme.SchultePlus" parent="Theme.MaterialComponents.Light.DarkActionBar">-->
 <!--	<style name="Theme.SchultePlus" parent="Theme.AppCompat.Light.NoActionBar">-->
-	<style name="Theme.SchultePlus" parent="Theme.MaterialComponents.Light.NoActionBar">
+<!--	<style name="Theme.SchultePlus" parent="Theme.MaterialComponents.Light.NoActionBar">-->
+	<style name="Theme.SchultePlus" parent="Theme.MaterialComponents">
 		<item name="colorPrimary">@color/colorPrimary</item>
 		<item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
 		<item name="colorOnPrimary">@color/colorOnPrimary</item>
@@ -103,7 +104,7 @@
 		<item name="android:colorBackground">@color/colorBackground</item>
 		
 		<!-- Surface color for cards, dialogs, etc. -->
-		<item name="colorSurface">@color/colorSurface</item>
+		<item name="colorSurface">@color/color_surface_semi</item>
 		
 		<!-- Default text color -->
 		<item name="android:textColor">@color/colorOnPrimary</item>

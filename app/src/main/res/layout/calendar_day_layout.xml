@@ -14,10 +14,14 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	app:cardCornerRadius="4dp"
-	app:cardBackgroundColor="@color/light_grey_D"
 	app:cardUseCompatPadding="true"
 	app:cardElevation="2dp"
+	app:strokeWidth="1dp"
+	app:cardBackgroundColor="@color/transparent"
+	app:strokeColor="@color/colorOnSecondary"
 	>
+<!--	app:cardBackgroundColor="#337755"-->
+<!--	app:cardBackgroundColor="@color/light_grey_D"-->
 <!--	android:outlineSpotShadowColor="@color/light_grey_2_blue"-->
 <!--	app:strokeWidth="2dp"-->
 <!--	android:background="@drawable/border02"-->

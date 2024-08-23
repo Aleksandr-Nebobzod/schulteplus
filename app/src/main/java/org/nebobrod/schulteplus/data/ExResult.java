@@ -107,6 +107,10 @@ public class ExResult implements Serializable, Identifiable<String> {
 	@DatabaseField
 	private float rmsd; 				// Root-mean-square deviation as a sign of stability & rhythm in exercises
 
+	// section of SSSR-exercises data:
+
+	// section of Other-exercises data:
+
 	/** Non-database field for layout elements' visibility control */
 	private String layoutFlag = "";
 

@@ -14,7 +14,7 @@
 	
 	<attr name="buttonStyle" format="reference" />
 	
-	<!--For custom class-->
+	<!--For custom class KeyValue-->
 	<declare-styleable name="KeyValueView">
 		<attr name="keyText" format="string" />
 		<attr name="valueText" format="string" />
@@ -26,5 +26,5 @@
 		</attr>
 	</declare-styleable>
 	
-	
+	<attr format="color" name="colorBackground"/>
 </resources>

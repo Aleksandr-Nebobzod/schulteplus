@@ -25,8 +25,8 @@
 		
 		<CheckBoxPreference app:title="@string/lbl_bas_necker_cube" app:key="gcb_bas_necker_cube" app:defaultValue="false" app:icon="@drawable/ic_bas_necker_cube"  app:allowDividerAbove="true"/>
 		<CheckBoxPreference app:title="@string/lbl_bas_necker_cylinder" app:key="gcb_bas_necker_cylinder" app:defaultValue="false" app:enabled="true"/>
-		<CheckBoxPreference app:title="@string/lbl_bas_necker_ball" app:key="gcb_bas_necker_ball" app:defaultValue="false" app:enabled="true" app:singleLineTitle="true"/>
-		<CheckBoxPreference app:title="@string/lbl_bas_penrose_triangle" app:key="gcb_bas_penrose_triangle" app:defaultValue="false" app:enabled="false"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_necker_ball" app:key="gcb_bas_necker_ball" app:defaultValue="false" app:enabled="true" app:icon="@drawable/ic_gcb_bas_necker_ball" app:singleLineTitle="true"/>
+		<CheckBoxPreference app:title="@string/lbl_bas_penrose_triangle" app:key="gcb_bas_penrose_triangle" app:defaultValue="false" app:icon="@drawable/ic_bas_penrose_triangle" app:enabled="true"/>
 		
 		<CheckBoxPreference app:title="@string/lbl_bas_dancing_girl" app:key="gcb_bas_dancing_girl" app:defaultValue="false" app:icon="@drawable/ic_bas_dancing_girl" app:enabled="true"  app:allowDividerAbove="true" />
 		<CheckBoxPreference app:title="@string/lbl_bas_dancing_cat" app:key="gcb_bas_dancing_cat" app:defaultValue="false" app:icon="@drawable/ic_bas_dancing_cat" app:enabled="true" />

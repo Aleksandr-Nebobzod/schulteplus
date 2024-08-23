@@ -13,15 +13,17 @@
 	android:id="@+id/cv_ex_result"
 	app:cardCornerRadius="10dp"
 	style="@style/CardViewSurfaceStyle"
-	android:elevation="-5dp"
+	android:elevation="0dp"
+	app:cardBackgroundColor="@color/colorOnPrimary"
 	android:layout_margin="6dp">
 	
-	<!-- FrameLayout для наложения текстового поля поверх всех элементов -->
+	<!-- FrameLayout for "R" in the corner -->
 	<FrameLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:background="@color/colorBackground" >
 		
-		<!-- Основное содержимое карточки -->
+		<!-- Main content of the card -->
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -35,7 +37,7 @@
 				android:background="@drawable/bg_border_notched"
 				android:gravity="center_vertical" >
 				
-				<!-- Другие элементы внутри LinearLayout -->
+				<!-- Icon -->
 				<ImageView
 					android:id="@+id/ex_type_icon"
 					android:layout_weight="1"

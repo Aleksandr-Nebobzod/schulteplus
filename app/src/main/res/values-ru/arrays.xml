@@ -12,7 +12,7 @@
 	
 	<string-array name="dashboard_pages">
 		<item>Статус</item>
-		<item>Дстижения</item>
+		<item>Достижения</item>
 		<item>Упражнения</item>
 	</string-array>
 	

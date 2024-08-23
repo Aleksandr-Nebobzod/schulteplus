@@ -9,8 +9,8 @@
 
 <resources>
 	<string name="app_name">Внимание Шульте Плюс</string>
-	<string name="title_home">Что нового</string>
 	<string name="title_dashboard">Стата</string>
+	<string name="title_news">Что нового</string>
 	<string name="title_notifications">События</string>
 	<string name="title_schulte">Шульте+</string>
 	<string name="title_basics">База</string>
@@ -44,8 +44,8 @@
 	<string name="lbl_bas_pyramidot">Пирамиточка</string>
 	<string name="lbl_bas_necker_cube">Куб Неккера</string>
 	<string name="lbl_bas_necker_cube_double">Двойной Куб Неккера</string>
-	<string name="lbl_bas_necker_ball">Шар Неккера</string>
-	<string name="lbl_bas_necker_cylinder">Цилиндр Неккера</string>
+	<string name="lbl_bas_necker_cylinder">Стакан Ровера</string>
+	<string name="lbl_bas_necker_ball">Шар Ровера</string>
 	<string name="lbl_bas_dancing_girl">Балеринка</string>
 	<string name="lbl_bas_dancing_cat">Кот-Балерун</string>
 	<string name="txt_bas_description">Здесь подобраны простые упражнения, которые сложны тем, что требуют и тренируют устойчивость внимания</string>
@@ -316,4 +316,11 @@
 	<string name="lbl_exercises">Упражнения</string>
 	<string name="txt_no_data">Даже и нечего показать тут так-то</string>
 	<string name="lbl_rating_letter">Р</string>
+	<string name="lbl_google_log_in">Вход с гугл-аккаунтом</string>
+	<string name="lbl_email_log_in">Вход с емайл аккаунтом</string>
+	<string name="title_choice">Выбор</string>
+	<string name="txt_choice_description">Выбрать дополнительное пространство упражнений</string>
+	<string name="title_sssr">Сферы</string>
+	<string name="lbl_sssr">Сферы</string>
+	<string name="title_schulte_parents">Шульте -- родителям</string>
 </resources>

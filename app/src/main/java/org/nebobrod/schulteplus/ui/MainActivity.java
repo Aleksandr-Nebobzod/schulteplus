@@ -21,6 +21,7 @@ import org.nebobrod.schulteplus.databinding.ActivityMainBinding;
 import org.nebobrod.schulteplus.data.UserHelper;
 import org.nebobrod.schulteplus.ui.basics.BasicsActivity;
 import org.nebobrod.schulteplus.ui.schulte.SchulteActivity;
+import org.nebobrod.schulteplus.ui.sssr.SssrActivity;
 
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
@@ -280,6 +281,9 @@ public class MainActivity extends AppCompatActivity {
 				case "gcb_sch":
 					activity = SchulteActivity.class;
 					break;
+				case "gcb_sss":
+					activity = SssrActivity.class;
+					break;
 				default: Toast.makeText(MainActivity.this, TAG+ getResources().getString(R.string.err_unknown), Toast.LENGTH_SHORT).show();
 			}
 
@@ -367,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
 		super.onDestroy();
 	}
 
-	private void showPopupMenu(View anchor) {
+	/*private void showPopupMenu(View anchor) {
 		// Create PopupMenu
 		PopupMenu popup = new PopupMenu(MainActivity.this, anchor);
 		popup.getMenuInflater().inflate(R.menu.z_bottom_nav_plus_popup_menu, popup.getMenu());
@@ -390,6 +394,6 @@ public class MainActivity extends AppCompatActivity {
 
 		// Показываем меню
 		popup.show();
-	}
+	}*/ // Approach not used Replaced with fragment
 
 }

@@ -41,6 +41,11 @@
 		<item name="android:textSize">18sp</item>
 	</style>
 	
+	<style name="SliderStyle" parent="Widget.Material3.Slider">
+		<item name="thumbColor">@color/colorSecondary</item>
+		<item name="trackColorActive">@color/colorSecondary</item>
+		<item name="trackColorInactive">@color/colorPrimaryDark</item>
+	</style>
 	<style name="CardViewSurfaceStyle" parent="Widget.MaterialComponents.CardView">
 		<!-- Turn off stateListAnimator -->
 		<item name="android:stateListAnimator">@null</item>

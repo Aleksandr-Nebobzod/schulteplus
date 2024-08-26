@@ -36,7 +36,7 @@
 	<item
 		android:id="@+id/navigation_plus"
 		android:icon="@drawable/ic_space_plus"
-		android:enabled="false"
+		android:enabled="true"
 		android:title="@string/title_choice" />
 
 </menu>

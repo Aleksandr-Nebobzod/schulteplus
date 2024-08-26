@@ -8,13 +8,34 @@
 
 package org.nebobrod.schulteplus.ui.sssr;
 
+import static org.nebobrod.schulteplus.Utils.getRes;
+import static org.nebobrod.schulteplus.common.Const.KEY_PRF_HINTED;
+
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
 
+import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
+
+import java.util.ArrayList;
+
 public class SssrSettings extends PreferenceFragmentCompat {
+	private static final String TAG = "SssrSettings";
+	private ArrayList<Preference> exerciseTypeCheckBoxes = new ArrayList<>();
+	private androidx.preference.CheckBoxPreference chosen;
+	private ExerciseRunner runner = ExerciseRunner.getInstance();
+
+
 	/**
 	 * Called during {@link #onCreate(Bundle)} to supply the preferences for this fragment.
 	 * Subclasses are expected to call {@link #setPreferenceScreen(PreferenceScreen)} either
@@ -27,6 +48,111 @@ public class SssrSettings extends PreferenceFragmentCompat {
 	 */
 	@Override
 	public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+		getPreferenceManager().setSharedPreferencesName(ExerciseRunner.uid);
+		getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
 
+		setPreferencesFromResource(R.xml.preferences_sssr, rootKey);
+
+		initiateExerciseTypes();
+	}
+
+	/**
+	 * Called when the fragment is visible to the user and actively running.
+	 * This is generally
+	 * tied to {Activity.onResume} of the containing
+	 * Activity's lifecycle.
+	 */
+	@Override
+	public void onResume() {
+		runner.loadPreference();
+		EditTextPreference exType = findPreference("prf_ex_type");
+		// to find which checkbox selected on the screen:
+		for (Preference p: exerciseTypeCheckBoxes) {
+			if (((androidx.preference.CheckBoxPreference) p).isChecked()) {
+				chosen = (androidx.preference.CheckBoxPreference) p;
+				break;
+			}
+		}
+		if (null == chosen) {
+			chosen = (androidx.preference.CheckBoxPreference) findPreference("gcb_adv_schulte_1_sequence");
+			chosen.setChecked(true);
+		}
+		exType.setText(chosen.getKey());
+		runner.setExType(exType.getText().toString()); // set to runner from invisible pref et
+		// set hinted to runner
+
+		super.onResume();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @param preference
+	 */
+	@Override
+	public boolean onPreferenceTreeClick(@NonNull Preference preference) {
+		// only for Group Check Boxes:
+		if (exerciseTypeCheckBoxes.contains(preference)) {
+			chosen = (androidx.preference.CheckBoxPreference) preference;
+			for (Preference p : exerciseTypeCheckBoxes) {
+				((androidx.preference.CheckBoxPreference) p).setChecked(false);
+			}
+			chosen.setChecked(true);
+			EditTextPreference exType = findPreference("prf_ex_type");
+			exType.setText(chosen.getKey().toString());
+			runner.setExType(chosen.getKey().toString());
+		}
+		return super.onPreferenceTreeClick(preference);
+	}
+
+	/**
+	 * Called when the Fragment is no longer resumed.  This is generally
+	 * tied to {Activity#onPause() Activity.onPause} of the containing
+	 * Activity's lifecycle.
+	 */
+	@Override
+	public void onPause() {
+		super.onPause();
+		ExerciseRunner.savePreferences();
+	}
+
+	/**
+	 * method provides functionality "Group of Checkboxes" directly in _preferences.xml -- layout
+	 */
+	private void initiateExerciseTypes(){
+		ArrayList<Preference> list = getPreferenceList(getPreferenceScreen(), new ArrayList<Preference>());
+		exerciseTypeCheckBoxes.clear();
+		for (Preference p : list) {
+			// prefix "gcb_" of Preference means Group Check Box
+			if (p instanceof androidx.preference.CheckBoxPreference && p.getKey().startsWith("gcb_")) {
+				p.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+					@Override
+					public boolean onPreferenceClick(@NonNull Preference preference) {
+						chosen = (androidx.preference.CheckBoxPreference) preference;
+						return false;
+					}
+				});
+				exerciseTypeCheckBoxes.add(p);
+			}
+		}
+	}
+
+	/**
+	 * Recursive filling preferences,
+	 * @param p starting from root (i.e. Pref.Screen)
+	 * @param list
+	 * @return
+	 */
+	private ArrayList<Preference> getPreferenceList(Preference p, ArrayList<Preference> list) {
+		if( p instanceof PreferenceCategory || p instanceof PreferenceScreen) {
+			PreferenceGroup pGroup = (PreferenceGroup) p;
+			int pCount = pGroup.getPreferenceCount();
+			for(int i = 0; i < pCount; i++) {
+				getPreferenceList(pGroup.getPreference(i), list); // recursive call
+			}
+		} else {
+			list.add(p);
+		}
+		return list;
 	}
 }

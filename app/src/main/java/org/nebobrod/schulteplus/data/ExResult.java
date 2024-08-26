@@ -111,6 +111,9 @@ public class ExResult implements Serializable, Identifiable<String> {
 
 	// section of SSSR-exercises data:
 	@DatabaseField
+	private float lng01;
+
+	@DatabaseField
 	private float flo01;
 
 	@DatabaseField
@@ -152,7 +155,7 @@ public class ExResult implements Serializable, Identifiable<String> {
 		this.timeStampStart = this.timeStamp;
 		this.dateTime = timeStampFormattedLocal(this.timeStamp);
 		this.exType = exerciseRunner.getExType();
-		this.exDescription = ""; // TODO: 26.02.2024 gather settings & screen width in String
+		this.exDescription = ""; // TODOne: 26.02.2024 gather settings & screen width in String
 
 		// additional fields
 		this.seed = seed;
@@ -381,6 +384,15 @@ public class ExResult implements Serializable, Identifiable<String> {
 		this.flo07 = flo07;
 	}
 
+	public float getLng01() {
+		return lng01;
+	}
+
+	public void setLng01(float lng01) {
+		this.lng01 = lng01;
+	}
+
+	/** service fields */
 	public String getLayoutFlag() {
 		return layoutFlag;
 	}

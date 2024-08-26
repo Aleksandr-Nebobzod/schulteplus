@@ -102,5 +102,12 @@
 				<data android:mimeType="image/*" />
 			</intent-filter>
 		</activity>
+		
+		<activity
+			android:name=".ui.sssr.SssrActivity"
+			android:configChanges="orientation|keyboardHidden|screenSize"
+			android:exported="false"
+			android:label="@string/title_sssr"
+			android:theme="@style/Theme.SchultePlus.FullscreenLite" />
 	</application>
 </manifest>

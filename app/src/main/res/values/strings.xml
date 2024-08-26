@@ -345,5 +345,21 @@
 	<string name="title_sssr">Spheres</string>
 	<string name="lbl_sssr">Spheres</string>
 	<string name="title_schulte_parents">Schulte for parents</string>
+	<string name="lbl_sssr_main">SSSR</string>
+	<string name="lbl_sssr_main_sum">Sphere of separate self-realization (fulfillment)</string>
+	<string name="lbl_sssr_tracking">What to track</string>
+	<string name="lbl_sssr_job"><![CDATA[Job & Learning]]></string>
+	<string name="lbl_sssr_chores">Chores</string>
+	<string name="lbl_sssr_physical">Physical</string>
+	<string name="lbl_sssr_family">Family</string>
+	<string name="lbl_sssr_friends">Friends</string>
+	<string name="lbl_sssr_leisure">Leisure</string>
+	<string name="lbl_sssr_sleep">Sleep</string>
+	<string name="lbl_sssr_sum">Exercices to increase your mindfulness, make your life style more measurable and clear</string>
+	<string name="lbl_sssr_intercept01">Interception-1</string>
+	<string name="lbl_sssr_intercept02">Interception-2</string>
+	<string name="lbl_sssr_intercept03">Interception-3</string>
+	<string name="lbl_next">Next</string>
+	<string name="lbl_prev">Prev</string>
 
 </resources>

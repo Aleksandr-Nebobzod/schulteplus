@@ -123,6 +123,15 @@ public interface Const {
 	String KEY_PRF_EX_R2 = "gcb_sssr_intercept02";
 	String KEY_PRF_EX_R3 = "gcb_sssr_intercept03";
 
+	String KEY_PRF_EX_R0_JOB = "prf_sssr_job";
+	String KEY_PRF_EX_R0_PHYSICAL = "prf_sssr_physical";
+	String KEY_PRF_EX_R0_LEISURE = "prf_sssr_leisure";
+	String KEY_PRF_EX_R0_FAMILY = "prf_sssr_family";
+	String KEY_PRF_EX_R0_FRIENDS = "prf_sssr_friends";
+	String KEY_PRF_EX_R0_CHORES = "prf_sssr_chores";
+	String KEY_PRF_EX_R0_SLEEP = "prf_sssr_sleep";
+	String KEY_PRF_EX_R0_SSSR = "prf_sssr_sssr";
+
 	/** Enumerates types of Achievements*/
 	enum AchievementFlags {
 		/** any of success exercise added to log */

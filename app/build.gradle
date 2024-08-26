@@ -107,6 +107,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.codevblocks.android:knob:1.0.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation "com.kizitonwose.calendar:view:2.0.0"
 //    implementation 'org.webjars.bower:calendar-heatmap:0.4.1'
 //    implementation 'com.github.EudyContreras:Calendar-HeatMap:v0.1'

@@ -323,4 +323,20 @@
 	<string name="title_sssr">Сферы</string>
 	<string name="lbl_sssr">Сферы</string>
 	<string name="title_schulte_parents">Шульте -- родителям</string>
+	<string name="lbl_sssr_main">СССР</string>
+	<string name="lbl_sssr_main_sum">Сфефра свободной самореализации</string>
+	<string name="lbl_sssr_tracking">Что отслеживать</string>
+	<string name="lbl_sssr_job"><![CDATA[Работа / учёба]]></string>
+	<string name="lbl_sssr_physical">Физкультура</string>
+	<string name="lbl_sssr_leisure">Развлечения</string>
+	<string name="lbl_sssr_family">Семья</string>
+	<string name="lbl_sssr_friends">Друзья</string>
+	<string name="lbl_sssr_chores">Хозяйство и быт</string>
+	<string name="lbl_sssr_sleep">Сон</string>
+	<string name="lbl_sssr_sum">Упражнения для повышения осознанности, придания образу жизни измеримости и ясности</string>
+	<string name="lbl_sssr_intercept01">Перехват-1</string>
+	<string name="lbl_sssr_intercept02">Перехват-2</string>
+	<string name="lbl_sssr_intercept03">Перехват-3</string>
+	<string name="lbl_next">Next</string>
+	<string name="lbl_prev">Prev</string>
 </resources>

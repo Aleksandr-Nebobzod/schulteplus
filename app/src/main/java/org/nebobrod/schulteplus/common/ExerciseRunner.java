@@ -17,6 +17,7 @@ import org.nebobrod.schulteplus.data.Achievement;
 import org.nebobrod.schulteplus.data.DataOrmRepo;
 import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
+import org.nebobrod.schulteplus.data.ExResultSssr;
 import org.nebobrod.schulteplus.data.UserHelper;
 
 import androidx.annotation.NonNull;
@@ -80,6 +81,15 @@ public class ExerciseRunner {
 	private static double probDx = .0, probDy = .0, probW = .0;
 	private static boolean online = true; 		// False if no connection to the Internet
 
+	// Switchers Preferences for SSSR
+	private static boolean swSssrJob = true;
+	private static boolean swSssrPhysical = true;
+	private static boolean swSssrLeisure  = true;
+	private static boolean swSssrFamily = true;
+	private static boolean swSssrFriends  = true;
+	private static boolean swSssrChores = true;
+	private static boolean swSssrSleep = true;
+	private static boolean swSssrSssr = true;
 
 	private ExerciseRunner(UserHelper userHelper) {
 		Context context = getAppContext();
@@ -144,7 +154,7 @@ public class ExerciseRunner {
 			showIntro = sharedPreferences.getBoolean(KEY_PRF_SHOW_INTRO, true);
 			shownIntros = sharedPreferences.getInt(KEY_PRF_SHOWN_INTROS, 0);
 
-			// Exercise parameters
+			// Schulte Exercise parameters
 			ratings = sharedPreferences.getBoolean(KEY_PRF_RATINGS, false);
 			probEnabled = sharedPreferences.getBoolean(KEY_PRF_PROB_ENABLED, false);
 			squared = sharedPreferences.getBoolean(KEY_PRF_SQUARED, false);
@@ -187,6 +197,15 @@ public class ExerciseRunner {
 
 			fontScale = sharedPreferences.getInt(KEY_PRF_FONT_SCALE, 0);
 			timeStamp = sharedPreferences.getLong(KEY_TS_UPDATED, timeStampU());
+
+			swSssrJob = sharedPreferences.getBoolean(KEY_PRF_EX_R0_JOB, true);
+			swSssrPhysical = sharedPreferences.getBoolean(KEY_PRF_EX_R0_PHYSICAL, true);
+			swSssrLeisure = sharedPreferences.getBoolean(KEY_PRF_EX_R0_LEISURE, true);
+			swSssrFamily = sharedPreferences.getBoolean(KEY_PRF_EX_R0_FAMILY, true);
+			swSssrFriends = sharedPreferences.getBoolean(KEY_PRF_EX_R0_FRIENDS, true);
+			swSssrChores = sharedPreferences.getBoolean(KEY_PRF_EX_R0_CHORES, true);
+			swSssrSleep = sharedPreferences.getBoolean(KEY_PRF_EX_R0_SLEEP, true);
+			swSssrSssr = true; // always true
 		}
 			catch (Exception e){
 			Log.d(TAG, "ExerciseRunner: noContext");
@@ -598,6 +617,38 @@ public class ExerciseRunner {
 
 	public static void setSharedData(boolean sharedData) {
 		ExerciseRunner.sharedData = sharedData;
+	}
+
+	public static boolean isSwSssrJob() {
+		return swSssrJob;
+	}
+
+	public static boolean isSwSssrPhysical() {
+		return swSssrPhysical;
+	}
+
+	public static boolean isSwSssrLeisure() {
+		return swSssrLeisure;
+	}
+
+	public static boolean isSwSssrFamily() {
+		return swSssrFamily;
+	}
+
+	public static boolean isSwSssrFriends() {
+		return swSssrFriends;
+	}
+
+	public static boolean isSwSssrChores() {
+		return swSssrChores;
+	}
+
+	public static boolean isSwSssrSleep() {
+		return swSssrSleep;
+	}
+
+	public static boolean isSwSssrSssr() {
+		return swSssrSssr;
 	}
 
 	/*	@Override

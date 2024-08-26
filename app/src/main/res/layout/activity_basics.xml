@@ -56,10 +56,10 @@
 				android:id="@+id/bt_exit"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				style="@style/SchultePlus.Button.TextButton.Dialog"
 				android:textSize="36sp"
 				android:textStyle="bold"
 				android:layout_weight="2"
+				style="@style/SchultePlus.Button.TextButton.Dialog"
 				android:text="@string/lbl_back" />
 <!--				style="?android:attr/buttonBarButtonStyle"-->
 			<LinearLayout
@@ -99,10 +99,10 @@
 				android:id="@+id/bt_distraction"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				style="@style/SchultePlus.Button.TextButton.Dialog"
-				
-				android:textSize="32sp"
+				android:textSize="36sp"
+				android:textStyle="bold"
 				android:layout_weight="2"
+				style="@style/SchultePlus.Button.TextButton.Dialog"
 				android:text="@string/lbl_distraction" />
 		
 		</LinearLayout>

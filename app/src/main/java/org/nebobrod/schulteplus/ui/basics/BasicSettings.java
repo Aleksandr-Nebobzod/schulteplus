@@ -50,7 +50,7 @@ public class BasicSettings extends PreferenceFragmentCompat {
 		getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
 		setPreferencesFromResource(R.xml.preferences_basics, rootKey);
 //		PreferenceScreen screen = this.getPreferenceScreen();
-		exTypes = getRes().getStringArray(R.array.ex_type);
+//		exTypes = getRes().getStringArray(R.array.ex_type);
 
 		initiateExerciseTypes();
 	}
@@ -131,8 +131,7 @@ public class BasicSettings extends PreferenceFragmentCompat {
 	}
 
 	@Override
-	public boolean onPreferenceTreeClick(@NonNull Preference preference)
-	{
+	public boolean onPreferenceTreeClick(@NonNull Preference preference) {
 		// only for Group Check Boxes:
 		if (exerciseTypes.contains(preference)) {
 			chosen = (androidx.preference.CheckBoxPreference) preference;

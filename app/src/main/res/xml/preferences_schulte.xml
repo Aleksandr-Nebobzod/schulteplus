@@ -13,7 +13,8 @@
 	
 	<EditTextPreference app:key="prf_ex_type" app:title="Exercise Type" app:useSimpleSummaryProvider="true"	app:isPreferenceVisible="false" />
 	
-	<PreferenceCategory app:title="@string/title_schulte" >
+<!--app:title="@string/title_schulte" -->
+	<PreferenceCategory >
 		<Preference app:key="prf_cat_schulte_description" app:summary="@string/txt_schulte_description"/>
 	
 		<CheckBoxPreference app:key="gcb_schulte_1_sequence" app:title="@string/lbl_schulte_1_sequence" app:summary="@string/lbl_schulte_1_sequence_sum" app:defaultValue="true"  app:icon="@drawable/ic_schulte_1_sequence"/>

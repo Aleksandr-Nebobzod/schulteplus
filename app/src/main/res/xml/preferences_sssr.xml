@@ -1,0 +1,40 @@
+<!--
+  ~ Copyright (c) "Smart Rovers" 2024.
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto" >
+	
+	<EditTextPreference app:key="prf_ex_type" app:title="Exercise Type" app:useSimpleSummaryProvider="true"	app:isPreferenceVisible="false" />
+
+	<PreferenceCategory >
+		<Preference app:key="prf_sssr_description" app:title="@string/title_sssr"  app:summary="@string/lbl_sssr_sum" />
+		
+<!--	gcb means Group Check Box -->
+		<CheckBoxPreference app:title="@string/lbl_sssr_main" app:key="gcb_sssr_main" app:summary="@string/lbl_sssr_main_sum" app:defaultValue="true" app:icon="@drawable/ic_space_sssr" app:allowDividerAbove="true"/>
+
+		<!--app:title="@string/lbl_sssr_tracking"-->
+		<PreferenceCategory  app:key="gcb_sssr_main_tracking" app:initialExpandedChildrenCount="0">
+			
+			<SwitchPreference app:title="@string/lbl_sssr_job" app:key="prf_sssr_job" app:defaultValue="true"/>
+			<SwitchPreference app:title="@string/lbl_sssr_physical" app:key="prf_sssr_physical" app:defaultValue="true"/>
+			<SwitchPreference app:title="@string/lbl_sssr_leisure" app:key="prf_sssr_leisure" app:defaultValue="true"/>
+			<SwitchPreference app:title="@string/lbl_sssr_family" app:key="prf_sssr_family" app:defaultValue="true"/>
+			<SwitchPreference app:title="@string/lbl_sssr_friends" app:key="prf_sssr_friends" app:defaultValue="true"/>
+			<SwitchPreference app:title="@string/lbl_sssr_chores" app:key="prf_sssr_chores" app:defaultValue="true"/>
+			<SwitchPreference app:title="@string/lbl_sssr_sleep" app:key="prf_sssr_sleep" app:defaultValue="true"/>
+		</PreferenceCategory>
+		
+		<CheckBoxPreference app:title="@string/lbl_sssr_intercept01" app:key="gcb_sssr_intercept01" app:defaultValue="false" app:icon="@drawable/ic_sssr_intercept01" app:enabled="false"/>
+		<CheckBoxPreference app:title="@string/lbl_sssr_intercept02" app:key="gcb_sssr_intercept02" app:defaultValue="false" app:icon="@drawable/ic_sssr_intercept02" app:enabled="false"/>
+		<CheckBoxPreference app:title="@string/lbl_sssr_intercept03" app:key="gcb_sssr_intercept03" app:defaultValue="false" app:icon="@drawable/ic_sssr_intercept03" app:enabled="false"/>
+		
+		<PreferenceCategory app:key="prf_empty_row" app:title="" app:persistent="false" app:summary=" "/>
+		<PreferenceCategory app:key="prf_empty_row2" app:title="" app:persistent="false" app:summary=" "/>
+		<PreferenceCategory app:key="prf_empty_row3" app:title="👍" app:persistent="false" app:summary=" "/>
+	</PreferenceCategory>
+	
+</PreferenceScreen>

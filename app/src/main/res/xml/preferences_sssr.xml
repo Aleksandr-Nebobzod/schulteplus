@@ -11,13 +11,14 @@
 	<EditTextPreference app:key="prf_ex_type" app:title="Exercise Type" app:useSimpleSummaryProvider="true"	app:isPreferenceVisible="false" />
 
 	<PreferenceCategory >
-		<Preference app:key="prf_sssr_description" app:title="@string/title_sssr"  app:summary="@string/lbl_sssr_sum" />
+		<Preference app:key="prf_sssr_description" app:summary="@string/lbl_sssr_sum" />
+<!--		app:title="@string/title_sssr"-->
 		
-<!--	gcb means Group Check Box -->
+		<!--	gcb means Group Check Box -->
 		<CheckBoxPreference app:title="@string/lbl_sssr_main" app:key="gcb_sssr_main" app:summary="@string/lbl_sssr_main_sum" app:defaultValue="true" app:icon="@drawable/ic_space_sssr" app:allowDividerAbove="true"/>
 
 		<!--app:title="@string/lbl_sssr_tracking"-->
-		<PreferenceCategory  app:key="gcb_sssr_main_tracking" app:initialExpandedChildrenCount="0">
+		<PreferenceCategory  app:key="gcb_sssr_main_tracking" app:initialExpandedChildrenCount="3">
 			
 			<SwitchPreference app:title="@string/lbl_sssr_job" app:key="prf_sssr_job" app:defaultValue="true"/>
 			<SwitchPreference app:title="@string/lbl_sssr_physical" app:key="prf_sssr_physical" app:defaultValue="true"/>
@@ -28,9 +29,9 @@
 			<SwitchPreference app:title="@string/lbl_sssr_sleep" app:key="prf_sssr_sleep" app:defaultValue="true"/>
 		</PreferenceCategory>
 		
-		<CheckBoxPreference app:title="@string/lbl_sssr_intercept01" app:key="gcb_sssr_intercept01" app:defaultValue="false" app:icon="@drawable/ic_sssr_intercept01" app:enabled="false"/>
-		<CheckBoxPreference app:title="@string/lbl_sssr_intercept02" app:key="gcb_sssr_intercept02" app:defaultValue="false" app:icon="@drawable/ic_sssr_intercept02" app:enabled="false"/>
-		<CheckBoxPreference app:title="@string/lbl_sssr_intercept03" app:key="gcb_sssr_intercept03" app:defaultValue="false" app:icon="@drawable/ic_sssr_intercept03" app:enabled="false"/>
+		<CheckBoxPreference app:title="@string/lbl_sssr_intercept01" app:key="gcb_sssr_intercept01" app:defaultValue="false" app:icon="@drawable/ic_sssr_intercept01"/>
+		<CheckBoxPreference app:title="@string/lbl_sssr_intercept02" app:key="gcb_sssr_intercept02" app:defaultValue="false" app:icon="@drawable/ic_sssr_intercept02"/>
+		<CheckBoxPreference app:title="@string/lbl_sssr_intercept03" app:key="gcb_sssr_intercept03" app:defaultValue="false" app:icon="@drawable/ic_sssr_intercept03"/>
 		
 		<PreferenceCategory app:key="prf_empty_row" app:title="" app:persistent="false" app:summary=" "/>
 		<PreferenceCategory app:key="prf_empty_row2" app:title="" app:persistent="false" app:summary=" "/>

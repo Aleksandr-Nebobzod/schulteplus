@@ -54,8 +54,10 @@
 		<!-- Background color for the window -->
 		<item name="android:windowBackground">@color/colorBackground</item>
 		
-		<!-- Status bar color. -->
-<!--		<item name="android:statusBarColor">?attr/colorPrimary</item>-->
+		<!-- Status bar bg color. -->
+		<item name="android:statusBarColor">@color/light_grey_2</item>
+		<!-- Status bar icons and text color -->
+		<item name="android:windowLightStatusBar">false</item>
 		
 		<!-- ActionBar -->
 <!--		<item name="actionBarStyle">@style/MainActionBar</item>-->

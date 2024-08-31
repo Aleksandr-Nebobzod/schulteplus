@@ -264,7 +264,11 @@ public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
 
 		// Set the buttons
 		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, Utils.getRes().getText(R.string.lbl_ok), (DialogInterface.OnClickListener) okListener);
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, Utils.getRes().getText(R.string.lbl_no), (DialogInterface.OnClickListener)  cancelListener);
+		if (ExerciseRunner.isRatings()) {
+			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, Utils.getRes().getText(R.string.lbl_no_hell), (DialogInterface.OnClickListener)  cancelListener);
+		} else {
+			alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, Utils.getRes().getText(R.string.lbl_no), (DialogInterface.OnClickListener)  cancelListener);
+		}
 
 		// Copy design from templates
 		alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -322,7 +326,7 @@ public class ExResultArrayAdapter extends ArrayAdapter<ExResult> {
 				// Update Views and LiveData
 				sbEmotionalLevel.setThumbTintList(context1.getColorStateList(R.color.light_grey_A_green));
 				sbEnergyLevel.setThumbTintList(context1.getColorStateList(R.color.light_grey_A_green));
-				alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setText(R.string.lbl_no_ok);
+				alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setText(R.string.lbl_no);
 				resultClone.setNote(etNote.getText().toString());
 				resultClone.setLevelOfEmotion(sbEmotionalLevel.getProgress()-2);
 				resultClone.setLevelOfEnergy(sbEnergyLevel.getProgress()-1);

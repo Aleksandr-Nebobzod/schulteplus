@@ -8,28 +8,38 @@
 
 package org.nebobrod.schulteplus.ui.sssr;
 
+import static org.nebobrod.schulteplus.Utils.timeStampOfLocalDate;
+import static org.nebobrod.schulteplus.Utils.timeStampU;
+
+import android.animation.ValueAnimator;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.android.material.slider.Slider;
 
 import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.common.Const;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResultSssr;
@@ -42,7 +52,11 @@ import java.util.List;
 public class SssrActivity extends AppCompatActivity {
 	public static final String TAG = "SssrActivity";
 	private ActivitySssrBinding binding;
-	private ExResultSssr exResultSssr;
+
+	SssrViewModel viewModel;
+
+	private List<ExResultSssr> exResultData;
+	private ExResultSssr exResult;
 	private ExerciseRunner runner;
 
 	private DataRepos<ExResultSssr> repos;
@@ -51,15 +65,18 @@ public class SssrActivity extends AppCompatActivity {
 	private DialogInterface.OnClickListener restartListener;
 
 	private LocalDate selectedDate;
+	private SwitchCompat dataProvided;
 	private TextView tvDate;
 	private ImageButton btnPrev, btnNext;
 
 	private PieChart pieChart;
+	Legend legend;
 	List<PieEntry> spheres;
 	// SeekBars were not renamed to Sliders:
 	Slider sbJob, sbChores, sbPhysical, sbFamily, sbFriends, sbLeisure, sbSleep, sbSssr;
+	SeekBar sbEmotion, sbEnergy;
 	private Slider.OnSliderTouchListener stopChangeListener;
-	EditText etSssr;
+	EditText etNote;
 
 	/**
 	 * {@inheritDoc}
@@ -75,34 +92,76 @@ public class SssrActivity extends AppCompatActivity {
 		binding = ActivitySssrBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
-		// repos = new DataRepos(ExResult.class);
+		// Start getting data
+		viewModel = new ViewModelProvider(this).get(SssrViewModel.class);
+		viewModel.fetchExResults();
 
+		// Checker of edit mode (puts * to tvDate)
+		dataProvided = binding.swDataProvided;
+		dataProvided.setChecked(false);
 
+		// Date is a main field of the exercise
 		tvDate = binding.tvDate;
+		tvDate.setFocusableInTouchMode(true);
 		tvDate.setOnClickListener(view -> showDatePicker(view));
-		selectedDate = LocalDate.now();
-		updateTvDate(selectedDate);
+		selectedDate = LocalDate.now().plusDays(-1L); // Yesterday by default
+		exResult = new ExResultSssr(selectedDate, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, "");
+		changeRecord(selectedDate);
 
 		// Minus and Plus Day
 		btnPrev = binding.btnArrowLeft;
 		btnPrev.setOnClickListener(view -> {
+			if (selectedDate.equals(LocalDate.now().minusDays(30))) {
+				Toast.makeText(this, R.string.msg_sssr_limit_of_past, Toast.LENGTH_SHORT).show();
+				return;			// No less days allowed
+			}
+			etNote.clearFocus();
 			selectedDate = selectedDate.plusDays(-1);
-			updateTvDate(selectedDate);
+			changeRecord(selectedDate);
 		});
 		btnNext = binding.btnArrowRight;
 		btnNext.setOnClickListener(view -> {
 			if (selectedDate.equals(LocalDate.now())) {
+				Toast.makeText(this, R.string.msg_sssr_limit_of_future, Toast.LENGTH_SHORT).show();
 				return;			// No future days allowed
 			}
+			etNote.clearFocus();
 			selectedDate = selectedDate.plusDays(1);
-			updateTvDate(selectedDate);
+			changeRecord(selectedDate);
 		});
 
 		// Pie Data Chart
 		runner = ExerciseRunner.getInstance();
-		exResultSssr = new ExResultSssr(5, 5, 5, 5, 5, 5, 5, 5, 0, 0, "");
 		pieChart = binding.pieChart;
 
+		legend = pieChart.getLegend();
+		legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+		legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+		legend.setOrientation(Legend.LegendOrientation.VERTICAL);
+		legend.setDrawInside(false);
+
+		// No description
+		pieChart.getDescription().setText("");
+		pieChart.getDescription().setEnabled(false);
+		pieChart.getLegend().setEnabled(true); 			// Turn On the Legend
+		pieChart.getLegend().setWordWrapEnabled(true);
+
+		// Circle
+		pieChart.setExtraOffsets(10, 0, 70, 0); // Paddings
+		pieChart.setHoleRadius(25f); 				// Central Circle Radius
+		pieChart.setTransparentCircleRadius(50f); 	// Central Circle Transparent Radius
+		pieChart.setHoleColor(Color.WHITE);
+		pieChart.setCenterText(getString(R.string.lbl_sssr_main));
+
+		// Labels
+		pieChart.setDrawEntryLabels(true); 			// Turn on labels
+//		pieChart.setDrawMarkers(true);
+		pieChart.setDrawRoundedSlices(true);
+		pieChart.setDrawSlicesUnderHole(false);
+		pieChart.setEntryLabelTextSize(12f);
+		pieChart.setEntryLabelColor(getColor(R.color.colorSecondary));
+
+		// Sliders refreshes Pie and exResultSssr
 		stopChangeListener = new Slider.OnSliderTouchListener() {
 			@Override
 			public void onStartTrackingTouch(@NonNull Slider slider) {/*no-op*/}
@@ -111,31 +170,36 @@ public class SssrActivity extends AppCompatActivity {
 				int value = (int) slider.getValue();
 				switch (slider.getId()) {
 					case R.id.sb_job:
-						exResultSssr.setJob(value);
+						exResult.setJob(value);
 						break;
 					case R.id.sb_physical:
-						exResultSssr.setPhysical(value);
+						exResult.setPhysical(value);
 						break;
 					case R.id.sb_leisure:
-						exResultSssr.setLeisure(value);
+						exResult.setLeisure(value);
 						break;
 					case R.id.sb_family:
-						exResultSssr.setFamily(value);
+						exResult.setFamily(value);
 						break;
 					case R.id.sb_friends:
-						exResultSssr.setFriends(value);
+						exResult.setFriends(value);
 						break;
 					case R.id.sb_chores:
-						exResultSssr.setChores(value);
+						exResult.setChores(value);
 						break;
 					case R.id.sb_sleep:
-						exResultSssr.setSleep(value);
+						exResult.setSleep(value);
 						break;
 					case R.id.sb_sssr:
-						exResultSssr.setSssr(value);
+						exResult.setSssr(value);
 						break;
+					default:
+						Log.w(TAG, "onStopTrackingTouch Slider: MISSED case");
 				}
-				updateSlidersAndPie(exResultSssr);
+				exResult.setTimeStampStart(timeStampOfLocalDate(selectedDate));
+				exResult.setTimeStamp(timeStampU());
+				dataProvided.setChecked(true);
+				updateSlidersAndPie(exResult);
 			}
 		};
 
@@ -155,16 +219,100 @@ public class SssrActivity extends AppCompatActivity {
 		sbSleep.addOnSliderTouchListener(stopChangeListener);
 		sbSssr = binding.sbSssr;
 		sbSssr.addOnSliderTouchListener(stopChangeListener);
+		sbSssr.setFocusedByDefault(true);
 
-		updateSlidersAndPie(exResultSssr);
+		// Ex Notes
+		etNote = binding.etNote;
+		etNote.clearFocus();
+		etNote.setOnFocusChangeListener((v, hasFocus) -> {
+			if (!hasFocus) {
+				// finished editing
+				String newNote = etNote.getText().toString();
+				if (!exResult.getNote().equals(newNote)) {
+					dataProvided.setChecked(true);
+					exResult.setNote(newNote);
+				}
+			}
+		});
 
+		// SeekBars a bit different
+		SeekBar.OnSeekBarChangeListener sbChanged = new SeekBar.OnSeekBarChangeListener() {
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				int progress = seekBar.getProgress();
+				dataProvided.setChecked(true);
+				switch (seekBar.getId()) {
+					case R.id.sb_emotion:
+						exResult.setLevelOfEmotion(progress - 2);
+						break;
+					case R.id.sb_energy:
+						exResult.setLevelOfEnergy(progress - 1);
+						break;
+					default:
+						Log.w(TAG, "onStopTrackingTouch SeekBar: MISSED case");
+				}
+//				exResult.setTimeStampStart(timeStampOfLocalDate(selectedDate));
+//				exResult.setTimeStamp(timeStampU());
+			}
+		};
+		sbEmotion = binding.sbEmotion;
+		sbEmotion.setOnSeekBarChangeListener(sbChanged);
+		sbEnergy = binding.sbEnergy;
+		sbEnergy.setOnSeekBarChangeListener(sbChanged);
+
+		updateSlidersAndPie(exResult);
+
+		// Subscribe onto data refresh
+		viewModel.getExercisesMapLD().observe(this, exercisesMap -> {
+			if (exercisesMap != null) {
+				// Get exResult
+				exResult = exercisesMap.get(selectedDate);
+
+				// UI updates
+				updateSlidersAndPie(exResult);
+			}
+		});
 	}
 
-	private void updateTvDate(LocalDate date) {
-/*		year = date.getYear();
-		month = date.getMonthValue();
-		day = date.getDayOfMonth();*/
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Dispatch onPause() to fragments.
+	 */
+	@Override
+	protected void onPause() {
+		// We may need to save edited
+		etNote.clearFocus();
+		if (dataProvided.isChecked()) {
+			viewModel.saveRecord(exResult);
+		}
+		super.onPause();
+	}
+
+	private void changeRecord(LocalDate date) {
+
+		// We may need to save edited
+		if (dataProvided.isChecked()) {
+			viewModel.saveRecord(exResult);
+		}
+
+		// new date, new record and cleared switcher
 		tvDate.setText(date.toString());
+		if (viewModel.getExercisesMapLD() != null &&
+				viewModel.getExercisesMapLD().getValue() != null) {
+			exResult = viewModel.getExercisesMapLD().getValue().get(date);
+			updateSlidersAndPie(exResult);
+		}
+		dataProvided.setChecked(false);
 	}
 
 	public void showDatePicker(View view) {
@@ -182,89 +330,125 @@ public class SssrActivity extends AppCompatActivity {
 				this,
 				(datePicker, selectedYear, selectedMonth, selectedDay) -> {
 					// When the user chose a date -- Refresh it
-					selectedDate = LocalDate.of(selectedYear, selectedMonth + 1, selectedDay);
-					tvDate.setText(selectedDate.toString());
+					LocalDate newDate  = LocalDate.of(selectedYear, selectedMonth + 1, selectedDay);
+					if (!selectedDate.equals(newDate)) {
+						selectedDate = newDate;
+						changeRecord(selectedDate);
+					}
 				}, selectedDate.getYear(), selectedDate.getMonthValue(), selectedDate.getDayOfMonth());
 
-		// Limit future and Show Dialog
+		// Limit the future and Show Dialog
 		datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
 		datePickerDialog.show();
 	}
 
 	private void updateSlidersAndPie(ExResultSssr result) {
 		spheres = new ArrayList<>();
+		int value;
 
+		// runner.isSwSssrSssr() is always true
+		value = result.getSssr();
+		sbSssr.setValue(value);
+		// set inner hole reflecting SSSR (+ to avoid zero breaking the diagram)
+		pieChart.setHoleRadius(value * 5 + 5);
+		//spheres.add(new PieEntry(value, getString(R.string.lbl_sssr_main)));
+
+		// Other sssr-data depends on switcher in Preferences
 		if (runner.isSwSssrJob()) {
-			sbJob.setValue(result.getJob());
-			spheres.add(new PieEntry(result.getJob(), getString(R.string.lbl_sssr_job)));
+			value = result.getJob();
+			animateSlider(sbJob, value);
+			sbJob.setValue(value);
+			spheres.add(new PieEntry(value, getString(R.string.lbl_sssr_job)));
 		} else {
 			findViewById(R.id.tv_job).setVisibility(View.GONE);
 			sbJob.setVisibility(View.GONE);
 		}
 
 		if (runner.isSwSssrPhysical()) {
-			sbPhysical.setValue(result.getPhysical());
-			spheres.add(new PieEntry(result.getPhysical(), getString(R.string.lbl_sssr_physical)));
+			value = result.getPhysical();
+			animateSlider(sbPhysical, value);
+			sbPhysical.setValue(value);
+			spheres.add(new PieEntry(value, getString(R.string.lbl_sssr_physical)));
 		} else {
 			findViewById(R.id.tv_physical).setVisibility(View.GONE);
 			sbPhysical.setVisibility(View.GONE);
 		}
 
 		if (runner.isSwSssrLeisure()) {
-			sbLeisure.setValue(result.getLeisure());
-			spheres.add(new PieEntry(result.getLeisure(), getString(R.string.lbl_sssr_leisure)));
+			value = result.getLeisure();
+			animateSlider(sbLeisure, value);
+			sbLeisure.setValue(value);
+			spheres.add(new PieEntry(value, getString(R.string.lbl_sssr_leisure)));
 		} else {
 			findViewById(R.id.tv_leisure).setVisibility(View.GONE);
 			sbLeisure.setVisibility(View.GONE);
 		}
 
 		if (runner.isSwSssrFamily()) {
-			sbFamily.setValue(result.getFamily());
-			spheres.add(new PieEntry(result.getFamily(), getString(R.string.lbl_sssr_family)));
+			value = result.getFamily();
+			animateSlider(sbFamily, value);
+			sbFamily.setValue(value);
+			spheres.add(new PieEntry(value, getString(R.string.lbl_sssr_family)));
 		} else {
 			findViewById(R.id.tv_family).setVisibility(View.GONE);
 			sbFamily.setVisibility(View.GONE);
 		}
 
 		if (runner.isSwSssrFriends()) {
-			sbFriends.setValue(result.getFriends());
-			spheres.add(new PieEntry(result.getFriends(), getString(R.string.lbl_sssr_friends)));
+			value = result.getFriends();
+			animateSlider(sbFriends, value);
+			sbFriends.setValue(value);
+			spheres.add(new PieEntry(value, getString(R.string.lbl_sssr_friends)));
 		} else {
 			findViewById(R.id.tv_friends).setVisibility(View.GONE);
 			sbFriends.setVisibility(View.GONE);
 		}
 
 		if (runner.isSwSssrChores()) {
-			sbChores.setValue(result.getChores());
-			spheres.add(new PieEntry(result.getChores(), getString(R.string.lbl_sssr_chores)));
+			value = result.getChores();
+			animateSlider(sbChores, value);
+			sbChores.setValue(value);
+			spheres.add(new PieEntry(value, getString(R.string.lbl_sssr_chores)));
 		} else {
 			findViewById(R.id.tv_chores).setVisibility(View.GONE);
 			sbChores.setVisibility(View.GONE);
 		}
 
 		if (runner.isSwSssrSleep()) {
-			sbSleep.setValue(result.getSleep());
-			spheres.add(new PieEntry(result.getSleep(), getString(R.string.lbl_sssr_sleep)));
+			value = result.getSleep();
+			animateSlider(sbSleep, value);
+			sbSleep.setValue(value);
+			spheres.add(new PieEntry(value, getString(R.string.lbl_sssr_sleep)));
 		} else {
 			findViewById(R.id.tv_sleep).setVisibility(View.GONE);
 			sbSleep.setVisibility(View.GONE);
 		}
 
-		if (runner.isSwSssrSssr()) {
-			sbSssr.setValue(result.getSssr());
-			spheres.add(new PieEntry(result.getSssr(), getString(R.string.lbl_sssr_main)));
-		} else {
-			findViewById(R.id.tv_sssr).setVisibility(View.GONE);
-			sbSssr.setVisibility(View.GONE);
-		}
-
 		// Raw dataset
 		PieDataSet dataSet = new PieDataSet(spheres, "Categories");
 
-		// Colors
-		dataSet.setColors(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA);
+		// Text Labels
+		dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+		// Set Value Labels position
+		dataSet.setYValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);
+//		dataSet.setValueLinePart1Length(0.6f);  // Far from center
+		dataSet.setValueLinePart2Length(0.5f);  // connector
+		dataSet.setValueLineColor(Color.TRANSPARENT);
+		// Slices between segments
+		dataSet.setSliceSpace(1.0f);
 
-		// Pie dataset
+		// Colors
+		dataSet.setColors(
+//				Color.MAGENTA,
+				getColor(R.color.light_grey_D_green),
+				getColor(R.color.light_grey_D_blue),
+				getColor(R.color.light_grey_D_navy),
+				getColor(R.color.light_grey_D_purple),
+				getColor(R.color.light_grey_D_red),
+				getColor(R.color.light_grey_D_orange),
+				getColor(R.color.light_grey_D_yellow));
+
+		// Pie data
 		PieData pieData = new PieData(dataSet);
 
 		// tie dataset
@@ -273,14 +457,34 @@ public class SssrActivity extends AppCompatActivity {
 		// Show
 //		pieChart.animateX(100, Easing.EaseOutQuad);
 		pieChart.invalidate();
+
+		// Notes and EE
+		etNote.setText(result.getNote());
+		sbEmotion.setProgress(result.getLevelOfEmotion() + 2, true);
+		sbEnergy.setProgress(result.getLevelOfEnergy() + 1);
+	}
+
+	private void animateSlider(Slider slider, int to) {
+		long duration = Const.ANIM_STEP_MILLIS * 2;
+		int from = (int) slider.getValue();
+
+		if (from == to) return;
+
+		ValueAnimator animator = ValueAnimator.ofFloat(from, to);
+		animator.setDuration(duration);
+		animator.addUpdateListener(animation -> {
+			float animatedValue = (float) animation.getAnimatedValue();
+			slider.setValue(animatedValue);
+		});
+		animator.start();
 	}
 
 	public void updatePieEntry(PieChart pieChart, List<PieEntry> entries, float newValue, String label) {
-		// Найдите элемент, который нужно обновить
+		// Find the element to refresh
 		for (int i = 0; i < entries.size(); i++) {
 			PieEntry entry = entries.get(i);
 			if (entry.getLabel().equals(label)) {
-				// Замените старое значение на новое
+				// Update Value
 				entries.set(i, new PieEntry(newValue, label));
 				pieChart.invalidate();
 				break;

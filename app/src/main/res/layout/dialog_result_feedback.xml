@@ -271,7 +271,7 @@
 			android:layout_height="64dp"
 			android:layout_marginHorizontal="5dp"
 			android:layout_weight="1"
-			android:text="@string/lbl_no"
+			android:text="@string/lbl_no_hell"
 			android:textSize="20sp"
 			android:elevation="5dp"
 			/>

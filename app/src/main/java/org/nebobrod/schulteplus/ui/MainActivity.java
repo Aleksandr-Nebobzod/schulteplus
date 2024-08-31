@@ -208,8 +208,8 @@ public class MainActivity extends AppCompatActivity {
 		NavigationUI.setupWithNavController(binding.navView, navController);
 
 		BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_plus);
-		badge.setVisible(true); 	// Show badge
-		badge.setNumber(999);
+		badge.setVisible(false); 	// Show badge
+//		badge.setNumber(999);
 //		badge.setText("-");
 
 		getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {

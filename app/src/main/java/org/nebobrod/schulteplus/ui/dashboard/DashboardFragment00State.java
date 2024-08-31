@@ -107,7 +107,7 @@ public class DashboardFragment00State extends Fragment {
 //		cView.setupCalendar(null,0,0);
 		cView.setupCalendar(null,
 				MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorSurface, Color.GRAY),
-				MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorAccent, Color.GREEN));
+				MaterialColors.getColor(requireContext(), com.google.android.material.R.attr.colorPrimaryVariant, Color.GREEN));
 		cView.scrollToMonth(YearMonth.now());
 		cView.setOnDateClickListener(new SpCalendarView.OnDateClickListener() {
 			@Override

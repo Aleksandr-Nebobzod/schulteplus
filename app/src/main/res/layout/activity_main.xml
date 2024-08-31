@@ -73,11 +73,11 @@
 			app:itemIconTint="@color/sp_mtrl_navigation_bar_colored_item_tint"
 			app:itemTextColor="@color/colorPrimary"
 			app:itemRippleColor="@color/teal_100"
-			app:shapeAppearance="@color/colorError"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintLeft_toLeftOf="parent"
 			app:layout_constraintRight_toRightOf="parent"
 			app:menu="@menu/bottom_nav_menu" />
+<!--			app:shapeAppearance="@color/colorError"-->
 	<!--		android:background="?android:attr/windowBackground"-->
 	<!--		android:background="@color/colorPrimaryVariant"-->
 		

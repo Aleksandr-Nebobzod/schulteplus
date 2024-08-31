@@ -12,7 +12,7 @@
 	</style>
 
     <style name="Widget.Theme.SchultePlus.ButtonBar.Fullscreen" parent="">
-		<item name="android:background">@color/black_overlay_7</item>
+		<item name="android:background">@color/colorPrimaryDark</item>
 		<item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
 	</style>
 	
@@ -38,13 +38,17 @@
 	
 	<style name="AppTextStyleSec" parent="TextAppearance.AppCompat">
 		<item name="android:textColor">@color/colorSecondary</item>
-		<item name="android:textSize">18sp</item>
+		<item name="android:textSize">14sp</item>
 	</style>
 	
 	<style name="SliderStyle" parent="Widget.Material3.Slider">
 		<item name="thumbColor">@color/colorSecondary</item>
 		<item name="trackColorActive">@color/colorSecondary</item>
-		<item name="trackColorInactive">@color/colorPrimaryDark</item>
+		<item name="trackColorInactive">@color/colorOnPrimarySurface</item>
+		<item name="thumbRadius">6dp</item>
+		<item name="trackHeight">6dp</item>
+		<item name="android:layout_marginTop">-16dp</item>
+		<item name="android:layout_marginBottom">-6dp</item>
 	</style>
 	<style name="CardViewSurfaceStyle" parent="Widget.MaterialComponents.CardView">
 		<!-- Turn off stateListAnimator -->

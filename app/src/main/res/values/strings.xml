@@ -44,8 +44,8 @@
 	<string name="str_continue">Would you like to go on?</string>
 	<string name="title_result">Result</string>
 	<string name="lbl_ok">OK</string>
-	<string name="lbl_no">heLL</string>
-	<string name="lbl_no_ok">No</string>
+	<string name="lbl_no_hell">heLL</string>
+	<string name="lbl_no">No</string>
 	<string name="txt_one_more_q">Train one more time?</string>
 	<string name="lbl_show_password">Show password</string>
 	<string name="txt_settings">There are prestart settings of Schulte tables training should be improved</string>
@@ -361,5 +361,8 @@
 	<string name="lbl_sssr_intercept03">Interception-3</string>
 	<string name="lbl_next">Next</string>
 	<string name="lbl_prev">Prev</string>
+	<string name="msg_sssr_limit_of_past">Limit of changeable past</string>
+	<string name="msg_sssr_limit_of_future">Limit of changeable future</string>
+	<string name="lbl_gcb_bas_squares_colored_crossed">Squares crossed</string>
 
 </resources>

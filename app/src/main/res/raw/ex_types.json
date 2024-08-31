@@ -1,0 +1,254 @@
+{
+  "gcb_space_schulte": {
+    "parentId": null,
+    "nameEn": "Schulte",
+    "status": 2,
+    "price": 0,
+    "certRequired": false
+  },
+      "gcb_schulte_1_sequence": {
+        "parentId": "gcb_space_schulte",
+        "nameEn": "Primary flow",
+        "status": 2,
+        "price": 0,
+        "certRequired": true,
+        "achieveConditions": {
+          "purchased": {
+            "field": "SELECT COUNT 1 FROM achievements WHERE uid ... AND exType = gcb_schulte_1_sequence AND recordText = purchased",
+            "condition": "GE",
+            "value": 0
+          },
+          "certified": {
+            "field": "SELECT COUNT 1 FROM achievements  WHERE uid ... AND exType = gcb_schulte_1_sequence AND recordText = certified",
+            "condition": "GE",
+            "value": 0
+          },
+          "measured": {
+            "field": "SELECT COUNT certified FROM exresult WHERE uid ... AND exType = gcb_schulte_1_sequence",
+            "condition": "GE",
+            "value": 5
+          }
+        }
+      },
+          "prf_prob_zero": {
+            "parentId": "gcb_schulte_1_sequence",
+            "nameEn": "Primary flow",
+            "status": 0,
+            "price": 0,
+            "certRequired": true
+          },
+      "gcb_schulte_2_sequences": {
+        "parentId": "gcb_space_schulte",
+        "nameEn": "Primary flow",
+        "status": 2,
+        "price": 0,
+        "certRequired": true
+      },
+      "gcb_schulte_3_sequences": {
+        "parentId": "gcb_space_schulte",
+        "nameEn": "Primary flow",
+        "status": 2,
+        "price": 0,
+        "certRequired": true
+      },
+      "gcb_schulte_4_mishmash": {
+        "parentId": "gcb_space_schulte",
+        "nameEn": "Mishmash",
+        "status": 0,
+        "price": 0,
+        "certRequired": true,
+        "coming_soon": true
+      },
+
+  "gcb_space_basics": {
+    "parentId": null,
+    "nameEn": "Basics",
+    "status": 2,
+    "price": 0,
+    "certRequired": true
+  },
+      "gcb_bas_necker_cube": {
+        "parentId": "gcb_space_basics",
+        "nameEn": "Necker cube",
+        "status": 2,
+        "price": 25000,
+        "certRequired": true,
+        "achieveConditions": {
+          "purchased": {
+            "field": "-----SELECT COUNT 1 FROM achievements WHERE uid ... AND exType = gcb_schulte_1_sequence AND recordText = purchased",
+            "condition": "GE",
+            "value": 25000
+          }
+        }
+      },
+      "gcb_bas_necker_cylinder": {
+        "parentId": "gcb_space_basics",
+        "nameEn": "Necker cylinder",
+        "status": 2,
+        "price": 25000,
+        "certRequired": true,
+        "achieveConditions": {
+          "purchased": {
+            "field": "-----SELECT COUNT 1 FROM achievements WHERE uid ... AND exType = gcb_schulte_1_sequence AND recordText = purchased",
+            "condition": "GE",
+            "value": 25000
+          }
+        }
+      },
+      "gcb_bas_necker_ball": {
+        "parentId": "gcb_space_basics",
+        "nameEn": "Necker ball",
+        "status": 2,
+        "price": 25000,
+        "certRequired": true
+      },
+      "gcb_bas_penrose_triangle": {
+        "parentId": "gcb_space_basics",
+        "nameEn": "Penrose triangle",
+        "status": 2,
+        "price": 25000,
+        "certRequired": true
+      },
+      "gcb_bas_dot": {
+        "parentId": "gcb_space_basics",
+        "nameEn": "Dot exercise",
+        "status": 2,
+        "price": 25000,
+        "certRequired": true
+      },
+      "gcb_bas_dbl_dot": {
+        "parentId": "gcb_space_basics",
+        "nameEn": "Double dot",
+        "status": 2,
+        "price": 25000,
+        "certRequired": true
+      },
+      "gcb_bas_pyramidot": {
+        "parentId": "gcb_space_basics",
+        "nameEn": "Pyramidot",
+        "status": 2,
+        "price": 25000,
+        "certRequired": true
+      },
+      "gcb_bas_circles_rb": {
+        "parentId": "gcb_space_basics",
+        "nameEn": "Circles red-blue",
+        "status": 2,
+        "price": 25000,
+        "certRequired": true
+      },
+      "gcb_bas_circles_rb_lined": {
+        "parentId": "gcb_space_basics",
+        "nameEn": "Circles red-blue with lines",
+        "status": 0,
+        "price": 25000,
+        "certRequired": true
+      },
+      "gcb_bas_khao_manee": {
+        "parentId": "gcb_space_basics",
+        "nameEn": "Khao Manee",
+        "status": 2,
+        "price": 25000,
+        "certRequired": true
+      },
+      "gcb_bas_circles_rb_crossed": {
+        "parentId": "gcb_space_basics",
+        "nameEn": "Circles red-blue crossed",
+        "status": 0,
+        "price": 25000,
+        "certRequired": true
+      },
+      "gcb_bas_squares_colored_crossed": {
+        "parentId": "gcb_space_basics",
+        "nameEn": "Squares colored crossed",
+        "status": 0,
+        "price": 25000,
+        "certRequired": true
+      },
+      "gcb_bas_dancing_girl": {
+        "parentId": "gcb_space_basics",
+        "nameEn": "Dancing girl",
+        "status": 2,
+        "price": 25000,
+        "certRequired": true
+      },
+      "gcb_bas_dancing_cat": {
+        "parentId": "gcb_space_basics",
+        "nameEn": "Dancing cat",
+        "status": 2,
+        "price": 25000,
+        "certRequired": true
+      },
+
+  "gcb_space_sssr": {
+    "parentId": null,
+    "nameEn": "Spheres",
+    "status": 2,
+    "price": 0,
+    "certRequired": true
+  },
+      "gcb_sssr_main": {
+        "parentId": "gcb_space_sssr",
+        "nameEn": "SSSR",
+        "status": 2,
+        "price": 10000,
+        "certRequired": true,
+        "achieveConditions": {
+          "purchased": {
+            "field": "-----SELECT COUNT 1 FROM achievements WHERE uid ... AND exType = gcb_schulte_1_sequence AND recordText = purchased",
+            "condition": "GE",
+            "value": 0
+          }
+        }
+  },
+      "gcb_sssr_intercept01": {
+        "parentId": "gcb_space_sssr",
+        "nameEn": "Intercept-1",
+        "status": 0,
+        "price": 10000,
+        "certRequired": true,
+        "achieveConditions": {
+          "purchased": {
+            "field": "-----SELECT COUNT 1 FROM achievements WHERE uid ... AND exType = gcb_schulte_1_sequence AND recordText = purchased",
+            "condition": "GE",
+            "value": 0
+          }
+        }
+  },
+      "gcb_sssr_intercept02": {
+        "parentId": "gcb_space_sssr",
+        "nameEn": "Intercept-2",
+        "status": 0,
+        "price": 10000,
+        "certRequired": true,
+        "achieveConditions": {
+          "purchased": {
+            "field": "-----SELECT COUNT 1 FROM achievements WHERE uid ... AND exType = gcb_schulte_1_sequence AND recordText = purchased",
+            "condition": "GE",
+            "value": 0
+          }
+        }
+  },
+      "gcb_sssr_intercept03": {
+        "parentId": "gcb_space_sssr",
+        "nameEn": "Intercept-3",
+        "status": 0,
+        "price": 10000,
+        "certRequired": true,
+        "achieveConditions": {
+          "purchased": {
+            "field": "-----SELECT COUNT 1 FROM achievements WHERE uid ... AND exType = gcb_schulte_1_sequence AND recordText = purchased",
+            "condition": "GE",
+            "value": 0
+          }
+        }
+  },
+
+  "gcb_space_schulte_parents": {
+    "parentId": null,
+    "nameEn": "Schulte for parents",
+    "status": 0,
+    "price": 0,
+    "certRequired": true
+  }
+}

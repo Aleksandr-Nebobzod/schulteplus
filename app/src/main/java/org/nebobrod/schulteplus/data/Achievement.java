@@ -59,6 +59,9 @@ public class Achievement implements Serializable, Identifiable<String> {
 	private String dateTime;
 
 	@DatabaseField
+	private String exType;
+
+	@DatabaseField
 	private String recordText;
 
 	@DatabaseField
@@ -106,6 +109,14 @@ public class Achievement implements Serializable, Identifiable<String> {
 	public String getDateTime() {return dateTime;}
 
 	public void setDateTime(String dateTime) {this.dateTime = dateTime;}
+
+	public String getExType() {
+		return exType;
+	}
+
+	public void setExType(String exType) {
+		this.exType = exType;
+	}
 
 	public String getRecordText() {return recordText;}
 

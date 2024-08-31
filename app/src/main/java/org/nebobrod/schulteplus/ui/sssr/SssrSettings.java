@@ -9,10 +9,11 @@
 package org.nebobrod.schulteplus.ui.sssr;
 
 import static org.nebobrod.schulteplus.Utils.getRes;
-import static org.nebobrod.schulteplus.common.Const.KEY_PRF_HINTED;
+import static org.nebobrod.schulteplus.Utils.overlayBadgedIcon;
+import static org.nebobrod.schulteplus.common.Const.*;
 
-import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ import androidx.preference.PreferenceScreen;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
+import org.nebobrod.schulteplus.data.ExType;
 
 import java.util.ArrayList;
 
@@ -73,8 +75,9 @@ public class SssrSettings extends PreferenceFragmentCompat {
 				break;
 			}
 		}
+		// for safety
 		if (null == chosen) {
-			chosen = (androidx.preference.CheckBoxPreference) findPreference("gcb_adv_schulte_1_sequence");
+			chosen = (androidx.preference.CheckBoxPreference) findPreference(KEY_PRF_EX_R1);
 			chosen.setChecked(true);
 		}
 		exType.setText(chosen.getKey());
@@ -123,8 +126,9 @@ public class SssrSettings extends PreferenceFragmentCompat {
 		ArrayList<Preference> list = getPreferenceList(getPreferenceScreen(), new ArrayList<Preference>());
 		exerciseTypeCheckBoxes.clear();
 		for (Preference p : list) {
+			String pKey = p.getKey();
 			// prefix "gcb_" of Preference means Group Check Box
-			if (p instanceof androidx.preference.CheckBoxPreference && p.getKey().startsWith("gcb_")) {
+			if (p instanceof androidx.preference.CheckBoxPreference && pKey.startsWith("gcb_")) {
 				p.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 					@Override
 					public boolean onPreferenceClick(@NonNull Preference preference) {
@@ -133,6 +137,13 @@ public class SssrSettings extends PreferenceFragmentCompat {
 					}
 				});
 				exerciseTypeCheckBoxes.add(p);
+			}
+			// Setting badge
+			ExType exType = ExerciseRunner.getExTypes().get(pKey);
+			if (exType != null && exType.getStatus() == ExType.FUNC_STATUS_PLANNED) {
+				Drawable icon = p.getIcon();
+				p.setIcon(overlayBadgedIcon(icon, getRes().getDrawable(R.drawable.ic_bagde_inprogress, null)));
+				p.setEnabled(false);
 			}
 		}
 	}

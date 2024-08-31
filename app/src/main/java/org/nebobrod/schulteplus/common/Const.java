@@ -102,6 +102,12 @@ public interface Const {
 
 	/** PRFs for the basic space */
 	String KEY_PRF_EX_B0 = "gcb_bas";
+
+	String KEY_PRF_EX_B9 = "gcb_bas_necker_cube";
+	String KEY_PRF_EX_BA = "gcb_bas_necker_cylinder";
+	String KEY_PRF_EX_BB = "gcb_bas_necker_ball";
+	String KEY_PRF_EX_BC = "gcb_bas_penrose_triangle";
+
 	String KEY_PRF_EX_B1 = "gcb_bas_dot";
 	String KEY_PRF_EX_B2 = "gcb_bas_dbl_dot";
 	String KEY_PRF_EX_B3 = "gcb_bas_pyramidot";
@@ -110,18 +116,16 @@ public interface Const {
 	String KEY_PRF_EX_B6 = "gcb_bas_khao_manee";
 	String KEY_PRF_EX_B7 = "gcb_bas_circles_rb_crossed";
 	String KEY_PRF_EX_B8 = "gcb_bas_squares_colored_crossed";
-	String KEY_PRF_EX_B9 = "gcb_bas_necker_cube";
-	String KEY_PRF_EX_BA = "gcb_bas_necker_cylinder";
-	String KEY_PRF_EX_BB = "gcb_bas_necker_ball";
-	String KEY_PRF_EX_BC = "gcb_bas_penrose_triangle";
+
 	String KEY_PRF_EX_BD = "gcb_bas_dancing_girl";
 	String KEY_PRF_EX_BE = "gcb_bas_dancing_cat";
 
 	/** PRFs for the sssr space */
-	String KEY_PRF_EX_R0 = "gcb_sssr_main";
-	String KEY_PRF_EX_R1 = "gcb_sssr_intercept01";
-	String KEY_PRF_EX_R2 = "gcb_sssr_intercept02";
-	String KEY_PRF_EX_R3 = "gcb_sssr_intercept03";
+	String KEY_PRF_EX_R0 = "gcb_sss";
+	String KEY_PRF_EX_R1 = "gcb_sssr_main";
+	String KEY_PRF_EX_R2 = "gcb_sssr_intercept01";
+	String KEY_PRF_EX_R3 = "gcb_sssr_intercept02";
+	String KEY_PRF_EX_R4 = "gcb_sssr_intercept03";
 
 	String KEY_PRF_EX_R0_JOB = "prf_sssr_job";
 	String KEY_PRF_EX_R0_PHYSICAL = "prf_sssr_physical";

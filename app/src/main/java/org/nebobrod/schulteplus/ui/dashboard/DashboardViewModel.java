@@ -118,7 +118,7 @@ public class DashboardViewModel<TEntity extends Identifiable<String>> extends Vi
 						}
 						exContributionsLiveData.postValue(dataList);
 						daysLD.postValue(dayDataMap.size());
-						psyCoinsLD.postValue(psyCoinsSum);
+						psyCoinsLD.postValue(psyCoinsSum / 100);	// Not a full value
 					} else {
 						Log.w(TAG, "onError: ", task.getException());
 					}

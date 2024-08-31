@@ -19,7 +19,7 @@
 		android:contentDescription="@string/lbl_dashboard_report"
 		app:tabBackground="@drawable/tab_background_selector"
 		android:layout_marginHorizontal="3dp"
-		android:layout_marginTop="3dp"
+		android:layout_marginTop="6dp"
 		app:layout_constraintBottom_toTopOf="@id/pager"
 		app:layout_constraintLeft_toLeftOf="parent"
 		app:layout_constraintRight_toRightOf="parent"

@@ -13,6 +13,7 @@ import static org.nebobrod.schulteplus.Utils.getVersionCode;
 
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import android.database.Cursor;
@@ -44,9 +45,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	private Dao<AdminNote, Integer> adminNoteDao = null;
 	private Dao<Achievement, Integer> achievementDao = null;
-	private Dao<ExResult, Integer> exResultDao = null;
 	private Dao<Turn, Integer> turnDao = null;
 	private Dao<UserHelper, Integer> userHelperDao = null;
+	private Dao<ExResult, Integer> exResultDao = null;
+	private Dao<ExResult, Integer> exResultSssrDao = null;
 
 	private static final AtomicInteger usageCounter = new AtomicInteger(0);
 
@@ -135,7 +137,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			sqliteDatabase.setTransactionSuccessful();
 			Log.d(TAG, "onUpgrade: TRY IS DONE");
 		} catch (android.database.SQLException e) {
-			Log.e(TAG, "Unable to upgrade database from version " +
+			Log.e(TAG, "CATCH Unable to upgrade database from version " +
 							oldVer + " to new " + newVer, e);
 		} finally {
 			sqliteDatabase.endTransaction();
@@ -165,19 +167,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return achievementDao;
 	}
 
-	public Dao<ExResult, Integer> getExResultDao() throws SQLException {
-		if (exResultDao == null) {
-			exResultDao = getDao(ExResult.class);
-		}
-		return exResultDao;
-	}
-	public Dao<ExResultBasics, Integer> getExResultBasicsDao() throws SQLException {
-		return (Dao<ExResultBasics, Integer>) getDao(ExResultBasics.class);
-	}
-	public Dao<ExResultSchulte, Integer> getExResultSchulteDao() throws SQLException {
-		return (Dao<ExResultSchulte, Integer>) getDao(ExResultSchulte.class);
-	}
-
 	public Dao<Turn, Integer> getTurnDao() throws SQLException {
 		if (turnDao == null) {
 			turnDao = getDao(Turn.class);
@@ -199,6 +188,22 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		return adminNoteDao;
 	}
 
+	public Dao<ExResult, Integer> getExResultDao() throws SQLException {
+		if (exResultDao == null) {
+			exResultDao = getDao(ExResult.class);
+		}
+		return exResultDao;
+	}
+	public Dao<ExResultBasics, Integer> getExResultBasicsDao() throws SQLException {
+		return (Dao<ExResultBasics, Integer>) getDao(ExResultBasics.class);
+	}
+	public Dao<ExResultSchulte, Integer> getExResultSchulteDao() throws SQLException {
+		return (Dao<ExResultSchulte, Integer>) getDao(ExResultSchulte.class);
+	}
+	public Dao<ExResultSssr, Integer> getExResultSssrDao() throws SQLException {
+		return (Dao<ExResultSssr, Integer>) getDao(ExResultSssr.class);
+	}
+
 
 	/**
 	 * Close the database connections and clear any cached DAOs. For each call to {@link #getHelper()}, there
@@ -212,10 +217,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 //			groupDao = null;
 //			clickDao = null;
 			achievementDao = null;
-			exResultDao = null;
 			turnDao = null;
 			userHelperDao = null;
 			adminNoteDao = null;
+			exResultDao = null;
 			// and finally the DatabaseHelper itself
 			helper = null;
 		}
@@ -234,6 +239,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		while (cursor.moveToNext()) {
 			int columnIndex = cursor.getColumnIndex("name");
 			String columnName = cursor.getString(columnIndex);
+
+			// Skip fields for deletion
+/*			if (Arrays.asList("flo04", "flo05", "flo06", "flo07").contains(columnName)) {
+				continue;
+			}*/
+
+			// Make an addition
 			if (columnList.length() > 0) {
 				columnList.append(", ");
 			}

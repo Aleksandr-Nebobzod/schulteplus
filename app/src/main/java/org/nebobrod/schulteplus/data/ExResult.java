@@ -37,6 +37,7 @@ public class ExResult implements Serializable, Identifiable<String> {
 	public static final String UID_FIELD_NAME = "uid";
 	public static final String UAK_FIELD_NAME = "uak";
 	public static final String TIMESTAMP_FIELD_NAME = "timeStamp";
+	public static final String TIMESTAMP_START_FIELD_NAME = "timeStampStart";
 	public static final String DATE_FIELD_NAME = "dateTime";
 	public static final String EXTYPE_FIELD_NAME = "exType";
 
@@ -74,7 +75,7 @@ public class ExResult implements Serializable, Identifiable<String> {
 
 	// and result data itself:
 	@DatabaseField
-	private long timeStampStart = 0;
+	private long timeStampStart = 0;	// useful for Sssr
 
 	@DatabaseField
 	private long numValue; 				// used as number of milliseconds, spent through the exercise */
@@ -111,7 +112,13 @@ public class ExResult implements Serializable, Identifiable<String> {
 
 	// section of SSSR-exercises data:
 	@DatabaseField
-	private float lng01;
+	private long lng01;
+
+	@DatabaseField
+	private long lng02;
+
+	@DatabaseField
+	private long lng03;
 
 	@DatabaseField
 	private float flo01;
@@ -121,18 +128,6 @@ public class ExResult implements Serializable, Identifiable<String> {
 
 	@DatabaseField
 	private float flo03;
-
-	@DatabaseField
-	private float flo04;
-
-	@DatabaseField
-	private float flo05;
-
-	@DatabaseField
-	private float flo06;
-
-	@DatabaseField
-	private float flo07;
 
 
 	// section of Other-exercises data:
@@ -352,44 +347,28 @@ public class ExResult implements Serializable, Identifiable<String> {
 		this.flo03 = flo03;
 	}
 
-	public float getFlo04() {
-		return flo04;
-	}
-
-	public void setFlo04(float flo04) {
-		this.flo04 = flo04;
-	}
-
-	public float getFlo05() {
-		return flo05;
-	}
-
-	public void setFlo05(float flo05) {
-		this.flo05 = flo05;
-	}
-
-	public float getFlo06() {
-		return flo06;
-	}
-
-	public void setFlo06(float flo06) {
-		this.flo06 = flo06;
-	}
-
-	public float getFlo07() {
-		return flo07;
-	}
-
-	public void setFlo07(float flo07) {
-		this.flo07 = flo07;
-	}
-
-	public float getLng01() {
+	public long getLng01() {
 		return lng01;
 	}
 
-	public void setLng01(float lng01) {
+	public void setLng01(long lng01) {
 		this.lng01 = lng01;
+	}
+
+	public long getLng02() {
+		return lng02;
+	}
+
+	public void setLng02(long lng02) {
+		this.lng02 = lng02;
+	}
+
+	public long getLng03() {
+		return lng03;
+	}
+
+	public void setLng03(long lng03) {
+		this.lng03 = lng03;
 	}
 
 	/** service fields */
@@ -456,7 +435,7 @@ public class ExResult implements Serializable, Identifiable<String> {
 	@Exclude
 	public int calculatePsycoins() {
 		switch (this.exType) {
-			// Seconds multiplied by hardness
+			// Basics is Seconds multiplied by hardness
 			case KEY_PRF_EX_B0:
 			case KEY_PRF_EX_B1:
 				return (int) this.numValue / 1000 * 1;
@@ -478,6 +457,7 @@ public class ExResult implements Serializable, Identifiable<String> {
 			case KEY_PRF_EX_BE:
 				return (int) this.numValue / 1000 * 5;
 
+				// Schulte
 			case KEY_PRF_EX_S0:
 			case KEY_PRF_EX_S1:
 				// number of seconds plus success turns (fine of missed turns) multiplied by hardness
@@ -487,13 +467,15 @@ public class ExResult implements Serializable, Identifiable<String> {
 			case KEY_PRF_EX_S3:
 			case KEY_PRF_EX_S4:
 				return (int) (this.numValue / 1000 + turns - turnsMissed) * 20;
-			case KEY_PRF_EX_R0:
-				return (int) (500);
+
+				// SSSR standard costs
 			case KEY_PRF_EX_R1:
-				return (int) (20);
+				return (int) (500);
 			case KEY_PRF_EX_R2:
-				return (int) (50);
+				return (int) (20);
 			case KEY_PRF_EX_R3:
+				return (int) (50);
+			case KEY_PRF_EX_R4:
 				return (int) (100);
 			default:
 				return (int) this.numValue / 1000;

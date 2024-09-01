@@ -11,12 +11,16 @@
 		android:startColor="@color/colorPrimaryVariant"
 		android:endColor="@color/colorOnPrimary"
 		android:angle="90"/>-->
-<!--	<gradient
-		android:startColor="@color/colorOnPrimary"
-		android:endColor="@color/colorOnSecondary"
-		android:angle="90"/>-->
+<!--	<solid android:color="@color/colorBackground"/>-->
+	<gradient
+		android:startColor="@color/colorBackground"
+		android:endColor="@color/colorOnPrimary"
+		android:angle="90"/>
+<!--		android:endColor="@color/colorOnPrimary"-->
+<!--		android:startColor="@color/colorBackground"-->
 	
 	<stroke android:width="2dp"
-		android:color="@color/light_grey_8" />
-	<corners android:radius="4dp" />
+		android:color="@color/colorBackground"/>
+	<corners android:radius="2dp" />
+<!--	android:color="@color/light_grey_8"-->
 </shape>

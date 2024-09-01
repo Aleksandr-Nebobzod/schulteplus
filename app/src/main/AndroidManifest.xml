@@ -38,7 +38,7 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/Theme.SchultePlus"
-		android:versionCode="108"
+		android:versionCode="112"
 		android:versionName="Entada"
 		tools:targetApi="33">
 <!--		android:icon="@mipmap/ic_launcher"-->
@@ -108,6 +108,7 @@
 			android:configChanges="orientation|keyboardHidden|screenSize"
 			android:exported="false"
 			android:label="@string/title_sssr"
+			android:windowSoftInputMode="adjustResize"
 			android:theme="@style/Theme.SchultePlus.FullscreenLite" />
 	</application>
 </manifest>

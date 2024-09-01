@@ -8,12 +8,15 @@
 
 package org.nebobrod.schulteplus.ui;
 
+import static org.nebobrod.schulteplus.Utils.getRes;
+import static org.nebobrod.schulteplus.Utils.overlayBadgedIcon;
 import static org.nebobrod.schulteplus.common.Const.KEY_PFR_EXERCISE_SPACE;
 import static org.nebobrod.schulteplus.common.Const.KEY_SPACE_01_SCHULTE;
 import static org.nebobrod.schulteplus.common.Const.KEY_SPACE_02_BASICS;
 import static org.nebobrod.schulteplus.common.Const.KEY_SPACE_03_SSSR;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +24,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.preference.EditTextPreference;
@@ -33,10 +35,7 @@ import androidx.preference.PreferenceScreen;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
-import org.nebobrod.schulteplus.ui.basics.BasicSettings;
-import org.nebobrod.schulteplus.ui.home.HomeFragment;
-import org.nebobrod.schulteplus.ui.schulte.SchulteSettings;
-import org.nebobrod.schulteplus.ui.sssr.SssrSettings;
+import org.nebobrod.schulteplus.data.ExType;
 
 import java.util.ArrayList;
 
@@ -119,9 +118,11 @@ public class PrefsChoiceFragment extends PreferenceFragmentCompat {
 	{
 		ArrayList<Preference> list = getPreferenceList(getPreferenceScreen(), new ArrayList<Preference>());
 		exerciseTypes.clear();
+		String pKey;
 		for (Preference p : list) {
+			pKey = p.getKey();
 			// prefix "@string/gcb_" of Preference means Group Check Box
-			if (p instanceof androidx.preference.CheckBoxPreference && p.getKey().startsWith("gcb_")) {
+			if (p instanceof androidx.preference.CheckBoxPreference && pKey.startsWith("gcb_")) {
 				p.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 					@Override
 					public boolean onPreferenceClick(@NonNull Preference preference) {
@@ -130,6 +131,13 @@ public class PrefsChoiceFragment extends PreferenceFragmentCompat {
 					}
 				});
 				exerciseTypes.add(p);
+			}
+			// Setting badge
+			ExType exType = ExerciseRunner.getExTypes().get(pKey);
+			if (exType != null && exType.getStatus() == ExType.FUNC_STATUS_PLANNED) {
+				Drawable icon = p.getIcon();
+				p.setIcon(overlayBadgedIcon(icon, getRes().getDrawable(R.drawable.ic_bagde_inprogress, null)));
+				p.setEnabled(false);
 			}
 		}
 	}

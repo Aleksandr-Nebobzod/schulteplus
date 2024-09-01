@@ -18,6 +18,7 @@ import org.nebobrod.schulteplus.data.DataOrmRepo;
 import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.ExResultSssr;
+import org.nebobrod.schulteplus.data.ExType;
 import org.nebobrod.schulteplus.data.UserHelper;
 
 import androidx.annotation.NonNull;
@@ -34,6 +35,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ExerciseRunner {
 	private static final String TAG = "ExerciseRunner";
@@ -42,6 +44,7 @@ public class ExerciseRunner {
 
 	// exercise related data
 	private static ExerciseRunner instance = null;
+	private static Map<String, ExType> exTypes = ExType.load();
 	private static Exercise exercise = null;
 	private static ExResult exResult = null;
 	private static long id;
@@ -357,6 +360,10 @@ public class ExerciseRunner {
 			}
 			repos.create(ach);
 		}
+	}
+
+	public static Map<String, ExType> getExTypes() {
+		return exTypes;
 	}
 
 	public static String getExType() {

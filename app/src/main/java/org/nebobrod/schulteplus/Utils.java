@@ -29,6 +29,8 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -80,6 +82,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import org.nebobrod.schulteplus.common.Log;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.time.*;
@@ -201,6 +204,15 @@ public final class Utils extends Application {
 	}
 	public static LocalDate localDateOfTimeStamp(long timestamp) {
 		return LocalDate.from(Instant.ofEpochMilli(timestamp * 1000).atZone(ZoneId.systemDefault()).toLocalDate());
+	}
+
+	public static long timeStampOfLocalDate(LocalDate date) {
+		//  LocalDate to  ZonedDateTime  UTC as user's first midday second of the day
+		ZonedDateTime zdt = date.atTime(12, 0).atZone(ZoneOffset.UTC);
+		// Instant (Epoch date-time)
+		Instant instant = zdt.toInstant();
+
+		return instant.getEpochSecond();
 	}
 
 	public static  String timeStampToTimeLocal(long ts) {
@@ -1101,7 +1113,7 @@ public final class Utils extends Application {
 
 		// Set the buttons
 		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, Utils.getRes().getText(R.string.lbl_ok), (DialogInterface.OnClickListener) okListener);
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, Utils.getRes().getText(R.string.lbl_no), (DialogInterface.OnClickListener)  cancelListener);
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, Utils.getRes().getText(R.string.lbl_no_hell), (DialogInterface.OnClickListener)  cancelListener);
 
 		// Copy design from templates
 		alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -1128,13 +1140,37 @@ public final class Utils extends Application {
 		alertDialog.show();
 	}
 
-	/** For using with any class */
-	public static boolean hasFieldName(Class<?> clazz, String fieldName) {
+	/** Light: For using with only declared (non-inherited) search-fields in class */
+	public static boolean hasDeclaredFieldName(Class<?> clazz, String fieldName) {
 		try {
-			return (null != clazz.getDeclaredField(fieldName));
+			// check class fields (with NO inherited)
+			clazz.getDeclaredField(fieldName);
+			return true;
 		} catch (NoSuchFieldException e) {
+			Log.w(TAG, "hasFieldName  '" + clazz.getName()
+					+ " is WRONG for " + fieldName);
 			return false;
 		}
+	}
+
+	/** Heavy: For using with any fields in class */
+	public static boolean hasFieldName(Class<?> clazz, String fieldName) {
+		// check all class fields (with inherited)
+		for (Field field : clazz.getFields()) {
+			if (Modifier.isStatic(field.getModifiers()) && field.getType() == String.class) {
+				try {
+					if (fieldName.equals(field.get(null))) {
+						return true;
+					}
+				} catch (IllegalAccessException e) {
+					Log.w(TAG, "hasFieldName  '" + clazz.getName()
+							+ " is WRONG for " + fieldName);
+					return false;
+//					throw new RuntimeException(e);
+				}
+			}
+		}
+		return false;
 	}
 
 
@@ -1407,5 +1443,45 @@ public final class Utils extends Application {
 				return DayOfWeek.MONDAY;
 		}
 	}
+	public static Drawable overlayBadgedIcon(Drawable sourceDrawable, Drawable badgeDrawable) {
+		// Safety
+		if (sourceDrawable == null) {
+			sourceDrawable = new ColorDrawable(Color.TRANSPARENT); // default Drawable
+		}
+		// Getting source size
+		int sourceWidth = sourceDrawable.getIntrinsicWidth();
+		int sourceHeight = sourceDrawable.getIntrinsicHeight();
 
+		// if no size (as for vectorDrawable), define it
+		if (sourceWidth <= 0 || sourceHeight <= 0) {
+			sourceWidth = 200;  // Standard
+			sourceHeight = 200;  // Standard
+			sourceDrawable.setBounds(0, 0, sourceWidth, sourceHeight);
+		}
+
+		// Scaling of badge to 1/2 of source
+		float scaleFactor = 1.0f / 2.0f;
+		int badgeWidth = (int) (sourceWidth * scaleFactor);
+		int badgeHeight = (int) (sourceHeight * scaleFactor);
+
+		// Set bounds for the badge drawable
+		badgeDrawable.setBounds(0, 0, badgeWidth, badgeHeight);
+
+		// Overlay array
+		Drawable[] layers = new Drawable[2];
+		layers[0] = sourceDrawable;  // source
+		layers[1] = badgeDrawable;     // badge
+
+		// Final multi layers
+		LayerDrawable layerDrawable = new LayerDrawable(layers);
+
+		// Offset badge (to right-top corner)
+		int insetX = sourceWidth - badgeWidth;  // Align to the right
+		int insetY = 0;                         // Align to the top
+//		layerDrawable.setLayerInset(0, insetX, insetY, 0, sourceHeight - badgeHeight);  // Set badge position
+		layerDrawable.setLayerInset(1, insetX, insetY, 0, sourceHeight - badgeHeight);  // Right-top badge
+		layerDrawable.setLayerSize(1, badgeWidth, badgeHeight);  // Set size for badge layer
+
+		return layerDrawable;
+	}
 }

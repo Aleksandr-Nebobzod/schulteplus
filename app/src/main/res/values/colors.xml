@@ -10,7 +10,7 @@
 <resources>
 	<!-- Primary brand colors -->
 	<color name="colorPrimary">@color/light_grey_2_blue</color>
-	<color name="colorPrimaryVariant">@color/light_grey_A_blue</color>
+	<color name="colorPrimaryVariant">@color/light_grey_D_blue_special</color>
 	<color name="colorOnPrimary">@color/white</color>
 	<!-- Secondary brand colors -->
 	<color name="colorSecondary">@color/light_grey_2_purple</color>
@@ -63,15 +63,22 @@
 	<color name="light_grey_6_blue">#2A5CDA</color>
 	<color name="light_grey_8">#888888</color>
 	<color name="light_grey_A">#AAAAAA</color>
-	<color name="light_grey_A_red">#DAAAAA</color>
-	<color name="light_grey_A_green">#AADAAA</color>
-	<color name="light_grey_A_blue">#7AAAFF</color>
-	<color name="light_grey_A_purple">#B577FB</color>
-	<color name="light_grey_A_yellow">#CACA80</color>
+	<color name="light_grey_A_red">#C38686</color>
+	<color name="light_grey_A_orange">#CC9B66</color>
+	<color name="light_grey_A_yellow">#B7BA78</color>
+	<color name="light_grey_A_green">#A2CEA2</color>
+	<color name="light_grey_A_blue">#7EB4C5</color>
+	<color name="light_grey_A_navy">#7A8BC6</color>
+	<color name="light_grey_A_purple">#A181CD</color>
 	<color name="light_grey_D">#DDDDDD</color>
+	<color name="light_grey_D_red">#ED7575</color>
+	<color name="light_grey_D_orange">#E4A55D</color>
+	<color name="light_grey_D_yellow">#E3E370</color>
+	<color name="light_grey_D_green">#7CDF7C</color>
 	<color name="light_grey_D_blue">#89C8FF</color>
-	<color name="light_grey_D_purple">#D3ACFF</color>
-	<color name="light_grey_D_yellow">#DADA70</color>
+	<color name="light_grey_D_blue_special">#7681E8</color>
+	<color name="light_grey_D_navy">#4E75FF</color>
+	<color name="light_grey_D_purple">#9F65FD</color>
 	<color name="light_grey_F_blue">#C9DEF1</color>
 	<color name="bright_F_yellow">#FFF869</color>
 	<color name="light_blue_A400">#FF00B0FF</color>

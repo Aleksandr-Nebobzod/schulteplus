@@ -247,7 +247,7 @@ public class DataFirestoreRepo<TEntity extends Identifiable<String>> implements 
 						if (task.isSuccessful()) {
 							for (QueryDocumentSnapshot document : querySnapshot) {
 								try {
-									Log.d(TAG, document.getId() + " => " + document.getData());
+									// Log.d(TAG, document.getId() + " => " + document.getData());
 									result.add(document.toObject(entityClass));
 								} catch (Exception e) {
 									android.util.Log.e(TAG, "then ERROR getting doc: " + document.getId(), e);

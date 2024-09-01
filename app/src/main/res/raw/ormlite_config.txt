@@ -1,5 +1,5 @@
 #
-# generated on 2024/08/23 10:17:59
+# generated on 2024/08/28 12:50:18
 #
 # --table-start--
 dataClass=org.nebobrod.schulteplus.data.Achievement
@@ -146,6 +146,15 @@ fieldName=average
 fieldName=rmsd
 # --field-end--
 # --field-start--
+fieldName=lng01
+# --field-end--
+# --field-start--
+fieldName=lng02
+# --field-end--
+# --field-start--
+fieldName=lng03
+# --field-end--
+# --field-start--
 fieldName=flo01
 # --field-end--
 # --field-start--
@@ -153,18 +162,6 @@ fieldName=flo02
 # --field-end--
 # --field-start--
 fieldName=flo03
-# --field-end--
-# --field-start--
-fieldName=flo04
-# --field-end--
-# --field-start--
-fieldName=flo05
-# --field-end--
-# --field-start--
-fieldName=flo06
-# --field-end--
-# --field-start--
-fieldName=flo07
 # --field-end--
 # --table-fields-end--
 # --table-end--
@@ -235,6 +232,15 @@ fieldName=average
 fieldName=rmsd
 # --field-end--
 # --field-start--
+fieldName=lng01
+# --field-end--
+# --field-start--
+fieldName=lng02
+# --field-end--
+# --field-start--
+fieldName=lng03
+# --field-end--
+# --field-start--
 fieldName=flo01
 # --field-end--
 # --field-start--
@@ -242,18 +248,6 @@ fieldName=flo02
 # --field-end--
 # --field-start--
 fieldName=flo03
-# --field-end--
-# --field-start--
-fieldName=flo04
-# --field-end--
-# --field-start--
-fieldName=flo05
-# --field-end--
-# --field-start--
-fieldName=flo06
-# --field-end--
-# --field-start--
-fieldName=flo07
 # --field-end--
 # --table-fields-end--
 # --table-end--
@@ -324,6 +318,15 @@ fieldName=average
 fieldName=rmsd
 # --field-end--
 # --field-start--
+fieldName=lng01
+# --field-end--
+# --field-start--
+fieldName=lng02
+# --field-end--
+# --field-start--
+fieldName=lng03
+# --field-end--
+# --field-start--
 fieldName=flo01
 # --field-end--
 # --field-start--
@@ -331,18 +334,6 @@ fieldName=flo02
 # --field-end--
 # --field-start--
 fieldName=flo03
-# --field-end--
-# --field-start--
-fieldName=flo04
-# --field-end--
-# --field-start--
-fieldName=flo05
-# --field-end--
-# --field-start--
-fieldName=flo06
-# --field-end--
-# --field-start--
-fieldName=flo07
 # --field-end--
 # --table-fields-end--
 # --table-end--
@@ -413,6 +404,15 @@ fieldName=average
 fieldName=rmsd
 # --field-end--
 # --field-start--
+fieldName=lng01
+# --field-end--
+# --field-start--
+fieldName=lng02
+# --field-end--
+# --field-start--
+fieldName=lng03
+# --field-end--
+# --field-start--
 fieldName=flo01
 # --field-end--
 # --field-start--
@@ -420,18 +420,6 @@ fieldName=flo02
 # --field-end--
 # --field-start--
 fieldName=flo03
-# --field-end--
-# --field-start--
-fieldName=flo04
-# --field-end--
-# --field-start--
-fieldName=flo05
-# --field-end--
-# --field-start--
-fieldName=flo06
-# --field-end--
-# --field-start--
-fieldName=flo07
 # --field-end--
 # --table-fields-end--
 # --table-end--

@@ -57,6 +57,7 @@ public class SpCalendarView extends CalendarView {
 	private int highColor = 0x00F0DD;
 	private int[] colors;
 	private int colorBG;
+	private TextView daySelected;
 	private OnDateClickListener dateClickListener;
 
 	public interface OnDateClickListener {
@@ -92,8 +93,8 @@ public class SpCalendarView extends CalendarView {
 	/** Date of Month cell container which acts as a view holder  */
 	private class DayViewContainer extends ViewContainer {
 
-		private TextView v;
-		private MaterialCardView bg;
+		private final TextView v;
+		private final MaterialCardView bg;
 
 		public DayViewContainer(View view) {
 			super(view);
@@ -108,7 +109,9 @@ public class SpCalendarView extends CalendarView {
 
 				// bold Current date
 				if (calendarDay.getDate().equals(LocalDate.now())) {
-					v.setTypeface(null, Typeface.BOLD);
+					daySelected = v;
+					daySelected.setTypeface(null, Typeface.BOLD);
+//					daySelected.setBackground(getRes().getDrawable(R.drawable.ic_border, null));
 				}
 
 				// Red Weekends
@@ -140,6 +143,13 @@ public class SpCalendarView extends CalendarView {
 					if (dateClickListener != null ) {	// && calendarDay.getPosition() == DayPosition.MonthDate (limitation of current month)
 						dateClickListener.onDateClicked(calendarDay.getDate());
 						animThrob(v, null);
+						if (!v.equals(daySelected)) {
+							daySelected.setTypeface(null, Typeface.NORMAL);
+//							daySelected.setBackground(null);
+							daySelected = v.findViewById(R.id.calendar_day_text);
+							daySelected.setTypeface(null, Typeface.BOLD);
+//							daySelected.setBackground(getRes().getDrawable(R.drawable.ic_border, null));
+						}
 //						animFlip(v);
 					}
 				});
@@ -151,9 +161,9 @@ public class SpCalendarView extends CalendarView {
 	}
 
 	/** NOT USED Day of week cell container which acts as a view holder for each  */
-	private class HeaderWeekDayViewContainer extends ViewContainer {
+	private static class HeaderWeekDayViewContainer extends ViewContainer {
 
-		private TextView v;
+		private final TextView v;
 
 		public HeaderWeekDayViewContainer(View view) {
 			super(view);
@@ -170,10 +180,10 @@ public class SpCalendarView extends CalendarView {
 	}
 
 	/** Month name cell container which acts as a view holder */
-	private class HeaderMonthViewContainer extends ViewContainer {
+	private static class HeaderMonthViewContainer extends ViewContainer {
 
-		private TextView v;
-		private MaterialCardView bg;
+		private final TextView v;
+		private final MaterialCardView bg;
 
 		public HeaderMonthViewContainer(View view) {
 			super(view);
@@ -236,7 +246,7 @@ public class SpCalendarView extends CalendarView {
 		for (DayData dayData : data) {
 			if (calendarDay.getDate().equals(dayData.localDate)) {
 				result =  Math.min((dayData.contribution + base - 1) / base, CONTRIBUTION_LEVELS);
-				Log.d(TAG, "Contrib: " + calendarDay.getDate() + String.format(" max: %s so current %s gives %s ", maxContribution, dayData.contribution, result));
+				// Log.d(TAG, "Contrib: " + calendarDay.getDate() + String.format(" max: %s so current %s gives %s ", maxContribution, dayData.contribution, result));
 				return result;
 			}
 		}
@@ -253,8 +263,8 @@ public class SpCalendarView extends CalendarView {
 	/**
 	 * Setup for reflecting contribution
 	 * @param data List<DayData>
-	 * @param lowColor
-	 * @param highColor
+	 * @param lowColor low contribution color
+	 * @param highColor high contribution color
 	 */
 	public void setupCalendar(@Nullable List<DayData> data, int lowColor, int highColor) {
 
@@ -268,7 +278,7 @@ public class SpCalendarView extends CalendarView {
 		this.colors = interpolateColors(this.lowColor, this.highColor, CONTRIBUTION_LEVELS + 1);
 		this.colors[0] = 0; // transparent for any
 
-		this.data = data;
+		SpCalendarView.data = data;
 		this.maxContribution = findMaxContribution(data);
 
 		// 2 months before
@@ -313,10 +323,13 @@ public class SpCalendarView extends CalendarView {
 	 * @param data List<DayData>
 	 */
 	public void updateCalendar(List<DayData> data) {
-		this.data = data;
+		SpCalendarView.data = data;
 		this.maxContribution = findMaxContribution(data);
 
-		this.getAdapter().notifyDataSetChanged(); // Обновление только изменённых элементов
+//		this.getAdapter().notifyDataSetChanged(); // Update only for changed
+		for (DayData date : data) {
+			this.notifyDateChanged(date.localDate);
+		}
 	}
 
 	public void setDateRange(YearMonth startMonth, YearMonth endMonth) {

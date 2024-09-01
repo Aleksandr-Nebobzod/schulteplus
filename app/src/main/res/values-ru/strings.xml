@@ -27,8 +27,8 @@
 	<string name="str_continue">Ещё тренировка?</string>
 	<string name="title_result">Сводка</string>
 	<string name="lbl_ok">Да</string>
-	<string name="lbl_no">аД</string>
-	<string name="lbl_no_ok">Нет</string>
+	<string name="lbl_no_hell">аД</string>
+	<string name="lbl_no">Нет</string>
 	<string name="txt_one_more_q">Ещё тренировка?</string>
 	<string name="lbl_show_password">Показывать пароль</string>
 	<string name="txt_settings">Настройки \nдля упражнений по таблицам Шульте со временем \n<b>будут обогащены</b> </string>
@@ -339,4 +339,7 @@
 	<string name="lbl_sssr_intercept03">Перехват-3</string>
 	<string name="lbl_next">Next</string>
 	<string name="lbl_prev">Prev</string>
+	<string name="msg_sssr_limit_of_past">Предел изменяемого прошлого</string>
+	<string name="msg_sssr_limit_of_future">Предел изменяемого будущего</string>
+	<string name="lbl_gcb_bas_squares_colored_crossed">Крест в квадратах</string>
 </resources>

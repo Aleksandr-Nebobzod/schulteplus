@@ -470,7 +470,7 @@ public class ExResult implements Serializable, Identifiable<String> {
 
 				// SSSR standard costs
 			case KEY_PRF_EX_R1:
-				return (int) (500);
+				return (int) (100);
 			case KEY_PRF_EX_R2:
 				return (int) (20);
 			case KEY_PRF_EX_R3:

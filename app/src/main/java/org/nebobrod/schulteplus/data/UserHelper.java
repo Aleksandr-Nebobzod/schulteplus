@@ -168,7 +168,7 @@ public class UserHelper implements Serializable, Identifiable<String> {
 		this.uak = uak;
 	}
 
-	public String getDateCreated() {		return dateCreated;	}
+	public String getDateCreated() {		return dateCreated + "Z";	}
 
 	public void setDateCreated(String dateCreated) {		this.dateCreated = dateCreated;	}
 

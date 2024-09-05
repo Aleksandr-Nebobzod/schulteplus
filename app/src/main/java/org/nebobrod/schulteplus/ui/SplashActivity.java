@@ -58,6 +58,7 @@ public class SplashActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.v(TAG, "Activity started");
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_splash);
 		snackBarManager = new SnackBarManager(this).setPostponed(true);
@@ -116,15 +117,16 @@ public class SplashActivity extends AppCompatActivity {
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();
 		if (viewModel != null) {
 			viewModel.onCleared();
 			this.getViewModelStore().clear();
 		}
-		Log.d("SplashActivity", "Activity destroyed");
+		Log.v(TAG, "Activity destroyed");
+		super.onDestroy();
 	}
 
 	private void initializeUI() {
+		Log.v(TAG, "initializeUI started");
 		clTextHolder = findViewById(R.id.cl_text_holder);
 		zoomHyper = AnimationUtils.loadAnimation(this, R.anim.hyperspace_jump);
 		iv01App = findViewById(R.id.iv_01_app);
@@ -138,9 +140,10 @@ public class SplashActivity extends AppCompatActivity {
 			// Little cheat-code
 			Toast.makeText(this, "Run Demo User...", Toast.LENGTH_LONG).show();
 			new Handler(Looper.getMainLooper()).postDelayed(() -> {
+				Log.v(TAG, "tvVendor click started");
 				runMainActivity(null);
 				this.finish();
-			}, 1000);
+			}, 100);
 		});
 
 		cstRed = ColorStateList.valueOf(getColor(R.color.light_grey_A_red));
@@ -256,7 +259,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
 	private void evaluateResults() {
-		Log.d(TAG, "evaluateResults: " + Arrays.toString(testsCompleted));
+		Log.v(TAG, "evaluateResults: " + Arrays.toString(testsCompleted));
 		boolean allTestsCompleted = true;
 		for (boolean completed : testsCompleted) {
 			if (!completed) {
@@ -289,6 +292,7 @@ public class SplashActivity extends AppCompatActivity {
 		this.finish();
 		startActivity(intent);
 	}
+
 	private void runMainActivity(UserHelper user) {
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.putExtra("user", user);

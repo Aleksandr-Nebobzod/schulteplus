@@ -36,6 +36,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
+import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -87,12 +88,15 @@ import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
+
+import jp.wasabeef.richeditor.RichEditor;
 
 public final class Utils extends Application {
 	private static final String TAG = "Utils";
@@ -151,6 +155,7 @@ public final class Utils extends Application {
 	public static String ttHtml(String s){ return "<tt>" + s + "</tt>";}
 	public static String liHtml(String s){ return "<li>" + s + "</li>";}
 	public static String cHtml(String s){ return "<font color='#FFAAAA'>" + s + "</font>";}
+
 	/**
 	 * Returns a CharSequence that applies a background color i.e.0xFF8B008B to the
 	 * concatenation of the specified CharSequence objects.
@@ -168,6 +173,14 @@ public final class Utils extends Application {
 	}
 	public static String pHtml(){ return "<br>";}
 	public static String tHtml(){ return "\u0009";}
+
+	/** Makes clear HTML */
+	public static String toPlainHtml (String screenedHtml) {
+		RichEditor mEdit = new RichEditor(context);
+		mEdit.setHtml(screenedHtml);
+//		return HtmlCompat.fromHtml(screenedHtml.toString(), HtmlCompat.FROM_HTML_MODE_LEGACY).toString();
+		return mEdit.getHtml();
+	}
 
 	public static void openWebPage(String url, Context context) {
 
@@ -191,6 +204,8 @@ public final class Utils extends Application {
 	public static String timeStampFormattedUTC(long ts) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm").withZone(ZoneId.of("UTC"));
 		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts), ZoneId.of("UTC")).format(formatter);
+		// Not changed 240904:
+//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ssXXX").withZone(ZoneId.of("UTC"));
 	}
 
 	public static  String timeStampFormattedLocal(long ts) {
@@ -220,13 +235,31 @@ public final class Utils extends Application {
 		return LocalDateTime.ofInstant(Instant.ofEpochSecond(ts), ZoneId.systemDefault()).format(formatter)  ;
 	}
 	public static  String timeStampFormattedShortUtc(long ts) {
-		return Instant.ofEpochSecond(ts).toString(); // it is UTC (Z in fin)
+		return Instant.ofEpochSecond(ts).toString(); // it is UTC (Z in end)
 	}
 
 	public static long timeStampPlusDays(long daysToAdd) {
 		return LocalDate.now().plusDays(daysToAdd).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() / 1000;
 	}
 
+	/** universal parser */
+	public static LocalDate parseDate(String dateString) {
+//		DateTimeFormatter formatterZoned = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ssX");
+		DateTimeFormatter formatterNoZone = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+
+		try {
+			// Try to get Zoned
+			return OffsetDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME).toLocalDate();
+		} catch (DateTimeParseException e1) {
+			try {
+				// No Zoned
+				return LocalDate.parse(dateString, formatterNoZone);
+			} catch (DateTimeParseException e2) {
+				Log.e (TAG, "parseDate", e2);
+				throw new IllegalArgumentException("Invalid date format: " + dateString);
+			}
+		}
+	}
 
 	/**
 	 * @return String H:M:S.ms
@@ -780,10 +813,12 @@ public final class Utils extends Application {
 
 	/**
 	 * Puts into FirebaseCrashlytics
+	 *
+	 * @param TAG log type
 	 * @param message log-record
 	 */
-	public static void logFbCrash(String message) {
-		FirebaseCrashlytics.getInstance().log(message);
+	public static void logFbCrashlytics(String TAG, String message) {
+		FirebaseCrashlytics.getInstance().log(TAG + ": " + message);
 	}
 
 	/**

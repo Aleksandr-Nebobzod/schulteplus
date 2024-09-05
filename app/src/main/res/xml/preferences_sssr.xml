@@ -23,10 +23,10 @@
 			<SwitchPreference app:title="@string/lbl_sssr_job" app:key="prf_sssr_job" app:defaultValue="true"/>
 			<SwitchPreference app:title="@string/lbl_sssr_physical" app:key="prf_sssr_physical" app:defaultValue="true"/>
 			<SwitchPreference app:title="@string/lbl_sssr_leisure" app:key="prf_sssr_leisure" app:defaultValue="true"/>
-			<SwitchPreference app:title="@string/lbl_sssr_family" app:key="prf_sssr_family" app:defaultValue="true"/>
-			<SwitchPreference app:title="@string/lbl_sssr_friends" app:key="prf_sssr_friends" app:defaultValue="true"/>
-			<SwitchPreference app:title="@string/lbl_sssr_chores" app:key="prf_sssr_chores" app:defaultValue="true"/>
-			<SwitchPreference app:title="@string/lbl_sssr_sleep" app:key="prf_sssr_sleep" app:defaultValue="true"/>
+			<SwitchPreference app:title="@string/lbl_sssr_family" app:key="prf_sssr_family" app:defaultValue="false"/>
+			<SwitchPreference app:title="@string/lbl_sssr_friends" app:key="prf_sssr_friends" app:defaultValue="false"/>
+			<SwitchPreference app:title="@string/lbl_sssr_chores" app:key="prf_sssr_chores" app:defaultValue="false"/>
+			<SwitchPreference app:title="@string/lbl_sssr_sleep" app:key="prf_sssr_sleep" app:defaultValue="false"/>
 		</PreferenceCategory>
 		
 		<CheckBoxPreference app:title="@string/lbl_sssr_intercept01" app:key="gcb_sssr_intercept01" app:defaultValue="false" app:icon="@drawable/ic_sssr_intercept01"/>

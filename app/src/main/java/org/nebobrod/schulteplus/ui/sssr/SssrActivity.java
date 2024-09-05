@@ -10,12 +10,16 @@ package org.nebobrod.schulteplus.ui.sssr;
 
 import static org.nebobrod.schulteplus.Utils.timeStampOfLocalDate;
 import static org.nebobrod.schulteplus.Utils.timeStampU;
+import static org.nebobrod.schulteplus.Utils.toPlainHtml;
 
 import android.animation.ValueAnimator;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -44,6 +48,7 @@ import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResultSssr;
 import org.nebobrod.schulteplus.databinding.ActivitySssrBinding;
+import org.nebobrod.schulteplus.ui.RichEditorDialogFragment;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -227,12 +232,30 @@ public class SssrActivity extends AppCompatActivity {
 		etNote.setOnFocusChangeListener((v, hasFocus) -> {
 			if (!hasFocus) {
 				// finished editing
-				String newNote = etNote.getText().toString();
-				if (!exResult.getNote().equals(newNote)) {
+				String oldNote = exResult.getNote();
+				String newNote = toPlainHtml(Html.toHtml(etNote.getText(), Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE));
+				StyleSpan[] mSpans = etNote.getText().getSpans(0, etNote.length(), StyleSpan.class);
+				if (!oldNote.equals(newNote)) {
 					dataProvided.setChecked(true);
 					exResult.setNote(newNote);
 				}
 			}
+		});
+		etNote.setOnLongClickListener(view -> {
+			String htmlContent = Html.toHtml(etNote.getText(), Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE);
+			RichEditorDialogFragment dialog = RichEditorDialogFragment.newInstance(htmlContent);
+			// listener from interface of RichEditorDialogFragment
+			dialog.setOnNoteEditedListener(newNote -> {
+				etNote.setText(Html.fromHtml(newNote, Html.FROM_HTML_MODE_LEGACY));
+				// finished editing
+				String oldNote = exResult.getNote();
+				if (!oldNote.equals(newNote)) {
+					dataProvided.setChecked(true);
+					exResult.setNote(newNote);
+				}
+			});
+			dialog.show(getSupportFragmentManager(), "RichEditorDialog");
+			return true;
 		});
 
 		// SeekBars a bit different
@@ -282,6 +305,8 @@ public class SssrActivity extends AppCompatActivity {
 			}
 		});
 	}
+
+
 
 	/**
 	 * {@inheritDoc}
@@ -459,7 +484,7 @@ public class SssrActivity extends AppCompatActivity {
 		pieChart.invalidate();
 
 		// Notes and EE
-		etNote.setText(result.getNote());
+		etNote.setText(Html.fromHtml(result.getNote(), Html.FROM_HTML_MODE_LEGACY));
 		sbEmotion.setProgress(result.getLevelOfEmotion() + 2, true);
 		sbEnergy.setProgress(result.getLevelOfEnergy() + 1);
 	}

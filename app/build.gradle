@@ -20,6 +20,7 @@ configurations.all {
             }
         }
     }
+    exclude group: 'com.google.android.gms', module: 'play-services-safetynet'  // 240831 by Google announcement
 }
 
 android {
@@ -31,7 +32,7 @@ android {
         applicationId "org.nebobrod.schulteplus"
         minSdkVersion 26
         targetSdkVersion 34
-        versionCode 112
+        versionCode 113
         versionName "Entada"
         signingConfig signingConfigs.debug
         buildConfigField 'boolean', 'ENABLE_CRASHLYTICS', 'true'
@@ -107,6 +108,7 @@ android {
 }
 
 dependencies {
+    implementation 'jp.wasabeef:richeditor-android:2.0.0'
     /*implementation 'com.codevblocks.android:knob:1.0.1' */    // it's nice but only circle manipulated
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation "com.kizitonwose.calendar:view:2.0.0"
@@ -142,7 +144,7 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-firestore:25.0.0'
 //    implementation 'com.google.firebase:firebase-database:20.3.1'
-    implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
+    implementation ('com.firebaseui:firebase-ui-auth:7.2.0')
     implementation 'com.google.firebase:firebase-auth:16.0.3' // 23.0.0 gives error 240805
     implementation 'com.j256.ormlite:ormlite-android:6.1'
 

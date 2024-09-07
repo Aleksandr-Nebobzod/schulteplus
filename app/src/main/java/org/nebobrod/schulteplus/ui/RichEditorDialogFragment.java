@@ -11,18 +11,26 @@ package org.nebobrod.schulteplus.ui;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.ValueCallback;
+import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.common.Log;
 
 import jp.wasabeef.richeditor.RichEditor;
 
@@ -44,6 +52,16 @@ public class RichEditorDialogFragment extends DialogFragment {
 		args.putString(ARG_TEXT, text);
 		fragment.setArguments(args);
 		return fragment;
+	}
+
+
+	@Override
+	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		Dialog dialog = super.onCreateDialog(savedInstanceState);
+
+		// Restrict occasional closing
+		dialog.setCanceledOnTouchOutside(false);
+		return dialog;
 	}
 
 	@Nullable
@@ -73,20 +91,17 @@ public class RichEditorDialogFragment extends DialogFragment {
 
 		// Rich Editor Settings:
 		if (getDialog() != null && getDialog().getWindow() != null) {
-			getDialog().getWindow().clearFlags(
-//					WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-					WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
-//					WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-//					WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-			);
+
+			// Clear FLAG_HARDWARE_ACCELERATED for this Dialog window
+			view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 		}
 
 		mEditor.setVerticalScrollBarEnabled(true);
-		mEditor.setEditorHeight(250);
+		mEditor.setEditorHeight(250); // Less than layout_height="300dp"
 //		mEditor.setEditorFontSize(22);
 //		mEditor.setEditorFontColor(Color.RED);
 //		mEditor.setEditorBackgroundColor(Color.BLUE);
-		//mEditor.setBackgroundColor(Color.BLUE);
+//		mEditor.setBackgroundColor(Color.BLUE);
 //		mEditor.setBackgroundResource(R.drawable.ic_border_thick);
 		mEditor.setPadding(10, 10, 10, 50);
 //		mEditor.setPlaceholder(getString(R.string.txt_note_hint));
@@ -111,7 +126,9 @@ public class RichEditorDialogFragment extends DialogFragment {
 			view.findViewById(R.id.action_bold).setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
+//					mEditor.clearFocusEditor();
 					mEditor.setBold();
+					toggle(v);
 				}
 			});
 
@@ -119,6 +136,7 @@ public class RichEditorDialogFragment extends DialogFragment {
 				@Override
 				public void onClick(View v) {
 					mEditor.setItalic();
+					toggle(v);
 				}
 			});
 
@@ -126,6 +144,7 @@ public class RichEditorDialogFragment extends DialogFragment {
 				@Override
 				public void onClick(View v) {
 					mEditor.setSubscript();
+					toggle(v);
 				}
 			});
 
@@ -133,6 +152,7 @@ public class RichEditorDialogFragment extends DialogFragment {
 				@Override
 				public void onClick(View v) {
 					mEditor.setSuperscript();
+					toggle(v);
 				}
 			});
 
@@ -140,6 +160,7 @@ public class RichEditorDialogFragment extends DialogFragment {
 				@Override
 				public void onClick(View v) {
 					mEditor.setStrikeThrough();
+					toggle(v);
 				}
 			});
 
@@ -147,6 +168,7 @@ public class RichEditorDialogFragment extends DialogFragment {
 				@Override
 				public void onClick(View v) {
 					mEditor.setUnderline();
+					toggle(v);
 				}
 			});
 
@@ -154,6 +176,7 @@ public class RichEditorDialogFragment extends DialogFragment {
 				@Override
 				public void onClick(View v) {
 					mEditor.setBullets();
+					toggle(v);
 				}
 			});
 
@@ -161,6 +184,7 @@ public class RichEditorDialogFragment extends DialogFragment {
 				@Override
 				public void onClick(View v) {
 					mEditor.setNumbers();
+					toggle(v);
 				}
 			});
 
@@ -172,18 +196,7 @@ public class RichEditorDialogFragment extends DialogFragment {
 			});
 		} // Listeners
 
-
 		return view;
-	}
-
-
-	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		Dialog dialog = super.onCreateDialog(savedInstanceState);
-
-		// Restrict occasional closing
-		dialog.setCanceledOnTouchOutside(false);
-		return dialog;
 	}
 
 	/**
@@ -209,21 +222,94 @@ public class RichEditorDialogFragment extends DialogFragment {
 		// Set focus to beginning of text
 		mEditor.postDelayed(() -> {
 			mEditor.focusEditor();
-		}, 200);
 
-		// Show keyboard
-		Dialog dialog = getDialog();
-		if (dialog != null && dialog.getWindow() != null) {
-			getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE); // SOFT_INPUT_STATE_VISIBLE
-
+			// Show keyboard
 			InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.showSoftInput(mEditor, InputMethodManager.SHOW_IMPLICIT);
+		}, 200);
+
+		// Regularly check cursor status
+		Handler handler = new Handler(Looper.getMainLooper());
+		Runnable checkFormatRunnable = new Runnable() {
+			@Override
+			public void run() {
+
+				if (isAdded() && getActivity() != null) {
+					mEditor.evaluateJavascript("document.queryCommandState('bold')", value -> {
+						if (Boolean.parseBoolean(value)) {
+							ImageButton ibFormat = ((ImageButton) view.findViewById(R.id.action_bold));
+							ibFormat.getDrawable().setTint(getResources().getColor(R.color.light_grey_F_blue, null));
+							ibFormat.setTag("ON");
+						}
+					});
+
+					mEditor.evaluateJavascript("document.queryCommandState('italic')", value -> {
+						boolean isItalic = Boolean.parseBoolean(value);
+						if (Boolean.parseBoolean(value)) {
+							ImageButton ibFormat = view.findViewById(R.id.action_italic);
+							ibFormat.getDrawable().setTint(getResources().getColor(R.color.light_grey_F_blue, null));
+							ibFormat.setTag("ON");
+						}
+					});
+
+					mEditor.evaluateJavascript("document.queryCommandState('strikethrough')", value -> {
+						boolean isItalic = Boolean.parseBoolean(value);
+						if (Boolean.parseBoolean(value)) {
+							ImageButton ibFormat = view.findViewById(R.id.action_strikethrough);
+							ibFormat.getDrawable().setTint(getResources().getColor(R.color.light_grey_F_blue, null));
+							ibFormat.setTag("ON");
+						}
+					});
+
+					mEditor.evaluateJavascript("document.queryCommandState('underline')", value -> {
+						boolean isItalic = Boolean.parseBoolean(value);
+						if (Boolean.parseBoolean(value)) {
+							ImageButton ibFormat = view.findViewById(R.id.action_underline);
+							ibFormat.getDrawable().setTint(getResources().getColor(R.color.light_grey_F_blue, null));
+							ibFormat.setTag("ON");
+						}
+					});
+				}
+
+				handler.postDelayed(this, 1000); // Check again after a second
+			}
+		};
+		handler.post(checkFormatRunnable);
+
+		// Set 90% of width
+		Dialog dialog = getDialog();
+		if (dialog != null && dialog.getWindow() != null) {
+			WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+			layoutParams.copyFrom(getDialog().getWindow().getAttributes());
+			layoutParams.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.9); // 90% ширины экрана
+			layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+			getDialog().getWindow().setAttributes(layoutParams);
 		}
+	}
+
+	/** After everything is ready */
+	@Override
+	public void onStart() {
+		super.onStart();
 	}
 
 	// Set Ok listener
 	public void setOnNoteEditedListener(OnNoteEditedListener listener) {
 		this.listener = listener;
+	}
+
+	/** Toggles button by Tag and Tint of drawing */
+	private void toggle(View view) {
+		if (!(view instanceof ImageView)) {
+			return; // only for ImageButton and other extenders of ImageView
+		}
+		if ("ON".equals(view.getTag())) {	// First is always not "ON" (null)
+			view.setTag("OFF");
+			((ImageView) view).getDrawable().setTint(getResources().getColor(R.color.light_grey_6, null));
+		} else {
+			view.setTag("ON");
+			((ImageView) view).getDrawable().setTint(getResources().getColor(R.color.light_grey_F_blue, null));
+		}
 	}
 }
 

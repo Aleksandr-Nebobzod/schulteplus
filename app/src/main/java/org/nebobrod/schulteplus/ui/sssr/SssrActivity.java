@@ -40,6 +40,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.google.android.material.slider.Slider;
 
 import org.nebobrod.schulteplus.R;
@@ -144,12 +145,13 @@ public class SssrActivity extends AppCompatActivity {
 		legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
 		legend.setOrientation(Legend.LegendOrientation.VERTICAL);
 		legend.setDrawInside(false);
+		legend.setTextColor(getColor(R.color.colorOnPrimarySurface));
+		legend.setWordWrapEnabled(true);
+		legend.setEnabled(true); 			// Turn On the Legend
 
 		// No description
-		pieChart.getDescription().setText("");
-		pieChart.getDescription().setEnabled(false);
-		pieChart.getLegend().setEnabled(true); 			// Turn On the Legend
-		pieChart.getLegend().setWordWrapEnabled(true);
+//		pieChart.getDescription().setText(getString(R.string.title_sssr));
+//		pieChart.getDescription().setEnabled(false);
 
 		// Circle
 		pieChart.setExtraOffsets(10, 0, 70, 0); // Paddings
@@ -450,7 +452,7 @@ public class SssrActivity extends AppCompatActivity {
 		}
 
 		// Raw dataset
-		PieDataSet dataSet = new PieDataSet(spheres, "Categories");
+		PieDataSet dataSet = new PieDataSet(spheres, getString(R.string.title_sssr));
 
 		// Text Labels
 		dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
@@ -475,7 +477,7 @@ public class SssrActivity extends AppCompatActivity {
 
 		// Pie data
 		PieData pieData = new PieData(dataSet);
-
+//		pieData.setValueFormatter(new PercentFormatter());
 		// tie dataset
 		pieChart.setData(pieData);
 

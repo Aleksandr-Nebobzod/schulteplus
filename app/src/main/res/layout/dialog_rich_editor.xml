@@ -10,11 +10,13 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:backgroundTint="@color/transparent"
 	android:background="@drawable/ic_border_thick">
 	
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:layout_marginTop="5dp"
 		android:orientation="vertical"
 		android:background="@drawable/ic_border_thick">
 		<!--	xmlns:app="http://schemas.android.com/apk/res-auto">-->
@@ -35,7 +37,7 @@
 					android:id="@+id/action_undo"
 					android:layout_width="48dp"
 					android:layout_height="48dp"
-					android:visibility="gone"
+					android:visibility="visible"
 					android:background="@null"
 					android:contentDescription="@null"
 					android:src="@drawable/ic_baseline_undo_24" />
@@ -283,7 +285,7 @@
 			</LinearLayout>
 		</HorizontalScrollView>
 		
-		<!--		<TextView-->
+<!--				<TextView-->
 		<jp.wasabeef.richeditor.RichEditor
 			android:id="@+id/rich_editor"
 			android:layout_width="match_parent"

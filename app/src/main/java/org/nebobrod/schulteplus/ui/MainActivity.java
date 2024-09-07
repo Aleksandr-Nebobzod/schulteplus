@@ -9,7 +9,9 @@
 package org.nebobrod.schulteplus.ui;
 
 
+import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.getTopRightCornerRect;
+import static org.nebobrod.schulteplus.Utils.overlayBadgedIcon;
 import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
 import static org.nebobrod.schulteplus.common.Const.SHOWN_00_MAIN;
 
@@ -56,6 +58,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -207,10 +210,15 @@ public class MainActivity extends AppCompatActivity {
 		NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 		NavigationUI.setupWithNavController(binding.navView, navController);
 
-		BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_plus);
-		badge.setVisible(false); 	// Show badge
-//		badge.setNumber(999);
-//		badge.setText("-");
+		// In Progress Badge for Home (News) menu item
+		MenuItem menuItem = navView.getMenu().findItem(R.id.navigation_home);
+		Drawable icon = menuItem.getIcon();
+		menuItem.setIcon(overlayBadgedIcon(icon, getRes().getDrawable(R.drawable.ic_bagde_inprogress, null)));
+
+		/*BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_plus);
+		badge.setVisible(false);
+		badge.setNumber(999);
+		badge.setText("-");*/ // Show badge from Material 3 library
 
 		getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
 			@Override

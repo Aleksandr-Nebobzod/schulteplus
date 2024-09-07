@@ -1188,8 +1188,8 @@ public final class Utils extends Application {
 		}
 	}
 
-	/** Heavy: For using with any fields in class */
-	public static boolean hasFieldName(Class<?> clazz, String fieldName) {
+	/** Heavy: For using with any fields in class */ // But this does not catch private-non static field
+	public static boolean hasFieldStatic(Class<?> clazz, String fieldName) {
 		// check all class fields (with inherited)
 		for (Field field : clazz.getFields()) {
 			if (Modifier.isStatic(field.getModifiers()) && field.getType() == String.class) {
@@ -1208,6 +1208,18 @@ public final class Utils extends Application {
 		return false;
 	}
 
+	/** recursively checks declared fields of class and its parents */
+	public static boolean hasFieldName(Class<?> clazz, String fieldName) {
+		while (clazz != null) {
+			try {
+				clazz.getDeclaredField(fieldName);
+				return true;
+			} catch (NoSuchFieldException e) {
+				clazz = clazz.getSuperclass(); // Get parent
+			}
+		}
+		return false; // if not
+	}
 
 	/**
 	 * @param activity

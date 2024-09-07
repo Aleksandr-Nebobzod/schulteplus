@@ -147,6 +147,13 @@
             font-weight: 700;
             font-style: normal;
         }
+        .grey-hr {
+            width: 30%;
+            height: 5px;
+            background-color: #dddddd;
+            border: none;
+            margin: 20px auto;
+        }
 
         /* Media queries for responsive design */
         @media (max-width: 800px) {

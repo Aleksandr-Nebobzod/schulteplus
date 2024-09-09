@@ -9,12 +9,37 @@
   -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-		<item android:alpha="@dimen/mtrl_low_ripple_pressed_alpha" android:color="@color/colorSecondary" android:state_pressed="true"/>
+	
+	<!-- Нажатие -->
+	<item android:alpha="@dimen/mtrl_low_ripple_pressed_alpha"
+		android:color="@color/colorSecondary"
+		android:state_pressed="true"/>
+	
+	<!-- Сфокусировано и наведено -->
+	<item android:alpha="@dimen/mtrl_low_ripple_focused_alpha"
+		android:color="@color/colorOnPrimary"
+		android:state_focused="true"
+		android:state_hovered="true"/>
+	
+	<!-- Только сфокусировано -->
+	<item android:alpha="@dimen/mtrl_low_ripple_focused_alpha"
+		android:color="@color/colorOnPrimary"
+		android:state_focused="true"/>
+	
+	<!-- Наведено (без фокуса) -->
+	<item android:alpha="@dimen/mtrl_low_ripple_hovered_alpha"
+		android:color="@color/colorOnSecondary"
+		android:state_hovered="true"/>
+	
+	<!-- Состояние по умолчанию -->
+	<item android:alpha="@dimen/mtrl_low_ripple_default_alpha"
+		android:color="@color/colorOnPrimary"/>
+	
+<!--		<item android:alpha="@dimen/mtrl_low_ripple_pressed_alpha" android:color="@color/colorSecondary" android:state_pressed="true"/>
 		<item android:alpha="@dimen/mtrl_low_ripple_focused_alpha" android:color="@color/colorOnPrimary" android:state_focused="true" android:state_hovered="true"/>
 		<item android:alpha="@dimen/mtrl_low_ripple_focused_alpha" android:color="@color/colorOnPrimary" android:state_focused="true"/>
 		<item android:alpha="@dimen/mtrl_low_ripple_hovered_alpha" android:color="@color/colorOnSecondary" android:state_hovered="true"/>
-		<item android:alpha="@dimen/mtrl_low_ripple_default_alpha" android:color="@color/colorOnPrimary"/>
+		<item android:alpha="@dimen/mtrl_low_ripple_default_alpha" android:color="@color/colorOnPrimary"/>-->
 
 	</selector>
 <!--

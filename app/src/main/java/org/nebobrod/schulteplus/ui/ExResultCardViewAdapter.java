@@ -32,6 +32,7 @@ import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.data.ExResult;
 
 import java.util.List;
+import java.util.Locale;
 
 public class ExResultCardViewAdapter extends RecyclerView.Adapter<ExResultCardViewAdapter.ExerciseViewHolder> {
 	private static final String TAG = "ExResultCardViewAdapter";
@@ -80,7 +81,7 @@ public class ExResultCardViewAdapter extends RecyclerView.Adapter<ExResultCardVi
 		holder.exTypeIcon.setImageDrawable(this.getExTypeDrawable(exResult));
 		holder.exDescription.setText(exResult.getExDescription());
 		holder.numValue.setText(durationCut(exResult.getNumValue()));
-		holder.psyCoins.setText(String.valueOf(exResult.calculatePsycoins()));
+		holder.psyCoins.setText(String.format(Locale.getDefault(),"%.2f", exResult.calculatePsycoins() / 100F));
 		holder.events.setText(String.valueOf(exResult.getTurns()));
 
 		// see exDescription() in org.nebobrod.schulteplus.common.ExerciseRunner
@@ -153,7 +154,7 @@ public class ExResultCardViewAdapter extends RecyclerView.Adapter<ExResultCardVi
 
 		// Final color
 		result = colorMix(emotionColor, energyColor, 0.4f);
-		Log.d(TAG, String.format("determineColorOfLevelsEE energyColor %s, colorMix %s", Integer.toHexString(energyColor), Integer.toHexString(result)));
+		// Log.d(TAG, String.format("determineColorOfLevelsEE energyColor %s, colorMix %s", Integer.toHexString(energyColor), Integer.toHexString(result)));
 		return result;
 	}
 

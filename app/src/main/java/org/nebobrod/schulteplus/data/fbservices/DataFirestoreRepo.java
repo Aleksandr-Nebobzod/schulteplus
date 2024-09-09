@@ -233,6 +233,8 @@ public class DataFirestoreRepo<TEntity extends Identifiable<String>> implements 
 					default:
 						throw new IllegalArgumentException("Unsupported condition: " + condition);
 				}
+			} else {
+				Log.w(TAG, "getListByField got wrong field: " + field + " in class: " + entityClass.getSimpleName());
 			}
 		}
 

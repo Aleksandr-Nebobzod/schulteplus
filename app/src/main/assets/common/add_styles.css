@@ -1,0 +1,170 @@
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    // <!-- Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    // <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-size: 26px;
+            font-family: Old Standard TT;
+        }
+        .mini-info {
+            font-size: 16px;
+            color: #777;
+            font-family: Play;
+        }
+        .body-header {
+            width: 800px;
+            background-color: #c2c2c2;
+            margin: 0 auto;
+            padding: 10px 15px;
+        }
+        .body-header h1, h2, h3, h4, h5 {
+            color: #444;
+            font-family: Play;
+            margin-bottom: 0px;
+        }
+        p + ol, p + ul {
+            margin-top: -15px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 15px;
+            font-family: Old Standard TT;
+        }
+        .two-column-container {
+            display: flex;
+            justify-content: space-between; /* column dispersion */
+            flex-wrap: nowrap; /* no hypen */
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .container h1, h2, h3, h4, h5 {
+            color: #555;
+            font-family: Play;
+            margin-bottom: 0px;
+        }
+        .column {
+            width: 48%;
+            box-sizing: border-box;
+        }
+        .container img {
+            max-width: 100%;
+            height: auto;
+            /*margin: 1em;*/
+        }
+        .container figure {
+            text-align: center;
+            border: 3px solid #999;
+        }
+        .container figcaption {
+            color: gray;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        /* for slogan */
+        .container-horizon {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+        .slogan {
+            display: inline-block;
+            vertical-align: middle;
+            font-family: Play;
+            font-weight: bold;
+            color: #777;
+        }
+        .footnote {
+            font-size: 16px;
+            font-style: italic;
+            color: #555;
+        }
+        .footer-top {
+            background-color: #ccc;
+            height: 3px;
+            width: 100%;
+        }
+        .footer-bottom {
+            background-color: #f8f8f8;
+            padding: 10px;
+            margin: 0;
+            text-align: center;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .social-links {
+            display: flex;
+            align-items: center;
+        }
+        .social-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .social-button {
+            width: 30px;
+            height: 30px;
+            background-size: cover;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .material-icons-round {
+            font-size: 30px;
+            color: rgba(0, 0, 0, 0.44);
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        .social-button__telegram {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg');
+        }
+        .social-button__friend {
+            background-image: url('http://attplus.in/common/Ipir_logow.jpg');
+            background-size: cover;
+            width: 50px;
+        }
+        .play-regular {
+            font-family: "Play", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        .play-bold {
+            font-family: "Play", sans-serif;
+            font-weight: 700;
+            font-style: normal;
+        }
+        .grey-hr {
+            width: 30%;
+            height: 5px;
+            background-color: #dddddd;
+            border: none;
+            margin: 20px auto;
+        }
+
+        /* Media queries for responsive design */
+        @media (max-width: 800px) {
+            .body-header, .container, .slogan {
+                width: 100%;
+                padding: 0 5px;
+                font-size: 16px;
+            }
+            .container img {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+    </style>

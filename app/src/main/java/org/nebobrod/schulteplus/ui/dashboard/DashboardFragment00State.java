@@ -9,6 +9,7 @@
 package org.nebobrod.schulteplus.ui.dashboard;
 
 import static org.nebobrod.schulteplus.Utils.localDateOfTimeStamp;
+import static org.nebobrod.schulteplus.Utils.parseDate;
 
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.common.Log;
@@ -36,10 +37,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.datepicker.CalendarConstraints;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -173,9 +176,15 @@ public class DashboardFragment00State extends Fragment {
 	}
 
 	private void updateStata() {
-		LocalDate creationDate = LocalDate.parse(ExerciseRunner.getUserHelper().getDateCreated(), DateTimeFormatter.ISO_DATE_TIME);
+		LocalDate creationDate;
+		try {
+			creationDate = parseDate(ExerciseRunner.getUserHelper().getDateCreated());
+		} catch (Exception e) {
+			Log.e(TAG, "updateStata: can't get Date of user Created", e);
+			creationDate = LocalDate.now(ZoneId.of("UTC"));
+			Toast.makeText(requireContext(), getString(R.string.err_no_data), Toast.LENGTH_LONG).show();
+		}
 		kvvDays.setValueText(String.valueOf(ChronoUnit.DAYS.between(creationDate, LocalDate.now(ZoneId.of("UTC")))));
-
 		kvvDaysTrained.setValueText(String.valueOf(dashboardViewModel.getDaysLD().getValue()));
 		kvvHours.setValueText(String.valueOf(ExerciseRunner.getUserHelper().getHours()));
 		kvvPsycoins.setValueText(String.valueOf(dashboardViewModel.getPsyCoinsLD().getValue()));
@@ -188,6 +197,7 @@ public class DashboardFragment00State extends Fragment {
 		if (newExerciseList == null || newExerciseList.size() < 1) {
 			rvExResult.setVisibility(View.GONE);
 			tvNoData.setVisibility(View.VISIBLE);
+			tvTitleOfList.setText(String.format("%s %s,   %s:", getString(R.string.lbl_exercises), date.toString(), 0));
 			return;
 		}
 
@@ -205,12 +215,14 @@ public class DashboardFragment00State extends Fragment {
 			rvExResult.setVisibility(View.VISIBLE);
 			tvNoData.setVisibility(View.GONE);
 
-			// update the title
-			tvTitleOfList.setText(String.format("%s %s, %s:", getString(R.string.lbl_exercises), date.toString(), exResultList.size()));
+			// update the title with quantity
+			tvTitleOfList.setText(String.format("%s %s,   %s:", getString(R.string.lbl_exercises), date.toString(), exResultList.size()));
 			Log.d(TAG, "updateRvExResult: " + exResultList);
 		} else {
+			// update the title with zero
 			rvExResult.setVisibility(View.GONE);
 			tvNoData.setVisibility(View.VISIBLE);
+			tvTitleOfList.setText(String.format("%s %s,   %s:", getString(R.string.lbl_exercises), date.toString(), 0));
 		}
 	}
 

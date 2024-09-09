@@ -268,7 +268,7 @@
 	<string name="hint_main_fab_desc">After you chose and setup an exercise this button can Launch:
 		\n• The Exercise by Tap
 		\n• Web advices for it by Long Tap
-		\nButtons below: •&#160;Statistics •&#160;Basics •&#160;Schulte •&#160;News
+		\nButtons below: •&#160;Statistics •&#160;News •&#160;Schulte •&#160;(+)Basics and Others
 	</string>
 	<string name="hint_main_basics_title">Basics</string>
 	<string name="hint_main_basics_desc">Settings for basics Exercises</string>
@@ -349,13 +349,13 @@
 	<string name="lbl_sssr_main_sum">Sphere of separate self-realization (fulfillment)</string>
 	<string name="lbl_sssr_tracking">What to track</string>
 	<string name="lbl_sssr_job"><![CDATA[Job & Learning]]></string>
-	<string name="lbl_sssr_chores">Chores</string>
 	<string name="lbl_sssr_physical">Physical</string>
+	<string name="lbl_sssr_leisure">Rest and Leisure</string>
 	<string name="lbl_sssr_family">Family</string>
 	<string name="lbl_sssr_friends">Friends</string>
-	<string name="lbl_sssr_leisure">Leisure</string>
+	<string name="lbl_sssr_chores">Chores</string>
 	<string name="lbl_sssr_sleep">Sleep</string>
-	<string name="lbl_sssr_sum">Exercices to increase your mindfulness, make your life style more measurable and clear</string>
+	<string name="lbl_sssr_sum">Exercises to increase your mindfulness, make your life style more measurable and clear</string>
 	<string name="lbl_sssr_intercept01">Interception-1</string>
 	<string name="lbl_sssr_intercept02">Interception-2</string>
 	<string name="lbl_sssr_intercept03">Interception-3</string>
@@ -364,5 +364,6 @@
 	<string name="msg_sssr_limit_of_past">Limit of changeable past</string>
 	<string name="msg_sssr_limit_of_future">Limit of changeable future</string>
 	<string name="lbl_gcb_bas_squares_colored_crossed">Squares crossed</string>
+	<string name="lbl_cancel">Cancel</string>
 
 </resources>

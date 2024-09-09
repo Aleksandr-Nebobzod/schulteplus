@@ -75,6 +75,7 @@
 					android:layout_margin="0dp"
 					android:gravity="center"
 					android:text="000"
+					style="@style/AppTextStyleSec"
 					/>
 				<TextView
 					android:id="@+id/tv_time"
@@ -83,6 +84,7 @@
 					android:layout_margin="0dp"
 					android:gravity="center"
 					android:text="04:20"
+					style="@style/AppTextStyleSec"
 					/>
 				<Chronometer
 					android:id="@+id/chm_time"
@@ -92,6 +94,7 @@
 					android:countDown="false"
 					android:format="%s"
 					android:visibility="gone"
+					style="@style/AppTextStyleSec"
 					/>
 			</LinearLayout>
 			
@@ -100,7 +103,7 @@
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:textSize="36sp"
-				android:textStyle="bold"
+				android:textStyle=""
 				android:layout_weight="2"
 				style="@style/SchultePlus.Button.TextButton.Dialog"
 				android:text="@string/lbl_distraction" />

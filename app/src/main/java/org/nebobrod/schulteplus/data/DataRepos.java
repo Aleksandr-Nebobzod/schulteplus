@@ -180,7 +180,7 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataR
 			List<UserHelper> fsUsers = fsFuture.get();
 
 			if ((ormUser == null) && fsUsers == null) {
-				throw new ExecutionException(new RuntimeException("No actual user record in any repository!"));
+				throw new ExecutionException(new RuntimeException("No actual user record id=" + id + " in any repository!"));
 			}
 
 			if (fsUsers.size() > 0) {

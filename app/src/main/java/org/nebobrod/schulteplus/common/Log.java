@@ -9,7 +9,7 @@
 package org.nebobrod.schulteplus.common;
 
 import static org.nebobrod.schulteplus.Utils.exceptionFbCrash;
-import static org.nebobrod.schulteplus.Utils.logFbCrash;
+import static org.nebobrod.schulteplus.Utils.logFbCrashlytics;
 
 import android.os.Looper;
 
@@ -35,21 +35,21 @@ public class Log {
 		if (LOG) {
 			android.util.Log.v(PREFIX + "verb: " + tag, string);
 		} else {
-			logFbCrash(PREFIX + "verb: " + tag +": " + string);
+			logFbCrashlytics(PREFIX + "verb: " + tag + ": ", string);
 		}
 	}
 	public static void w(String tag, String string) {
 		if (LOG) {
 			android.util.Log.w(PREFIX + "warn: " + tag, string);
 		} else {
-			logFbCrash(PREFIX + "warn: " + tag +": " + string);
+			logFbCrashlytics(PREFIX + "warn: " + tag +": ", string);
 		}
 	}
 	public static void e(String tag, String string, Exception e) {
 		if (LOG) {
 			android.util.Log.e(PREFIX + "error: " + tag, string, e);
 		} else {
-			logFbCrash(PREFIX + "error: " + tag +": " + string);
+			logFbCrashlytics(PREFIX + "error: " + tag +": ", string);
 			exceptionFbCrash(e);
 		}
 	}

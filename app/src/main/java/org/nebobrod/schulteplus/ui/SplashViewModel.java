@@ -141,17 +141,17 @@ public class SplashViewModel extends ViewModel {
 	 */
 	@Override
 	protected void onCleared() {
-		super.onCleared();
 		// Cancel ongoing tasks, close connections, etc.
 		if (appExecutors != null) {
 			appExecutors = null;
 		}
-		Log.d("SplashViewModel", "ViewModel cleared");
+		Log.v(TAG, "ViewModel cleared");
+		super.onCleared();
 	}
 
 	/** initializing */
 	public void startSplashProcess() {
-		Log.d(TAG, "startSplashProcess: ");
+		Log.v(TAG, "startSplashProcess: ");
 		splashState.setValue(SplashState.START);
 		//checkData();
 		//checkTime();

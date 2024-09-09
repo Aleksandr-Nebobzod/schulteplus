@@ -375,6 +375,7 @@ public class BasicsActivity extends AppCompatActivity {
 					if (resourceId != 0) {
 						Glide.with(this)
 								.asGif()
+								.override(600, 400) // Limitation of size
 								.load(resourceId)
 								.apply(new RequestOptions().placeholder(R.drawable.ic_baseline_cached_24)) // for long loads
 								.into(ivContent); // put GIF into ImageView

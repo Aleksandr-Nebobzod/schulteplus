@@ -5,33 +5,36 @@
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
-	<uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
-	<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+	<uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 	
 	<queries>
-		<!-- We need to open web-links-->
+		
+		<!-- We need to open web-links -->
 		<intent>
 			<action android:name="android.intent.action.VIEW" />
+			
 			<data android:scheme="http" />
 		</intent>
 		<intent>
 			<action android:name="android.intent.action.VIEW" />
+			
 			<data android:scheme="https" />
 		</intent>
 	</queries>
 	
 	<supports-screens
-		android:smallScreens="false"
-		android:normalScreens="true"
 		android:largeScreens="true"
+		android:normalScreens="true"
+		android:smallScreens="false"
 		android:xlargeScreens="true" />
 	
 	<application
 		android:name=".Utils"
 		android:allowBackup="true"
-		android:fullBackupContent="@xml/backup_rules"
 		android:configChanges="orientation|screenSize"
 		android:dataExtractionRules="@xml/data_extraction_rules"
+		android:fullBackupContent="@xml/backup_rules"
 		android:hardwareAccelerated="true"
 		android:icon="@mipmap/ic_launcher_round"
 		android:label="@string/app_name"
@@ -41,9 +44,8 @@
 		android:versionCode="114"
 		android:versionName="Entada"
 		tools:targetApi="33">
-<!--		android:icon="@mipmap/ic_launcher"-->
-<!--		.Fullscreen-->
-
+		<!-- android:icon="@mipmap/ic_launcher" -->
+		<!-- .Fullscreen -->
 		<activity
 			android:name=".ui.SplashActivity"
 			android:exported="true"
@@ -77,19 +79,16 @@
 			android:exported="false"
 			android:theme="@style/Theme.SchultePlus.Login"
 			android:windowSoftInputMode="adjustNothing" />
-			
 		<activity
 			android:name=".ui.SignupActivity"
 			android:theme="@style/Theme.SchultePlus.Login"
 			android:windowSoftInputMode="adjustNothing" />
-		
 		<activity
 			android:name=".ui.schulte.SchulteActivity"
 			android:configChanges="orientation|keyboardHidden|screenSize"
 			android:exported="false"
 			android:label="@string/title_activity_schulte"
 			android:theme="@style/Theme.SchultePlus.FullscreenLite" />
-		
 		<activity
 			android:name=".ui.basics.BasicsActivity"
 			android:configChanges="orientation|keyboardHidden|screenSize"
@@ -98,17 +97,19 @@
 			android:theme="@style/Theme.SchultePlus.FullscreenLite">
 			<intent-filter>
 				<action android:name="android.intent.action.SEND" />
+				
 				<category android:name="android.intent.category.DEFAULT" />
+				
 				<data android:mimeType="image/*" />
 			</intent-filter>
 		</activity>
-		
 		<activity
 			android:name=".ui.sssr.SssrActivity"
 			android:configChanges="orientation|keyboardHidden|screenSize"
 			android:exported="false"
 			android:label="@string/title_sssr"
-			android:windowSoftInputMode="adjustResize"
-			android:theme="@style/Theme.SchultePlus.FullscreenLite" />
+			android:theme="@style/Theme.SchultePlus.FullscreenLite"
+			android:windowSoftInputMode="adjustResize" />
 	</application>
+
 </manifest>

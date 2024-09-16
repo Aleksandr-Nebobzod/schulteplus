@@ -1071,13 +1071,6 @@ public final class Utils extends Application {
 			}
 		});
 
-		// To prevent IllegalStateException: The specified child already has a parent
-/*		ViewParent parent = view.getParent();
-		if (parent instanceof ViewGroup) {
-			ViewGroup viewGroup = (ViewGroup) parent;
-			viewGroup.removeView(view);
-		}*/
-
 		view.loadUrl("file:///android_asset/" + fileName);
 	}
 

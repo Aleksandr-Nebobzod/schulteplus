@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2024  "Smart Rovers"
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/" xmlns:atom="http://www.w3.org/2005/Atom"  xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<title>Новости сайта Внимание Шульте Плюс</title>
+		<description>Последние новости и обновления сайта ATTPLUS</description>
+		<pubDate>Thu, 12 Sep 2024 14:30:00 +0000</pubDate>
+		<link>http://attplus.in/schulte/ru/rss.xml</link>
+		<atom:link href="http://fetchrss.com/rss/66e563268590c6578108412266e554ca5737eb5ef1051092.xml" rel="self" type="application/rss+xml" />
+		<generator>https://fetchrss.com</generator>
+		<image>
+			<link>http://attplus.in/schulte/ru/rss.xml</link>
+			<url>https://www.google.com/s2/favicons?domain=http://attplus.in</url>
+			<title>Новости сайта Внимание Шульте Плюс</title>
+		</image>
+		
+		<item>
+			<title>Новое  Пространство  Сферы</title>
+			<link>http://attplus.in/schulte/ru/ex_description/space500_sssr.html</link>
+			<description><![CDATA[Мы выпустили новое упражнение Пространство 500 для тренировки внимания.<br/><br/><span style="font-size:12px; color: gray;">(Feed generated with <a href="https://fetchrss.com" target="_blank">FetchRSS</a>)</span>]]></description>
+			<dc:creator></dc:creator>
+			<pubDate>Thu, 12 Sep 2024 14:30:00 +0000</pubDate>
+			<guid isPermaLink="false">http://attplus.in/schulte/ru/ex_description/space500_sssr.html</guid>
+		</item>
+		<item>
+			<title>Улучшение интерфейса: Новые настройки</title>
+			<link>http://attplus.in/schulte/ru/releases_istoria.html</link>
+			<description><![CDATA[Мы улучшили настройки интерфейса для вашего удобства.<br/><br/><span style="font-size:12px; color: gray;">(Feed generated with <a href="https://fetchrss.com" target="_blank">FetchRSS</a>)</span>]]></description>
+			<dc:creator></dc:creator>
+			<pubDate>Tue, 10 Sep 2024 12:00:00 +0000</pubDate>
+			<guid isPermaLink="false">http://attplus.in/schulte/ru/releases_istoria.html</guid>
+		</item>
+	
+	</channel>
+</rss>
+
+<!--
+<rss version="2.0"  xmlns:atom="http://www.w3.org/2005/Atom"  xml:base="http://attplus.in">
+	<channel>
+		<title>Новости сайта Внимание Шульте Плюс</title>
+		<link>http://attplus.in/</link>
+		<atom:link href="http://attplus.in/schulte/ru/rss.xml" rel="self" type="application/rss+xml" />
+		<description>Последние новости и обновления сайта ATTPLUS</description>
+		<language>ru</language>
+		<pubDate>Thu, 12 Sep 2024 15:00:00 GMT</pubDate>
+		<item>
+			<title>Новое  Пространство  Сферы</title>
+			<link>http://attplus.in/schulte/ru/ex_description/space500_sssr.html</link>
+			<description>Мы выпустили новое упражнение Пространство 500 для тренировки внимания.</description>
+			<pubDate>Thu, 12 Sep 2024 14:30:00 GMT</pubDate>
+			<guid>http://attplus.in/schulte/ru/ex_description/space500_sssr.html</guid>
+		</item>
+		<item>
+			<title>Улучшение интерфейса: Новые настройки</title>
+			<link>http://attplus.in/schulte/ru/releases_istoria.html</link>
+			<description>Мы улучшили настройки интерфейса для вашего удобства.</description>
+			<pubDate>Tue, 10 Sep 2024 12:00:00 GMT</pubDate>
+			<guid>http://attplus.in/schulte/ru/releases_istoria.html</guid>
+		</item>
+	</channel>
+</rss>
+-->
+

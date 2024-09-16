@@ -1,0 +1,10 @@
+AddDefaultCharset UTF-8
+AddType application/x-httpd-php .html .htm
+ServerSignature Off
+# ServerTokens Prod
+AddType application/xml .xml
+<Files "rss.xml">
+    Header set Content-Type "application/rss+xml; charset=UTF-8"
+</Files>
+
+

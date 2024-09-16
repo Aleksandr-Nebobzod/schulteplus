@@ -1,0 +1,121 @@
+<!--
+  ~ Copyright (c) 2024  "Smart Rovers"
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обучение</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <style>
+        .swiper-container {
+            width: 100%;
+            height: 100vh;
+        }
+        .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            font-size: 1.2em;
+            line-height: 1.5;
+        }
+        .question {
+            margin-top: 20px;
+        }
+        .question label {
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Swiper Container -->
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+
+        <!-- Slide 1 -->
+        <div class="swiper-slide">
+            <div>
+                <p>Таблица Шульте это набор упорядоченных символов.<br>
+                    Каждый символ представлен в таблице один раз.<br>
+                    При обратном отсчёте в начале упражнения виден этот порядок, затем символы перемешиваются.<br>
+                    Задача — найти следующий символ в последовательности и коснуться его. Прикосновение к другому
+                    символу сообщит об ошибке увеличением ячейки, см. рис.2.</p>
+                <img src="image_placeholder.png" alt="Рисунок 2">
+                <p>А если ничего не произошло, значит ход верный и надо искать следующий символ.</p>
+            </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="swiper-slide">
+            <div>
+                <p>Если символ не отыскивается или мы забыли последовательность, долгим прикосновением к любой ячейке
+                    можно вызвать подсказку.</p>
+                <p>В режиме "Рейтинги" вам недоступны параметры упражнения, за исключением масштаба шрифта.</p>
+                <p>Подробная справка вызывается долгим прикосновением к кнопке "Пуск" вне упражнения.</p>
+            </div>
+        </div>
+
+        <!-- Slide 3 (Questions with checkboxes) -->
+        <div class="swiper-slide">
+            <div>
+                <p>Выберите верный пример последовательности символов:</p>
+                <div class="question">
+                    <label><input type="checkbox"> 1, 2, 3, 4,...</label>
+                    <label><input type="checkbox"> 1, 25, 2, 24,...</label>
+                    <label><input type="checkbox"> 5, 3, 4, 4,...</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4 (Questions with checkboxes) -->
+        <div class="swiper-slide">
+            <div>
+                <p>Как вызвать подсказку следующего хода можно:</p>
+                <div class="question">
+                    <label><input type="checkbox"> Двойным щелчком на предыдущей ячейке</label>
+                    <label><input type="checkbox"> Долгим прикосновением на любой ячейке</label>
+                    <label><input type="checkbox"> Прикосновением мимо таблицы</label>
+                </div>
+                <p>Подробная справка вызывается:</p>
+                <div class="question">
+                    <label><input type="checkbox"> Звонком в службу поддержки</label>
+                    <label><input type="checkbox"> долгим прикосновением к кнопке "Пуск" вне упражнения"</label>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Pagination -->
+    <div class="swiper-pagination"></div>
+    <!-- Navigation -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+</div>
+
+<!-- Swiper JS -->
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+        var swiper = new Swiper('.swiper-container', {
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            loop: false
+        });
+    </script>
+</body>
+</html>

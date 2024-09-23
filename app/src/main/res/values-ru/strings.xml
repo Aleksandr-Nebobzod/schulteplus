@@ -343,4 +343,5 @@
 	<string name="msg_sssr_limit_of_future">Предел изменяемого будущего</string>
 	<string name="lbl_gcb_bas_squares_colored_crossed">Крест в квадратах</string>
 	<string name="lbl_cancel">Отмена</string>
+	<string name="msg_tests_passed">Все тесты успешны</string>
 </resources>

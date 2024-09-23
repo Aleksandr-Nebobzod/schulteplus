@@ -8,10 +8,14 @@
 
 package org.nebobrod.schulteplus.data;
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
@@ -22,6 +26,7 @@ import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.data.fbservices.ConditionEntry;
 import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -290,4 +295,96 @@ public class DataRepos<TEntity extends Identifiable<String>>  implements z_DataR
 
 		return taskCompletionSource.getTask();
 	}
+
+	/** Static method to get local SQL-executable copy of uid achievements*/
+	@Deprecated
+	public static Task<SQLiteDatabase> fetchAchievementsToTemp(String uid) {
+
+		DataFirestoreRepo<Achievement> _fsRepo = new DataFirestoreRepo<>(Achievement.class);
+
+		SQLiteDatabase db = SQLiteDatabase.create(null);
+		String createTableQuery = "CREATE TABLE IF NOT EXISTS temp_table ("
+				+ "ex_type_id TEXT NOT NULL, "
+				+ "achieve_id TEXT NOT NULL, "
+				+ "date TEXT, "
+				+ "value INTEGER, "
+				+ "PRIMARY KEY(ex_type_id, achieve_id))";  // Composite key
+		db.execSQL(createTableQuery);
+
+		//  Task for await getting all procedures
+		TaskCompletionSource<SQLiteDatabase> taskCompletionSource = new TaskCompletionSource<>();
+
+		_fsRepo.getListByField(new ConditionEntry("uid", DataRepository.WhereCond.EQ, uid))
+				.addOnSuccessListener(new OnSuccessListener<List<Achievement>>() {
+					@Override
+					public void onSuccess(List<Achievement> achievements) {
+						for (Achievement document : achievements) {
+							String exTypeId = document.getExType();
+							String achieveId = document.getSpecialMark();
+							String date = document.getDateTime();
+							int value = Integer.parseInt(document.getRecordValue());
+
+							// Prepare record for SQLite
+							ContentValues values = new ContentValues();
+							values.put("ex_type_id", exTypeId);
+							values.put("achieve_id", achieveId);
+							values.put("date", date);
+							values.put("value", value);
+
+							// Insert record into SQLite
+							db.insert("temp_table", null, values);
+						}
+						// set Task completed, returning prepared database
+						taskCompletionSource.setResult(db);
+					}
+				})
+				.addOnFailureListener(e -> {
+					// if error Task
+					taskCompletionSource.setException(e);
+				});
+
+		return taskCompletionSource.getTask();  // return the Task, after data insert finished
+	}
+
+	/** Static method to get uid achievements earlier or later of existing in local DB*/
+	public static Task<Void> fetchAchievements(String uid) {
+		DataOrmRepo<Achievement> _ormRepo = new DataOrmRepo<>(Achievement.class);
+		DataFirestoreRepo<Achievement> _fsRepo = new DataFirestoreRepo<>(Achievement.class);
+
+		// Fetch min and max timestamps asynchronously
+		Task<Long> timeStampMinTask = _ormRepo.queryForFirst(
+						_ormRepo.getDao().queryBuilder().orderBy("timeStamp", true))
+				.continueWith(task -> task.isSuccessful() && task.getResult() != null ?
+						task.getResult().getTimeStamp() : 0L);
+
+		Task<Long> timeStampMaxTask = _ormRepo.queryForFirst(
+						_ormRepo.getDao().queryBuilder().orderBy("timeStamp", false))
+				.continueWith(task -> task.isSuccessful() && task.getResult() != null ?
+						task.getResult().getTimeStamp() : System.currentTimeMillis());
+
+		// when both are ready
+		return Tasks.whenAllSuccess(timeStampMinTask, timeStampMaxTask)
+				.continueWithTask(task -> {
+					List<Object> results = task.getResult();
+					long timeStampMin = (long) results.get(0);
+					long timeStampMax = (long) results.get(1);
+
+					// request from Firestore
+					return _fsRepo.getListByField(
+									new ConditionEntry("uid", DataRepository.WhereCond.EQ, uid),
+									new ConditionEntry("timeStamp", DataRepository.WhereCond.LE, timeStampMin),
+									new ConditionEntry("timeStamp", DataRepository.WhereCond.GE, timeStampMax))
+							.continueWithTask(fsTask -> {
+								if (fsTask.isSuccessful()) {
+									List<Achievement> achievements = fsTask.getResult();
+									// Add all records to the local DB in batch
+									_ormRepo.load(achievements);
+								} else {
+									fsTask.getException().printStackTrace();
+								}
+								return Tasks.forResult(null);
+							});
+				});
+	}
+
 }

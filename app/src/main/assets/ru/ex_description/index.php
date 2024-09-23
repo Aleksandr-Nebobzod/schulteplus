@@ -34,7 +34,7 @@
 <body>
 <div class="body-header">
     <div class="mini-info">
-        <a href="http://attplus.in/schulte/ru/attention_schulte_plus_info_ru.html">ВНИМАНИЕ ШУЛЬТЕ ПЛЮС</a>
+        <a href="http://attplus.in/schulte/ru/index.html">ВНИМАНИЕ ШУЛЬТЕ ПЛЮС</a>
     </div>
     <address style="text-align: right;">Век живи, век учись!</address>
     <h4>Методики</h4>

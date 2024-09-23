@@ -99,13 +99,14 @@ public class ExerciseRunner {
 
 		uid = (uid.isEmpty() ? KEY_DEFAULT_USER_PREF : userHelper.getUid());
 		setFbCrashlyticsUser(uid);
-		sharedPreferences = context.getSharedPreferences(uid, Context.MODE_PRIVATE);
+		DataRepos.fetchAchievements(uid);
+
 		// Getting default preferences if there aren't still there
+		sharedPreferences = context.getSharedPreferences(uid, Context.MODE_PRIVATE);
 		PreferenceManager.setDefaultValues(context, R.xml.menu_preferences, false);
+
 		loadPreference();
-
-		setUserHelper(userHelper); 		// it refreshes user related fields
-
+		setUserHelper(userHelper); 		// refresh user related fields
 		savePreferences();
 	}
 

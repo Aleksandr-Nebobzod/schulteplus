@@ -365,5 +365,6 @@
 	<string name="msg_sssr_limit_of_future">Limit of changeable future</string>
 	<string name="lbl_gcb_bas_squares_colored_crossed">Squares crossed</string>
 	<string name="lbl_cancel">Cancel</string>
+	<string name="msg_tests_passed">All tests are successful</string>
 
 </resources>

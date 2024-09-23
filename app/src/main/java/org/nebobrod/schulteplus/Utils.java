@@ -81,6 +81,7 @@ import com.google.common.hash.Hashing;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import org.nebobrod.schulteplus.common.Log;
+import org.nebobrod.schulteplus.ui.InvestActivity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -1483,6 +1484,8 @@ public final class Utils extends Application {
 				return DayOfWeek.MONDAY;
 		}
 	}
+
+	/** Returns picture glued of two */
 	public static Drawable overlayBadgedIcon(Drawable sourceDrawable, Drawable badgeDrawable) {
 		// Safety
 		if (sourceDrawable == null) {
@@ -1524,4 +1527,16 @@ public final class Utils extends Application {
 
 		return layerDrawable;
 	}
+
+	/** Runs quiz activity */
+	public static void runInvestActivity(Context context1, String exerciseId) {
+		//"gcb_schulte_1_sequence"
+
+		if (null == exerciseId) return;
+
+		Intent intent = new Intent(context1, InvestActivity.class);
+		intent.putExtra("exercise_id", exerciseId);
+		context1.startActivity(intent);
+	}
+
 }

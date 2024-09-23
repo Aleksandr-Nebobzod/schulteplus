@@ -11,6 +11,7 @@ package org.nebobrod.schulteplus.ui.schulte;
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.overlayBadgedIcon;
 import static org.nebobrod.schulteplus.common.Const.*;
+import static org.nebobrod.schulteplus.data.ExType.ACHIEVE_CERTIFIED;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -42,10 +43,15 @@ import androidx.preference.SwitchPreference;
 
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.STable;
+import org.nebobrod.schulteplus.data.Achievement;
+import org.nebobrod.schulteplus.data.DataOrmRepo;
 import org.nebobrod.schulteplus.data.ExType;
 
 import java.util.ArrayList;
@@ -494,11 +500,24 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 			}
 			// Setting badge
 			ExType exType = ExerciseRunner.getExTypes().get(pKey);
-			if (exType != null && exType.getStatus() == ExType.FUNC_STATUS_PLANNED) {
+			if (exType == null) continue;
+
+			// Option is not available yet
+			if (exType.getStatus() == ExType.FUNC_STATUS_PLANNED) {
 				Drawable icon = p.getIcon();
-				p.setIcon(overlayBadgedIcon(icon, getRes().getDrawable(R.drawable.ic_bagde_inprogress, null)));
+				p.setIcon(overlayBadgedIcon(icon, getRes().getDrawable(R.drawable.ic_badge_inprogress, null)));
 				p.setEnabled(false);
+				continue; 				// no more requirements
 			}
+
+			// Check achieved and update badge
+			exType.refreshAchieved().addOnCompleteListener(new OnCompleteListener<Void>() {
+				@Override
+				public void onComplete(@NonNull Task<Void> task) {
+					Drawable icon = p.getIcon();
+					p.setIcon(overlayBadgedIcon(icon, exType.getBadge()));
+				}
+			});
 		}
 	}
 

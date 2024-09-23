@@ -22,20 +22,43 @@
 		</image>
 		
 		<item>
+			<title>Страница новостей Внимание Шульте Плюс</title>
+			<link>http://attplus.in/schulte/ru/news_data.html#240922</link>
+			<description><![CDATA[
+				На сайте, появилась страница новостей. <a href="ru/news.php">Смотреть новости.</a>
+			]]></description>
+			<dc:creator></dc:creator>
+			<pubDate>Sat, 14 Sep 2024 14:30:00 +0000</pubDate>
+			<guid isPermaLink="true">http://attplus.in/schulte/ru/news_data.html#240922</guid>
+		</item>
+		
+		<item>
+			<title>RSS Лента новостей Внимание Шульте Плюс</title>
+			<link>http://attplus.in/schulte/ru/news_data.html#240914</link>
+			<description><![CDATA[
+				Все новости в одном месте! Мы не знаем как этим пользуются сейчас, но оно есть, ищи XML-файл на сайте.
+			]]></description>
+			<dc:creator></dc:creator>
+			<pubDate>Sat, 14 Sep 2024 14:30:00 +0000</pubDate>
+			<guid isPermaLink="true">http://attplus.in/schulte/ru/news_data.html#240914</guid>
+		</item>
+		
+		<item>
 			<title>Новое  Пространство  Сферы</title>
 			<link>http://attplus.in/schulte/ru/ex_description/space500_sssr.html</link>
 			<description><![CDATA[Мы выпустили новое упражнение Пространство 500 для тренировки внимания.<br/><br/><span style="font-size:12px; color: gray;">(Feed generated with <a href="https://fetchrss.com" target="_blank">FetchRSS</a>)</span>]]></description>
 			<dc:creator></dc:creator>
 			<pubDate>Thu, 12 Sep 2024 14:30:00 +0000</pubDate>
-			<guid isPermaLink="false">http://attplus.in/schulte/ru/ex_description/space500_sssr.html</guid>
+			<guid isPermaLink="true">http://attplus.in/schulte/ru/ex_description/space500_sssr.html</guid>
 		</item>
+		
 		<item>
-			<title>Улучшение интерфейса: Новые настройки</title>
+			<title>История релизов Внимание Шульте Плюс</title>
 			<link>http://attplus.in/schulte/ru/releases_istoria.html</link>
-			<description><![CDATA[Мы улучшили настройки интерфейса для вашего удобства.<br/><br/><span style="font-size:12px; color: gray;">(Feed generated with <a href="https://fetchrss.com" target="_blank">FetchRSS</a>)</span>]]></description>
+			<description><![CDATA[Теперь описание всех релизов на сайте.<br/><br/><span style="font-size:12px; color: gray;">(Feed generated with <a href="https://fetchrss.com" target="_blank">FetchRSS</a>)</span>]]></description>
 			<dc:creator></dc:creator>
 			<pubDate>Tue, 10 Sep 2024 12:00:00 +0000</pubDate>
-			<guid isPermaLink="false">http://attplus.in/schulte/ru/releases_istoria.html</guid>
+			<guid isPermaLink="true">http://attplus.in/schulte/ru/releases_istoria.html</guid>
 		</item>
 	
 	</channel>

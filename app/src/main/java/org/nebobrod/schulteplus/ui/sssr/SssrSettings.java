@@ -81,8 +81,7 @@ public class SssrSettings extends PreferenceFragmentCompat {
 			chosen.setChecked(true);
 		}
 		exType.setText(chosen.getKey());
-		runner.setExType(exType.getText().toString()); // set to runner from invisible pref et
-		// set hinted to runner
+		runner.setExType(exType.getText().toString()); // set to runner from invisible EditTextPreference
 
 		super.onResume();
 	}
@@ -138,11 +137,12 @@ public class SssrSettings extends PreferenceFragmentCompat {
 				});
 				exerciseTypeCheckBoxes.add(p);
 			}
+
 			// Setting badge
 			ExType exType = ExerciseRunner.getExTypes().get(pKey);
 			if (exType != null && exType.getStatus() == ExType.FUNC_STATUS_PLANNED) {
 				Drawable icon = p.getIcon();
-				p.setIcon(overlayBadgedIcon(icon, getRes().getDrawable(R.drawable.ic_bagde_inprogress, null)));
+				p.setIcon(overlayBadgedIcon(icon, getRes().getDrawable(R.drawable.ic_badge_inprogress, null)));
 				p.setEnabled(false);
 			}
 		}

@@ -19,6 +19,7 @@ import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.Log;
+import org.nebobrod.schulteplus.data.ExType;
 import org.nebobrod.schulteplus.databinding.ActivityMainBinding;
 import org.nebobrod.schulteplus.data.UserHelper;
 import org.nebobrod.schulteplus.ui.basics.BasicsActivity;
@@ -56,6 +57,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -213,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
 		// In Progress Badge for Home (News) menu item
 		MenuItem menuItem = navView.getMenu().findItem(R.id.navigation_home);
 		Drawable icon = menuItem.getIcon();
-		menuItem.setIcon(overlayBadgedIcon(icon, getRes().getDrawable(R.drawable.ic_bagde_inprogress, null)));
+		menuItem.setIcon(overlayBadgedIcon(icon, getRes().getDrawable(R.drawable.ic_badge_inprogress, null)));
 
 		/*BadgeDrawable badge = navView.getOrCreateBadge(R.id.navigation_plus);
 		badge.setVisible(false);
@@ -281,7 +283,15 @@ public class MainActivity extends AppCompatActivity {
 			ExerciseRunner.loadPreference();
 			String exType = runner.getExType();
 			// done: 21.09.2023 here we need to choose Activity by switch: (ExerciseRunner.getTypeOfExercise())
-			// gcb_bas_dbl_dot, gcb_bas_circles_rb, schulte_1_sequence
+
+			// Check prerequisites achieved
+			String requirements = runner.getExTypes().get(exType).getRequiredAchievement();
+			if (requirements.equals(ExType.ACHIEVE_CERTIFIED)) {
+				Utils.runInvestActivity(this, exType);
+				return;
+			}
+
+			// Prerequisites are ready
 			switch (exType.substring(0,7)){
 				case "gcb_bas":
 					activity = BasicsActivity.class;
@@ -378,30 +388,4 @@ public class MainActivity extends AppCompatActivity {
 		}
 		super.onDestroy();
 	}
-
-	/*private void showPopupMenu(View anchor) {
-		// Create PopupMenu
-		PopupMenu popup = new PopupMenu(MainActivity.this, anchor);
-		popup.getMenuInflater().inflate(R.menu.z_bottom_nav_plus_popup_menu, popup.getMenu());
-
-		// Set listener
-		popup.setOnMenuItemClickListener(item -> {
-			switch (item.getItemId()) {
-				case R.id.navigation_sssr:
-					// Navigate to fragment
-					navController.navigate(R.id.navigation_sssr);
-					return true;
-				case R.id.navigation_basics:
-					// Navigate to fragment
-					navController.navigate(R.id.navigation_basics);
-					return true;
-				default:
-					return false;
-			}
-		});
-
-		// Показываем меню
-		popup.show();
-	}*/ // Approach not used Replaced with fragment
-
 }

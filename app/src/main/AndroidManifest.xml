@@ -44,6 +44,10 @@
 		android:versionCode="114"
 		android:versionName="Entada"
 		tools:targetApi="33">
+		<activity
+			android:name=".ui.InvestActivity"
+			android:theme="@style/Theme.SchultePlus.FullscreenStart"
+			android:exported="false" />
 		<!-- android:icon="@mipmap/ic_launcher" -->
 		<!-- .Fullscreen -->
 		<activity

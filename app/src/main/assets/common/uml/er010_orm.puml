@@ -1,0 +1,95 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam classFontSize 16
+skinparam shadowing true
+top to bottom direction
+
+class UserHelper {
+  uid: String
+  uak: String
+  --
+  name: String
+  email: String
+  password: String
+  deviceId: String
+  verified: boolean
+  psyCoins: int
+  seconds: int
+  hours: int
+  daysTrained: int
+  level: int
+  timeStamp: long
+  dateCreated: String
+  dateChanged: String
+}
+
+class ExResult {
+  uid: String
+  uak: String
+  name: String
+  timeStamp: long
+  timeStampStart: long
+  dateTime: String
+  exType: String
+  exDescription: String
+  numValue: long
+  psyCoins: int
+  levelOfEmotion: int
+  levelOfEnergy: int
+  note: String
+  turns: int
+  turnsMissed: int
+  average: float
+  rmsd: float
+  lng01-03: long
+  flo01-03: float
+}
+
+class Turn {
+  uak: String
+  exResult: ExResult
+  timeStamp: long
+  time: long
+  expected: int
+  x: int
+  y: int
+  position: int
+  isCorrect: boolean
+}
+
+class Achievement {
+  uid: String
+  uak: String
+  name: String
+  timeStamp: long
+  dateTime: String
+  exType: String
+  recordText: String
+  recordValue: String
+  specialMark: String
+}
+
+class AdminNote {
+  uak: String
+  uidAddress: String
+  title: String
+  langCode: String
+  message: String
+  appendix: String
+  timeStamp: long
+  timeStampConfirmed: long
+  verAppLatest: int
+  verDeprecating: int
+  verDeprecated: int
+}
+
+UserHelper ||--o{ ExResult : uid
+ExResult ||--|{ Turn : exResult
+UserHelper ||--o{ Achievement : uid
+UserHelper }o..> "uidAddress" AdminNote 
+
+object DEVICE {
+  uak = uid & device
+}
+@enduml

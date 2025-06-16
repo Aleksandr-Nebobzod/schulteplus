@@ -1,0 +1,47 @@
+@startuml
+!theme toy
+
+sprite $aComponent jar:archimate/application-component
+
+actor User
+rectangle "Attention Schulte Plus\n(Android App)" as App <<$aComponent>>  #Application
+cloud "Firebase\n(Auth + Firestore)" as FB  #lightblue
+cloud "email server attplus.in" as ES  #lightblue
+cloud "Web server attplus.in" as WS  #lightblue
+cloud "Telegram channels" as TG 
+cloud "Vkontakte channels" as VK
+
+'note left of FB Documentation, Methodology, Articles
+
+
+User -> App : Exercise
+User <-- WS : Info
+User <-- ES : Info
+App <--> FB : Data exchange
+WS <-- FB : Data income
+TG ..> FB : Data income
+VK ..> FB : Data income
+
+'actor Admin
+actor Support  #lightblue
+
+'Admin --> FB : Management
+'Admin --> ES : Management
+
+Support --> ES : Maintain
+Support --> FB : Maintain
+
+
+legend left
+See
+====
+<$bProcess> : user
+====
+<$aService> : cloud service
+====
+<$aComponent> : application component
+====
+- - > : future data flows
+endlegend
+
+@enduml

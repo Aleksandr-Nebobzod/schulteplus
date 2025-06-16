@@ -1,0 +1,111 @@
+<!--
+  ~ Copyright (c) 2024  "Smart Rovers"
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обучение</title>
+<!--    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">-->
+    <link rel="stylesheet" href="file:///android_asset/common/swiper-bundle.min.css">
+    <link rel="stylesheet" href="file:///android_asset/common/add_styles.css">
+</head>
+
+<body>
+
+<!-- Swiper Container -->
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+
+        <!-- Slide 1 -->
+        <div class="swiper-slide">
+            <img src="file:///android_asset/common/ic_badge_question.svg" style="max-width: 30%; display: block; margin: 0 auto;" alt="Вопрос">
+            <h1>
+                Стакан Ровера
+            </h1>
+            <p>
+                <b>-- это оптическая иллюзия, пример неравновесной перцептивной среды</b>
+            </p>
+            <p>
+                Плоский набор линий воспринимается как объёмный цилиндр и это либо вид сверху, либо вид снизу.
+                В отличие от двух вариантов куба Неккера, стакан Ровера порождает дополнительные проекции.
+            </p>
+            <ul>
+                <li>U-образная труба</li>
+                <li>S-образная труба</li>
+            </ul>
+            <p>
+                <b>Задача</b> — Освоить элементы более аккуратного управления восприятием.
+            </p>
+            <p>
+                Каждое переключение проекции -- регистрировать кнопкой [Событие].
+                Наблюдать динамику результатов в пространсте "Стата".
+            </p>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="swiper-slide">
+            <h1>
+                Варианты упражнений:
+            </h1>
+            <p>
+                Те же четыре варианта, что и для куба Неккера.
+            </p>
+            <p><em>(Подробная <a
+                    href="http://attplus.in/schulte/ru/ex_description/gcb_bas_necker_cylinder.html">справка</a>
+                по выбранному упражнению
+                вызывается также долгим прикосновением
+                к кнопке "Пуск" вне упражнения).</em>
+            </p>
+        </div>
+
+        <!-- Slide 3 (Questions with checkboxes) -->
+        <div class="swiper-slide">
+            <div class="question">
+                <p>1 Стакан Ровера это:</p>
+                <label><input type="checkbox" data-correct="true"> неравновесная перцептивная среда</label>
+                <label><input type="checkbox" data-correct="false"> тело вращения</label>
+                <label><input type="checkbox" data-correct="true"> оптическая иллюзия</label>
+            </div>
+        </div>
+
+        <!-- Slide 4 (Questions with checkboxes) -->
+        <div class="swiper-slide">
+            <div class="question">
+                <p>2 Вызвать справку можно:</p>
+                <label><input type="checkbox" data-correct="false"> В ходе упражнения</label>
+                <label><input type="checkbox" data-correct="true"> Вне упражнения</label>
+                <label><input type="checkbox" data-correct="true"> Долгим прикосновением к кнопке "Пуск"</label>
+            </div>
+        </div>
+
+        <!-- Slide 5 (Questions with checkboxes) -->
+        <div class="swiper-slide">
+            <div class="question">
+                <p>3. Сколько упражнений предлагает стимульный материал "Стакан Ровера":</p>
+                <label><input type="checkbox" data-correct="false"> 3</label>
+                <label><input type="checkbox" data-correct="true"> 4</label>
+                <label><input type="checkbox" data-correct="false"> 5</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="swiper-pagination"></div>
+    <!-- Navigation -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+</div>
+
+<!-- Swiper JS -->
+<script src="file:///android_asset/common/swiper-bundle.min.js"></script>
+<script src="file:///android_asset/common/test-check.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+@startuml
+skinparam classAttributeIconSize 0
+'skinparam linetype ortho
+skinparam classFontSize 16
+skinparam shadowing true
+'Left to right direction
+top to bottom direction
+
+
+package SplashScreen {
+  usecase "App Internal Checks and Info"
+}
+
+note left of SplashScreen : Start of Application.
+
+
+  :User: as A1
+  :App: as A2
+  :Backend: as A3
+
+
+package SignOff {
+
+  usecase ProvideData2 as "Provide:
+  --
+  Email, username, password" 
+  usecase CheckDataPolicy as U2
+  usecase CheckData as U3
+}
+
+  ProvideData2 --> U3
+  A1 -- ProvideData2
+  A1 .. U2
+  A2 -- U3
+  A3 -- U3
+
+package SignIn {
+
+  usecase ProvideData1 as "Provide:
+  --
+  username, password" 
+  usecase DeleteAccount
+  usecase ResetPassword
+  usecase CheckDataPolicy as U2
+  usecase CheckData as U3_1
+}
+
+  ProvideData1 --> U3_1
+  A1 -- ProvideData1
+  A1 .. ResetPassword
+  A1 .. DeleteAccount
+  A2 -- U3_1
+  A3 -- U3_1
+
+  usecase SwitchScreen
+
+  SwitchScreen ..> SignOff
+  SwitchScreen ..> SignIn
+'  A1 .. SwitchScreen
+
+@enduml

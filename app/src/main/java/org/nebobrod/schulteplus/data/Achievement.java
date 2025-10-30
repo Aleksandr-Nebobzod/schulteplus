@@ -162,12 +162,13 @@ public class Achievement implements Serializable, Identifiable<String> {
 				+ "|\t." + "\t| " + bHtml(this.getRecordValue()) + "\t " + this.getRecordText() + "|");
 	}
 
-	public  Achievement set(String uid, String uak, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark){
+	public  Achievement set(String uid, String uak, String name, long timeStamp, String dateTime, String exType, String recordText, String recordValue, String specialMark){
 		this.uid = uid;
 		this.uak = uak;
 		this.name = name;
 		this.timeStamp = timeStamp;
 		this.dateTime = dateTime;
+		this.exType = exType;
 		this.recordText = recordText;
 		this.recordValue = recordValue;
 		this.specialMark = specialMark;

@@ -101,16 +101,19 @@ public class SssrViewModel extends ViewModel {
 		return dateMap;
 	}
 
+	/** Updates exResult in DBs and also refreshes LiveData */
 	public void saveRecord(ExResultSssr exResult) {
-		Task<Void> _task = repos.create(exResult).addOnCompleteListener(new OnCompleteListener<Void>() {
-			@Override
-			public void onComplete(@NonNull Task<Void> task) {
-				if (task.isSuccessful()) {
-					Map<LocalDate, ExResultSssr> _map = getExercisesMapLD().getValue();
-					_map.put(localDateOfTimeStamp(exResult.getTimeStampStart()), exResult);
-					getExercisesMapLD().postValue(_map);
-				}
-			}
-		});
+		// refresh psyCoins
+		if (exResult.getPsyCoins() == 0) {
+			// add psyCoins if not yet
+			exResult.calculatePsycoins();
+			ExerciseRunner.psycoins += ExerciseRunner.getExResult().getPsyCoins();
+		}
+		// update the LD map
+		Map<LocalDate, ExResultSssr> _map = getExercisesMapLD().getValue();
+		LocalDate key = localDateOfTimeStamp(exResult.getTimeStampStart());
+		_map.put(key, exResult);
+		getExercisesMapLD().postValue(_map);
+		ExerciseRunner.complete();
 	}
 }

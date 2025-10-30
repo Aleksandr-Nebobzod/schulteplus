@@ -75,7 +75,7 @@ public class ExResult implements Serializable, Identifiable<String> {
 
 	// and result data itself:
 	@DatabaseField
-	private long timeStampStart = 0;	// useful for Sssr
+	private long timeStampStart = 0;	// useful for Sssr (date of event)
 
 	@DatabaseField
 	private long numValue; 				// used as number of milliseconds, spent through the exercise */
@@ -149,7 +149,7 @@ public class ExResult implements Serializable, Identifiable<String> {
 		this.timeStamp = timeStampU();
 		this.timeStampStart = this.timeStamp;
 		this.dateTime = timeStampFormattedLocal(this.timeStamp);
-		this.exType = exerciseRunner.getExType();
+		this.exType = exerciseRunner.getExTypeId();
 		this.exDescription = ""; // TODOne: 26.02.2024 gather settings & screen width in String
 
 		// additional fields
@@ -438,47 +438,60 @@ public class ExResult implements Serializable, Identifiable<String> {
 			// Basics is Seconds multiplied by hardness
 			case KEY_PRF_EX_B0:
 			case KEY_PRF_EX_B1:
-				return (int) this.numValue / 1000 * 1;
+				this.psyCoins = (int) this.numValue / 1000 * 1;
+				return this.psyCoins;
 			case KEY_PRF_EX_B2:
 			case KEY_PRF_EX_B3:
-				return (int) this.numValue / 1000 * 2;
+				this.psyCoins = (int) this.numValue / 1000 * 2;
+				return this.psyCoins;
 			case KEY_PRF_EX_B4:
 			case KEY_PRF_EX_B5:
 			case KEY_PRF_EX_B6:
 			case KEY_PRF_EX_B7:
-				return (int) this.numValue / 1000 * 3;
+				this.psyCoins = (int) this.numValue / 1000 * 3;
+				return this.psyCoins;
 			case KEY_PRF_EX_B8:
 			case KEY_PRF_EX_B9:
 			case KEY_PRF_EX_BA:
 			case KEY_PRF_EX_BB:
 			case KEY_PRF_EX_BC:
-				return (int) this.numValue / 1000 * 4;
+				this.psyCoins = (int) this.numValue / 1000 * 4;
+				return this.psyCoins;
 			case KEY_PRF_EX_BD:
 			case KEY_PRF_EX_BE:
-				return (int) this.numValue / 1000 * 5;
+				this.psyCoins = (int) this.numValue / 1000 * 5;
+				return this.psyCoins;
 
 				// Schulte
 			case KEY_PRF_EX_S0:
 			case KEY_PRF_EX_S1:
 				// number of seconds plus success turns (fine of missed turns) multiplied by hardness
-				return (int) (this.numValue / 1000 + turns - turnsMissed) * 10;
+				this.psyCoins = (int) (this.numValue / 1000 + turns - turnsMissed) * 10;
+				return this.psyCoins;
 			case KEY_PRF_EX_S2:
-				return (int) (this.numValue / 1000 + turns - turnsMissed) * 15;
+				this.psyCoins = (int) (this.numValue / 1000 + turns - turnsMissed) * 20;
+				return this.psyCoins;
 			case KEY_PRF_EX_S3:
 			case KEY_PRF_EX_S4:
-				return (int) (this.numValue / 1000 + turns - turnsMissed) * 20;
+				this.psyCoins = (int) (this.numValue / 1000 + turns - turnsMissed) * 30;
+				return this.psyCoins;
 
 				// SSSR standard costs
 			case KEY_PRF_EX_R1:
-				return (int) (100);
+				this.psyCoins = (int) (100);
+				return this.psyCoins;
 			case KEY_PRF_EX_R2:
-				return (int) (20);
+				this.psyCoins = (int) (20);
+				return this.psyCoins;
 			case KEY_PRF_EX_R3:
-				return (int) (50);
+				this.psyCoins = (int) (50);
+				return this.psyCoins;
 			case KEY_PRF_EX_R4:
-				return (int) (100);
+				this.psyCoins = (int) (100);
+				return this.psyCoins;
 			default:
-				return (int) this.numValue / 1000;
+				this.psyCoins = (int) this.numValue / 1000;
+				return this.psyCoins;
 		}
 	}
 

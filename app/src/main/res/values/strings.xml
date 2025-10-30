@@ -366,5 +366,8 @@
 	<string name="lbl_gcb_bas_squares_colored_crossed">Squares crossed</string>
 	<string name="lbl_cancel">Cancel</string>
 	<string name="msg_tests_passed">All tests are successful</string>
+	<string name="str_test_html_source">file:///android_asset/en/test/</string>
+	<string name="msg_no_psycoins">No psycoins enough. Earn more with exercises you opened</string>
+	<string name="msg_psycoins_invested">Congatulations! It\'s a valuable investment.</string>
 
 </resources>

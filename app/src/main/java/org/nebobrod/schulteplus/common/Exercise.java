@@ -81,5 +81,9 @@ public abstract class Exercise<T extends ExResult> {
 		this.timeStamp = timeStamp;
 	}
 
-	abstract boolean validateResult();
+	boolean validateResult() {
+		// True by default and might be overridden
+		setValid(true);
+		return true;
+	};
 }

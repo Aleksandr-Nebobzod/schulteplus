@@ -102,7 +102,7 @@ public class PrefsChoiceFragment extends PreferenceFragmentCompat {
 			chosen.setChecked(true);
 			EditTextPreference exType = findPreference(KEY_PFR_EXERCISE_SPACE);
 			exType.setText(chosen.getKey());
-			ExerciseRunner.setExType(chosen.getKey());
+			ExerciseRunner.setExTypeId(chosen.getKey());
 
 			// Reload new fragment on UI
 			updateFragmentForSpace(chosen.getKey());

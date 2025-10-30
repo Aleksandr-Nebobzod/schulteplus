@@ -41,9 +41,9 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/Theme.SchultePlus"
-		android:versionCode="114"
+		android:versionCode="116"
 		android:versionName="Entada"
-		tools:targetApi="33">
+		tools:targetApi="35">
 		<activity
 			android:name=".ui.InvestActivity"
 			android:theme="@style/Theme.SchultePlus.FullscreenStart"

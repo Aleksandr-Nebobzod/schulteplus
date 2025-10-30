@@ -20,8 +20,10 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 
 import org.junit.Test;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.data.fbservices.TestUtils;
 
@@ -41,7 +43,7 @@ public class DataOrmRepoTest<TEntity extends Identifiable<String>>  {
 
 		String pr = "3";
 //		data = new UserHelper(pr + "TFKBiTdd", pr + "@gmail.com", pr + "name", pr + "pass", pr + "device3a", pr + "uaked47", false);
-		data = new Achievement().set(pr + "uid", pr + "uak", pr + "nam", 1711556007L, "05.05.05", pr + "r", pr + "v", pr + "m");
+		data = new Achievement().set(pr + "uid", pr + "uak", pr + "nam", 1711556007L, "05.05.05", "exType",pr + "r", pr + "v", pr + "m");
 
 		repo = new DataOrmRepo<>(data.getClass());
 
@@ -126,6 +128,28 @@ public class DataOrmRepoTest<TEntity extends Identifiable<String>>  {
 			}
 		});
 
+		TestUtils.testResultAwait(_task);
+		Log.d(TAG, "test finished");
+	}
+
+	@Test
+	public void readGroup() {
+		DataOrmRepo repo = new DataOrmRepo(Achievement.class);
+
+		Task<Void> _task = repo.queryForGroup("TFKBiTdd7OVYUaplfzDHrXSCixr1", "gcb_schulte_1_sequence", "certified")
+				.continueWithTask(taskResult -> {
+					Integer result = (Integer) taskResult.getResult();
+					if (result < 1) {
+						// Set Not achieved
+						Log.d(TAG, "queryForGroup: " + result);
+						assertTrue("Not Success", false);
+					} else {
+						// Set  achieved
+						Log.d(TAG, "queryForGroup: " + result);
+						assertTrue("Success", true);
+					}
+					return Tasks.forResult(null);
+				});
 		TestUtils.testResultAwait(_task);
 		Log.d(TAG, "test finished");
 	}

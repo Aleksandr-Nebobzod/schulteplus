@@ -32,6 +32,7 @@ import androidx.preference.PreferenceScreen;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
 
+import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.data.ExType;
@@ -71,7 +72,7 @@ public class BasicSettings extends PreferenceFragmentCompat {
 			chosen.setChecked(true);
 		}
 		exType.setText(chosen.getKey());
-		runner.setExType(exType.getText().toString()); // set to runner from invisible pref et
+		runner.setExTypeId(exType.getText().toString()); // set to runner from invisible pref et
 		// set hinted to runner
 		runner.setHinted(((androidx.preference.SwitchPreference) findPreference(KEY_PRF_HINTED)).isChecked());
 
@@ -142,7 +143,7 @@ public class BasicSettings extends PreferenceFragmentCompat {
 			chosen.setChecked(true);
 			EditTextPreference exType = findPreference("prf_ex_type");
 			exType.setText(chosen.getKey().toString());
-			runner.setExType(chosen.getKey().toString());
+			runner.setExTypeId(chosen.getKey().toString());
 		}
 		return super.onPreferenceTreeClick(preference);
 	}
@@ -170,11 +171,30 @@ public class BasicSettings extends PreferenceFragmentCompat {
 			}
 			// Setting badge
 			ExType exType = ExerciseRunner.getExTypes().get(pKey);
-			if (exType != null && exType.getStatus() == ExType.FUNC_STATUS_PLANNED) {
+			if (exType == null) continue;
+
+			// Option is not available yet
+			if (exType.getStatus() == ExType.FUNC_STATUS_PLANNED) {
 				Drawable icon = p.getIcon();
 				p.setIcon(overlayBadgedIcon(icon, getRes().getDrawable(R.drawable.ic_badge_inprogress, null)));
 				p.setEnabled(false);
+				continue; 				// no more requirements
 			}
+
+			// Check achieved and update badge
+			exType.refreshAchieved().addOnCompleteListener(task -> {
+				Drawable icon = p.getIcon();
+				p.setIcon(overlayBadgedIcon(icon, exType.getBadge()));
+				p.setOnPreferenceChangeListener((preference, newValue) -> {
+					// Check prerequisites achieved
+					ExType exType1 = runner.getExTypes().get(preference.getKey());
+					if (exType1 != null && !exType1.isAllAchieved()) {
+						Utils.runInvestActivity(requireContext(), preference.getKey());
+						return false; // as no click
+					}
+					return true;
+				});
+			});
 		}
 	}
 	

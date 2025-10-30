@@ -309,7 +309,7 @@ public class DashboardFragment02ExResult extends Fragment {
 		Log.d(TAG, "onResume: Called");
 		// Set chosen Item in the spinner in accordance with userPreferences
 		for (int i = 0; i < exTypeValues.length; i++) {
-			if (ExerciseRunner.getExType().equals(exTypeValues[i])) {
+			if (ExerciseRunner.getExTypeId().equals(exTypeValues[i])) {
 				spDashboard.setSelection(i);
 				dashboardViewModel.setKey(exTypeValues[i]);
 				break;

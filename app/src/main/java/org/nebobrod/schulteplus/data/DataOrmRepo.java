@@ -37,6 +37,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
@@ -174,9 +175,9 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 	}
 
 	@Deprecated
-	public static synchronized void achievePut(String uid, String uak, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark) {
+	public static synchronized void achievePut(String uid, String uak, String name, long timeStamp, String dateTime, String exType, String recordText, String recordValue, String specialMark) {
 		Achievement achievement = new Achievement();
-		achievement.set(uid,  uak, name,  timeStamp,  dateTime,  recordText,  recordValue,  specialMark);
+		achievement.set(uid,  uak, name,  timeStamp,  dateTime, exType, recordText,  recordValue,  specialMark);
 		try {
 			DatabaseHelper helper = new DatabaseHelper();
 			Dao<Achievement, Integer> dao = helper.getAchievementDao();
@@ -508,10 +509,11 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 		bgRunner.execute(() -> {
 			try {
 				// Prepare
-				String query = "SELECT SUM(recordValue) FROM achievement WHERE uid = ? AND exType = ? AND specialMark = ?";
+				String query = "SELECT SUM(CAST(recordValue AS INTEGER)) FROM achievement WHERE uid = ? AND exType = ? AND specialMark = ?";
 				String[] args = { uid, exType, specialMark };
 
 				// Run
+				Log.d(TAG, "Query SQL: " + query + " Args: " + Arrays.toString(args));
 				long sum = dao.queryRawValue(query, args);
 
 				// Set the result in Task

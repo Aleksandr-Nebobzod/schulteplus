@@ -9,15 +9,11 @@
 package org.nebobrod.schulteplus.data;
 
 import static org.nebobrod.schulteplus.Utils.getRes;
-import static org.nebobrod.schulteplus.Utils.overlayBadgedIcon;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.gson.Gson;
@@ -25,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
+import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.data.fbservices.ConditionEntry;
 
 import java.io.InputStream;
@@ -38,10 +35,11 @@ import java.util.Map;
 import kotlin.jvm.Transient;
 
 /**
- * Definition of JSON structure for exercise-type master-data
+ * Definition of JSON structure for exercise-type and Options master-data
  */
 public class ExType {
-	private final String TAG = this.getClass().getSimpleName();
+	@Transient   // exclude TAG from gson serialisation
+	private static final String TAG = ExType.class.getSimpleName();
 
 	public static final String ACHIEVE_CERTIFIED = "certified";
 	public static final String ACHIEVE_PURCHASED = "purchased";
@@ -163,16 +161,27 @@ public class ExType {
 		Map<String, ExType> exTypeMap = gson.fromJson(reader, mapType);
 
 		// Map field not mentioned in JSON
-		for (ExType exType : exTypeMap.values()) {
-			if (null == exType.getAchieveConditions()) {
-				continue;	// safety
+		for (Map.Entry<String, ExType> entry : exTypeMap.entrySet()) {
+			String id = entry.getKey();
+			ExType exType = entry.getValue();
+
+
+			if (exType != null) {
+				// Set key as ID
+				exType.setId(id);
+
+				if (null == exType.getAchieveConditions()) {
+					continue;	// safety
+				}
+				// Fill with false for every key
+				Map<String, Boolean> achieved = new HashMap<>();
+				for (String key : exType.getAchieveConditions().keySet()) {
+					achieved.put(key, false);
+				}
+				exType.setAchieved(achieved);
+			} else {
+				Log.w(TAG, "ExType is null for key: " + id);
 			}
-			// Fill with false for every key
-			Map<String, Boolean> achieved = new HashMap<>();
-			for (String key : exType.getAchieveConditions().keySet()) {
-				achieved.put(key, false);
-			}
-			exType.setAchieved(achieved);
 		}
 
 		return exTypeMap;
@@ -198,13 +207,29 @@ public class ExType {
 		}*/ // Example: children of id = gcb_schulte
 	}
 
+	/** Check all achievement in Map */
+	public boolean isAllAchieved() {
+		// No requirements
+		if (achieved == null || achieved.size() == 0) {
+			return true;
+		}
+
+		// check loop
+		for (boolean v : achieved.values()) {
+			if (!v) return false;
+		}
+
+		// safety
+		return true;
+	}
+
 	/** Apply to local DB and refreshes achieved map */
 	public Task<Void> refreshAchieved() {
 		DataOrmRepo<Achievement> repo = new DataOrmRepo<>(Achievement.class);
 		List<Task<Void>> tasks = new ArrayList<>();
 
 		// No requirements
-		if (achieved == null || achieved.size() == 0) {
+		if (isAllAchieved()) {
 			return Tasks.forResult(null);
 		}
 
@@ -215,7 +240,7 @@ public class ExType {
 				// Check if the user has this achievement recorded
 				Task<Void> task = repo.queryForGroup(ExerciseRunner.GetUid(), id, key)
 						.continueWithTask(taskResult -> {
-							Integer result = taskResult.getResult();
+							Integer result = (Integer) taskResult.getResult();
 							if (result < 1) {
 								achieved.put(key, false);  // Set Not achieved
 							} else {

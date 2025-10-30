@@ -1,17 +1,41 @@
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    // <!-- Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-    // <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+    .play-regular {
+      font-family: "Play", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    .play-bold {
+      font-family: "Play", sans-serif;
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    .victor-mono-light {
+      font-family: "Victor Mono", monospace;
+      font-optical-sizing: auto;
+      font-weight: 300;
+      font-style: normal;
+    }
+    .roboto-condensed-thin {
+      font-family: "Roboto Condensed", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 100;
+      font-style: normal;
+    }
+
+
         h1, h2, h3, h4, h5, h6 {
             color: #555;
-            font-family: Play;
             margin-bottom: 0px;
+            font-family: "Play", sans-serif;
+              font-weight: 700;
+              font-style: normal;
         }
 
         h1 {
@@ -37,13 +61,26 @@
         body {
             margin: 0;
             padding: 0;
-            font-size: 22px;
-            font-family: Old Standard TT;
+            font-size: 20px;
+            font-family: "Roboto Condensed", sans-serif;
+              font-weight: 300;
+              font-style: normal;
         }
+
+        p {
+            text-indent: 25px;
+        }
+
+        b {
+            font-family: "Roboto Condensed", sans-serif;
+              font-weight: 500;
+        }
+
         .mini-info {
-            font-size: 16px;
-            color: #777;
-            font-family: Play;
+            font-size: 0.7em;
+            font-weight: 500;
+            color: #555;
+            font-family: "Play", sans-serif;
         }
         .body-header {
             width: 800px;
@@ -51,19 +88,31 @@
             margin: 0 auto;
             padding: 10px 15px;
         }
-        .body-header h1, h2, h3, h4, h5 {
-            color: #444;
-            font-family: Play;
-            margin-bottom: 0px;
-        }
+
         p + ol, p + ul {
             margin-top: -15px;
         }
+        ol {
+            list-style-position: outside; /* Номера снаружи блока списка */
+            padding-left: 0px; /* Отступ списка (номера) от левого края */
+            margin-left: 0; /* Убираем возможный внешний отступ */
+        }
+        ul {
+            list-style-position: outside; /* Номера снаружи блока списка */
+            padding-left: 0px; /* Отступ списка (номера) от левого края */
+            margin-left: 0; /* Убираем возможный внешний отступ */
+        }
+        li {
+            text-indent: 0px; /* Отступ текста от номера */
+            margin-left: 25px; /* Отступ текста от номера */
+            margin-bottom: 5px;
+        }
+
+
         .container {
             max-width: 800px;
             margin: 0 auto;
             padding: 0 15px;
-            font-family: Old Standard TT;
         }
         .two-column-container {
             display: flex;
@@ -73,30 +122,6 @@
             margin: 0 auto;
             padding: 0 15px;
         }
-/*        .container h1, h2, h3, h4, h5 {
-            color: #555;
-            font-family: Play;
-            margin-bottom: 0px;
-        }
-        .container h1 {
-            font-size: 1.1em;
-        }
-
-        .container h2 {
-            font-size: 1.4em;
-        }
-
-        .container h3 {
-            font-size: 1.2em;
-        }
-
-        .container h4 {
-            font-size: 1.0em;
-        }
-
-        .container h5 {
-            font-size: 0.83em;
-        }*/
 
         .column {
             width: 48%;
@@ -108,13 +133,39 @@
             /*margin: 1em;*/
         }
         .container figure {
+            margin-inline-start: 25px;
+            margin-inline-end: 25px;
             text-align: center;
-            border: 3px solid #999;
+            border: 2px solid #999;
         }
         .container figcaption {
-            color: gray;
+            color: #555;
             font-style: italic;
             margin-top: 5px;
+        }
+
+        /* for tables */
+        .container caption {
+            caption-side: top; /* Устанавливает позицию над таблицей (по умолчанию) */
+            text-align: right;
+            font-style: italic;
+            font-size: 1.0em;
+            color: #555;
+            margin-bottom: 10px; /* Отступ между заголовком и таблицей */
+        }
+
+        .container table {
+            border-collapse: collapse; /* Для слияния границ */
+            border: 3px solid #999; /* Серые границы */
+            margin-left: auto; /* Прижимаем таблицу к правому краю */
+            margin-right: 0;
+        }
+
+        .container th, td {
+            border: 1px solid #999; /* Внутренние границы ячеек */
+            padding: 8px; /* Отступы внутри ячеек */
+            min-width: 5ch;
+            text-align: center; /* Выравнивание текста по центру */
         }
 
         /* for slogan */
@@ -129,17 +180,25 @@
         .slogan {
             display: inline-block;
             vertical-align: middle;
-            font-family: Play;
+            font-family: "Play", sans-serif;
             font-weight: bold;
-            color: #777;
-        }
-        .footnote {
-            font-size: 16px;
-            font-style: italic;
             color: #555;
         }
+        .slogan p {
+          text-indent: 0px;
+        }
+
+        .footnote {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .footnote a {
+            margin-right: 10px;
+        }
+
         .footer-top {
-            background-color: #ccc;
+            background-color: #999;
             height: 3px;
             width: 100%;
         }
@@ -187,16 +246,8 @@
             background-size: cover;
             width: 50px;
         }
-        .play-regular {
-            font-family: "Play", sans-serif;
-            font-weight: 400;
-            font-style: normal;
-        }
-        .play-bold {
-            font-family: "Play", sans-serif;
-            font-weight: 700;
-            font-style: normal;
-        }
+
+        /*  */
         .grey-hr {
             width: 30%;
             height: 5px;
@@ -204,6 +255,7 @@
             border: none;
             margin: 20px auto;
         }
+
         /* Slider custom sections */
         .swiper-container {
             width: 100%;
@@ -234,12 +286,35 @@
             margin-bottom: 10px;
         }
 
+        /* Collapser */
+        /* Styling for all <details> elements */
+        details {
+            position: relative; /* Для возможности управления внутренними элементами */
+            padding: 5px 10px; /* Отступы */
+            background-color: #eee; /* Цвет фона */
+            border-radius: 5px; /* Скругление углов */
+            border: 1px solid #999; /* Граница */
+        }
+
+        /* details.long {
+            position: relative;
+            padding: 5px 0;
+        } */
+
+        details.long[open]>summary::after {
+            display: inline-block;
+            content: "▲";
+            position: absolute;
+            right: 5px;
+            bottom: 5px;
+        }
+
         /* Media queries for responsive design */
         @media (max-width: 800px) {
-            .body-header, .container, .slogan {
-                width: 100%;
-                padding: 0 5px;
-                font-size: 16px;
+            body, .body-header, .container, .slogan {
+                width: 96%;
+                padding: 2%;
+                font-size: 22px;
             }
             .container img {
                 max-width: 100%;

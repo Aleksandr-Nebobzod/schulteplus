@@ -41,6 +41,6 @@
       android:strokeWidth="0"
       android:fillColor="#FFFFFF"
       android:fillType="nonZero"
-      android:strokeColor="#000000"
+      android:strokeColor="#FFFFFF"
       android:strokeLineCap="butt"/>
 </vector>

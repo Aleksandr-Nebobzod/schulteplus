@@ -36,11 +36,11 @@
     <div class="mini-info">
         <a href="http://attplus.in/schulte/ru/index.html">ВНИМАНИЕ ШУЛЬТЕ ПЛЮС</a>
     </div>
-    <address style="text-align: right;">Век живи, век учись!</address>
-    <h4>Методики</h4>
 </div>
 
 <div class="container">
+    <address style="text-align: right;">Век живи, век учись!</address>
+    <h1>Методики</h1>
     <?php
     $directory = './'; // directory which is the source of files
 
@@ -49,7 +49,7 @@
     function createLink($file, $title) {
         $currentPath = dirname($_SERVER['PHP_SELF']);
         $filePath = $currentPath . '/' . ltrim($file, './');
-        return "<p><a href=\"$filePath\">$title</a></p>";
+        return "<h2><a href=\"$filePath\">$title</a></h2>";
     }
 
     // Make a link to a page within a list item

@@ -45,7 +45,7 @@
 	<string name="lbl_bas_necker_cube">Куб Неккера</string>
 	<string name="lbl_bas_necker_cube_double">Двойной Куб Неккера</string>
 	<string name="lbl_bas_necker_cylinder">Стакан Ровера</string>
-	<string name="lbl_bas_necker_ball">Шар Ровера</string>
+	<string name="lbl_bas_necker_ball">Мяч Ровера</string>
 	<string name="lbl_bas_dancing_girl">Балеринка</string>
 	<string name="lbl_bas_dancing_cat">Кот-Балерун</string>
 	<string name="txt_bas_description">Здесь подобраны простые упражнения, которые сложны тем, что требуют и тренируют устойчивость внимания</string>
@@ -344,4 +344,7 @@
 	<string name="lbl_gcb_bas_squares_colored_crossed">Крест в квадратах</string>
 	<string name="lbl_cancel">Отмена</string>
 	<string name="msg_tests_passed">Все тесты успешны</string>
+	<string name="str_test_html_source">file:///android_asset/ru/test/</string>
+	<string name="msg_no_psycoins">Недостаточно пси-монет. Добудьте их, исследуя доступные тренировочные залы.</string>
+	<string name="msg_psycoins_invested">Поздравления! Это значимая инвестиция.</string>
 </resources>

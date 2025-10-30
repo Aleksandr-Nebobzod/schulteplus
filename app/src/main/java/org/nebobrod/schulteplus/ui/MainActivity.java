@@ -29,7 +29,6 @@ import org.nebobrod.schulteplus.ui.sssr.SssrActivity;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -49,7 +48,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -57,7 +55,6 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -260,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
 			@Override
 			public boolean onLongClick(View view) {
 				ExerciseRunner.loadPreference();
-				String exType = ExerciseRunner.getExType();
+				String exType = ExerciseRunner.getExTypeId();
 
 				if (exType == null | exType.equals("no_exercise")) {
 					return false;
@@ -281,18 +278,18 @@ public class MainActivity extends AppCompatActivity {
 		fabLaunch.setOnClickListener(view -> {
 			Class activity = null;
 			ExerciseRunner.loadPreference();
-			String exType = runner.getExType();
+			String exTypeId = runner.getExTypeId();
 			// done: 21.09.2023 here we need to choose Activity by switch: (ExerciseRunner.getTypeOfExercise())
 
 			// Check prerequisites achieved
-			String requirements = runner.getExTypes().get(exType).getRequiredAchievement();
-			if (requirements.equals(ExType.ACHIEVE_CERTIFIED)) {
-				Utils.runInvestActivity(this, exType);
+			ExType exType = runner.getExTypes().get(exTypeId);
+			if (!exType.isAllAchieved()) {
+				Utils.runInvestActivity(this, exTypeId);
 				return;
 			}
 
 			// Prerequisites are ready
-			switch (exType.substring(0,7)){
+			switch (exTypeId.substring(0,7)){
 				case "gcb_bas":
 					activity = BasicsActivity.class;
 					break;

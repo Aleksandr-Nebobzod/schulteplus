@@ -118,7 +118,19 @@ public class DashboardViewModel<TEntity extends Identifiable<String>> extends Vi
 						}
 						exContributionsLiveData.postValue(dataList);
 						daysLD.postValue(dayDataMap.size());
-						psyCoinsLD.postValue(psyCoinsSum / 100);	// Not a full value
+
+						if (ExerciseRunner.getUserHelper().getPsyCoins() == 0) {
+							// for users before September 24 (calculated budget)
+							psyCoinsLD.postValue(psyCoinsSum / 100);	// Show psy-ruble
+
+							// Update UserHelper
+							ExerciseRunner.psycoins = psyCoinsSum;
+							ExerciseRunner.updateUserHelper();
+						} else {
+							// Normal access to budget
+							psyCoinsLD.postValue(ExerciseRunner.getUserHelper().getPsyCoins() / 100);
+						}
+
 					} else {
 						Log.w(TAG, "onError: ", task.getException());
 					}

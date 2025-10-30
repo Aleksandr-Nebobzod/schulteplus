@@ -365,7 +365,7 @@ public class BasicsActivity extends AppCompatActivity {
 		try {
 			ImageView ivContent= findViewById(R.id.fullscreen_content);
 			if ("empty".equals(ivContent.getTag())) {
-				String drawableName =  runner.getExType();
+				String drawableName =  runner.getExTypeId();
 				// sg means simple graphics or static graphics
 				drawableName = "sg_" + drawableName.substring(4);
 

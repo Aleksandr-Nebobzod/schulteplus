@@ -251,7 +251,7 @@ public class DataFirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 		DataRepos repos;
 		repos = new DataRepos(Achievement.class);
 
-		Achievement achievement = new Achievement().set("uid2", "uak2", "n2", 1711556006L, "05.05.05", "r2", "v2", "m2");
+		Achievement achievement = new Achievement().set("uid2", "uak2", "n2", 1711556006L, "05.05.05", "exType", "r2", "v2", "m2");
 		repos.put(achievement);
 		android.util.Log.d(TAG, "testCreateAchievement: achievement" + achievement);
 

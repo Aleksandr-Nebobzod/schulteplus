@@ -10,10 +10,17 @@ package org.nebobrod.schulteplus.data;
 
 import static org.nebobrod.schulteplus.Utils.getRes;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.nebobrod.schulteplus.R;
+import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.data.fbservices.ConditionEntry;
 
@@ -25,13 +32,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.jvm.Transient;
+
 /**
- * Definition of JSON structure for exercise-type master-data
+ * Definition of JSON structure for exercise-type and Options master-data
  */
 public class ExType {
-	private final String TAG = this.getClass().getSimpleName();
+	@Transient   // exclude TAG from gson serialisation
+	private static final String TAG = ExType.class.getSimpleName();
+
 	public static final String ACHIEVE_CERTIFIED = "certified";
 	public static final String ACHIEVE_PURCHASED = "purchased";
+	public static final String ACHIEVE_PASSED = "passed";
 	public static final String ACHIEVE_STARTED = "started";
 	public static final String ACHIEVE_MEASURED = "measured";
 	public static final String ACHIEVE_BOLD = "bold";
@@ -54,14 +66,24 @@ public class ExType {
 	/** We can keep SQL-query in field-field */
 	Map<String, ConditionEntry> achieveConditions;
 
+	/** Achieved by user and not kept in json */
+	@Transient   // exclude from gson serialisation
+	private Map<String, Boolean> achieved;
+
 	public ExType(String id, String parentId, String nameEn, int status, int price, boolean certRequired, Map<String, ConditionEntry> achieveConditions) {
 		this.id = id;
 		this.parentId = parentId;
 		this.nameEn = nameEn;
-		this.price = status;
+		this.status = status;
 		this.price = price;
 		this.certRequired = certRequired;
 		this.achieveConditions = achieveConditions;
+		this.achieved = new HashMap<>(); // init
+
+		// Fill with false for every key
+		for (String key : achieveConditions.keySet()) {
+			achieved.put(key, false);
+		}
 	}
 
 	public String getId() {
@@ -120,6 +142,14 @@ public class ExType {
 		this.achieveConditions = achieveConditions;
 	}
 
+	public Map<String, Boolean> getAchieved() {
+		return achieved;
+	}
+
+	public void setAchieved(Map<String, Boolean> achieved) {
+		this.achieved = achieved;
+	}
+
 	public static Map<String, ExType> load() {
 		// Get JSON file
 		InputStream inputStream = getRes().openRawResource(R.raw.ex_types);
@@ -129,6 +159,30 @@ public class ExType {
 		Gson gson = new Gson();
 		Type mapType = new TypeToken<Map<String, ExType>>() {}.getType();
 		Map<String, ExType> exTypeMap = gson.fromJson(reader, mapType);
+
+		// Map field not mentioned in JSON
+		for (Map.Entry<String, ExType> entry : exTypeMap.entrySet()) {
+			String id = entry.getKey();
+			ExType exType = entry.getValue();
+
+
+			if (exType != null) {
+				// Set key as ID
+				exType.setId(id);
+
+				if (null == exType.getAchieveConditions()) {
+					continue;	// safety
+				}
+				// Fill with false for every key
+				Map<String, Boolean> achieved = new HashMap<>();
+				for (String key : exType.getAchieveConditions().keySet()) {
+					achieved.put(key, false);
+				}
+				exType.setAchieved(achieved);
+			} else {
+				Log.w(TAG, "ExType is null for key: " + id);
+			}
+		}
 
 		return exTypeMap;
 		// Build Hierarchy
@@ -151,5 +205,98 @@ public class ExType {
 				Log.d("Child", "Name: " + child.getNameEn());
 			}
 		}*/ // Example: children of id = gcb_schulte
+	}
+
+	/** Check all achievement in Map */
+	public boolean isAllAchieved() {
+		// No requirements
+		if (achieved == null || achieved.size() == 0) {
+			return true;
+		}
+
+		// check loop
+		for (boolean v : achieved.values()) {
+			if (!v) return false;
+		}
+
+		// safety
+		return true;
+	}
+
+	/** Apply to local DB and refreshes achieved map */
+	public Task<Void> refreshAchieved() {
+		DataOrmRepo<Achievement> repo = new DataOrmRepo<>(Achievement.class);
+		List<Task<Void>> tasks = new ArrayList<>();
+
+		// No requirements
+		if (isAllAchieved()) {
+			return Tasks.forResult(null);
+		}
+
+		// Check all the Options required
+		achieved.forEach((key, value) -> {
+			System.out.println("Key: " + key + ", Value: " + value);
+			if (!value) {
+				// Check if the user has this achievement recorded
+				Task<Void> task = repo.queryForGroup(ExerciseRunner.GetUid(), id, key)
+						.continueWithTask(taskResult -> {
+							Integer result = (Integer) taskResult.getResult();
+							if (result < 1) {
+								achieved.put(key, false);  // Set Not achieved
+							} else {
+								achieved.put(key, true);   // Set achieved
+							}
+							return Tasks.forResult(null);
+						});
+				tasks.add(task);
+			}
+		});
+
+		// Return a Task that completes when all tasks in the list are completed
+		return Tasks.whenAll(tasks);
+	}
+
+	/** defines what badges to show by achieved records */
+	public Drawable getBadge() {
+
+		// No requirements
+		if (achieved == null || achieved.size() == 0) {
+			return new ColorDrawable(Color.TRANSPARENT);
+		}
+
+		// Quiz not passed
+		if (certRequired && achieved.get(ACHIEVE_CERTIFIED) != true) {
+			return getRes().getDrawable(R.drawable.ic_badge_question, null);
+		}
+
+		// Psycoins not invested
+		if (price != 0 && achieved.get(ACHIEVE_PURCHASED) != true) {
+			return getRes().getDrawable(R.drawable.ic_badge_psycoin, null);
+		}
+
+		// Default no badge
+		return new ColorDrawable(Color.TRANSPARENT);
+	}
+
+	/** defines what investments luck by achieved records */
+	public String getRequiredAchievement() {
+
+		// No requirements
+		if (achieved == null || achieved.size() == 0) {
+			return ACHIEVE_PASSED;
+		}
+
+		// Quiz not passed
+		if (certRequired && achieved.get(ACHIEVE_CERTIFIED) != true) {
+			return ACHIEVE_CERTIFIED;
+		}
+
+		// Psycoins not invested
+		if (price != 0 && achieved.get(ACHIEVE_PURCHASED) != true) {
+			return ACHIEVE_PURCHASED;
+		}
+
+		// Default no need
+		return ACHIEVE_PASSED;
 	}
 }

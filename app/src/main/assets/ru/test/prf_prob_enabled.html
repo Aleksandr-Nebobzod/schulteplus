@@ -1,0 +1,95 @@
+<!--
+  ~ Copyright (c) 2024  "Smart Rovers"
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обучение</title>
+<!--    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">-->
+    <link rel="stylesheet" href="file:///android_asset/common/swiper-bundle.min.css">
+    <link rel="stylesheet" href="file:///android_asset/common/add_styles.css">
+</head>
+
+<body>
+
+<!-- Swiper Container -->
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+
+        <!-- Slide 1 -->
+        <div class="swiper-slide">
+            <img src="file:///android_asset/common/ic_badge_question.svg" style="max-width: 30%; display: block; margin: 0 auto;" alt="Вопрос">
+            <h1>
+                Вероятности
+            </h1>
+            <p>
+                <b>-- позволяет управлять поведением
+                    случайного распределения элементов в таблице</b>
+            </p>
+            <p>
+                При выключенной опции распределение вероятности <b>Равномерное</b>.
+                Следующий элемент может появиться в любой ячейке с одинаковым шансом.
+            </p>
+            <p>
+                При выключенной опции распределение вероятности <b>Управляемое</b>.
+                Вероятность появления элемента зависит от плотности цвета на изображении.
+            </p>
+            <p>
+                Цвета обозначают: <b>Белый</b> -- почти невозможно, <b>Желтый</b> -- маловероятно,
+                <b>Зелёный</b> -- вероятно, <b>Голубой</b> -- наверное.
+            </p>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="swiper-slide">
+            Рис.1. Пример управляемого распределения:
+            скорее всего, следующий элемент будет появляться в левом верхнем углу:
+            <img src="file:///android_asset/common/schulte_3.01_probabilities.png" style="max-width: 50%; display: block; margin: 0 auto;" alt="Рисунок 1">
+            <p>
+                <b>Слайдер Форма распределения</b> -- Параметр распределения плотности вероятностей по поверхности (горб или бублик).
+            </p>
+            <p>
+                <b>Прикосновение</b> к точке на рисунке распределения даёт:
+                <br>Смещение по горизонтали, Смещение по вертикали,
+            </p>
+        </div>
+
+        <!-- Slide 3 (Questions with checkboxes) -->
+        <div class="swiper-slide">
+            <div class="question">
+                <p>1 Если в левом верхнем углу голубые точки:</p>
+                <label><input type="checkbox" data-correct="false"> Все нужные числа будут там</label>
+                <label><input type="checkbox" data-correct="true"> Большинство нужных чисел будет там</label>
+            </div>
+        </div>
+
+        <!-- Slide 4 (Questions with checkboxes) -->
+        <div class="swiper-slide">
+            <div class="question">
+                <p>2 При управляемом распределении взгляд направлен:</p>
+                <label><input type="checkbox" data-correct="false"> В наиболее вероятный угол таблицы, ведь так удобнее</label>
+                <label><input type="checkbox" data-correct="true"> В центр таблицы, для тренировки периферийного внимания</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="swiper-pagination"></div>
+    <!-- Navigation -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+</div>
+
+<!-- Swiper JS -->
+<script src="file:///android_asset/common/swiper-bundle.min.js"></script>
+<script src="file:///android_asset/common/test-check.js"></script>
+
+</body>
+</html>

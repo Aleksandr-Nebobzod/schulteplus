@@ -24,6 +24,7 @@ import org.nebobrod.schulteplus.common.Log;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
@@ -36,9 +37,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 /** Provides common CRUD methods working on local SQLite DB by ORMLite
@@ -68,6 +71,10 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 
 	public Class<TEntity> getEntityType() {
 		return entityType;
+	}
+
+	public Dao<TEntity, Integer> getDao() {
+		return dao;
 	}
 
 	/**
@@ -168,9 +175,9 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 	}
 
 	@Deprecated
-	public static synchronized void achievePut(String uid, String uak, String name, long timeStamp, String dateTime, String recordText, String recordValue, String specialMark) {
+	public static synchronized void achievePut(String uid, String uak, String name, long timeStamp, String dateTime, String exType, String recordText, String recordValue, String specialMark) {
 		Achievement achievement = new Achievement();
-		achievement.set(uid,  uak, name,  timeStamp,  dateTime,  recordText,  recordValue,  specialMark);
+		achievement.set(uid,  uak, name,  timeStamp,  dateTime, exType, recordText,  recordValue,  specialMark);
 		try {
 			DatabaseHelper helper = new DatabaseHelper();
 			Dao<Achievement, Integer> dao = helper.getAchievementDao();
@@ -494,4 +501,48 @@ public class DataOrmRepo<TEntity extends Identifiable<String>> implements DataRe
 
 		return taskCompletionSource.getTask();
 	}
+
+	/** Native ORM Group query */
+	public Task<Integer> queryForGroup(String uid, String exType, String specialMark) {
+		TaskCompletionSource<Integer> taskCompletionSource = new TaskCompletionSource<>();
+
+		bgRunner.execute(() -> {
+			try {
+				// Prepare
+				String query = "SELECT SUM(CAST(recordValue AS INTEGER)) FROM achievement WHERE uid = ? AND exType = ? AND specialMark = ?";
+				String[] args = { uid, exType, specialMark };
+
+				// Run
+				Log.d(TAG, "Query SQL: " + query + " Args: " + Arrays.toString(args));
+				long sum = dao.queryRawValue(query, args);
+
+				// Set the result in Task
+				taskCompletionSource.setResult((int) sum);
+			} catch (java.sql.SQLException e) {
+				taskCompletionSource.setException(e);
+			}
+		});
+
+		return taskCompletionSource.getTask();
+	}
+
+
+	/** Asynchronous query for the first record with a QueryBuilder */
+	public Task<TEntity> queryForFirst(QueryBuilder<TEntity, Integer> queryBuilder) {
+		TaskCompletionSource<TEntity> taskCompletionSource = new TaskCompletionSource<>();
+
+		bgRunner.execute(() -> {
+			try {
+				// Run query
+				TEntity result = dao.queryForFirst(queryBuilder.prepare());
+				taskCompletionSource.setResult(result);
+			} catch (java.sql.SQLException e) {
+				taskCompletionSource.setException(e);
+			}
+		});
+
+		return taskCompletionSource.getTask();
+	}
+
+
 }

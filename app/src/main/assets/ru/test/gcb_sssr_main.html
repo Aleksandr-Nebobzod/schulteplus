@@ -1,0 +1,107 @@
+<!--
+  ~ Copyright (c) 2024  "Smart Rovers"
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обучение</title>
+<!--    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">-->
+    <link rel="stylesheet" href="file:///android_asset/common/swiper-bundle.min.css">
+    <link rel="stylesheet" href="file:///android_asset/common/add_styles.css">
+</head>
+
+<body>
+
+<!-- Swiper Container -->
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+
+        <!-- Slide 1 -->
+        <div class="swiper-slide">
+            <img src="file:///android_asset/common/ic_badge_question.svg" style="max-width: 30%; display: block; margin: 0 auto;" alt="Вопрос">
+                <h1>
+                    СССР
+                </h1>
+                <p>
+                    <b>-- Сфера Свободной Самореализации</b>
+                </p>
+                <p>
+                    инструмент, позволяющий оценить,
+                    в какие сферы жизни вы по факту инвестируете свои ресурсы:
+                    внимание, время, энергию и что остаётся лично вам.
+                </p>
+            <p>
+                <b>Задача</b> — вспомнить вчерашний день, распределить какие сферы
+                были важными.
+                <br><a href="http://attplus.in/schulte/ru/ex_description/gcb_sssr_main.html">
+                <i>(подробнее на сайте)</i></a>
+            </p>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="swiper-slide">
+            <h1>
+                Предварительная настройка:
+            </h1>
+            <p>
+                <br><a href="http://attplus.in/schulte/ru/ex_description/space500_sssr.html">
+                <em>Параметры запуска зала "Сферы"</em> </a>, позволяют выбрать наиболее актуальные
+                для вас сферы:
+                <ul>
+                    <li>Работа / учёба,
+                    <li>Физкультура,
+                    <li>Развлечения и отдых,
+                    <li>Семья, Друзья,
+                    <li>Хозяйство и быт,
+                    <li>Сон,
+                    <li>СССР <i>(кстати, эта сфера не отключается)</i>.
+                </ul>
+            </p>
+            <p>
+                Важно сопровождать измерения записью в журнале самонаблюдений
+                (дневниковая заметка, плюс общий эмоциональный и энергетический уровни).
+            </p>
+        </div>
+
+        <!-- Slide 3 (Questions with checkboxes) -->
+        <div class="swiper-slide">
+            <div class="question">
+                <p>1 Какие свойства психики развивает СССР:</p>
+                <label><input type="checkbox" data-correct="true"> Память</label>
+                <label><input type="checkbox" data-correct="true"> Осознанность</label>
+                <label><input type="checkbox" data-correct="false"> Концентрацию внимания</label>
+            </div>
+        </div>
+
+        <!-- Slide 4 (Questions with checkboxes) -->
+        <div class="swiper-slide">
+            <div class="question">
+                <p>2 Из предложенного списка Сфер можно отключить:</p>
+                <label><input type="checkbox" data-correct="false"> Чтение книг</label>
+                <label><input type="checkbox" data-correct="true"> Сон</label>
+                <label><input type="checkbox" data-correct="false"> СССР</label>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Pagination -->
+    <div class="swiper-pagination"></div>
+    <!-- Navigation -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+</div>
+
+<!-- Swiper JS -->
+<script src="file:///android_asset/common/swiper-bundle.min.js"></script>
+<script src="file:///android_asset/common/test-check.js"></script>
+
+</body>
+</html>

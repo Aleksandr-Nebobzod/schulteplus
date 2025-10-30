@@ -17,7 +17,6 @@ import org.nebobrod.schulteplus.data.Achievement;
 import org.nebobrod.schulteplus.data.DataOrmRepo;
 import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResult;
-import org.nebobrod.schulteplus.data.ExResultSssr;
 import org.nebobrod.schulteplus.data.ExType;
 import org.nebobrod.schulteplus.data.UserHelper;
 
@@ -33,6 +32,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class ExerciseRunner {
 	private static Map<String, ExType> exTypes = ExType.load();
 	private static Exercise exercise = null;
 	private static ExResult exResult = null;
-	private static long id;
+	private static long id;						// id of the exercise (by exType)
 	private static long seed = 0;
 
 	// User statistical data (kept in LocalB, centralDB and sharedPreferences for indication)
@@ -70,7 +70,7 @@ public class ExerciseRunner {
 	public static boolean sharedData = false; 	// KEY_SEND_DATA
 	public static int currentLevel = 1; 		// level limited by user
 	private static String exSpace = KEY_PFR_EXERCISE_SPACE;
-	private static String exType = "no_exercise";
+	private static String exTypeId = "no_exercise";
 	private static byte xSize = 5, ySize = 5;
 	private static boolean ratings = false; 	// Limitation of Settings
 	private static boolean hinted = true;
@@ -99,13 +99,14 @@ public class ExerciseRunner {
 
 		uid = (uid.isEmpty() ? KEY_DEFAULT_USER_PREF : userHelper.getUid());
 		setFbCrashlyticsUser(uid);
-		sharedPreferences = context.getSharedPreferences(uid, Context.MODE_PRIVATE);
+		DataRepos.fetchAchievements(uid);
+
 		// Getting default preferences if there aren't still there
+		sharedPreferences = context.getSharedPreferences(uid, Context.MODE_PRIVATE);
 		PreferenceManager.setDefaultValues(context, R.xml.menu_preferences, false);
+
 		loadPreference();
-
-		setUserHelper(userHelper); 		// it refreshes user related fields
-
+		setUserHelper(userHelper); 		// refresh user related fields
 		savePreferences();
 	}
 
@@ -157,23 +158,28 @@ public class ExerciseRunner {
 			showIntro = sharedPreferences.getBoolean(KEY_PRF_SHOW_INTRO, true);
 			shownIntros = sharedPreferences.getInt(KEY_PRF_SHOWN_INTROS, 0);
 
+			// Exercise
+			exTypeId = sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, KEY_PRF_EX_S1);
+			if (exTypes != null) {
+				exTypes.get(exTypeId).refreshAchieved();
+			}
 			// Schulte Exercise parameters
 			ratings = sharedPreferences.getBoolean(KEY_PRF_RATINGS, false);
 			probEnabled = sharedPreferences.getBoolean(KEY_PRF_PROB_ENABLED, false);
 			squared = sharedPreferences.getBoolean(KEY_PRF_SQUARED, false);
-			exType = sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, KEY_PRF_EX_S1);
 
 			// The only TS 5x5 allows ratings On or Off (KEY_PRF_EX_S1)
-			if (exType.equals(KEY_PRF_EX_S2)
-				| exType.equals(KEY_PRF_EX_S3)
-				| exType.equals(KEY_PRF_EX_S4)) ratings = true; // an extra assurance for advanced level of STable
-			if (exType.startsWith("gcb_bas_")) ratings = false; // clearance for basics
+			if (exTypeId.equals(KEY_PRF_EX_S2)
+				| exTypeId.equals(KEY_PRF_EX_S3)
+				| exTypeId.equals(KEY_PRF_EX_S4)) ratings = true; // an extra assurance for advanced level of STable
+			if (exTypeId.startsWith("gcb_bas_")) ratings = false; // clearance for basics
 
 			if (ratings) {
+				// Limited and standard options
 				hinted = false;
 				countDown = false;
 				shuffled = true;
-				switch (exType){
+				switch (exTypeId){
 //					case KEY_PRF_EX_S1: xSize = ySize = 5; break; // see default
 					case KEY_PRF_EX_S2: xSize = ySize = 7; break;
 					case KEY_PRF_EX_S3: xSize = ySize = 10; break;
@@ -182,6 +188,8 @@ public class ExerciseRunner {
 				symbolType = "number";
 				probEnabled = false; probDx = probDy = probW = 0D;
 			} else {
+
+				// All options accessible
 				hinted = sharedPreferences.getBoolean(KEY_PRF_HINTED, true);
 				countDown = sharedPreferences.getBoolean(KEY_PRF_COUNT_DOWN, true);
 				shuffled = sharedPreferences.getBoolean(KEY_PRF_SHUFFLE, true);
@@ -256,10 +264,25 @@ public class ExerciseRunner {
 		});
 	}
 
-	public static void cancel() {
-		if (exercise != null) {
-			exercise = null;
+	/** Cancel or finalize current exercise */
+	public static void clear() {
+
+		if (exercise == null) return;		// safety
+		exResult = exercise.getExResult();
+
+		// delete preliminary result from LocalDB
+		if (!exResult.isValid()) {
+			DataOrmRepo ormRepo = new DataOrmRepo<>(exResult.getClass());
+			try {
+				ormRepo.getDao().deleteById(exResult.getId());
+			} catch (SQLException e) {
+				Log.w(TAG, "error of deletion");
+				throw new RuntimeException(e);
+			}
 		}
+
+		exResult = null;
+		exercise = null;
 	}
 
 	/**
@@ -307,17 +330,26 @@ public class ExerciseRunner {
 			savePreferences();
 			achievedToBothDb(achieved, uid, userName, ExerciseRunner.timeStamp);
 			updateUserHelper();
+			clear();
 		}
 	}
 
+	/** Save exResult current state to DBs */
 	private static void updateExResult() {
 		DataRepos<ExResult> repos = new DataRepos<>(ExResult.class);
 
-		setExResult(exercise.getExResult());
+		// refresh psyCoins
+		if (exResult.getPsyCoins() == 0) {
+			// add psyCoins if not yet
+			exResult.calculatePsycoins();
+			ExerciseRunner.psycoins += ExerciseRunner.getExResult().getPsyCoins();
+		}
 
+		//setExResult(exercise.getExResult()); 		// a bit extra
 		repos.create(exResult);
 	}
 
+	/** Save userHelper based on current state */
 	public static void updateUserHelper() {
 		DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
 
@@ -325,14 +357,13 @@ public class ExerciseRunner {
 		repos.create(userHelper);
 	}
 
-
 	public static String exDescription() {
 		// template is: "R/C-L-exType-X*Y-w-screen size Factor-Squared-P/L"
 		String result = "";
 
 		result += (ratings ? Utils.getRes().getString(R.string.code_rating) : Utils.getRes().getString(R.string.code_common));
 		result += "-L" + level;
-		result += "-" + exType;
+		result += "-" + exTypeId;
 		result += "-" + xSize + "*" + ySize;
 		result += "-P" + (probEnabled ? "1" : "0");
 		result += "-F" + getScreenFactor();
@@ -350,10 +381,10 @@ public class ExerciseRunner {
 			DataRepos<Achievement> repos = new DataRepos<>(Achievement.class);
 			switch (flag) {
 				case EXERCISE:
-					ach.set(uid, uak, userName, ts, timeStampFormattedLocal(ts), Utils.getRes().getString(R.string.lbl_mu_second), "" + seconds, "");
+					ach.set(uid, uak, userName, ts, timeStampFormattedLocal(ts), exTypeId, Utils.getRes().getString(R.string.lbl_mu_second), "" + seconds, "");
 					break;
 				case HOURS:
-					ach.set(uid, uak, userName, ts, timeStampFormattedLocal(ts), Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
+					ach.set(uid, uak, userName, ts, timeStampFormattedLocal(ts), exTypeId, Utils.getRes().getString(R.string.prf_hours_title), "" + hours, "➚");
 					break;
 				default:
 					Log.w(TAG, "achievedToBothDb: " + "Wrong Achievement flag: " + flag);
@@ -366,11 +397,12 @@ public class ExerciseRunner {
 		return exTypes;
 	}
 
-	public static String getExType() {
+	public static String getExTypeId() {
 //		exType = sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, "");
-		return exType; // may be the var here is redundant
+		return exTypeId; // may be the var here is redundant
 	}
 
+	/** Set Space (hall) of Exercise */
 	public static void setExSpace(String exSpace) {
 		ExerciseRunner.exSpace = exSpace;
 		SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -378,11 +410,11 @@ public class ExerciseRunner {
 		editor.commit();
 	}
 
-	public static void setExType(String s) {
-		s = (s.length()<7?"no_exercise":s);
-		exType = s;
+	public static void setExTypeId(String s) {
+		s = (s.length() < 7 ? "no_exercise" : s);
+		exTypeId = s;
 		SharedPreferences.Editor editor = sharedPreferences.edit();
-		editor.putString(KEY_TYPE_OF_EXERCISE, exType);
+		editor.putString(KEY_TYPE_OF_EXERCISE, exTypeId);
 		editor.commit();
 	}
 
@@ -421,11 +453,9 @@ public class ExerciseRunner {
 	public static double probDx() {
 		return probDx;
 	}
-
 	public static double probDy() {
 		return probDy;
 	}
-
 	public static double probW() {
 		return probW;
 	}
@@ -437,7 +467,6 @@ public class ExerciseRunner {
 	public static int getPrefTextScale(){ return sharedPreferences.getInt(KEY_PRF_FONT_SCALE, 0);}
 
 	public static boolean isOnline() {		return online;	}
-
 	public static void setOnline(boolean online) {		ExerciseRunner.online = online;	}
 
 	public static UserHelper getUserHelper() {	return userHelper;	}
@@ -453,6 +482,7 @@ public class ExerciseRunner {
 		userName = userHelper.getName();
 		userEmail = userHelper.getEmail();
 		uak = userHelper.getUak();
+		psycoins = userHelper.getPsyCoins();
 		seconds = userHelper.getPsyCoins();
 		hours = userHelper.getHours();
 		level = userHelper.getLevel();
@@ -509,7 +539,7 @@ public class ExerciseRunner {
 				"\nseconds=" + seconds +
 				"\nhours=" + hours +
 				"\ndaysTrained=" + daysTrained +
-				"\nexType=" + exType +
+				"\nexType=" + exTypeId +
 				"\nxSize=" + xSize +
 				"\nySize=" + ySize +
 				"\nHints=" + (hinted ?"On":"Off") +
@@ -536,7 +566,6 @@ public class ExerciseRunner {
 	public static Exercise getExercise() {
 		return exercise;
 	}
-
 	public static void setExercise(Exercise exercise) {
 		ExerciseRunner.exercise = exercise;
 	}
@@ -544,7 +573,6 @@ public class ExerciseRunner {
 	public static ExResult getExResult() {
 		return exResult;
 	}
-
 	public static void setExResult(ExResult exResult) {
 		ExerciseRunner.exResult = exResult;
 		ExerciseRunner.timeStamp = exResult.getTimeStamp();
@@ -553,27 +581,21 @@ public class ExerciseRunner {
 	public static long getId() {
 		return id;
 	}
-
 	public static void setId(long id) {
 		ExerciseRunner.id = id;
 	}
-
 	public static long getSeed() {
 		return seed;
 	}
-
 	public static void setSeed(long seed) {
 		ExerciseRunner.seed = seed;
 	}
-
 	public static void setSeconds(int seconds) {
 		ExerciseRunner.seconds = seconds;
 	}
-
 	public static void setHours(int hours) {
 		ExerciseRunner.hours = hours;
 	}
-
 	public static void setLevel(int level) {
 		ExerciseRunner.level = level;
 	}
@@ -581,7 +603,6 @@ public class ExerciseRunner {
 	public static long getTimeStamp() {
 		return timeStamp;
 	}
-
 	public static void setTimeStamp(long timeStamp) {
 		ExerciseRunner.timeStamp = timeStamp;
 	}
@@ -589,7 +610,6 @@ public class ExerciseRunner {
 	public static int getCurrentLevel() {
 		return currentLevel;
 	}
-
 	public static void setCurrentLevel(int currentLevel) {
 		ExerciseRunner.currentLevel = currentLevel;
 	}
@@ -597,7 +617,6 @@ public class ExerciseRunner {
 	public static boolean isShowIntro() {
 		return showIntro;
 	}
-
 	public static void setShowIntro(boolean showIntro) {
 		ExerciseRunner.showIntro = showIntro;
 	}
@@ -605,11 +624,9 @@ public class ExerciseRunner {
 	public static int getShownIntros() {
 		return shownIntros;
 	}
-
 	public static void setShownIntros(int shownIntros) {
 		ExerciseRunner.shownIntros = shownIntros;
 	}
-
 	public static void updateShownIntros(int shownIntroBit) {
 		ExerciseRunner.shownIntros |= shownIntroBit;
 		if (shownIntros == SHOWN_ALL) {
@@ -621,7 +638,6 @@ public class ExerciseRunner {
 	public static boolean isSharedData() {
 		return sharedData;
 	}
-
 	public static void setSharedData(boolean sharedData) {
 		ExerciseRunner.sharedData = sharedData;
 	}
@@ -629,68 +645,27 @@ public class ExerciseRunner {
 	public static boolean isSwSssrJob() {
 		return swSssrJob;
 	}
-
 	public static boolean isSwSssrPhysical() {
 		return swSssrPhysical;
 	}
-
 	public static boolean isSwSssrLeisure() {
 		return swSssrLeisure;
 	}
-
 	public static boolean isSwSssrFamily() {
 		return swSssrFamily;
 	}
-
 	public static boolean isSwSssrFriends() {
 		return swSssrFriends;
 	}
-
 	public static boolean isSwSssrChores() {
 		return swSssrChores;
 	}
-
 	public static boolean isSwSssrSleep() {
 		return swSssrSleep;
 	}
-
 	public static boolean isSwSssrSssr() {
 		return swSssrSssr;
 	}
-
-	/*	@Override
-	public void onCallback(Map<String, Object> objectMap) {
-		if (objectMap == null & uid != null) {
-			// Seems a new user
-			UserDbPreferences.getInstance(instance).save();
-			return;
-		}
-		// check which source is more fresh, server's
-		long sumPointsDb = ((Number)  objectMap.get("hours")).longValue() * 3600 + ((Number) objectMap.get("psyCoins")).longValue();
-		// ... or local
-		long sumPointsLocal = getHours() * 3600 + this.getPoints();
-		if (sumPointsLocal == sumPointsDb) {
-			// do nothing
-		} else if (sumPointsLocal > sumPointsDb) {
-			UserDbPreferences.getInstance(instance).save();
-		} else {
-			loadFromDbPref();
-		}
-	}*/  // 24.05.21 Getting rid of UserDbPreferences
-
-/*	private void loadFromDbPref() {
-
-		Map<String, Object> objectMap = UserDbPreferences.getInstance(instance).getObjectMap();
-
-		uid = objectMap.get("uid").toString();
-		userName = objectMap.get("name").toString();
-		userEmail = objectMap.get("email").toString();
-		points = ((Number) objectMap.get("psyCoins")).intValue();
-		hours = ((Number) objectMap.get("hours")).intValue();
-		level = ((Number) objectMap.get("level")).intValue();
-		timeStamp = ((Number) objectMap.get("tsUpdated")).longValue();
-		savePreferences(null);
-	}*/ // 24.05.21 Getting rid of UserDbPreferences
 }
 
 

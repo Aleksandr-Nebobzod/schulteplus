@@ -20,6 +20,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
+import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -42,6 +44,8 @@ import androidx.preference.SwitchPreference;
 
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
@@ -188,6 +192,8 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 
 	@Override
 	public boolean onPreferenceTreeClick(@NonNull Preference preference) {
+
+
 		// only for Group Check Boxes:
 		if (exerciseTypeCheckBoxes.contains(preference)) {
 			chosen = (androidx.preference.CheckBoxPreference) preference;
@@ -213,6 +219,8 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 
 		return super.onPreferenceTreeClick(preference);
 	}
+
+
 
 	/**
 	 * @param action true for turn on probability mgmt
@@ -377,7 +385,6 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setVisible(allowed);
 		((PreferenceCategory) findPreference(KEY_PRF_PROBABILITIES)).setEnabled(allowed);
 
-		((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(allowed);
 		((SwitchPreference) findPreference(KEY_PRF_SQUARED)).setEnabled(allowed);
 //		((DropDownPreference) findPreference(KEY_PRF_SYMBOLS)).setEnabled(allowed);
 		((ListPreference) findPreference(KEY_PRF_SYMBOLS)).setEnabled(allowed);
@@ -386,9 +393,11 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 //		((SwitchPreference) findPreference(KEY_PRF_PROB_ZERO)).setEnabled(action);
 //		((SeekBarPreference) findPreference(KEY_PRF_PROB_X)).setEnabled(action);
 //		((SeekBarPreference) findPreference(KEY_PRF_PROB_Y)).setEnabled(action);
-		if (allowed) {
-			// do nothing
+		if (((androidx.preference.CheckBoxPreference) findPreference(KEY_PRF_EX_S1)).isChecked()) {
+			// Always for Primary Flow
+			((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(true);
 		} else {
+			((SwitchPreference) findPreference(KEY_PRF_RATINGS)).setEnabled(allowed);
 			// actually prob settings are get 0 in ExerciseRunner
 //			((SeekBarPreference) findPreference(KEY_PRF_PROB_SURFACE)).setValue(0);
 //			((SeekBarPreference) findPreference(KEY_PRF_PROB_X)).setValue(0);
@@ -413,7 +422,7 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 			chosen.setChecked(true);
 		}
 		exType.setText(chosen.getKey());
-		runner.setExType(exType.getText().toString()); // set exType into the runner from invisible EditTextPreference field
+		runner.setExTypeId(exType.getText().toString()); // set exType into the runner from invisible EditTextPreference field
 		runner.setRatings(((SwitchPreference) findPreference(KEY_PRF_RATINGS)).isChecked());
 
 		// set X & Y to runner
@@ -424,11 +433,13 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 				enableOptions(true);
 				// check if is Ratings
 				if (runner.isRatings()) {
-					enableOptions(false);
 					findPreference(KEY_PRF_RATINGS).setEnabled(true);
+					runner.setSquared(true);
 					runner.setX((byte) 5);
 					runner.setY((byte) 5);
-				} else { // enable options PreferenceCategory for ease levels
+					enableOptions(false);
+				} else {
+					// enable options PreferenceCategory for easy levels
 					runner.setX((byte) ((androidx.preference.SeekBarPreference) findPreference(KEY_X_SIZE)).getValue());
 					runner.setY((byte) ((androidx.preference.SeekBarPreference) findPreference(KEY_Y_SIZE)).getValue());
 					// set hinted to runner
@@ -494,11 +505,30 @@ public class SchulteSettings extends PreferenceFragmentCompat implements Surface
 			}
 			// Setting badge
 			ExType exType = ExerciseRunner.getExTypes().get(pKey);
-			if (exType != null && exType.getStatus() == ExType.FUNC_STATUS_PLANNED) {
+			if (exType == null) continue;
+
+			// Option is not available yet
+			if (exType.getStatus() == ExType.FUNC_STATUS_PLANNED) {
 				Drawable icon = p.getIcon();
-				p.setIcon(overlayBadgedIcon(icon, getRes().getDrawable(R.drawable.ic_bagde_inprogress, null)));
+				p.setIcon(overlayBadgedIcon(icon, getRes().getDrawable(R.drawable.ic_badge_inprogress, null)));
 				p.setEnabled(false);
+				continue; 				// no more requirements
 			}
+
+			// Check achieved and update badge
+			exType.refreshAchieved().addOnCompleteListener(task -> {
+				Drawable icon = p.getIcon();
+				p.setIcon(overlayBadgedIcon(icon, exType.getBadge()));
+				p.setOnPreferenceChangeListener((preference, newValue) -> {
+					// Check prerequisites achieved
+					ExType exType1 = runner.getExTypes().get(preference.getKey());
+					if (exType1 != null && !exType1.isAllAchieved()) {
+						Utils.runInvestActivity(requireContext(), preference.getKey());
+						return false; // as no click
+					}
+					return true;
+				});
+			});
 		}
 	}
 

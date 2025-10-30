@@ -1,0 +1,74 @@
+@startuml
+state fork_state <<fork>>
+
+[*] --> fork_state
+
+state navigation_dashboard {
+  [*] --> overall_rating
+  ||
+  state achieved
+  ||
+  state exercises
+}
+
+fork_state --> navigation_dashboard
+fork_state --> settings
+fork_state --> navigation_home
+fork_state --> navigation_schulte
+fork_state --> navigation_plus
+
+state navigation_home {
+  navigation_home : notifications
+  navigation_home : news
+}
+
+state navigation_schulte #yellow {
+  navigation_schulte : settings
+  navigation_schulte : run
+}
+
+state navigation_plus {
+
+  state navigation_basics #yellow
+  navigation_basics : settings
+  navigation_basics : run
+  --
+  state navigation_sssr #yellow
+  navigation_sssr : settings
+  navigation_sssr : run
+  --
+  state navigation_schulte_parents #yellow
+  navigation_schulte_parents : settings
+  navigation_schulte_parents : run
+
+}
+
+state settings as "settings (menu)" {
+
+  settings : username_change
+  settings : email_change
+  state about  as "about (submenu)" 
+  about : send_feedback
+  about : visit_website
+  about : license_notes
+  state relogin
+  relogin : confirmation \n(inside LogIn activity)
+  log_out --> [*]
+  delete_account --> relogin
+  relogin --> [*]
+}
+
+
+
+state join_state <<join>>
+
+settings	--> join_state
+navigation_home	--> join_state
+navigation_schulte	--> join_state
+navigation_plus	--> join_state
+navigation_dashboard	--> join_state
+
+join_state ---> fork_state
+
+note "Legend : Yellow means Exercise activities" as N1
+@enduml

@@ -175,7 +175,7 @@ public class STable extends Exercise {
 			seed = random.nextLong();
 			setSeed(seed);
 
-			switch (ExerciseRunner.getExType().substring(0, 7)) {
+			switch (ExerciseRunner.getExTypeId().substring(0, 7)) {
 				case KEY_PRF_EX_S0:
 					exResult = new ExResultSchulte(seed, 0L, 0, 0, 0F, 0F, 0, 0,  "");
 					break;
@@ -210,7 +210,7 @@ public class STable extends Exercise {
 		Drawable img = AppCompatResources.getDrawable(getAppContext(), R.drawable.ic_border);
 		color = ContextCompat.getColor(getAppContext(), R.color.light_grey_D);
 
-		switch (ExerciseRunner.getExType()){
+		switch (ExerciseRunner.getExTypeId()){
 			case KEY_PRF_EX_S1:
 				switch (ExerciseRunner.getSymbolType()) {
 					case KEY_SYMBOL_TYPE_NUMBER_ROME:
@@ -299,7 +299,6 @@ public class STable extends Exercise {
 		}
 	}
 
-
 	/**
 	 * Gathering statistics of passed exercise
 	 */
@@ -343,7 +342,7 @@ public class STable extends Exercise {
 /*		exResult = (ExerciseRunner.getExType().contains(KEY_PRF_EX_S0) ?
 				new ExResultSchulte(time, turns, turnsMissed, average, rmsd, 0, 0, "" ) :
 				new ExResultBasics(time, turns, 0, 0, ""));*/
-		switch (ExerciseRunner.getExType().substring(0, 7)) {
+		switch (ExerciseRunner.getExTypeId().substring(0, 7)) {
 			case KEY_PRF_EX_S0:
 				((ExResultSchulte) exResult).update(getTimeStamp(), time, turns, turnsMissed, average, rmsd, 0, 0, "" );
 				break;

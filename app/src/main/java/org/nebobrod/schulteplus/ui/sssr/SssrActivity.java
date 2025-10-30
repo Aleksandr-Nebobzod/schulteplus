@@ -45,6 +45,7 @@ import com.google.android.material.slider.Slider;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.Const;
+import org.nebobrod.schulteplus.common.Exercise;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.ExResultSssr;
@@ -61,11 +62,10 @@ public class SssrActivity extends AppCompatActivity {
 
 	SssrViewModel viewModel;
 
-	private List<ExResultSssr> exResultData;
+	private Exercise<ExResultSssr> exercise; // simple instance of abstract
 	private ExResultSssr exResult;
 	private ExerciseRunner runner;
 
-	private DataRepos<ExResultSssr> repos;
 	private MutableLiveData<ExResultSssr> resultLD = new MutableLiveData<>();
 	private DialogInterface.OnClickListener cancelListener;
 	private DialogInterface.OnClickListener restartListener;
@@ -111,6 +111,9 @@ public class SssrActivity extends AppCompatActivity {
 		tvDate.setFocusableInTouchMode(true);
 		tvDate.setOnClickListener(view -> showDatePicker(view));
 		selectedDate = LocalDate.now().plusDays(-1L); // Yesterday by default
+		runner = ExerciseRunner.getInstance();
+
+		// The instantiating for new opened day
 		exResult = new ExResultSssr(selectedDate, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, "");
 		changeRecord(selectedDate);
 
@@ -137,7 +140,7 @@ public class SssrActivity extends AppCompatActivity {
 		});
 
 		// Pie Data Chart
-		runner = ExerciseRunner.getInstance();
+
 		pieChart = binding.pieChart;
 
 		legend = pieChart.getLegend();
@@ -308,8 +311,6 @@ public class SssrActivity extends AppCompatActivity {
 		});
 	}
 
-
-
 	/**
 	 * {@inheritDoc}
 	 * <p>
@@ -332,13 +333,20 @@ public class SssrActivity extends AppCompatActivity {
 			viewModel.saveRecord(exResult);
 		}
 
-		// new date, new record and cleared switcher
+		// If new date, new record and not first opened
 		tvDate.setText(date.toString());
 		if (viewModel.getExercisesMapLD() != null &&
 				viewModel.getExercisesMapLD().getValue() != null) {
 			exResult = viewModel.getExercisesMapLD().getValue().get(date);
 			updateSlidersAndPie(exResult);
 		}
+
+		// Organize exercise for the runner
+		exercise = new Exercise<ExResultSssr>() {}; // instantiating of an abstract class
+		exercise.setExResult(exResult);
+		runner.start(exercise);
+
+		// clear switcher
 		dataProvided.setChecked(false);
 	}
 

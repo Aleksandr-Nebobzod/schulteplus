@@ -31,7 +31,7 @@ public class DataReposTest {
 		String pr = "009";
 		String uid = pr + "T1K1i1d171V1U1p1f1D1r1S1i1r1"; // "TFKBiTdd7OVYUaplfzDHrXSCixr1"
 //		data = new UserHelper(uid, pr + "@gmail.com", pr + "name", pr + "pass", pr + "device3a", pr + "uaked47", false);
-		data = new Achievement().set(pr + "uid", pr + "uak", pr + "nam", 1711556007L, "05.05.05", pr + "r", pr + "v", pr + "m");
+		data = new Achievement().set(pr + "uid", pr + "uak", pr + "nam", 1711556007L, "05.05.05","exType", pr + "r", pr + "v", pr + "m");
 
 		// Provide component Repository
 		repos = new DataRepos(data.getClass());

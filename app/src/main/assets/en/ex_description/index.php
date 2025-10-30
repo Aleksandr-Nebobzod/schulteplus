@@ -34,7 +34,7 @@
 <body>
 <div class="body-header">
     <div class="mini-info">
-        <a href="http://attplus.in/schulte/en/attention_schulte_plus_info_en.html">ATTENTION SCHULTE PLUS</a>
+        <a href="http://attplus.in/schulte/en/index.html">ATTENTION SCHULTE PLUS</a>
     </div>
     <address style="text-align: right;">You're never too smart to learn!</address>
     <h4>Techniques</h4>

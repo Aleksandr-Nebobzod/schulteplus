@@ -7,7 +7,7 @@
   -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" prefix="og: http://ogp.me/ns#">
 <head>
     <meta charset="UTF-8">
     <title>Smart Rovers</title>
@@ -31,18 +31,29 @@
     <meta name="twitter:description" content="The independent development to Improve your consciousness">
     <meta name="twitter:image" content="http://attplus.in/common/ic_launcher_round.png">
 
-    <!-- Разметка JSON-LD, созданная Мастером разметки структурированных данных Google. -->
-    <script type="application/ld+json">
-    [
-      {
-        "@context": "http://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "SMART ROVERS team",
-        "url": "http://attplus.in/",
-        "datePublished": "2024-04-02"
-      }
-    ]
-    </script>
+    <link rel="icon" href="http://attplus.in/favicon.xml" type="image/svg+xml">
+    <link rel="icon" href="http://attplus.in/favicon.png" type="image/png">
+
+<!-- Yandex.Metrika counter attplus-y01ru -->
+    <script type="text/javascript" src="http://attplus.in/schulte/common/yandex_metrica.js"></script>
+
+    <noscript><div><img src="https://mc.yandex.ru/watch/98319797" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+<!-- Разметка JSON-LD, созданная Мастером разметки структурированных данных Google. -->
+<script type="application/ld+json">
+[
+  {
+    "@context": "http://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SMART ROVERS team",
+    "url": "http://attplus.in/",
+    "datePublished": "2024-04-02"
+  }
+]
+</script>
+
+
 </head>
 <body>
 <?php

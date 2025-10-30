@@ -1,5 +1,5 @@
 #
-# generated on 2024/08/28 12:50:18
+# generated on 2024/09/24 10:30:41
 #
 # --table-start--
 dataClass=org.nebobrod.schulteplus.data.Achievement
@@ -23,6 +23,9 @@ fieldName=timeStamp
 # --field-end--
 # --field-start--
 fieldName=dateTime
+# --field-end--
+# --field-start--
+fieldName=exType
 # --field-end--
 # --field-start--
 fieldName=recordText

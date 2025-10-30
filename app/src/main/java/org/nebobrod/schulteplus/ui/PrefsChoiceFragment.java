@@ -102,7 +102,7 @@ public class PrefsChoiceFragment extends PreferenceFragmentCompat {
 			chosen.setChecked(true);
 			EditTextPreference exType = findPreference(KEY_PFR_EXERCISE_SPACE);
 			exType.setText(chosen.getKey());
-			ExerciseRunner.setExType(chosen.getKey());
+			ExerciseRunner.setExTypeId(chosen.getKey());
 
 			// Reload new fragment on UI
 			updateFragmentForSpace(chosen.getKey());
@@ -136,7 +136,7 @@ public class PrefsChoiceFragment extends PreferenceFragmentCompat {
 			ExType exType = ExerciseRunner.getExTypes().get(pKey);
 			if (exType != null && exType.getStatus() == ExType.FUNC_STATUS_PLANNED) {
 				Drawable icon = p.getIcon();
-				p.setIcon(overlayBadgedIcon(icon, getRes().getDrawable(R.drawable.ic_bagde_inprogress, null)));
+				p.setIcon(overlayBadgedIcon(icon, getRes().getDrawable(R.drawable.ic_badge_inprogress, null)));
 				p.setEnabled(false);
 			}
 		}

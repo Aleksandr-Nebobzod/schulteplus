@@ -35,8 +35,9 @@ out/
 # Gradle files
 .gradle/
 build/
-app/build/
 */build/
+app/debug/
+app/release/
 
 
 # Android Studio generated files and folders

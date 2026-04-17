@@ -269,6 +269,7 @@ li {
     width: 100%;
     height: 100%;  /* Use 100% instead of 100vh for reliable WebView behavior */
     position: relative;
+    overflow: hidden;
 }
 
 .swiper-wrapper {
@@ -282,11 +283,10 @@ li {
     flex-direction: column;
     justify-content: center;  /* Vertical centering */
     align-items: center;
-    overflow-y: auto;         /* Scroll if content overflows */
-    max-width: 80%;
+    overflow-y: auto;        /*  Scroll if content overflows */
     width: 100%;
     padding: 5% 10%;         /* Reduced vertical padding, safe for small screens */
-    font-size: 0.7em;
+    font-size: 1.2em;
     line-height: 1.0;
     box-sizing: border-box;
 }
@@ -294,10 +294,31 @@ li {
 /* Better spacing for slide content */
 .swiper-slide > div,
 .swiper-slide > p,
-.swiper-slide > img {
+.swiper-slide > img,
+.swiper-slide > ul,
+.swiper-slide > ol,
+.swiper-slide > h1,
+.swiper-slide > h2,
+.swiper-slide > h3 {
     width: 100%;
     max-width: 100%;
 }
+
+/* Spacing for lists */
+.swiper-slide ul,
+.swiper-slide ol {
+    margin-bottom: 20px;
+    padding-left: 20px;
+}
+.swiper-slide p + ol,
+.swiper-slide p + ul {
+    margin-top: 0px;
+}
+
+/* Ensure last element has space before pagination */
+/*.swiper-slide > :last-child {
+    margin-bottom: 45px;
+}*/
 
 /* ===== Questions / Checkboxes ===== */
 .question {

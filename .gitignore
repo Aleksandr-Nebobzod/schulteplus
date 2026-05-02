@@ -95,6 +95,10 @@ replay_pid*
 dependencies.txt
 dep.txt
 
+# VS Code
+.vscode/
+*.code-workspace
+
 # ---------my exeptions----------
 # Temp
 temp/

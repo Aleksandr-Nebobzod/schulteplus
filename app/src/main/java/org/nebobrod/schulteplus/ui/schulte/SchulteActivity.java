@@ -28,6 +28,9 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.MutableLiveData;
 
 import android.content.DialogInterface;
@@ -77,6 +80,24 @@ public class SchulteActivity extends AppCompatActivity {
 			Toast.makeText(this, "" + this.getString(R.string.err_no_data), Toast.LENGTH_SHORT).show();
 			finish();
 		}
+
+		// Android-16 req
+		View rootView = findViewById(android.R.id.content);
+
+		ViewCompat.setOnApplyWindowInsetsListener(rootView, (view, windowInsets) -> {
+			Insets insets = windowInsets.getInsets(
+					WindowInsetsCompat.Type.systemBars()
+			);
+
+			view.setPadding(
+					insets.left,
+					insets.top,
+					insets.right,
+					insets.bottom
+			);
+
+			return windowInsets;
+		});
 
 		repos = new DataRepos(ExResult.class);
 		runner = ExerciseRunner.getInstance();

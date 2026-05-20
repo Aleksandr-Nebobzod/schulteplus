@@ -209,6 +209,12 @@ public class ExType {
 
 	/** Check all achievement in Map */
 	public boolean isAllAchieved() {
+
+		// TODO: 19.05.2026  switched off quizes
+		if (1 >  0) {
+			return true;
+		}
+
 		// No requirements
 		if (achieved == null || achieved.size() == 0) {
 			return true;
@@ -259,6 +265,11 @@ public class ExType {
 	/** defines what badges to show by achieved records */
 	public Drawable getBadge() {
 
+		// TODO: 19.05.2026  switched off quizes
+		if (1>0) {
+			return new ColorDrawable(Color.TRANSPARENT);
+		}
+
 		// No requirements
 		if (achieved == null || achieved.size() == 0) {
 			return new ColorDrawable(Color.TRANSPARENT);
@@ -280,6 +291,11 @@ public class ExType {
 
 	/** defines what investments luck by achieved records */
 	public String getRequiredAchievement() {
+
+		// TODO: 19.05.2026  switched off quizes
+		if (1>0) {
+			return ACHIEVE_PASSED;
+		}
 
 		// No requirements
 		if (achieved == null || achieved.size() == 0) {

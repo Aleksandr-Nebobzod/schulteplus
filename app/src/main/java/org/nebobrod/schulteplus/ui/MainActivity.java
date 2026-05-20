@@ -49,6 +49,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -114,6 +117,24 @@ public class MainActivity extends AppCompatActivity {
 
 		binding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
+
+		// Android-16 req
+		View rootView = findViewById(android.R.id.content);
+
+		ViewCompat.setOnApplyWindowInsetsListener(rootView, (view, windowInsets) -> {
+			Insets insets = windowInsets.getInsets(
+					WindowInsetsCompat.Type.systemBars()
+			);
+
+			view.setPadding(
+					insets.left,
+					insets.top,
+					insets.right,
+					insets.bottom
+			);
+
+			return windowInsets;
+		});
 
 		// get userHelper from Intent
 		if(getIntent() != null & getIntent().hasExtra("user")) {

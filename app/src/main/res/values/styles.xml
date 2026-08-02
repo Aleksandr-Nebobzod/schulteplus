@@ -154,8 +154,8 @@
 	
 	<style name="SchultePlus.Button.TextButtonPlus" parent="SchultePlus.Button.TextButton">
 		<item name="enforceTextAppearance">false</item>
-		<item name="android:textAppearance">@macro/m3_comp_text_button_label_text_type</item>
-		<item name="shapeAppearance">@style/ShapeAppearance.M3.Comp.TextButton.Container.Shape</item>
+		<item name="android:textAppearance">?attr/textAppearanceLabelLarge</item>
+		<item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Full</item>
 		<item name="materialThemeOverlay">@style/ThemeOverlay.Material3.Button.TextButton</item>
 		<item name="android:textColor">@color/m3_text_button_foreground_color_selector</item>
 		<item name="iconTint">@color/m3_text_button_foreground_color_selector</item>
@@ -164,7 +164,7 @@
 	</style>
 	<style name="SchultePlus.Button.OutlinedButton" parent="SchultePlus.Button.TextButtonPlus">
 		<item name="strokeColor">@color/m3_button_outline_color_selector</item>
-		<item name="strokeWidth">@dimen/m3_comp_outlined_button_outline_width</item>
+		<item name="strokeWidth">1dp</item>
 	</style>
 	
 	<!-- ActionBar -->

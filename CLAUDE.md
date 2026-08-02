@@ -7,6 +7,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Every text document (`.md` — docs, plans, READMEs) must end with a **"Лог изменений"** (Change Log) section at the bottom, **newest entry on top**. Each entry: date + brief description of what changed.
 - Plans and analysis go to `/docs` as Markdown with Mermaid diagrams where useful.
 
+## Commit Message Convention
+
+- Commit messages use a **type prefix** (Conventional Commits): `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, `test:`, `build:`, `perf:`, `style:`, `ci:`. Example: `docs: add A5 changelog entry`.
+- For docs/plan changes use `docs:`; new features `feat:`; bug fixes `fix:`.
+- Multi-line messages: short summary line, then a body with details.
+
 ## Build & Test Commands
 
 ```bash
@@ -106,3 +112,10 @@ User preferences are stored in `SharedPreferences` keyed by Firebase UID. `Prefe
 ## Symbol Types
 
 Schulte tables support multiple symbol types: numbers, Roman numerals, Latin/Cyrillic/Devanagari letters, and interpolated color gradients (red/blue). Defined in `Const.KEY_SYMBOL_TYPE_*` and configured in `res/values/arrays.xml`.
+
+## Лог изменений
+
+| Дата | Изменение |
+|---|---|
+| 2026-08-03 | Добавлена секция **Commit Message Convention**: префиксы коммитов (`feat:`, `docs:`, `fix:` и т.п.) |
+

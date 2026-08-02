@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Documentation Conventions
+
+- Every text document (`.md` — docs, plans, READMEs) must end with a **"Лог изменений"** (Change Log) section at the bottom, **newest entry on top**. Each entry: date + brief description of what changed.
+- Plans and analysis go to `/docs` as Markdown with Mermaid diagrams where useful.
+
 ## Build & Test Commands
 
 ```bash

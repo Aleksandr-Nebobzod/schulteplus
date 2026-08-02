@@ -6,464 +6,464 @@
     "price": 0,
     "certRequired": false
   },
-      "gcb_schulte_1_sequence": {
-        "parentId": "gcb_space_schulte",
-        "nameEn": "Primary flow",
-        "status": 2,
-        "price": 0,
-        "certRequired": true,
-        "achieveConditions": {
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+  "gcb_schulte_1_sequence": {
+    "parentId": "gcb_space_schulte",
+    "nameEn": "Primary flow",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "prf_sw_ratings": {
+    "parentId": "gcb_schulte_1_sequence",
+    "nameEn": "Make it perfect",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased'",
+        "condition": "EQ",
+        "value": ""
       },
-      "prf_sw_ratings": {
-        "parentId": "gcb_schulte_1_sequence",
-        "nameEn": "Make it perfect",
-        "status": 2,
-        "price": 5000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "prf_prob_enabled": {
+    "parentId": "gcb_schulte_1_sequence",
+    "nameEn": "Make white spaces",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased'",
+        "condition": "EQ",
+        "value": ""
       },
-      "prf_prob_enabled": {
-        "parentId": "gcb_schulte_1_sequence",
-        "nameEn": "Make white spaces",
-        "status": 2,
-        "price": 10000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
-      },
-      "prf_prob_zero": {
-        "parentId": "gcb_schulte_1_sequence",
-        "nameEn": "Make white spaces",
-        "status": 0,
-        "price": 10000,
-        "certRequired": true
-      },
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "prf_prob_zero": {
+    "parentId": "gcb_schulte_1_sequence",
+    "nameEn": "Make white spaces",
+    "status": 0,
+    "price": 0,
+    "certRequired": false
+  },
 
-      "gcb_schulte_2_sequences": {
-        "parentId": "gcb_space_schulte",
-        "nameEn": "Ice and Fire",
-        "status": 2,
-        "price": 5000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+  "gcb_schulte_2_sequences": {
+    "parentId": "gcb_space_schulte",
+    "nameEn": "Ice and Fire",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_schulte_3_sequences": {
-        "parentId": "gcb_space_schulte",
-        "nameEn": "Four seasons",
-        "status": 2,
-        "price": 30000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '30000'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_schulte_3_sequences": {
+    "parentId": "gcb_space_schulte",
+    "nameEn": "Four seasons",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '30000'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_schulte_4_mishmash": {
-        "parentId": "gcb_space_schulte",
-        "nameEn": "Mishmash",
-        "status": 0,
-        "price": 10000,
-        "certRequired": true,
-        "coming_soon": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_schulte_4_mishmash": {
+    "parentId": "gcb_space_schulte",
+    "nameEn": "Mishmash",
+    "status": 0,
+    "price": 0,
+    "certRequired": false,
+    "coming_soon": true,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
 
   "gcb_space_basics": {
     "parentId": null,
     "nameEn": "Basics",
     "status": 2,
     "price": 0,
-    "certRequired": true
+    "certRequired": false
   },
-      "gcb_bas_necker_cube": {
-        "parentId": "gcb_space_basics",
-        "nameEn": "Necker cube",
-        "status": 2,
-        "price": 25000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+  "gcb_bas_necker_cube": {
+    "parentId": "gcb_space_basics",
+    "nameEn": "Necker cube",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_bas_necker_cylinder": {
-        "parentId": "gcb_space_basics",
-        "nameEn": "Necker cylinder",
-        "status": 2,
-        "price": 25000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_bas_necker_cylinder": {
+    "parentId": "gcb_space_basics",
+    "nameEn": "Necker cylinder",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_bas_necker_ball": {
-        "parentId": "gcb_space_basics",
-        "nameEn": "Necker ball",
-        "status": 2,
-        "price": 25000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_bas_necker_ball": {
+    "parentId": "gcb_space_basics",
+    "nameEn": "Necker ball",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_bas_penrose_triangle": {
-        "parentId": "gcb_space_basics",
-        "nameEn": "Penrose triangle",
-        "status": 2,
-        "price": 25000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_bas_penrose_triangle": {
+    "parentId": "gcb_space_basics",
+    "nameEn": "Penrose triangle",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_bas_dot": {
-        "parentId": "gcb_space_basics",
-        "nameEn": "Dot exercise",
-        "status": 2,
-        "price": 25000,
-        "certRequired": true
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_bas_dot": {
+    "parentId": "gcb_space_basics",
+    "nameEn": "Dot exercise",
+    "status": 2,
+    "price": 0,
+    "certRequired": false
+  },
+  "gcb_bas_dbl_dot": {
+    "parentId": "gcb_space_basics",
+    "nameEn": "Double dot",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_bas_dbl_dot": {
-        "parentId": "gcb_space_basics",
-        "nameEn": "Double dot",
-        "status": 2,
-        "price": 25000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_bas_pyramidot": {
+    "parentId": "gcb_space_basics",
+    "nameEn": "Pyramidot",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_bas_pyramidot": {
-        "parentId": "gcb_space_basics",
-        "nameEn": "Pyramidot",
-        "status": 2,
-        "price": 25000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_bas_circles_rb": {
+    "parentId": "gcb_space_basics",
+    "nameEn": "Circles red-blue",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_bas_circles_rb": {
-        "parentId": "gcb_space_basics",
-        "nameEn": "Circles red-blue",
-        "status": 2,
-        "price": 25000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_bas_circles_rb_lined": {
+    "parentId": "gcb_space_basics",
+    "nameEn": "Circles red-blue with lines",
+    "status": 0,
+    "price": 0,
+    "certRequired": false
+  },
+  "gcb_bas_khao_manee": {
+    "parentId": "gcb_space_basics",
+    "nameEn": "Khao Manee",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_bas_circles_rb_lined": {
-        "parentId": "gcb_space_basics",
-        "nameEn": "Circles red-blue with lines",
-        "status": 0,
-        "price": 25000,
-        "certRequired": true
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_bas_circles_rb_crossed": {
+    "parentId": "gcb_space_basics",
+    "nameEn": "Circles red-blue crossed",
+    "status": 0,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_bas_khao_manee": {
-        "parentId": "gcb_space_basics",
-        "nameEn": "Khao Manee",
-        "status": 2,
-        "price": 25000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_bas_squares_colored_crossed": {
+    "parentId": "gcb_space_basics",
+    "nameEn": "Squares colored crossed",
+    "status": 0,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_bas_circles_rb_crossed": {
-        "parentId": "gcb_space_basics",
-        "nameEn": "Circles red-blue crossed",
-        "status": 0,
-        "price": 25000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_bas_dancing_girl": {
+    "parentId": "gcb_space_basics",
+    "nameEn": "Dancing girl",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_bas_squares_colored_crossed": {
-        "parentId": "gcb_space_basics",
-        "nameEn": "Squares colored crossed",
-        "status": 0,
-        "price": 25000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_bas_dancing_cat": {
+    "parentId": "gcb_space_basics",
+    "nameEn": "Dancing cat",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_bas_dancing_girl": {
-        "parentId": "gcb_space_basics",
-        "nameEn": "Dancing girl",
-        "status": 2,
-        "price": 25000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
-      },
-      "gcb_bas_dancing_cat": {
-        "parentId": "gcb_space_basics",
-        "nameEn": "Dancing cat",
-        "status": 2,
-        "price": 25000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
-      },
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
 
   "gcb_space_sssr": {
     "parentId": null,
     "nameEn": "Spheres",
     "status": 2,
     "price": 0,
-    "certRequired": true
+    "certRequired": false
   },
-      "gcb_sssr_main": {
-        "parentId": "gcb_space_sssr",
-        "nameEn": "SSSR",
-        "status": 2,
-        "price": 10000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+  "gcb_sssr_main": {
+    "parentId": "gcb_space_sssr",
+    "nameEn": "SSSR",
+    "status": 2,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_sssr_intercept01": {
-        "parentId": "gcb_space_sssr",
-        "nameEn": "Intercept-1",
-        "status": 0,
-        "price": 10000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_sssr_intercept01": {
+    "parentId": "gcb_space_sssr",
+    "nameEn": "Intercept-1",
+    "status": 0,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_sssr_intercept02": {
-        "parentId": "gcb_space_sssr",
-        "nameEn": "Intercept-2",
-        "status": 0,
-        "price": 10000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_sssr_intercept02": {
+    "parentId": "gcb_space_sssr",
+    "nameEn": "Intercept-2",
+    "status": 0,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
-      "gcb_sssr_intercept03": {
-        "parentId": "gcb_space_sssr",
-        "nameEn": "Intercept-3",
-        "status": 0,
-        "price": 10000,
-        "certRequired": true,
-        "achieveConditions": {
-          "purchased": {
-            "field": "specialMark = 'purchased' AND recordValue = '10'",
-            "condition": "EQ",
-            "value": ""
-          },
-          "certified": {
-            "field": "specialMark = 'certified'",
-            "condition": "EQ",
-            "value": ""
-          }
-        }
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
+  "gcb_sssr_intercept03": {
+    "parentId": "gcb_space_sssr",
+    "nameEn": "Intercept-3",
+    "status": 0,
+    "price": 0,
+    "certRequired": false,
+    "achieveConditions": {
+      "purchased": {
+        "field": "specialMark = 'purchased' AND recordValue = '10'",
+        "condition": "EQ",
+        "value": ""
       },
+      "certified": {
+        "field": "specialMark = 'certified'",
+        "condition": "EQ",
+        "value": ""
+      }
+    }
+  },
 
   "gcb_space_schulte_parents": {
     "parentId": null,
     "nameEn": "Schulte for parents",
     "status": 0,
     "price": 0,
-    "certRequired": true
+    "certRequired": false
   }
 }

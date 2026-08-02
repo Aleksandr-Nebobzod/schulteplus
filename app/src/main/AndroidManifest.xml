@@ -41,7 +41,7 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/Theme.SchultePlus"
-		android:versionCode="116"
+		android:versionCode="118"
 		android:versionName="Entada"
 		tools:targetApi="35">
 		<activity
@@ -53,7 +53,6 @@
 		<activity
 			android:name=".ui.SplashActivity"
 			android:exported="true"
-			android:screenOrientation="portrait"
 			android:theme="@style/Theme.SchultePlus.FullscreenStart"
 			tools:ignore="LockedOrientationActivity">
 			<intent-filter>

@@ -32,7 +32,7 @@ android {
         applicationId "org.nebobrod.schulteplus"
         minSdkVersion 26
         targetSdkVersion 36
-        versionCode 117
+        versionCode 119
         versionName "Entada"
         signingConfig signingConfigs.debug
         buildConfigField 'boolean', 'ENABLE_CRASHLYTICS', 'true'

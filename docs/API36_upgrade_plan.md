@@ -2,7 +2,9 @@
 
 > **Дата:** 2026-08-02 (актуализация: трек A на AGP 8.13, инструменты уже обновлены)
 > **IDE:** Android Studio **Quail 3 | 2026.1.3** (runtime JDK 25) — поддерживает AGP вплоть до 9.x
-> **Статус:** Трек A в процессе — **A1 ✅, A2 ✅**, дальше A3–A6
+> **Статус:** Трек A в процессе — **A1 ✅, A2 ✅, v118 влит ✅, A3 ✅**, дальше A4–A6
+> **Версия релиза: 119** (118 — активный релиз на Play, версия должна строго возрастать)
+> **⚠️ Вход сломан** (старый auth 2018) — **B2 становится критическим путём до релиза**: без работающего входа приложение не выпускаем
 > **Дедлайн Play:** с **31 августа 2026** обновления должны таргетить API 36 (отсрочка — до 01.11.2026)
 > **Тестирование:** физическое устройство пользователя, после каждой итерации
 
@@ -51,6 +53,8 @@ flowchart TD
 - 🐛 Найдено: `gradle-wrapper.jar` отсутствовал в репозитории — восстановлен (v7.6.0), закоммитить
 
 ### A2. Инструменты сборки — ✅ сделано 02.08.2026, BUILD SUCCESSFUL
+**Слияние v118:** с другого компа в ветку влит весь `origin/sssr-space` (7 коммитов: Support-фича, quiz off, стили, гигиена) — это содержимое **активного релиза 118 на Play**, терять нельзя. Конфликты: `versionCode` → **119** (build.gradle + AndroidManifest), `gradle-wrapper.jar` (взят их, новее). Коммиты: `c159410` (тулчейн) + `3203a03` (merge).
+
 **Решение:** вместо AGP 9.2.1 взят **AGP 8.13.2** (связка Gradle 8.13 + AGP 8.13.2, подготовленная пользователем):
 - Без сломанного DSL: `applicationVariants` работает, миграция на `androidComponents` не нужна
 - compileSdk 36 полностью поддерживается
@@ -68,12 +72,13 @@ flowchart TD
 | Убрать `resolutionStrategy` force kotlin-stdlib 1.8.0 | ⏳ перенесено в A5 (нужно для новых AndroidX) |
 | ✅ **Чек-пойнт A2: `assembleDebug` — BUILD SUCCESSFUL, APK `Schulte Plus_117_Entada.apk`** | ✅ |
 
-### A3. Пермишены и предупреждения — 0.5 дня
-| Шаг | Назначение |
+### A3. Пермишены и предупреждения — ✅ сделано 02.08.2026
+| Шаг | Статус |
 |---|---|
-| `READ_PHONE_STATE` — проверить использование в коде; если не нужно — удалить из манифеста | пермишн ограничен на API 36, Play может отклонить |
-| Разобрать предупреждения сборки (deprecation) — зафиксировать, не обязательно чинить до релиза | выявить риски API 36 |
-| ✅ **Чек-пойнт: устройство** | |
+| `READ_PHONE_STATE` — **удалён** из манифеста: код использует только `Settings.Secure.ANDROID_ID` (`Utils.getDevId()`), TelephonyManager нигде нет | ✅ |
+| **Баг найден и исправлен:** `SignupActivity` вызывал несуществующий `Utils.getDeviceId()` (есть только `getDevId()`) — сборка проходила за счёт инкрементального кэша, в рантайме был бы NoSuchMethodError на ветке анонимного входа | ✅ → `Utils.getDevId()` |
+| Предупреждения сборки (deprecation) — зафиксированы, от старых API (onBackPressed и др.); чинить не обязательно до релиза | 📋 |
+| ✅ **Чек-пойнт: `clean assembleDebug` — BUILD SUCCESSFUL (компиляция с нуля)** | ✅ |
 
 ### A4. Поведенческие изменения Android 16 — 0.5–1 день
 | Шаг | Назначение |
@@ -83,13 +88,16 @@ flowchart TD
 | Прогнать все 3 упражнения (Schulte, Basics, SSSR), настройки, статистику, вход/выход | регресс |
 | ✅ **Чек-пойнт: полный ручной проход** | |
 
-### A5. AndroidX пакетом — 0.5–1 день
+### A5. AndroidX пакетом — ✅ сделано 02.08.2026, BUILD SUCCESSFUL + `./gradlew test` зелёный
 | Шаг | Назначение |
 |---|---|
-| appcompat 1.7.1, material 1.14.0, fragment 1.8.9, lifecycle 2.11.0, viewpager2 1.1.0, navigation 2.9.8, activity 1.13.0, constraintlayout 2.2.2 + удалить force kotlin-stdlib 1.8.0 | старые конфликты уходят на новом AGP; старые androidx на API 36 — риск |
+| appcompat 1.7.1, material **1.13.0**, fragment 1.8.9, lifecycle **2.10.0**, viewpager2 1.1.0, navigation 2.9.8, activity 1.13.0, constraintlayout 2.2.2, glide 4.16.0, gson 2.14.0, oss-licenses 17.5.1, taptargetview 1.15.0, calendar 2.10.1 + удалить force kotlin-stdlib 1.8.0, legacy-support-v4 | старые конфликты уходят на новом AGP; старые androidx на API 36 — риск |
+| **material 1.13.0, а не 1.11.0/1.14.0** | oss-licenses 17.5.1 тянет material 1.13.0 транзитивно (highest wins); в 1.12+ удалены ресурсы `m3_comp_*` из styles.xml → заменены на M3-эквиваленты (`textAppearanceLabelLarge`, `ShapeAppearance.Material3.Corner.Full`, `strokeWidth 1dp`) |
+| lifecycle 2.10.0, не 2.11.0 | 2.11.0 требует compileSdk 37 + AGP 9.1 (транзитивы viewmodel/runtime-compose) |
+| **MPAndroidChart v3.1.0 возвращён** | входит в трек A удалялся ошибочно: SssrActivity (v118, SSSR-графики) использует его — миграция в треке B |
 | Проверить NPE-кейсы из комментариев (viewpager2, fragment, lifecycle) | были следствием старой связки |
-| Визуальный осмотр: темы Material 1.14, диалоги | визуальный регресс |
-| ✅ **Чек-пойнт: полный проход на устройстве** | |
+| Визуальный осмотр: темы Material 1.13, диалоги, кнопки TextButtonPlus/OutlinedButton | визуальный регресс |
+| ⏳ **Чек-пойнт: полный проход на устройстве (ожидает теста)** | |
 
 ### A6. Регресс и релиз — 1 день
 | Шаг | Назначение |
@@ -200,8 +208,8 @@ flowchart TD
 | Библиотека | Статус |
 |---|---|
 | firebase-ui-auth 7.2.0 | **не используется в коде** — удалить в B2 |
-| MPAndroidChart v3.1.0 | **не используется в коде** — удалить (можно в A5) |
-| legacy-support-v4 1.0.0 | удалить если не ломает сборку |
+| MPAndroidChart v3.1.0 | используется в SssrActivity (SSSR-графики, v118) — мигрировать в B3, удалить после |
+| legacy-support-v4 1.0.0 | ✅ удалена в A5 |
 | модуль `lib/`, файлы `dep*.txt`, `temp/` | мёртвый код в репозитории |
 
 ## 5. Итерационная дисциплина (правило «б»)
@@ -274,6 +282,9 @@ gantt
 
 | Дата | Изменение |
 |---|---|
+| 2026-08-02 | **A5 ✅** (сборка + unit-тесты): AndroidX пакетом — appcompat 1.7.1, material **1.13.0**, fragment 1.8.9, lifecycle **2.10.0**, viewpager2 1.1.0, navigation 2.9.8, activity 1.13.0, constraintlayout 2.2.2, glide 4.16.0, gson 2.14.0, oss-licenses 17.5.1, taptargetview 1.15.0, calendar 2.10.1; удалены legacy-support-v4 и force kotlin-stdlib. Найден виновник ошибки `m3_comp_* not found`: **oss-licenses 17.5.1 тянет material 1.13.0 транзитивно** (highest wins) — в 1.12+ ресурсы `m3_comp_*` удалены; styles.xml переписан на M3-эквиваленты (`textAppearanceLabelLarge`, `ShapeAppearance.Material3.Corner.Full`, `strokeWidth 1dp`). **MPAndroidChart v3.1.0 возвращён** (ошибочно удалялся в A5 — используется SssrActivity/v118). Чек-пойнт на устройстве ожидает теста |
+| 2026-08-02 | **A3 ✅**: удалён `READ_PHONE_STATE` (используется только ANDROID_ID без пермишена); исправлен баг `Utils.getDeviceId()` → `Utils.getDevId()` в SignupActivity (несуществующий метод, маскировался инкрементальным кэшем; в рантайме — NoSuchMethodError); `clean assembleDebug` — SUCCESSFUL. **B2 переведён в критический путь**: вход сломан старым auth 2018, подтверждено на устройстве |
+| 2026-08-02 | **Влит v118**: `origin/sssr-space` (7 коммитов — Support-фича, quiz off, стили; содержимое активного релиза 118 на Play) влит в ветку через merge. Версия релиза: **119** (118 активен на Play). Конфликты разрешены: versionCode 119 (build.gradle + manifest), wrapper-jar взят их |
 | 2026-08-02 | **Трек A актуализирован под AGP 8.13.2** (решение вместо AGP 9.2.1 — без сломанного DSL, меньше риска; AGP 9 в B5). A1 ✅ (ветка, versionCode 117, wrapper-jar восстановлен), A2 ✅ (Gradle 8.13, AGP 8.13.2, плагины 4.5.0/3.0.7/0.13.0, compileSdk/targetSdk 36, Java 17, configuration-cache off) — BUILD SUCCESSFUL. IDE: AS Quail 2026.1.3. Осталось A3–A6 |
 | 2026-08-02 | План перестроен в **2 трека** по требованиям пользователя: (а) сначала выгрузка v117 на Play — Трек A, auth/Firebase не трогаем; (б) каждая итерация работоспособна, тест на физ.устройстве; (в) переписываемое (авторизация) сразу на Compose+KMP с прицелом на iOS — Трек B |
 | 2026-08-02 | Создан документ: полная перепроверка всех библиотек (Google Maven/Maven Central), единый линейный план до API 36, оценка 6–8 дней |

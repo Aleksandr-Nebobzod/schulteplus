@@ -532,7 +532,7 @@ public class SignupActivity extends AppCompatActivity {
 								// name either from screen as generated before
 								UserFbData fbDbUser = new UserFbData();
 								String _name = etName.getText().toString().trim();
-								String _device = Utils.getDeviceId(SignupActivity.this);
+								String _device = Utils.getDevId();
 
 								fbDbUser.addUser(user.getUid(), _name +  "@email.com", _name, "password", _device, false);
 								Log.d(TAG, "onComplete signIn Anon: " + fbDbUser);

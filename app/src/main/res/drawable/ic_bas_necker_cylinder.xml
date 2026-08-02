@@ -1,0 +1,57 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="28dp"
+    android:height="36dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    
+    <!-- Верхний эллипс -->
+    <path
+        android:pathData="
+            M 50,5
+            C 75,5 96,10 96,15
+            C 96,20 75,25 50,25
+            C 25,25 4,20 4,15
+            C 4,10 25,5 50,5
+            Z"
+        android:strokeColor="@color/colorOnPrimarySurface"
+        android:strokeWidth="7"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+    
+    <!-- Нижний эллипс -->
+    <path
+        android:pathData="
+            M 50,75
+            C 75,75 96,80 96,85
+            C 96,90 75,95 50,95
+            C 25,95 4,90 4,85
+            C 4,80 25,75 50,75
+            Z"
+        android:strokeColor="@color/colorOnPrimarySurface"
+        android:strokeWidth="7"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+    
+    <!-- Левая образующая (боковая линия) -->
+    <path
+        android:pathData="M 4,15 L 4,85"
+        android:strokeColor="@color/colorOnPrimarySurface"
+        android:strokeWidth="7"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+    
+    <!-- Правая образующая (боковая линия) -->
+    <path
+        android:pathData="M 96,15 L 96,85"
+        android:strokeColor="@color/colorOnPrimarySurface"
+        android:strokeWidth="7"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+    
+
+
+</vector>

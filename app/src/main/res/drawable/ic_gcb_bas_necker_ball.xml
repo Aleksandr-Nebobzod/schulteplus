@@ -9,8 +9,8 @@
 <vector
     android:viewportHeight="36"
     android:viewportWidth="36"
-    android:height="200dp"
-    android:width="200dp"
+    android:height="100dp"
+    android:width="100dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <path android:fillColor="@color/transparent"
         android:pathData="M12,2C15,4 15.923,8.292 16,12C15.923,15.708 15,20 12,22M12,2C9,4 8.077,8.292 8,12C8.077,15.708 9,20 12,22M12,2C6.477,2 2,6.477 2,12M12,2C17.523,2 22,6.477 22,12M12,22C17.523,22 22,17.523 22,12M12,22C6.477,22 2,17.523 2,12M22,12C20,15 15.708,15.923 12,16C8.292,15.923 4,15 2,12M22,12C20,9 15.708,8.077 12,8C8.292,8.077 4,9 2,12"

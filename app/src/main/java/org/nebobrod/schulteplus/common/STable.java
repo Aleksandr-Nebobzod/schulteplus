@@ -48,6 +48,8 @@ import java.util.Random;
 public class STable extends Exercise {
 	public static final String TAG = "STable";
 
+	private final AppContext context;
+
 	private ArrayList<SCell> area = new ArrayList<>();
 	private int xSize, ySize;
 	private ArrayList<Object> template = new ArrayList<>(xSize * ySize);
@@ -64,12 +66,13 @@ public class STable extends Exercise {
 
 
 	// Simplified constructor overloading
-	public STable(int x, int y) {
-		this(x, y, 0, 0, 0);
+	public STable(AppContext context, int x, int y) {
+		this(context, x, y, 0, 0, 0);
 	}
 
-	public STable(int x, int y, double dX, double dY, double w) {
+	public STable(AppContext context, int x, int y, double dX, double dY, double w) {
 
+		this.context = context;
 		this.xSize = x;
 		this.ySize = y;
 //		this.sequence = sequence;
@@ -77,7 +80,7 @@ public class STable extends Exercise {
 		this.dX = dX;
 		this.dY = dY;
 		this.w = w;
-		if (ExerciseRunner.isRatings()) {
+		if (context.isRatings()) {
 			this.dX = 0;
 			this.dY = 0;
 			this.w = 0;
@@ -88,7 +91,7 @@ public class STable extends Exercise {
 		Object letter = "";
 		int[] colorSourceArray;
 		int[] colorArray;
-		switch (ExerciseRunner.getSymbolType()) {
+		switch (context.getSymbolType()) {
 			case KEY_SYMBOL_TYPE_NUMBER_ROME:
 				sourceArray = getRes().getStringArray(R.array.number_rome);
 				for (int i = 0; i < xSize * ySize; i++) {
@@ -158,8 +161,8 @@ public class STable extends Exercise {
 		for (int x = xSize; x > 0; x--){
 			for (int y = ySize; y > 0; y--){
 				area.add(new SCell(x, y, value++));
-				if (KEY_SYMBOL_TYPE_COLOR_RED.equals(ExerciseRunner.getSymbolType()) ||
-						KEY_SYMBOL_TYPE_COLOR_BLUE.equals(ExerciseRunner.getSymbolType())) {
+				if (KEY_SYMBOL_TYPE_COLOR_RED.equals(context.getSymbolType()) ||
+						KEY_SYMBOL_TYPE_COLOR_BLUE.equals(context.getSymbolType())) {
 					area.get(current).setColor((int) template.get(current));
 				} else {
 					area.get(current).setText(template.get(current) + "");
@@ -175,7 +178,7 @@ public class STable extends Exercise {
 			long seed = getRandom().nextLong();
 			setSeed(seed);
 
-			switch (ExerciseRunner.getExTypeId().substring(0, 7)) {
+			switch (context.getExTypeId().substring(0, 7)) {
 				case KEY_PRF_EX_S0:
 					setExResult(new ExResultSchulte(seed, 0L, 0, 0, 0F, 0F, 0, 0,  ""));
 					break;
@@ -211,9 +214,9 @@ public class STable extends Exercise {
 		Drawable img = AppCompatResources.getDrawable(getAppContext(), R.drawable.ic_border);
 		color = ContextCompat.getColor(getAppContext(), R.color.light_grey_D);
 
-		switch (ExerciseRunner.getExTypeId()){
+		switch (context.getExTypeId()){
 			case KEY_PRF_EX_S1:
-				switch (ExerciseRunner.getSymbolType()) {
+				switch (context.getSymbolType()) {
 					case KEY_SYMBOL_TYPE_NUMBER_ROME:
 					case KEY_SYMBOL_TYPE_LETTER_LATIN:
 					case KEY_SYMBOL_TYPE_LETTER_CYRILLIC:
@@ -343,7 +346,7 @@ public class STable extends Exercise {
 /*		exResult = (ExerciseRunner.getExType().contains(KEY_PRF_EX_S0) ?
 				new ExResultSchulte(time, turns, turnsMissed, average, rmsd, 0, 0, "" ) :
 				new ExResultBasics(time, turns, 0, 0, ""));*/
-		switch (ExerciseRunner.getExTypeId().substring(0, 7)) {
+		switch (context.getExTypeId().substring(0, 7)) {
 			case KEY_PRF_EX_S0:
 				((ExResultSchulte) getExResult()).update(getTimeStamp(), time, turns, turnsMissed, average, rmsd, 0, 0, "" );
 				break;

@@ -185,7 +185,7 @@ public class BasicsActivity extends AppCompatActivity {
 
 		// repos = new DataRepos(ExResult.class);
 		ExerciseRunner.getInstance();
-		exercise = new STable(1, 1);
+		exercise = new STable(ExerciseRunner.createAppContext(), 1, 1);
 		ExerciseRunner.start(exercise);
 		resultLiveData.setValue(ExerciseRunner.getExResult());
 

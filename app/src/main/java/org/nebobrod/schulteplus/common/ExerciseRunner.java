@@ -490,6 +490,14 @@ public class ExerciseRunner {
 
 	public static boolean isRatings() {return ratings;}
 
+	/**
+	 * Явный контекст для домена (этап 1 развязки ядра):
+	 * заменяет статические чтения ExerciseRunner из STable/ExResult.
+	 */
+	public static AppContext createAppContext() {
+		return new AppContext(getExTypeId(), getSymbolType(), isRatings());
+	}
+
 	public static void setRatings(boolean ratings) {ExerciseRunner.ratings = ratings;}
 
 	public static boolean isProbEnabled() {return probEnabled;}

@@ -121,14 +121,16 @@ flowchart TD
 | Перенести в shared: модели ExResult/ExType, логику STable (Java→Kotlin), интерфейс auth-сервиса | ⏳ следующий шаг B1 |
 | ✅ **Чек-пойнт: XML-приложение работает, shared подключён** | ✅ assembleDebug зелёный |
 
-### B2. Авторизация на Compose + KMP — 3–5 дней (после релиза 119; вход уже работает, это плановая миграция)
-| Шаг | Назначение |
+### B2. Авторизация на Compose + KMP — ✅ код готов 16.08.2026 (fdad47f…990b83d), smoke ожидается
+| Шаг | Статус |
 |---|---|
-| Splash/Login/Signup → **Compose** | новая авторизация сразу на новом стеке |
-| Firebase Auth в shared через KMP-обёртку (community `dev.gitlive:firebase-kotlin-sdk`; официального KMP Firebase нет) — либо интерфейс `AuthService` с реализациями Android/iOS | единый API |
-| **Credential Manager** (androidx.credentials) + Google Sign-In (googleid 1.2.0, play-services-auth 21.6.0) | актуальный API входа |
-| firebase-auth 16.0.3 → 24.2.0 (BOM 34.16.0), удалить firebase-ui-auth | новый API, вычистить транзитив |
-| ✅ **Чек-пойнт: вход email/Google, авто-логин, выход, синхронизация** | |
+| Splash/Login/Signup → **Compose** (единый AuthActivity, state-навигация, переиспользует Java SplashViewModel) | ✅ |
+| `AuthService` (shared-контракт) + `FirebaseAuthService` (обёртка firebase-auth 16.0.3; апгрейд отложен — error 240805) | ✅ |
+| `AuthSession` — вынос success-цепочки (getLatestUserHelper / createUserHelper / runMainActivity) | ✅ |
+| Google Sign-In — GoogleSignInClient (play-services-auth 16.0.0), **firebase-ui-auth удалён**; googleid (мёртвый) удалён | ✅ |
+| firebase-auth 16.0.3 → 24.2.0 + **Credential Manager** | ⏳ отложено (ошибка 240805; отдельный шаг) |
+| Дефер B2.1: password reset, delete-account re-entry, resend verification, скрытые extras | 📋 задокументировано |
+| ✅ **Чек-пойнт: вход email/Google, авто-логин, выход, синхронизация** | ⏳ smoke на устройстве |
 
 ### B3. Миграция экранов на Compose — 3–6 дней (по 1 экрану/итерацию)
 | Шаг | Назначение |
@@ -285,6 +287,7 @@ gantt
 
 | Дата | Изменение |
 |---|---|
+| 2026-08-16 | **B2 — код готов** (fdad47f…990b83d): AuthService-контракт + FirebaseAuthService (обёртка старого SDK), AuthSession, Compose AuthActivity + Splash/Login/Signup-экраны (переиспользует Java SplashViewModel), удалены XML-экраны и firebase-ui-auth/googleid. Апгрейд Firebase + Credential Manager отложены (error 240805). Ожидается smoke на устройстве |
 | 2026-08-15 | **A6 завершён: v119 выгружен в Play Console, ждём ревью Google. Трек B возобновлён**: WIP (Kotlin 2.2.21, shared/ KMP, Compose BOM 2026.06.01) распакован из stash на новую ветку **`feature/kotlin2`** (ранее планировалась `feature/kmp-compose`); `docs/chat.txt` (roadmap) на месте. `assembleDebug` — **BUILD SUCCESSFUL** (до паузы WIP не собирался). `Exercise.java`: правки агента-отладчика проверены — только адаптация `kotlin.random.Random`, согласована со STable. |
 | 2026-08-02 | **A5 ✅** (сборка + unit-тесты): AndroidX пакетом — appcompat 1.7.1, material **1.13.0**, fragment 1.8.9, lifecycle **2.10.0**, viewpager2 1.1.0, navigation 2.9.8, activity 1.13.0, constraintlayout 2.2.2, glide 4.16.0, gson 2.14.0, oss-licenses 17.5.1, taptargetview 1.15.0, calendar 2.10.1; удалены legacy-support-v4 и force kotlin-stdlib. Найден виновник ошибки `m3_comp_* not found`: **oss-licenses 17.5.1 тянет material 1.13.0 транзитивно** (highest wins) — в 1.12+ ресурсы `m3_comp_*` удалены; styles.xml переписан на M3-эквиваленты (`textAppearanceLabelLarge`, `ShapeAppearance.Material3.Corner.Full`, `strokeWidth 1dp`). **MPAndroidChart v3.1.0 возвращён** (ошибочно удалялся в A5 — используется SssrActivity/v118). Чек-пойнт на устройстве ожидает теста |
 | 2026-08-02 | **A3 ✅**: удалён `READ_PHONE_STATE` (используется только ANDROID_ID без пермишена); исправлен баг `Utils.getDeviceId()` → `Utils.getDevId()` в SignupActivity (несуществующий метод, маскировался инкрементальным кэшем; в рантайме — NoSuchMethodError); `clean assembleDebug` — SUCCESSFUL. **B2 переведён в критический путь**: вход сломан старым auth 2018, подтверждено на устройстве |

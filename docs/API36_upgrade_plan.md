@@ -1,10 +1,10 @@
 # План обновления Schulte Plus: Play Compliance + миграция на Compose/KMP
 
-> **Дата:** 2026-08-02 (актуализация: трек A на AGP 8.13, инструменты уже обновлены)
+> **Дата:** 2026-08-02 (актуализация: **15.08.2026 — трек A завершён, трек B возобновлён**)
 > **IDE:** Android Studio **Quail 3 | 2026.1.3** (runtime JDK 25) — поддерживает AGP вплоть до 9.x
-> **Статус:** Трек A в процессе — **A1 ✅, A2 ✅, v118 влит ✅, A3 ✅**, дальше A4–A6
-> **Версия релиза: 119** (118 — активный релиз на Play, версия должна строго возрастать)
-> **⚠️ Вход сломан** (старый auth 2018) — **B2 становится критическим путём до релиза**: без работающего входа приложение не выпускаем
+> **Статус:** Трек A **A1–A6 ✅** — **v119 выгружен в Play Console (15.08.2026), ждём ревью Google**. Трек B в работе — ветка **`feature/kotlin2`**
+> **Версия релиза: 119** (118 — активный релиз на Play; 119 — на ревью в Google)
+> **Вход работает** (правильные креды google-services.json; старый firebase-auth 16.0.3 — плановая миграция в B2)
 > **Дедлайн Play:** с **31 августа 2026** обновления должны таргетить API 36 (отсрочка — до 01.11.2026)
 > **Тестирование:** физическое устройство пользователя, после каждой итерации
 
@@ -18,7 +18,7 @@ flowchart TD
         A3["A3 READ_PHONE_STATE + предупреждения"] --> A4
         A4["A4 Поведение Android 16<br/>edge-to-edge · predictive back"] --> A5
         A5["A5 AndroidX пакетом<br/>appcompat · material · fragment · ..."] --> A6
-        A6["A6 Регресс + релиз v117 ✅"]
+        A6["A6 Регресс + релиз v119 ✅<br/>выгружен в Play 15.08, ждём ревью"]
     end
 
     subgraph B["ТРЕК B — Compose & KMP (после выгрузки, поэтапно)"]
@@ -29,7 +29,7 @@ flowchart TD
         B5["B5 Долгосрочно<br/>ORMLite → KMP-БД · AGP 9 (опционально)"]
     end
 
-    A6 -->|"v117 на Play ✅"| B1
+    A6 -->|"v119 на Play ✅"| B1
 
     style B2 fill:#ffcccc,stroke:#cc0000
     style A2 fill:#ccffcc,stroke:#008800
@@ -99,24 +99,27 @@ flowchart TD
 | Визуальный осмотр: темы Material 1.13, диалоги, кнопки TextButtonPlus/OutlinedButton | визуальный регресс |
 | ⏳ **Чек-пойнт: полный проход на устройстве (ожидает теста)** | |
 
-### A6. Регресс и релиз — ✅ почти сделан (03.08.2026)
+### A6. Регресс и релиз — ✅ сделано (15.08.2026)
 | Шаг | Назначение |
 |---|---|
 | `./gradlew test` (unit), release-сборка, smoke-тест | ✅ зелёный; release собран в AS пользователем, **работает: вход и все функции (синхронизация Firestore) — ВХОД РАБОТАЕТ** (проблема входа была из-за фиктивного google-services.json; с правильными кредами старый firebase-auth 16.0.3 работает) |
-| Выгрузка в Play Console (внутреннее тестирование → продакшн) | ⏳ остался один шаг — выгрузка **v119** |
-| ✅ **v119 на Play** | |
+| Выгрузка в Play Console (внутреннее тестирование → продакшн) | ✅ **15.08.2026 — v119 выгружен**, ждём ревью Google |
+| ✅ **v119 на Play** | ⏳ ревью Google |
 
 > ✅ **B2 снят с критического пути (03.08.2026):** старый firebase-auth 16.0.3 работает на устройстве с правильными кредами. Авторизацию на Compose+KMP делаем штатно в треке B, после релиза.
 
 ## 3. Трек B — Compose & KMP, с прицелом на iOS (поэтапно, релизы не блокирует)
 
-### B1. KMP-структура — 1–1.5 дня
-| Шаг | Назначение |
+### B1. KMP-структура — в работе (15.08.2026)
+> **15.08.2026:** WIP восстановлен из stash на ветку `feature/kotlin2`, `assembleDebug` — **BUILD SUCCESSFUL** (до паузы WIP не собирался, теперь проверен). В базе: Kotlin 2.2.21 (root + app + compose-плагин), модуль `shared/` (KMP androidTarget, `com.android.kotlin.multiplatform.library`, jvmToolchain 17, compileSdk 36), Compose BOM 2026.06.01 + material3 + activity-compose; Java-адаптация под Kotlin (STable/ExerciseRunner/ExResult/Exercise, `kotlin.random.Random`, `Validatable`).
+
+| Шаг | Статус |
 |---|---|
-| Модуль `shared`: `org.jetbrains.kotlin.multiplatform`, таргеты androidTarget + iosArm64/iosSimulatorArm64 (плагин `com.android.kotlin.multiplatform.library`) | фундамент KMP |
-| `app` → Compose: `org.jetbrains.kotlin.plugin.compose` (Kotlin 2.2.x), Compose BOM, activity-compose, material3 | Compose-инфраструктура |
-| Перенести в shared: Const, модели ExResult/ExType, логику STable (Java→Kotlin), интерфейс auth-сервиса | общий код для iOS |
-| ✅ **Чек-пойнт: XML-приложение работает, shared подключён «пустым»** | |
+| Модуль `shared`: `org.jetbrains.kotlin.multiplatform`, таргеты androidTarget + iosArm64/iosSimulatorArm64 (плагин `com.android.kotlin.multiplatform.library`) | ✅ собран (androidTarget; iOS — B4) |
+| `app` → Compose: `org.jetbrains.kotlin.plugin.compose` (Kotlin 2.2.21), Compose BOM, activity-compose, material3 | ✅ собран |
+| Перенести в shared (Kotlin): Const, Exercise, SCell, TimeStamp, Validatable, Shared | ✅ |
+| Перенести в shared: модели ExResult/ExType, логику STable (Java→Kotlin), интерфейс auth-сервиса | ⏳ следующий шаг B1 |
+| ✅ **Чек-пойнт: XML-приложение работает, shared подключён** | ✅ assembleDebug зелёный |
 
 ### B2. Авторизация на Compose + KMP — 3–5 дней (после релиза 119; вход уже работает, это плановая миграция)
 | Шаг | Назначение |
@@ -224,7 +227,7 @@ flowchart LR
 ```
 
 - Одна незавершённая правка не остаётся на ночь: либо зелёная сборка, либо откат.
-- Ветки: `release/v117-api36` (трек A) и `feature/kmp-compose` (трек B) — не смешиваются.
+- Ветки: `release/v119-api36` (трек A, зафиксирована на 424c096) и `feature/kotlin2` (трек B) — не смешиваются.
 - Каждый этап A2–A6/B1–B4 — отдельный чек-пойнт.
 
 ## 6. Диаграмма сроков
@@ -258,7 +261,7 @@ gantt
 
 | Трек | Дней | Критично для дедлайна? |
 |---|---|---|
-| A. Play Compliance (A1–A2 готовы, осталось ~3–4) | **~4–5** | ✅ да — дедлайн 31.08 |
+| A. Play Compliance (A1–A6) | **~4–5 ✅** | ✅ да — v119 выгружен 15.08, ждём ревью |
 | B1. KMP-структура | 1–1.5 | нет |
 | B2. Auth на Compose+KMP ⚠️ | 3–5 | нет (fallback при сломанном входе) |
 | B3. Миграция экранов | 3–6 | нет |
@@ -282,7 +285,7 @@ gantt
 
 | Дата | Изменение |
 |---|---|
-| 2026-08-03 | **A6 почти завершён, B2 снят с критического пути**: release-сборка (в AS) собрана и работает — **вход и все функции работают** (проблема входа была в фиктивном google-services.json; правильные креды локально, в git — dummy-плейсхолдер, защищён skip-worktree). Осталось: выгрузка **v119** в Play Console. Коммиты: 48154bd (A3–A5), f1667af + a356e1e (google-services dummy), b71cf38 (конвенция коммитов + бэклог MoSCoW) |
+| 2026-08-15 | **A6 завершён: v119 выгружен в Play Console, ждём ревью Google. Трек B возобновлён**: WIP (Kotlin 2.2.21, shared/ KMP, Compose BOM 2026.06.01) распакован из stash на новую ветку **`feature/kotlin2`** (ранее планировалась `feature/kmp-compose`); `docs/chat.txt` (roadmap) на месте. `assembleDebug` — **BUILD SUCCESSFUL** (до паузы WIP не собирался). `Exercise.java`: правки агента-отладчика проверены — только адаптация `kotlin.random.Random`, согласована со STable. |
 | 2026-08-02 | **A5 ✅** (сборка + unit-тесты): AndroidX пакетом — appcompat 1.7.1, material **1.13.0**, fragment 1.8.9, lifecycle **2.10.0**, viewpager2 1.1.0, navigation 2.9.8, activity 1.13.0, constraintlayout 2.2.2, glide 4.16.0, gson 2.14.0, oss-licenses 17.5.1, taptargetview 1.15.0, calendar 2.10.1; удалены legacy-support-v4 и force kotlin-stdlib. Найден виновник ошибки `m3_comp_* not found`: **oss-licenses 17.5.1 тянет material 1.13.0 транзитивно** (highest wins) — в 1.12+ ресурсы `m3_comp_*` удалены; styles.xml переписан на M3-эквиваленты (`textAppearanceLabelLarge`, `ShapeAppearance.Material3.Corner.Full`, `strokeWidth 1dp`). **MPAndroidChart v3.1.0 возвращён** (ошибочно удалялся в A5 — используется SssrActivity/v118). Чек-пойнт на устройстве ожидает теста |
 | 2026-08-02 | **A3 ✅**: удалён `READ_PHONE_STATE` (используется только ANDROID_ID без пермишена); исправлен баг `Utils.getDeviceId()` → `Utils.getDevId()` в SignupActivity (несуществующий метод, маскировался инкрементальным кэшем; в рантайме — NoSuchMethodError); `clean assembleDebug` — SUCCESSFUL. **B2 переведён в критический путь**: вход сломан старым auth 2018, подтверждено на устройстве |
 | 2026-08-02 | **Влит v118**: `origin/sssr-space` (7 коммитов — Support-фича, quiz off, стили; содержимое активного релиза 118 на Play) влит в ветку через merge. Версия релиза: **119** (118 активен на Play). Конфликты разрешены: versionCode 119 (build.gradle + manifest), wrapper-jar взят их |

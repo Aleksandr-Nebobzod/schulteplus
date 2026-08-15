@@ -22,9 +22,12 @@ flowchart LR
     E7["7. iOS и долгосрочные<br/>(B4, AGP 9, AI/чаты)"]
 ```
 
-## Этап 1. Развязка ядра на Java — 3–5 дней
+## Этап 1. Развязка ядра на Java — ✅ выполнено 15.08.2026 (d05b6bc…f3537ab)
 
 Цель: ядро работает без статики и Android-зависимостей; приложение поведенчески не меняется.
+**STable свободен от Android/Utils/репозиториев** (остались только сущности ExResult/Turn —
+уходят в этапе 2). Отложено: глобальная чистка `Utils.getAppContext()` (app-слой, растворяется
+при миграции экранов B3); `Identifiable` — до этапа 2.
 
 | Работа | Детали |
 |---|---|
@@ -102,4 +105,5 @@ TileSquashPaving, обновление графики, новости/чаты/�
 
 | Дата | Изменение |
 |---|---|
+| 2026-08-15 | **Этап 1 выполнен** (коммиты d05b6bc, 256464f, da9ef83, bd327a6, f3537ab): AppContext (явный контекст), ExResult* без статики ExerciseRunner, полиморфный update(ExerciseStats) + фабрика ExResult.create вместо кастов, TurnWriter/DefaultTurnWriter (персистенция вне домена), рендер ячеек в GridAdapter, SymbolTemplate/ResourceSymbolTemplate, ResultSaver/DefaultResultSaver, ExerciseServices. STable не зависит от Android/Utils/репозиториев. Осталось: ручной smoke-проход на устройстве |
 | 2026-08-15 | Создан документ: поэтапный план перехода к модульной архитектуре (7 этапов), с чек-пойнтами и правилами итерации |

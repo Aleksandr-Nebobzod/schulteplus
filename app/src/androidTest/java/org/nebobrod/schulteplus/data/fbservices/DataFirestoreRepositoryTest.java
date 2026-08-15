@@ -20,6 +20,7 @@ import static org.nebobrod.schulteplus.Utils.timeStampU;
 import android.os.Looper;
 
 import org.nebobrod.schulteplus.common.AppExecutors;
+import org.nebobrod.schulteplus.common.AppContext;
 import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.data.Achievement;
 import org.nebobrod.schulteplus.data.AdminNote;
@@ -54,6 +55,9 @@ import java.util.concurrent.Executor;
 
 
 public class DataFirestoreRepositoryTest<TEntity extends Identifiable<String>> {
+
+	private static final AppContext TEST_CONTEXT =
+			new AppContext("test_ex", "0", false, "test_uak", "test_uid", "test_name");
 	public static final String TAG = "FirestoreRepositoryTest";
 
 
@@ -139,7 +143,7 @@ public class DataFirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 	@Test
 	public void testPrintFields(){
 		// Testing object
-		ExResult exResult = new ExResult(3L, 3L, 3, 3, "3 means 3x3");
+		ExResult exResult = new ExResult(3L, 3L, 3, 3, "3 means 3x3", TEST_CONTEXT);
 		Log.d(TAG, exResult.toTabSeparatedString());
 	}
 
@@ -149,7 +153,7 @@ public class DataFirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 		repos = new DataRepos(ExResult.class);
 
 		// Создаем объект ExResult
-		ExResult exResult = new ExResult(3L,3L, 3, 3, "3 means 3x3");
+		ExResult exResult = new ExResult(3L,3L, 3, 3, "3 means 3x3", TEST_CONTEXT);
 		repos.put(exResult);
 		android.util.Log.d(TAG, "testCreateExResult: exResult" + exResult);
 
@@ -303,7 +307,7 @@ public class DataFirestoreRepositoryTest<TEntity extends Identifiable<String>> {
 	public void testCreateTurn() {
 
 		// Provide mocking id from parent-object to ORMLite dependant objects
-		ExResult exResult = new ExResult(3L, 3L, 3, 3, "3 means 3x3");
+		ExResult exResult = new ExResult(3L, 3L, 3, 3, "3 means 3x3", TEST_CONTEXT);
 
 		DataRepos mockRepos = Mockito.mock(DataRepos.class);
 

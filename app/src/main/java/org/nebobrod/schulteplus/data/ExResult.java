@@ -12,7 +12,7 @@ import static org.nebobrod.schulteplus.Utils.timeStampFormattedLocal;
 import static org.nebobrod.schulteplus.Utils.timeStampU;
 import static org.nebobrod.schulteplus.common.Const.*;
 
-import org.nebobrod.schulteplus.common.ExerciseRunner;
+import org.nebobrod.schulteplus.common.AppContext;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.Const;
@@ -139,18 +139,17 @@ public class ExResult implements Serializable, Identifiable<String>, Validatable
 
 	public ExResult() {}
 
-	public ExResult(long seed, long numValue, int levelOfEmotion, int levelOfEnergy, String note) {
+	public ExResult(long seed, long numValue, int levelOfEmotion, int levelOfEnergy, String note, AppContext context) {
 //		this.id = ((Long) Utils.transactID()).intValue(); // autokey by ORMLite
-		ExerciseRunner exerciseRunner = ExerciseRunner.getInstance();
 
 		// common exercise-defined fields
-		this.uak = exerciseRunner.getUserHelper().getUak();
-		this.uid = exerciseRunner.getUserHelper().getUid();
-		this.name = exerciseRunner.getUserHelper().getName();
+		this.uak = context.getUak();
+		this.uid = context.getUid();
+		this.name = context.getName();
 		this.timeStamp = timeStampU();
 		this.timeStampStart = this.timeStamp;
 		this.dateTime = timeStampFormattedLocal(this.timeStamp);
-		this.exType = exerciseRunner.getExTypeId();
+		this.exType = context.getExTypeId();
 		this.exDescription = ""; // TODOne: 26.02.2024 gather settings & screen width in String
 
 		// additional fields

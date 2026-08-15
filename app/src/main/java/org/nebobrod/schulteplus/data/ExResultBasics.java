@@ -14,6 +14,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.common.AppContext;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,8 +26,8 @@ public class ExResultBasics extends ExResult{
 
 	public ExResultBasics(){}
 
-	public ExResultBasics(long seed, long numValue, int events, int levelOfEmotion, int levelOfEnergy, String note) {
-		super(seed, numValue, levelOfEmotion, levelOfEnergy, note);
+	public ExResultBasics(long seed, long numValue, int events, int levelOfEmotion, int levelOfEnergy, String note, AppContext context) {
+		super(seed, numValue, levelOfEmotion, levelOfEnergy, note, context);
 		this.setTurns(events);
 	}
 

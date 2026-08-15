@@ -12,6 +12,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.common.AppContext;
 
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -28,8 +29,8 @@ public class ExResultSchulte  extends ExResult {
 //	float rmsd; // Root-mean-square deviation as a sign of stability & rhythm in exercises
 
 	public ExResultSchulte(){}
-	public ExResultSchulte(long seed, long time, int turns, int turnsMissed, float average, float rmsd, int levelOfEmotion, int levelOfEnergy, String note) {
-		super(seed, time, levelOfEmotion, levelOfEnergy, note);
+	public ExResultSchulte(long seed, long time, int turns, int turnsMissed, float average, float rmsd, int levelOfEmotion, int levelOfEnergy, String note, AppContext context) {
+		super(seed, time, levelOfEmotion, levelOfEnergy, note, context);
 		this.setTurns(turns);
 		this.setTurnsMissed(turnsMissed);
 		this.setAverage(average);

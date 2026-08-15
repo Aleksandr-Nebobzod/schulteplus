@@ -95,7 +95,7 @@ public class SssrViewModel extends ViewModel {
 		for (int i = 0; i < DAYS_BEFORE; i++) {
 			date = LocalDate.now().minusDays(i);
 			if (dateMap.get(date) == null) {
-				dateMap.put(date, new ExResultSssr(date, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, ""));
+				dateMap.put(date, new ExResultSssr(date, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, "", ExerciseRunner.createAppContext()));
 			}
 		}
 		return dateMap;

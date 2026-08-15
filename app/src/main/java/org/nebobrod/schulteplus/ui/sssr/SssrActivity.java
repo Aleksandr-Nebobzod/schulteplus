@@ -114,7 +114,7 @@ public class SssrActivity extends AppCompatActivity {
 		runner = ExerciseRunner.getInstance();
 
 		// The instantiating for new opened day
-		exResult = new ExResultSssr(selectedDate, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, "");
+		exResult = new ExResultSssr(selectedDate, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, "", ExerciseRunner.createAppContext());
 		changeRecord(selectedDate);
 
 		// Minus and Plus Day

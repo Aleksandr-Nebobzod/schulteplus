@@ -15,6 +15,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.common.AppContext;
 
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
@@ -49,8 +50,8 @@ public class ExResultSssr extends ExResult{
 
 	public ExResultSssr(){}
 
-	public ExResultSssr(LocalDate date, int job, int chores, int physical, int family, int friends, int leisure, int sleep, int sssr, int levelOfEmotion, int levelOfEnergy, String note) {
-		super(0, 0, levelOfEmotion, levelOfEnergy, note);
+	public ExResultSssr(LocalDate date, int job, int chores, int physical, int family, int friends, int leisure, int sleep, int sssr, int levelOfEmotion, int levelOfEnergy, String note, AppContext context) {
+		super(0, 0, levelOfEmotion, levelOfEnergy, note, context);
 
 		update(getTimeStamp(), date, job, chores, physical, family, friends, leisure, sleep, sssr,  levelOfEmotion, levelOfEnergy, note);
 	}

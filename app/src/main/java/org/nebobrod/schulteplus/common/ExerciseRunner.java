@@ -495,7 +495,9 @@ public class ExerciseRunner {
 	 * заменяет статические чтения ExerciseRunner из STable/ExResult.
 	 */
 	public static AppContext createAppContext() {
-		return new AppContext(getExTypeId(), getSymbolType(), isRatings());
+		UserHelper userHelper = getUserHelper();
+		return new AppContext(getExTypeId(), getSymbolType(), isRatings(),
+				userHelper.getUak(), userHelper.getUid(), userHelper.getName());
 	}
 
 	public static void setRatings(boolean ratings) {ExerciseRunner.ratings = ratings;}

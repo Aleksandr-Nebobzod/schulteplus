@@ -12,18 +12,25 @@ package org.nebobrod.schulteplus.common;
  * Явный контекст выполнения упражнения (этап 1 перехода к модульной архитектуре).
  * Создаётся на границе приложения ({@link ExerciseRunner#createAppContext()})
  * и передаётся домену вместо статических чтений ExerciseRunner.
- * Расширяется инкрементально: user (uak/uid/name), prob-параметры, exTypes.
+ * Расширяется инкрементально: prob-параметры, exTypes.
  */
 public class AppContext {
 
 	private final String exTypeId;
 	private final String symbolType;
 	private final boolean ratings;
+	private final String uak;
+	private final String uid;
+	private final String name;
 
-	public AppContext(String exTypeId, String symbolType, boolean ratings) {
+	public AppContext(String exTypeId, String symbolType, boolean ratings,
+			String uak, String uid, String name) {
 		this.exTypeId = exTypeId;
 		this.symbolType = symbolType;
 		this.ratings = ratings;
+		this.uak = uak;
+		this.uid = uid;
+		this.name = name;
 	}
 
 	public String getExTypeId() {
@@ -36,5 +43,17 @@ public class AppContext {
 
 	public boolean isRatings() {
 		return ratings;
+	}
+
+	public String getUak() {
+		return uak;
+	}
+
+	public String getUid() {
+		return uid;
+	}
+
+	public String getName() {
+		return name;
 	}
 }

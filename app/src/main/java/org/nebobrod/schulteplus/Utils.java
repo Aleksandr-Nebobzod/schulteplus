@@ -245,8 +245,8 @@ public final class Utils extends Application {
 
 	/** universal parser */
 	public static LocalDate parseDate(String dateString) {
-//		DateTimeFormatter formatterZoned = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ssX");
 		DateTimeFormatter formatterNoZone = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+		DateTimeFormatter formatterWithZone = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mmX");
 
 		try {
 			// Try to get Zoned
@@ -256,8 +256,13 @@ public final class Utils extends Application {
 				// No Zoned
 				return LocalDate.parse(dateString, formatterNoZone);
 			} catch (DateTimeParseException e2) {
-				Log.e (TAG, "parseDate", e2);
-				throw new IllegalArgumentException("Invalid date format: " + dateString);
+				try {
+					// No Zoned, but trailing UTC marker — getDateCreated() appends "Z" (fix 15.08.2026)
+					return OffsetDateTime.parse(dateString, formatterWithZone).toLocalDate();
+				} catch (DateTimeParseException e3) {
+					Log.e (TAG, "parseDate", e3);
+					throw new IllegalArgumentException("Invalid date format: " + dateString);
+				}
 			}
 		}
 	}

@@ -13,7 +13,11 @@ interface AuthService {
 
     suspend fun signUpEmail(email: String, password: String, name: String): Boolean
 
-    suspend fun signInGoogle(): Boolean
+    /**
+     * Обмен ID-токена Google на сессию Firebase. UI-флоу Google (ActivityResultLauncher)
+     * остаётся на стороне клиента; сюда передаётся уже полученный idToken.
+     */
+    suspend fun signInWithGoogleIdToken(idToken: String): Boolean
 
     suspend fun signOut()
 }

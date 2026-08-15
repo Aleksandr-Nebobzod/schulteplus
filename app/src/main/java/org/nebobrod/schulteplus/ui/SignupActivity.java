@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import org.nebobrod.schulteplus.auth.AuthSession;
 import org.nebobrod.schulteplus.common.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -367,35 +368,8 @@ public class SignupActivity extends AppCompatActivity {
 	}
 
 	private UserHelper createUserHelper(FirebaseUser fbUser, String name, String email, String password) {
-		String[] resMessage = new String[1];
-
-		resMessage[0] = name + " " + getString(R.string.msg_user_signed_up);
-		fbAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-			@Override
-			public void onComplete(@NonNull Task<Void> taskVerifSent) {
-				if (taskVerifSent.isSuccessful()) {
-					resMessage[0] += " " + getString(R.string.msg_user_verif_sent);
-				} else {
-					resMessage[0] += " " + getString(R.string.msg_user_verif_not_sent);
-				}
-			}
-		});
-
-		Log.d(TAG, resMessage[0]);
-
-		// Create the repositories copy of the new UserHelper
-		userHelper = new UserHelper(fbUser.getUid(), email, name, password, Utils.getDevId() , Utils.generateUak(),  false);
-		DataRepos repos;
-		repos = new DataRepos<>(UserHelper.class);
-		repos.create(userHelper);		// Since it's a new user
-		// no need to check other records in central repo
-
-		Toast.makeText(SignupActivity.this, resMessage[0], Toast.LENGTH_SHORT).show();
-
-		// registration record
-		AdminNote firstAdminNote = new AdminNote(generateUuidInt(), userHelper.getUak(), userHelper.getUid(), "SignUp", "Android: " + currentOsVersion(), "", userHelper.getTimeStamp(), getVersionCode(), 0, 0, userHelper.getTimeStamp());
-		repos = new DataRepos<>(AdminNote.class);
-		repos.create(firstAdminNote);
+		// вынесено в AuthSession (B2)
+		userHelper = AuthSession.createUserHelper(this, fbUser, name, email, password);
 		return userHelper;
 	}
 
@@ -408,37 +382,14 @@ public class SignupActivity extends AppCompatActivity {
 	 * @param password takes "google_sign_in" for google sign-in
 	 */
 	private void updateUserHelper(FirebaseUser fbu, String password, UserHelperCallback callback) {
-		// check the freshest account for correct login (repo copies)
-		String uid = Objects.requireNonNull(fbu).getUid();
-		DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
-		repos.getLatestUserHelper(intStringHash(uid))
-				.addOnCompleteListener(task -> {
-					if (task.isSuccessful()) {
-						userHelper = task.getResult();
-						Toast.makeText(SignupActivity.this, getString(R.string.msg_user_data_renewed), Toast.LENGTH_LONG).show();
-						callback.onComplete(userHelper);
-					} else {
-						if (task.getException().getCause() instanceof RuntimeException) {
-							//No actual user record in any repository!
-							Toast.makeText(SignupActivity.this, getString(R.string.msg_user_data_renewed), Toast.LENGTH_LONG).show();
-							UserHelper userHelper = new UserHelper(fbu.getUid(), fbu.getEmail(), fbu.getDisplayName(), password, Utils.getDevId(), Utils.generateUak(), fbu.isEmailVerified());
-
-							// Make Note about a new device LogIn
-							new DataRepos<>(AdminNote.class).create(
-									new AdminNote(generateUuidInt(), userHelper.getUak(), userHelper.getUid(), "LogIn with new device", "Android: " + currentOsVersion(), "", userHelper.getTimeStamp(), getVersionCode(), 0, 0, userHelper.getTimeStamp())
-							);
-							repos.create(userHelper).addOnCompleteListener(new OnCompleteListener<Void>() {
-								@Override
-								public void onComplete(@NonNull Task<Void> task) {
-									callback.onComplete(userHelper);
-								}
-							});
-						} else {
-							Toast.makeText(SignupActivity.this, getString(R.string.err_unknown), Toast.LENGTH_SHORT).show();
-							callback.onComplete(null);
-						}
-					}
-				});
+		// check the freshest account for correct login (repo copies) — вынесено в AuthSession (B2)
+		AuthSession.loginWithUpdate(this, fbu, password,
+				fbu.getDisplayName() != null ? fbu.getDisplayName() : "new",
+				userHelper -> {
+					Toast.makeText(SignupActivity.this, getString(R.string.msg_user_data_renewed), Toast.LENGTH_LONG).show();
+					callback.onComplete(userHelper);
+				},
+				() -> callback.onComplete(null));
 	}
 	private void tapTargetAgreed() {
 		new TapTargetSequence(this)
@@ -562,10 +513,7 @@ public class SignupActivity extends AppCompatActivity {
 
 	private void runMainActivity(UserHelper user)
 	{
-		Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-		intent.putExtra("user", user);
-		startActivity(intent);
-		finish();
+		AuthSession.runMainActivity(this, user);
 	}
 
 	@Override

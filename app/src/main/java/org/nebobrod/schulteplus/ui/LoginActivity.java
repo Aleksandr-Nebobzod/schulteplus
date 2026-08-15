@@ -44,6 +44,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 
+import org.nebobrod.schulteplus.auth.AuthSession;
 import org.nebobrod.schulteplus.common.AppExecutors;
 import org.nebobrod.schulteplus.common.Log;
 
@@ -366,35 +367,8 @@ public class LoginActivity extends AppCompatActivity {
 	 * @param password takes "google_sign_in" for google sign-in
 	 */
 	private void loginWithUpdate(FirebaseUser fbu, String password) {
-		// check the freshest account for correct login (repo copies)
-		String uid = Objects.requireNonNull(fbu).getUid();
-		DataRepos<UserHelper> repos = new DataRepos<>(UserHelper.class);
-		repos.getLatestUserHelper(intStringHash(uid))
-				.addOnCompleteListener(task -> {
-					if (task.isSuccessful()) {
-						runMainActivity(task.getResult());
-					} else {
-						if (task.getException().getCause() instanceof RuntimeException){
-
-							//No actual user record in any repository!
-							Toast.makeText(LoginActivity.this, getString(R.string.msg_user_data_renewed), Toast.LENGTH_LONG).show();
-							UserHelper userHelper = new UserHelper(fbu.getUid(), fbu.getEmail(), "new", password, Utils.getDevId() , Utils.generateUak(),  fbu.isEmailVerified());
-
-							// Make Note about a new device LogIn
-							new DataRepos<>(AdminNote.class).create(
-									new AdminNote(generateUuidInt(), userHelper.getUak(), userHelper.getUid(), "LogIn with new device", "Android: " + currentOsVersion(), "", userHelper.getTimeStamp(), getVersionCode(), 0, 0, userHelper.getTimeStamp())
-							);
-							repos.create(userHelper).addOnCompleteListener(new OnCompleteListener<Void>() {
-								@Override
-								public void onComplete(@NonNull Task<Void> task) {
-									runMainActivity(userHelper);
-								}
-							});
-						} else {
-							Toast.makeText(LoginActivity.this, getString(R.string.err_unknown), Toast.LENGTH_SHORT).show();
-						}
-					}
-				});
+		// check the freshest account for correct login (repo copies) — вынесено в AuthSession (B2)
+		AuthSession.loginWithUpdate(this, fbu, password, "new", this::runMainActivity, () -> {});
 	}
 
 	private void lockForDemo() {
@@ -456,10 +430,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 	private void runMainActivity(UserHelper user)	{
-		Intent intent = new Intent(this, MainActivity.class);
-		intent.putExtra("user", user);
-		startActivity(intent);
-		finish();
+		AuthSession.runMainActivity(this, user);
 	}
 
 	private void deleteUser(String email, String password) {

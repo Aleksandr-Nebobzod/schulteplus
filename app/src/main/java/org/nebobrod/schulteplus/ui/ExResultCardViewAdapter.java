@@ -109,11 +109,9 @@ public class ExResultCardViewAdapter extends RecyclerView.Adapter<ExResultCardVi
 		int drId;
 
 		// Apply to resources by generated name
-		try {
-			drId = getRes().getIdentifier(drName, "drawable", getAppContext().getPackageName());
+		drId = getRes().getIdentifier(drName, "drawable", getAppContext().getPackageName());
+		if (drId != 0) {
 			dr = getRes().getDrawable(drId);
-		} catch (Resources.NotFoundException e) {
-			/*no-op*/
 		}
 
 		return dr;

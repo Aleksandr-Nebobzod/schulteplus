@@ -20,16 +20,6 @@
 		<item name="background">@color/colorPrimaryVariant</item>
 	</style>
 	
-	<style name="GreyTheme" parent="FirebaseUI">
-		<item name="colorPrimary">@color/light_grey_8</item>
-		<item name="colorPrimaryVariant">@color/light_grey_4</item>
-		<item name="colorAccent">@color/light_grey_A_blue</item>
-		<item name="android:colorBackground">@color/light_grey_D</item>
-		
-		<!-- On API 21+ you can use android:statusBarColor -->
-		<item name="colorPrimaryDark">@color/black</item>
-	</style>
-	
 	<style name="AppTextStyle" parent="TextAppearance.AppCompat">
 		<item name="android:textColor">@color/colorPrimary</item>
 		<item name="android:textStyle">bold</item>
@@ -98,7 +88,7 @@
 	</style>
 	
 
-	<style name="tv_list_item" parent="GreyTheme">
+	<style name="tv_list_item" parent="android:style/Widget.TextView">
 		<item name="android:layout_height">wrap_content</item>
 		<item name="android:layout_width">wrap_content</item>
 		<item name="android:gravity">fill</item>

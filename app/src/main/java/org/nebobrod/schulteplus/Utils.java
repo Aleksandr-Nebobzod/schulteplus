@@ -246,19 +246,21 @@ public final class Utils extends Application {
 	/** universal parser */
 	public static LocalDate parseDate(String dateString) {
 		DateTimeFormatter formatterNoZone = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
-		DateTimeFormatter formatterWithZone = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mmX");
+
+		// normalize: strip trailing UTC markers — getDateCreated() appends "Z", older data may carry duplicates
+		String normalized = dateString.replaceAll("Z+$", "");
 
 		try {
-			// Try to get Zoned
-			return OffsetDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME).toLocalDate();
+			// With explicit offset (e.g. 2024-06-21T23:34:38+03:00)
+			return OffsetDateTime.parse(normalized, DateTimeFormatter.ISO_DATE_TIME).toLocalDate();
 		} catch (DateTimeParseException e1) {
 			try {
-				// No Zoned
-				return LocalDate.parse(dateString, formatterNoZone);
+				// ISO local date-time (e.g. 2024-06-21T23:34:38)
+				return LocalDateTime.parse(normalized, DateTimeFormatter.ISO_LOCAL_DATE_TIME).toLocalDate();
 			} catch (DateTimeParseException e2) {
 				try {
-					// No Zoned, but trailing UTC marker — getDateCreated() appends "Z" (fix 15.08.2026)
-					return OffsetDateTime.parse(dateString, formatterWithZone).toLocalDate();
+					// App format (e.g. 2026.08.15 11:27)
+					return LocalDate.parse(normalized, formatterNoZone);
 				} catch (DateTimeParseException e3) {
 					Log.e (TAG, "parseDate", e3);
 					throw new IllegalArgumentException("Invalid date format: " + dateString);

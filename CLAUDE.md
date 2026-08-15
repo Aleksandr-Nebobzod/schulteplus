@@ -13,6 +13,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - For docs/plan changes use `docs:`; new features `feat:`; bug fixes `fix:`.
 - Multi-line messages: short summary line, then a body with details.
 
+## Shared Module FQN Rule (KMP)
+
+Kotlin classes in `shared/` must **not** have the same FQN as Java classes in `app/`
+(e.g. `org.nebobrod.schulteplus.common.*`). A duplicate-FQN collision caused a runtime
+`LinkageError` (lib dex loaded before project dex — see commit `2d4535e`). Port a class
+to Kotlin in `shared/` only in the same step its Java original is deleted.
+
 ## Build & Test Commands
 
 ```bash
@@ -117,5 +124,6 @@ Schulte tables support multiple symbol types: numbers, Roman numerals, Latin/Cyr
 
 | Дата | Изменение |
 |---|---|
+| 2026-08-16 | Добавлена секция **Shared Module FQN Rule (KMP)**: Kotlin-классы в `shared/` не должны дублировать FQN Java-классов app (урок краха LinkageError, фикс 2d4535e) |
 | 2026-08-03 | Добавлена секция **Commit Message Convention**: префиксы коммитов (`feat:`, `docs:`, `fix:` и т.п.) |
 

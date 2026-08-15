@@ -48,6 +48,7 @@ captures/
 .externalNativeBuild/
 .cxx/
 output.json
+output-metadata.json
 *.apk
 *.aab
 *.jar

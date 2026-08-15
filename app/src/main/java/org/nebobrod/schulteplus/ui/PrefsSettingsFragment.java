@@ -99,8 +99,8 @@ public class PrefsSettingsFragment extends PreferenceFragmentCompat implements S
 				// Confirmation
 				Snackbar.make(getView(), getRes().getString(R.string.msg_proceed_to_password_reentry), Snackbar.LENGTH_INDEFINITE)
 						.setAction(getRes().getString(R.string.lbl_ok), view -> {
-							// fill with extras to avoid retyping on Login
-							Intent intent = new Intent(getActivity(), LoginActivity.class);
+							// fill with extras to avoid retyping on Login (B2: AuthActivity)
+							Intent intent = new Intent(getActivity(), AuthActivity.class);
 							intent.putExtra("email", ExerciseRunner.getUserHelper().getEmail());
 //									FirebaseAuth.getInstance().signOut();
 							startActivity(intent);

@@ -49,14 +49,16 @@
 			android:exported="false" />
 		<!-- android:icon="@mipmap/ic_launcher" -->
 		<!-- .Fullscreen -->
+		<!-- B2: единая Compose-активность авторизации (Splash/Login/Signup) -->
 		<activity
-			android:name=".ui.SplashActivity"
+			android:name=".ui.AuthActivity"
 			android:exported="true"
 			android:theme="@style/Theme.SchultePlus.FullscreenStart"
+			android:windowSoftInputMode="adjustResize"
 			tools:ignore="LockedOrientationActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
-				
+
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
@@ -76,15 +78,6 @@
 			<!-- <category android:name="android.intent.category.LAUNCHER" /> -->
 			<!-- </intent-filter> -->
 		</activity>
-		<activity
-			android:name=".ui.LoginActivity"
-			android:exported="false"
-			android:theme="@style/Theme.SchultePlus.Login"
-			android:windowSoftInputMode="adjustNothing" />
-		<activity
-			android:name=".ui.SignupActivity"
-			android:theme="@style/Theme.SchultePlus.Login"
-			android:windowSoftInputMode="adjustNothing" />
 		<activity
 			android:name=".ui.schulte.SchulteActivity"
 			android:configChanges="orientation|keyboardHidden|screenSize"

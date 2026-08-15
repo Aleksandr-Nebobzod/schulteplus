@@ -16,6 +16,7 @@ import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.Const;
+import org.nebobrod.schulteplus.common.Validatable;
 
 import com.google.firebase.firestore.Exclude;
 import com.j256.ormlite.field.DatabaseField;
@@ -30,7 +31,7 @@ import java.util.Map;
  * Uniform data-class for Exercise Results of any exercise
  */
 @DatabaseTable(tableName = "exresult")
-public class ExResult implements Serializable, Identifiable<String> {
+public class ExResult implements Serializable, Identifiable<String>, Validatable {
 	public static final String TAG = "ExResult";
 
 	private static final long serialVersionUID = -7874823823497497002L; // after Achievement

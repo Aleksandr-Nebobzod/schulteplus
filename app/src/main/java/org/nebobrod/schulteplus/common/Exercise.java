@@ -12,7 +12,8 @@ import static org.nebobrod.schulteplus.Utils.timeStampU;
 
 import org.nebobrod.schulteplus.data.ExResult;
 
-import java.util.Random;
+//import java.util.Random;
+import kotlin.random.Random;
 
 /** Parent for any type of exercise with minimum data set */
 public abstract class Exercise<T extends ExResult> {
@@ -44,7 +45,7 @@ public abstract class Exercise<T extends ExResult> {
 		return random;
 	}
 
-	public void setRandom(Random random) {
+	public void setRandom(kotlin.random.Random random) {
 		this.random = random;
 	}
 

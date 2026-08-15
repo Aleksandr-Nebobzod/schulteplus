@@ -1,0 +1,19 @@
+plugins {
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'com.android.kotlin.multiplatform.library'
+}
+
+kotlin {
+    jvmToolchain(17)
+
+    android {
+        namespace = 'org.nebobrod.schulteplus.shared'
+        compileSdk = 36
+        minSdk = 26
+    }
+
+    sourceSets {
+        commonMain.dependencies {
+        }
+    }
+}

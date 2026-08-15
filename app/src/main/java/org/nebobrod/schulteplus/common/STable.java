@@ -152,7 +152,7 @@ public class STable extends Exercise {
 		int value = 1;
 		setFinished(false);
 		probabilities = fillProbabilities (xSize, ySize, dX, dY, w);
-		random = new Random();
+		setRandom(kotlin.random.Random.Default);
 		area.clear();
 		int current = 0;
 		for (int x = xSize; x > 0; x--){
@@ -172,28 +172,29 @@ public class STable extends Exercise {
 
 		// prepare parent
 		{
-			seed = random.nextLong();
+			long seed = getRandom().nextLong();
 			setSeed(seed);
 
 			switch (ExerciseRunner.getExTypeId().substring(0, 7)) {
 				case KEY_PRF_EX_S0:
-					exResult = new ExResultSchulte(seed, 0L, 0, 0, 0F, 0F, 0, 0,  "");
+					setExResult(new ExResultSchulte(seed, 0L, 0, 0, 0F, 0F, 0, 0,  ""));
 					break;
 				case KEY_PRF_EX_B0:
-					exResult = new ExResultBasics(seed, 0L, 0, 0, 0, "");
+					setExResult(new ExResultBasics(seed, 0L, 0, 0, 0, ""));
 					break;
 				default:
-					exResult = new ExResult(seed, 0L, 0, 0, "");
+					setExResult(new ExResult(seed, 0L, 0, 0, ""));
 			}
 
 			// Put in local DB and get id
-			DataOrmRepo<ExResult> repo = new DataOrmRepo(exResult.getClass());
-			repo.create(exResult).addOnCompleteListener(task -> exerciseId = exResult.getId());
+			ExResult res = (ExResult) getExResult();
+			DataOrmRepo<ExResult> repo = new DataOrmRepo(res.getClass());
+			repo.create(res).addOnCompleteListener(task -> exerciseId = res.getId());
 		}
 
 		// first record in journal has time, the others time of turn
 		this.journal.clear();
-		this.journal.add(new Turn(exResult, System.nanoTime(), 0L, expectedValue,0, 0, 0, true));
+		this.journal.add(new Turn((ExResult) getExResult(), System.nanoTime(), 0L, expectedValue,0, 0, 0, true));
 		Log.d(TAG, "reset: \n" + area.toString());
 	}
 
@@ -344,15 +345,15 @@ public class STable extends Exercise {
 				new ExResultBasics(time, turns, 0, 0, ""));*/
 		switch (ExerciseRunner.getExTypeId().substring(0, 7)) {
 			case KEY_PRF_EX_S0:
-				((ExResultSchulte) exResult).update(getTimeStamp(), time, turns, turnsMissed, average, rmsd, 0, 0, "" );
+				((ExResultSchulte) getExResult()).update(getTimeStamp(), time, turns, turnsMissed, average, rmsd, 0, 0, "" );
 				break;
 			case KEY_PRF_EX_B0:
-				((ExResultBasics) exResult).update(getTimeStamp(), time, turns, 0, 0, "");
+				((ExResultBasics) getExResult()).update(getTimeStamp(), time, turns, 0, 0, "");
 				break;
 			default:
-				exResult.update(0, time, 0, 0, "");
+				((ExResult) getExResult()).update(0, time, 0, 0, "");
 		}
-		return exResult;
+		return (ExResult) getExResult();
 	}
 
 	public boolean checkIsFinished() {
@@ -381,7 +382,7 @@ public class STable extends Exercise {
 			expectedValue++;
 		}
 		this.journal.add(new Turn(
-				exResult,
+				(ExResult) getExResult(),
 				System.nanoTime(),
 				(System.nanoTime() - journal.get(attemptNumber - 1).getTimeStamp()) / 1000000,
 				(result ? expectedValue : expectedValue -1),
@@ -417,14 +418,14 @@ public class STable extends Exercise {
 			//todo maybe Collections.shuffle(area);
 
 			for (int i = xSize * ySize-1; i>=0; i--){
-				int j = random.nextInt(clonedArea.size());
+				int j = getRandom().nextInt(clonedArea.size());
 				area.set( i, clonedArea.get(j));	// instead of .add, .set replaces current Object
 //				Log.d(TAG, "shuffle: i=" + i +" j="+ j);
 				clonedArea.remove(j);
 			}
 		}
 		if (this.w != 0) { // custom distribution:
-			double nextExpectedPosition = (random.nextDouble() * probabilitiesSum);
+			double nextExpectedPosition = (getRandom().nextDouble() * probabilitiesSum);
 			int caughtPosition =0 ;
 			double cumulativeBoundary = probabilitiesSum;
 			int i = 0;
@@ -513,14 +514,14 @@ public class STable extends Exercise {
 	public int getExpectedColor() { return getSCellByValue(expectedValue).getColor(); }
 
 	@Override
-	boolean validateResult() {
+	public boolean validateResult() {
 
 		// Spent seconds During the exercise
 		int events = this.journal.size()-1;
 		// exResult.setNumValue((this.journal.get(events).getTimeStamp() - this.journal.get(0).getTimeStamp())/1000000);
 
 		// if an average turn duration exceeds allowed limit
-		if ((exResult.getNumValue() /1000 / events) > AVERAGE_IDLE_LIMIT) {
+		if ((((ExResult) getExResult()).getNumValue() /1000 / events) > AVERAGE_IDLE_LIMIT) {
 			return false;
 		}
 		setValid(true);

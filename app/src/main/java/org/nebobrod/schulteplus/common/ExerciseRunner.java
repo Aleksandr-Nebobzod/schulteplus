@@ -253,7 +253,7 @@ public class ExerciseRunner {
 		exercise = newExercise;
 
 		// save preliminary result to get id from LocalDB
-		exResult = exercise.getExResult();
+		exResult = (ExResult) exercise.getExResult();
 		timeStamp = exResult.getTimeStamp();
 		DataOrmRepo ormRepo = new DataOrmRepo<>(exResult.getClass());
 		ormRepo.create(exResult).addOnCompleteListener(new OnCompleteListener() {
@@ -268,7 +268,7 @@ public class ExerciseRunner {
 	public static void clear() {
 
 		if (exercise == null) return;		// safety
-		exResult = exercise.getExResult();
+		exResult = (ExResult) exercise.getExResult();
 
 		// delete preliminary result from LocalDB
 		if (!exResult.isValid()) {

@@ -13,6 +13,7 @@ import static org.nebobrod.schulteplus.Utils.timeStampU;
 import static org.nebobrod.schulteplus.common.Const.*;
 
 import org.nebobrod.schulteplus.common.AppContext;
+import org.nebobrod.schulteplus.common.ExerciseStats;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.Const;
@@ -430,6 +431,29 @@ public class ExResult implements Serializable, Identifiable<String>, Validatable
 		this.levelOfEmotion = levelOfEmotion;
 		this.levelOfEnergy = levelOfEnergy;
 		this.note = note;
+	}
+
+	/**
+	 * Полиморфное обновление из движка упражнения (этап 1.3):
+	 * подклассы добавляют свои показатели (turns/average/...).
+	 */
+	public void update(ExerciseStats stats) {
+		update(stats.getTimeStamp(), stats.getNumValue(),
+				stats.getLevelOfEmotion(), stats.getLevelOfEnergy(), stats.getNote());
+	}
+
+	/**
+	 * Фабрика результата по типу упражнения (этап 1.3): заменяет switch в STable.
+	 */
+	public static ExResult create(String exTypeId, long seed, AppContext context) {
+		switch (exTypeId.substring(0, 7)) {
+			case KEY_PRF_EX_S0:
+				return new ExResultSchulte(seed, 0L, 0, 0, 0F, 0F, 0, 0, "", context);
+			case KEY_PRF_EX_B0:
+				return new ExResultBasics(seed, 0L, 0, 0, 0, "", context);
+			default:
+				return new ExResult(seed, 0L, 0, 0, "", context);
+		}
 	}
 
 	@Exclude

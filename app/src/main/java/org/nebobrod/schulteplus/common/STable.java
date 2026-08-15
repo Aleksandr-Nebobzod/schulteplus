@@ -21,8 +21,6 @@ import static org.nebobrod.schulteplus.Utils.tHtml;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.data.DataOrmRepo;
 import org.nebobrod.schulteplus.data.ExResult;
-import org.nebobrod.schulteplus.data.ExResultBasics;
-import org.nebobrod.schulteplus.data.ExResultSchulte;
 import org.nebobrod.schulteplus.data.Turn;
 import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
 
@@ -178,26 +176,17 @@ public class STable extends Exercise {
 			long seed = getRandom().nextLong();
 			setSeed(seed);
 
-			switch (context.getExTypeId().substring(0, 7)) {
-				case KEY_PRF_EX_S0:
-					setExResult(new ExResultSchulte(seed, 0L, 0, 0, 0F, 0F, 0, 0,  ""));
-					break;
-				case KEY_PRF_EX_B0:
-					setExResult(new ExResultBasics(seed, 0L, 0, 0, 0, ""));
-					break;
-				default:
-					setExResult(new ExResult(seed, 0L, 0, 0, ""));
-			}
+			setExResult(ExResult.create(context.getExTypeId(), seed, context));
 
 			// Put in local DB and get id
-			ExResult res = (ExResult) getExResult();
+			ExResult res = getExResult();
 			DataOrmRepo<ExResult> repo = new DataOrmRepo(res.getClass());
 			repo.create(res).addOnCompleteListener(task -> exerciseId = res.getId());
 		}
 
 		// first record in journal has time, the others time of turn
 		this.journal.clear();
-		this.journal.add(new Turn((ExResult) getExResult(), System.nanoTime(), 0L, expectedValue,0, 0, 0, true));
+		this.journal.add(new Turn(getExResult(), System.nanoTime(), 0L, expectedValue,0, 0, 0, true));
 		Log.d(TAG, "reset: \n" + area.toString());
 	}
 
@@ -346,17 +335,8 @@ public class STable extends Exercise {
 /*		exResult = (ExerciseRunner.getExType().contains(KEY_PRF_EX_S0) ?
 				new ExResultSchulte(time, turns, turnsMissed, average, rmsd, 0, 0, "" ) :
 				new ExResultBasics(time, turns, 0, 0, ""));*/
-		switch (context.getExTypeId().substring(0, 7)) {
-			case KEY_PRF_EX_S0:
-				((ExResultSchulte) getExResult()).update(getTimeStamp(), time, turns, turnsMissed, average, rmsd, 0, 0, "" );
-				break;
-			case KEY_PRF_EX_B0:
-				((ExResultBasics) getExResult()).update(getTimeStamp(), time, turns, 0, 0, "");
-				break;
-			default:
-				((ExResult) getExResult()).update(0, time, 0, 0, "");
-		}
-		return (ExResult) getExResult();
+		getExResult().update(new ExerciseStats(getTimeStamp(), time, turns, turnsMissed, average, rmsd, 0, 0, ""));
+		return getExResult();
 	}
 
 	public boolean checkIsFinished() {
@@ -524,7 +504,7 @@ public class STable extends Exercise {
 		// exResult.setNumValue((this.journal.get(events).getTimeStamp() - this.journal.get(0).getTimeStamp())/1000000);
 
 		// if an average turn duration exceeds allowed limit
-		if ((((ExResult) getExResult()).getNumValue() /1000 / events) > AVERAGE_IDLE_LIMIT) {
+		if ((getExResult().getNumValue() /1000 / events) > AVERAGE_IDLE_LIMIT) {
 			return false;
 		}
 		setValid(true);

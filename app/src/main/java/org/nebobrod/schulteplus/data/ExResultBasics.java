@@ -15,6 +15,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.AppContext;
+import org.nebobrod.schulteplus.common.ExerciseStats;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,6 +36,12 @@ public class ExResultBasics extends ExResult{
 	public void update(long timeStamp, long numValue, int events, int levelOfEmotion, int levelOfEnergy, String note) {
 		super.update(timeStamp, numValue, levelOfEmotion, levelOfEnergy, note);
 		this.setTurns(events);
+	}
+
+	@Override
+	public void update(ExerciseStats stats) {
+		super.update(stats);
+		this.setTurns(stats.getTurns());
 	}
 
 	@Override

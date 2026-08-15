@@ -13,6 +13,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.AppContext;
+import org.nebobrod.schulteplus.common.ExerciseStats;
 
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -44,6 +45,15 @@ public class ExResultSchulte  extends ExResult {
 		this.setTurnsMissed(turnsMissed);
 		this.setAverage(average);
 		this.setRmsd(rmsd);
+	}
+
+	@Override
+	public void update(ExerciseStats stats) {
+		super.update(stats);
+		this.setTurns(stats.getTurns());
+		this.setTurnsMissed(stats.getTurnsMissed());
+		this.setAverage(stats.getAverage());
+		this.setRmsd(stats.getRmsd());
 	}
 
 	@Override

@@ -40,17 +40,21 @@ flowchart LR
 Чек-пойнт: `assembleDebug` + полный ручной проход (вход, Schulte, Basics, SSSR, статистика).
 Риск: регрессы при смене конструкторов — инкрементально, сборка после каждой правки.
 
-## Этап 2. Перенос ядра в shared (Kotlin) — 3–5 дней
+## Этап 2. Перенос ядра в shared (Kotlin) — ✅ переопределён 16.08.2026
 
-Порядок (по модулю; drop-in: Kotlin-класс в том же пакете, Java-файл удаляется на шаге — Q13):
+**Решение (16.08.2026, по анализу ORM-связанности):** классы ядра с персистенцией
+(`ExResult*`, `Turn`, `STable`, `ExType`) переносятся в shared **помодульно, в момент
+миграции соответствующего экрана на Compose (B3)** — когда Java-потребители уходят,
+Kotlin-версия с тем же FQN встаёт drop-in без ORM-хирургии. ORM-аннотации невозможны в
+`commonMain`; маппинг (`ExResultRow`/`TurnRow`) — точечно, только для переносимого модуля.
+Правило FQN (урок LinkageError, `2d4535e`): Kotlin-класс появляется в shared только
+в коммите удаления Java-оригинала.
 
-1. `timeStampU`/время — ✅ готово; `Identifiable` → shared (a11).
-2. `Result` + типовые данные (замена `ExResult*`; ORM-аннотации остаются в app, см. этап 5).
-3. `Turn` → shared (модель журнала, без ORM).
-4. Логика `STable` → shared: camelSurface, probabilities, shuffle, journal, validateResult (Q8: параметры — конфигурация).
-5. `ExType` → shared: модель + статусы; JSON через kotlinx-serialization (Gson уходит из ядра),
-   app передаёт строку из `res/raw` (Q7: quiz-методы отложены).
-6. `AuthService` (интерфейс) → shared (основа B2).
+| Шаг | Статус |
+|---|---|
+| 2.1 Чистые типы без персистенции: `AppContext`, `ExerciseStats`, `Const` → shared (Java удалены) | ✅ `70291fc` |
+| 2.6 `AuthService` (интерфейс) → shared + kotlinx-coroutines 1.10.2 | ✅ |
+| 2.2–2.5 `Result`/`ExResult*`, `Turn`, `STable`, `ExType` → shared | ⏳ переносятся с B3 (по модулю, вместе с удалением Java) |
 
 Чек-пойнт каждого шага: `assembleDebug` + smoke (запуск, упражнение, сохранение результата).
 
@@ -105,5 +109,7 @@ TileSquashPaving, обновление графики, новости/чаты/�
 
 | Дата | Изменение |
 |---|---|
+| 2026-08-16 | **Этап 2 переопределён по решению пользователя**: ядро с персистенцией (ExResult*/Turn/STable/ExType) переносится помодульно вместе с миграцией экранов B3 (без ORM-хирургии); в этапе 2 сделано: чистые типы AppContext/ExerciseStats/Const в shared (`70291fc`) + AuthService-интерфейс (+kotlinx-coroutines) |
+| 2026-08-16 | Smoke-фиксы устройства: `2d4535e` дубликаты FQN (LinkageError), `d036615` parseDate (Z-маркеры), `6109a15` FullscreenLite→M3 (SSSR Slider-тултип, регрессия A5, есть в v119), `f8aa284` drawable-guard (Invalid ID 0x00000000) |
 | 2026-08-15 | **Этап 1 выполнен** (коммиты d05b6bc, 256464f, da9ef83, bd327a6, f3537ab): AppContext (явный контекст), ExResult* без статики ExerciseRunner, полиморфный update(ExerciseStats) + фабрика ExResult.create вместо кастов, TurnWriter/DefaultTurnWriter (персистенция вне домена), рендер ячеек в GridAdapter, SymbolTemplate/ResourceSymbolTemplate, ResultSaver/DefaultResultSaver, ExerciseServices. STable не зависит от Android/Utils/репозиториев. Осталось: ручной smoke-проход на устройстве |
 | 2026-08-15 | Создан документ: поэтапный план перехода к модульной архитектуре (7 этапов), с чек-пойнтами и правилами итерации |

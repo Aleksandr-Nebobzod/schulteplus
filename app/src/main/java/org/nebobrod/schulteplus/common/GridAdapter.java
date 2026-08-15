@@ -9,14 +9,29 @@
 package org.nebobrod.schulteplus.common;
 
 import static org.nebobrod.schulteplus.Utils.getRes;
+import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S1;
+import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S2;
+import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S3;
+import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_COLOR_BLUE;
+import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_COLOR_RED;
+import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_LETTER_CYRILLIC;
+import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_LETTER_DEVANAGARI;
+import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_LETTER_LATIN;
+import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_NUMBER_ROME;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
+
+import androidx.annotation.ColorInt;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 
 import org.nebobrod.schulteplus.R;
 
@@ -63,7 +78,7 @@ public class GridAdapter extends BaseAdapter {
 
 		// TODONE: 28.11.2023--14.12 extend this to Stable.setViewContent by exType & position
 //		 view.setText("" + mExercise.getArea().get(position).getValue());
-		view = mExercise.setViewContent(view, position);
+		view = setCellView(view, position);
 		//Log.d(TAG, "getView:  " + view.getText());
 
 
@@ -92,6 +107,80 @@ public class GridAdapter extends BaseAdapter {
 		view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 //		 view.setPadding(0, 25, 0, 25);
 //		 Log.d(TAG, "itemHeight: " + view.getHeight() + " and TextSize: " + view.getTextSize());
+
+		return view;
+	}
+
+	/**
+	 * Set Cell graphics by ExType (moved from STable, step 1.4)
+	 * mono, two-colored sequences, four-colored sequences
+	 */
+	private TextView setCellView (TextView view, int position) {
+		SCell cell = mExercise.getArea().get(position);
+		int value = cell.getValue();
+		String strValue = "";
+		@ColorInt int color;
+		//		 https://stackoverflow.com/questions/51719485/adding-border-to-textview-programmatically
+		Drawable img = AppCompatResources.getDrawable(mContext, R.drawable.ic_border);
+		color = ContextCompat.getColor(mContext, R.color.light_grey_D);
+
+		switch (mExercise.getAppContext().getExTypeId()){
+			case KEY_PRF_EX_S1:
+				switch (mExercise.getAppContext().getSymbolType()) {
+					case KEY_SYMBOL_TYPE_NUMBER_ROME:
+					case KEY_SYMBOL_TYPE_LETTER_LATIN:
+					case KEY_SYMBOL_TYPE_LETTER_CYRILLIC:
+					case KEY_SYMBOL_TYPE_LETTER_DEVANAGARI:
+						strValue = cell.getText();
+						break;
+					case KEY_SYMBOL_TYPE_COLOR_RED:
+					case KEY_SYMBOL_TYPE_COLOR_BLUE:
+						color = cell.getColor();
+						break;
+					default: 	// KEY_SYMBOL_TYPE_NUMBER
+		//				view.setText(value); // value keeps its sequence
+		//				color = ContextCompat.getColor(mContext, R.color.transparent);
+						strValue = value + "";
+				}
+				break;
+			case KEY_PRF_EX_S2:
+				if (value % 2 != 0) { 		// odd
+					value = 1 + value / 2; 	// 1:25 red
+					color = ContextCompat.getColor(mContext, R.color.light_grey_A_blue);
+				} else { 					// even
+					value = 25 - value / 2; // 24:1 blue
+					color = ContextCompat.getColor(mContext, R.color.light_grey_A_red);
+				}
+//				img.setColorFilter(Color.valueOf(getColor(R.color.light_grey_A_red)).toArgb(), PorterDuff.Mode.SRC_IN);
+				strValue = value + "";
+				break;
+			case KEY_PRF_EX_S3:
+				switch (value % 4) {
+					case 1: // Growing
+						value = 1 + value / 4; // 1:25 blue
+						color = ContextCompat.getColor(mContext, R.color.light_grey_A_blue);
+						break;
+					case 2: // Downward
+						value = (102 - value) / 4; // 25:1 red
+						color = ContextCompat.getColor(mContext, R.color.light_grey_A_red);
+						break;
+					case 3: // Convergent
+						value +=1; // 1,25:12,13 green
+						value = (0 == (value % 8) ? 26 - (value / 8) : (value + 4) / 8);
+						color = ContextCompat.getColor(mContext, R.color.light_grey_A_green);
+						break;
+					case 0: // Divergent
+						value = (0 == (value % 8) ? 13 + (value / 8) : 13 - value / 8); // 12,13:1,25 yellow
+						color = ContextCompat.getColor(mContext, R.color.light_grey_A_yellow);
+						break;
+				}
+				strValue = value + "";
+				break;
+			default:
+		}
+		view.setText(strValue);
+		img.setColorFilter(color, PorterDuff.Mode.DST_ATOP);
+		view.setBackground(img);
 
 		return view;
 	}

@@ -11,33 +11,18 @@ package org.nebobrod.schulteplus.common;
 import static org.nebobrod.schulteplus.Utils.interpolateColors;
 import static org.nebobrod.schulteplus.Utils.stringRepeat;
 import static org.nebobrod.schulteplus.common.Const.*;
-import static org.nebobrod.schulteplus.Utils.bHtml;
-import static org.nebobrod.schulteplus.Utils.cHtml;
-import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
-import static org.nebobrod.schulteplus.Utils.pHtml;
-import static org.nebobrod.schulteplus.Utils.tHtml;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.data.DataOrmRepo;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.Turn;
-import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
 
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.widget.TextView;
-
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import java.util.Random;
 
 /**
  * Schulte Table -- a List of Cells represented as a rectangular
@@ -47,6 +32,7 @@ public class STable extends Exercise {
 	public static final String TAG = "STable";
 
 	private final AppContext context;
+	private final TurnWriter turnWriter;
 
 	private ArrayList<SCell> area = new ArrayList<>();
 	private int xSize, ySize;
@@ -64,13 +50,14 @@ public class STable extends Exercise {
 
 
 	// Simplified constructor overloading
-	public STable(AppContext context, int x, int y) {
-		this(context, x, y, 0, 0, 0);
+	public STable(AppContext context, int x, int y, TurnWriter turnWriter) {
+		this(context, x, y, 0, 0, 0, turnWriter);
 	}
 
-	public STable(AppContext context, int x, int y, double dX, double dY, double w) {
+	public STable(AppContext context, int x, int y, double dX, double dY, double w, TurnWriter turnWriter) {
 
 		this.context = context;
+		this.turnWriter = turnWriter;
 		this.xSize = x;
 		this.ySize = y;
 //		this.sequence = sequence;
@@ -191,77 +178,10 @@ public class STable extends Exercise {
 	}
 
 	/**
-	 * Set Cell graphics by ExType
-	 * mono, two-colored sequences, four-colored sequences
+	 * Рендер ячейки переехал в GridAdapter (этап 1.4); домен хранит данные ячейки.
 	 */
-	public TextView setViewContent (TextView view, int position) {
-		SCell cell = area.get(position);
-		int value = cell.getValue();
-		String strValue = "";
-		@ColorInt int color;
-		//		 https://stackoverflow.com/questions/51719485/adding-border-to-textview-programmatically
-		Drawable img = AppCompatResources.getDrawable(getAppContext(), R.drawable.ic_border);
-		color = ContextCompat.getColor(getAppContext(), R.color.light_grey_D);
-
-		switch (context.getExTypeId()){
-			case KEY_PRF_EX_S1:
-				switch (context.getSymbolType()) {
-					case KEY_SYMBOL_TYPE_NUMBER_ROME:
-					case KEY_SYMBOL_TYPE_LETTER_LATIN:
-					case KEY_SYMBOL_TYPE_LETTER_CYRILLIC:
-					case KEY_SYMBOL_TYPE_LETTER_DEVANAGARI:
-						strValue = cell.getText();
-						break;
-					case KEY_SYMBOL_TYPE_COLOR_RED:
-					case KEY_SYMBOL_TYPE_COLOR_BLUE:
-						color = cell.getColor();
-						break;
-					default: 	// KEY_SYMBOL_TYPE_NUMBER
-		//				view.setText(value); // value keeps its sequence
-		//				color = ContextCompat.getColor(getAppContext(), R.color.transparent);
-						strValue = value + "";
-				}
-				break;
-			case KEY_PRF_EX_S2:
-				if (value % 2 != 0) { 		// odd
-					value = 1 + value / 2; 	// 1:25 red
-					color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_blue);
-				} else { 					// even
-					value = 25 - value / 2; // 24:1 blue
-					color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_red);
-				}
-//				img.setColorFilter(Color.valueOf(getColor(R.color.light_grey_A_red)).toArgb(), PorterDuff.Mode.SRC_IN);
-				strValue = value + "";
-				break;
-			case KEY_PRF_EX_S3:
-				switch (value % 4) {
-					case 1: // Growing
-						value = 1 + value / 4; // 1:25 blue
-						color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_blue);
-						break;
-					case 2: // Downward
-						value = (102 - value) / 4; // 25:1 red
-						color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_red);
-						break;
-					case 3: // Convergent
-						value +=1; // 1,25:12,13 green
-						value = (0 == (value % 8) ? 26 - (value / 8) : (value + 4) / 8);
-						color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_green);
-						break;
-					case 0: // Divergent
-						value = (0 == (value % 8) ? 13 + (value / 8) : 13 - value / 8); // 12,13:1,25 yellow
-						color = ContextCompat.getColor(getAppContext(), R.color.light_grey_A_yellow);
-						break;
-				}
-				strValue = value + "";
-				break;
-			default:
-		}
-		view.setText(strValue);
-		img.setColorFilter(color, PorterDuff.Mode.DST_ATOP);
-		view.setBackground(img);
-
-		return view;
+	public AppContext getAppContext() {
+		return context;
 	}
 
 	private ArrayList<Double> fillProbabilities(int xSize, int ySize, double dX, double dY, double w) {
@@ -300,41 +220,22 @@ public class STable extends Exercise {
 
 		int time = 0, turns = 0, turnsMissed = 0;	// time tends to milliseconds
 		float average = 0, rmsd = 0;
-		String results = "";	// this in seconds.00
 
 		turns = this.journal.size()-1; // 'cos 1-st position journal[0] means no turns (start record)
-		results += getRes().getString(R.string.lbl_turns) + ":" + tHtml()  + bHtml(""+ turns);
 
 		// time spent & average deviation
 		for (int i=1; i<=turns; i++) {
 			time += this.journal.get(i).getTime();
 			if (!this.journal.get(i).isCorrect()) turnsMissed++;
 		}
-		// if there are no missed turns do not show it
-		if (turnsMissed != 0) {
-			results += pHtml() + getRes().getString(R.string.lbl_turns_missed) + ":" + tHtml()  + cHtml( bHtml(""+ turnsMissed));
-		}
-		results += pHtml() + getRes().getString(R.string.lbl_time) + ":" + tHtml()  + bHtml(String.format(Locale.ENGLISH, "%.2f", (time /1000F)))
-				+ " " + getRes().getString(R.string.lbl_mu_second);
 		average = (float) time / turns;
 
 		// root mean square deviation
 		for (int i=1; i<=turns; i++) {
 			rmsd += Math.pow ((average - this.journal.get(i).getTime()), 2);
-//			Log.d(TAG, "getResults: RMSD " + i + "_" + String.format(Locale.ENGLISH, "%.2f", rmsd) );
 		}
 		rmsd = (float) Math.sqrt((float) (rmsd / turns));
 
-		results +=  pHtml() + getRes().getString(R.string.lbl_average) + tHtml()  +  bHtml(String.format(Locale.ENGLISH, "%.2f", (average / 1000)))
-				+ " " + getRes().getString(R.string.lbl_mu_second)
-				+ pHtml() + getRes().getString(R.string.lbl_sd) + tHtml() + bHtml(String.format(Locale.ENGLISH, "%.2f", (rmsd / 1000)))
-				+ " " + getRes().getString(R.string.lbl_mu_second);
-		Log.d(TAG, "getResults: "+ this.journal);
-		Log.d(TAG, "getResults: " + results);
-
-/*		exResult = (ExerciseRunner.getExType().contains(KEY_PRF_EX_S0) ?
-				new ExResultSchulte(time, turns, turnsMissed, average, rmsd, 0, 0, "" ) :
-				new ExResultBasics(time, turns, 0, 0, ""));*/
 		getExResult().update(new ExerciseStats(getTimeStamp(), time, turns, turnsMissed, average, rmsd, 0, 0, ""));
 		return getExResult();
 	}
@@ -375,18 +276,11 @@ public class STable extends Exercise {
 	}
 
 	/**
-	 * This writes turn-data to local db (just for extra history assurance)
+	 * Делегирует персистенцию хода приложению (этап 1.4).
 	 * @param turn
 	 */
 	public void writeTurn (@NonNull Turn turn) {
-
-		DataOrmRepo localRepo = new DataOrmRepo<>(turn.getClass());
-		localRepo.put(turn);
-
-		DataFirestoreRepo centralRepo = new DataFirestoreRepo<Turn>(Turn.class);
-		centralRepo.create(turn);
-
-		//dao.create(group); // // DONE: 03.05.2024 got rid of click-group examples FROM TODOne: 29.01.2024 move into ClickGroup with "this" as put-method
+		turnWriter.write(turn);
 	}
 
 	/**

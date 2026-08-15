@@ -16,6 +16,7 @@ import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.SCell;
 import org.nebobrod.schulteplus.common.STable;
 import org.nebobrod.schulteplus.data.DataRepos;
+import org.nebobrod.schulteplus.data.DefaultTurnWriter;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.ui.ExResultArrayAdapter;
 
@@ -257,7 +258,7 @@ public class SchulteActivity extends AppCompatActivity {
 	 * On start preparations
 	 */
 	private void initArea() {
-		exercise = new STable( ExerciseRunner.createAppContext(), runner.getX(), runner.getY(), ExerciseRunner.probDx(), ExerciseRunner.probDy(), ExerciseRunner.probW());
+		exercise = new STable( ExerciseRunner.createAppContext(), runner.getX(), runner.getY(), ExerciseRunner.probDx(), ExerciseRunner.probDy(), ExerciseRunner.probW(), new DefaultTurnWriter());
 		ExerciseRunner.setExercise(exercise);
 
 		// Toolbar for exercise initiation (if hints are chosen)

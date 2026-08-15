@@ -44,8 +44,11 @@ import com.getkeepsafe.taptargetview.TapTargetSequence;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.common.STable;
 import org.nebobrod.schulteplus.Utils;
+import org.nebobrod.schulteplus.data.DefaultResultSaver;
 import org.nebobrod.schulteplus.data.DefaultTurnWriter;
 import org.nebobrod.schulteplus.data.ExResult;
+import org.nebobrod.schulteplus.common.ExerciseServices;
+import org.nebobrod.schulteplus.common.ResourceSymbolTemplate;
 import org.nebobrod.schulteplus.ui.ExResultArrayAdapter;
 import org.nebobrod.schulteplus.databinding.ActivityBasicsBinding; // TODO: 01.10.2023 figure it out!
 import org.nebobrod.schulteplus.R;
@@ -186,7 +189,8 @@ public class BasicsActivity extends AppCompatActivity {
 
 		// repos = new DataRepos(ExResult.class);
 		ExerciseRunner.getInstance();
-		exercise = new STable(ExerciseRunner.createAppContext(), 1, 1, new DefaultTurnWriter());
+		exercise = new STable(ExerciseRunner.createAppContext(), 1, 1,
+				new ExerciseServices(new DefaultTurnWriter(), new ResourceSymbolTemplate(), new DefaultResultSaver()));
 		ExerciseRunner.start(exercise);
 		resultLiveData.setValue(ExerciseRunner.getExResult());
 

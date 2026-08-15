@@ -8,17 +8,10 @@
 
 package org.nebobrod.schulteplus.common;
 
-import static org.nebobrod.schulteplus.Utils.interpolateColors;
-import static org.nebobrod.schulteplus.Utils.stringRepeat;
 import static org.nebobrod.schulteplus.common.Const.*;
-import static org.nebobrod.schulteplus.Utils.getRes;
 
-import org.nebobrod.schulteplus.R;
-import org.nebobrod.schulteplus.data.DataOrmRepo;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.Turn;
-
-import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +25,7 @@ public class STable extends Exercise {
 	public static final String TAG = "STable";
 
 	private final AppContext context;
-	private final TurnWriter turnWriter;
+	private final ExerciseServices services;
 
 	private ArrayList<SCell> area = new ArrayList<>();
 	private int xSize, ySize;
@@ -50,14 +43,14 @@ public class STable extends Exercise {
 
 
 	// Simplified constructor overloading
-	public STable(AppContext context, int x, int y, TurnWriter turnWriter) {
-		this(context, x, y, 0, 0, 0, turnWriter);
+	public STable(AppContext context, int x, int y, ExerciseServices services) {
+		this(context, x, y, 0, 0, 0, services);
 	}
 
-	public STable(AppContext context, int x, int y, double dX, double dY, double w, TurnWriter turnWriter) {
+	public STable(AppContext context, int x, int y, double dX, double dY, double w, ExerciseServices services) {
 
 		this.context = context;
-		this.turnWriter = turnWriter;
+		this.services = services;
 		this.xSize = x;
 		this.ySize = y;
 //		this.sequence = sequence;
@@ -71,67 +64,8 @@ public class STable extends Exercise {
 			this.w = 0;
 		}
 
-		// prepare template for cells text or color
-		Object[] sourceArray;
-		Object letter = "";
-		int[] colorSourceArray;
-		int[] colorArray;
-		switch (context.getSymbolType()) {
-			case KEY_SYMBOL_TYPE_NUMBER_ROME:
-				sourceArray = getRes().getStringArray(R.array.number_rome);
-				for (int i = 0; i < xSize * ySize; i++) {
-					// it takes values from sourceArray by circle (if size of source is not enough)
-					template.add(sourceArray[i % (sourceArray.length)].toString().substring(5));
-				}
-				break;
-			case KEY_SYMBOL_TYPE_LETTER_LATIN:
-				sourceArray = getRes().getStringArray(R.array.letter_latin);
-				for (int i = 0; i < xSize * ySize; i++) {
-					// it takes values from sourceArray by circle (if size of source is not enough)
-					letter = sourceArray[i % (sourceArray.length)] +
-							stringRepeat(".", i / (sourceArray.length));
-					template.add(letter);
-				}
-				break;
-			case KEY_SYMBOL_TYPE_LETTER_CYRILLIC:
-				sourceArray = getRes().getStringArray(R.array.letter_cyrillic);
-				for (int i = 0; i < xSize * ySize; i++) {
-					// it takes values from sourceArray by circle (if size of source is not enough)
-					letter = sourceArray[i % (sourceArray.length)] +
-							stringRepeat(".", i / (sourceArray.length));
-					template.add(letter);
-				}
-				break;
-			case KEY_SYMBOL_TYPE_LETTER_DEVANAGARI:
-				sourceArray = getRes().getStringArray(R.array.letter_devanagari);
-				for (int i = 0; i < xSize * ySize; i++) {
-					// it takes values from sourceArray by circle (if size of source is not enough)
-					// 1-st symbol for devanagari
-					letter = ((String)sourceArray[i % (sourceArray.length)]).substring(0, 1) +
-							stringRepeat(".", i / (sourceArray.length));
-					template.add(letter);
-				}
-				break;
-			case KEY_SYMBOL_TYPE_COLOR_RED:
-				colorSourceArray = getRes().getIntArray (R.array.color_red);
-				colorArray = interpolateColors((int)colorSourceArray[0], (int)colorSourceArray[1], xSize * ySize);
-				for (int i : colorArray) {
-					template.add(i);
-				}
-				break;
-			case KEY_SYMBOL_TYPE_COLOR_BLUE:
-				colorSourceArray = getRes().getIntArray (R.array.color_blue);
-				colorArray = interpolateColors((int)colorSourceArray[0], (int)colorSourceArray[1], xSize * ySize);
-				for (int i : colorArray) {
-					template.add(i);
-				}
-				break;
-			default: 	// KEY_SYMBOL_TYPE_NUMBER
-				for (int i = 0; i < xSize * ySize; i++) {
-					// it takes values from cicle
-					template.add(i+1);
-				}
-		}
+		// prepare template for cells text or color (app-side resources, step 1.5)
+		this.template = services.getSymbolTemplate().buildTemplate(context.getSymbolType(), xSize * ySize);
 		this.reset();
 	}
 
@@ -165,10 +99,9 @@ public class STable extends Exercise {
 
 			setExResult(ExResult.create(context.getExTypeId(), seed, context));
 
-			// Put in local DB and get id
+			// Put in local DB and get id (app-side persistence, step 1.5)
 			ExResult res = getExResult();
-			DataOrmRepo<ExResult> repo = new DataOrmRepo(res.getClass());
-			repo.create(res).addOnCompleteListener(task -> exerciseId = res.getId());
+			services.getResultSaver().create(res, id -> exerciseId = id);
 		}
 
 		// first record in journal has time, the others time of turn
@@ -279,8 +212,8 @@ public class STable extends Exercise {
 	 * Делегирует персистенцию хода приложению (этап 1.4).
 	 * @param turn
 	 */
-	public void writeTurn (@NonNull Turn turn) {
-		turnWriter.write(turn);
+	public void writeTurn (Turn turn) {
+		services.getTurnWriter().write(turn);
 	}
 
 	/**

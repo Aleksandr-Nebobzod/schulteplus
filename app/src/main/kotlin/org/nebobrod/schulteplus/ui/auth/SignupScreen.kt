@@ -2,7 +2,6 @@ package org.nebobrod.schulteplus.ui.auth
 
 import android.app.Activity
 import android.util.Patterns
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -58,7 +57,8 @@ fun SignupScreen(
     initialName: String,
     initialPassword: String,
     onGoToLogin: (email: String, name: String, password: String) -> Unit,
-    onMain: (UserHelper?) -> Unit
+    onMain: (UserHelper?) -> Unit,
+    onMessage: (text: String) -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -92,9 +92,9 @@ fun SignupScreen(
                 if (ok && fbUser != null) {
                     val fallbackName = fbUser.displayName ?: "new"
                     AuthSession.loginWithUpdate(context as Activity, fbUser, "google_sign_in", fallbackName,
-                        { onMain(it) }, {})
+                        { onMain(it) }, {}, onMessage = onMessage)
                 } else {
-                    Toast.makeText(context, R.string.msg_user_signed_up_failed, Toast.LENGTH_LONG).show()
+                    onMessage(context.getString(R.string.msg_user_signed_up_failed))
                 }
             }
         }
@@ -103,20 +103,20 @@ fun SignupScreen(
     fun submit() {
         if (busy) return
         if (!agreed) {
-            Toast.makeText(context, R.string.hint_signup_agreed_title, Toast.LENGTH_LONG).show()
-            Toast.makeText(context, R.string.hint_signup_agreed_desc, Toast.LENGTH_LONG).show()
+            onMessage(context.getString(R.string.hint_signup_agreed_title))
+            onMessage(context.getString(R.string.hint_signup_agreed_desc))
             return
         }
         if (!Const.NAME_REG_EXP.toRegex().matches(name)) {
-            Toast.makeText(context, R.string.msg_username_wrong, Toast.LENGTH_LONG).show()
+            onMessage(context.getString(R.string.msg_username_wrong))
             return
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(context, R.string.msg_username_wrong, Toast.LENGTH_LONG).show()
+            onMessage(context.getString(R.string.msg_username_wrong))
             return
         }
         if (!Const.PASSWORD_REG_EXP.toRegex().matches(password)) {
-            Toast.makeText(context, R.string.msg_password_rules, Toast.LENGTH_LONG).show()
+            onMessage(context.getString(R.string.msg_password_rules))
             return
         }
         scope.launch {
@@ -126,11 +126,12 @@ fun SignupScreen(
             if (ok) {
                 val fbUser = FirebaseAuth.getInstance().currentUser
                 if (fbUser != null) {
-                    val userHelper = AuthSession.createUserHelper(context as Activity, fbUser, name, email, password)
+                    val userHelper = AuthSession.createUserHelper(
+                        context as Activity, fbUser, name, email, password, onMessage = onMessage)
                     onMain(userHelper)
                 }
             } else {
-                Toast.makeText(context, R.string.msg_user_signed_up_failed, Toast.LENGTH_LONG).show()
+                onMessage(context.getString(R.string.msg_user_signed_up_failed))
             }
         }
     }

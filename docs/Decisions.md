@@ -29,6 +29,7 @@
 | D-20 | 16.08 | **Прочее**: статус-бар на Login/Signup (edge-to-edge + insets, fullscreen — только сплэш); тёмная тема auth; оффлайн-поведение (понятное сообщение); TapTarget-туториалы сократить (частично заменит онбординг) | Современный UX auth-экранов, готовность к SDK 37 (SP-05) | SP-03, ТЗ §6.2/6.4/6.6/6.7, SP-05 | действует |
 | D-21 | 16.08 | **firebase-auth: пин 20.0.3** (не 16.0.3) | 16.0.3 ссылается на `FirebaseApp$IdTokenListenersCountChangedListener`, удалённый в firebase-common 21.0.0 → NoClassDefFoundError при старте после снятия firebase-ui-auth; **v119 фактически работал на 20.0.3** (транзитив firebase-ui-auth, highest-wins) — пин восстанавливает рабочую конфигурацию продакшена | B2 (Inc 4), fix, firebase-common 21 | действует |
 | D-22 | 16.08 | **play-services-auth: апгрейд 16.0.0 → 19.0.0** | 16.0.0 `SignInHubActivity` наследует `android.support.v4.app.FragmentActivity` (нет в APK) → NoClassDefFoundError на Google-кнопке; латентный с 08.2024 (v119 тоже, не тестировался). 19.0.0 — androidx-байткод, тот же API, совместим с firebase-auth 20.0.3. **«240805» — дата 2024-08-05, а не код ошибки; текст не задокументирован** (получен на старом тулчейне) | B2 smoke, fix, SP-05 (Credential Manager — долгосрочно) | действует |
+| D-23 | 16.08 | **Google-вход на debug-сборках: нужна регистрация SHA-1 debug-keystore в Firebase-консоли; тосты на auth-экранах заменены на Compose Snackbar** | GMS отклоняет запрос OAuth-токена: «This android application is not registered to use OAuth2.0» (GetTokenResponseHandler) — в google-services.json зарегистрирован только релизный отпечаток `18a0dbea…` (строка 22), debug-подпись `12C8E992…` отсутствует → **debug-сборки не пройдут Google-вход никогда, пока отпечаток не добавят в консоль** (не регрессия B2/D-22). Тост на Android 12+ может не отрисоваться: SystemUIToast → getBadgedIcon → IOException на APK-пути после обновления (лог, стр. 7954–8003) → «пусто» после пикера. Фикс: Toast → Snackbar (хост в AuthActivity, переживает переходы экранов; Splash — в его очередь; AuthSession — колбэк onMessage). Исключение: демо-чит-тост «Run Demo User...» на Splash остаётся — переживает навигацию через 100 мс, уходит с SP-03 (явный UI «Попробовать без регистрации») | Лог `temp/Google-Pixel-3a-Android-12_2026-08-16_185304.logcat` (стр. 6503, 6518, 7954–8003); `google-services.json:22`; debug-подпись `app/build.gradle:32`; фикс 16.08 | B2 smoke, SP-03 Ф3 (инлайн-валидация вместо тостов — развитие) | действует |
 
 ## Environment: агент-дизайнер `mobile-design`
 
@@ -62,6 +63,7 @@
 
 | Дата | Изменение |
 |---|---|
+| 2026-08-16 | Добавлен **D-23**: Google-вход на debug (SHA-1 не зарегистрирован) + невидимые тосты → Snackbar на auth-экранах |
 | 2026-08-16 | Добавлен раздел **Environment**: агент-дизайнер `mobile-design` (задачи, вызов) |
 | 2026-08-16 | Добавлены D-17…D-20 (SP-03): Splash B (заставка ~1 c), полировка+брендинг, онбординг 3 слайда (с расходами псикойнов и демо-ссылкой), статус-бар/тёмная тема/оффлайн/TapTarget |
 | 2026-08-16 | Создан документ: история решений D-01…D-16 (треки, этапы, B2, фиксы), связи с бэклогом и открытыми вопросами |

@@ -2,7 +2,6 @@ package org.nebobrod.schulteplus.auth
 
 import android.app.Activity
 import android.content.Intent
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseUser
 import org.nebobrod.schulteplus.ui.MainActivity
 import org.nebobrod.schulteplus.R
@@ -37,6 +36,7 @@ object AuthSession {
      * Нет записи нигде → создаётся новый UserHelper + AdminNote "LogIn with new device".
      *
      * @param fallbackName имя для нового пользователя ("new" при логине, displayName при Google-синапе)
+     * @param onMessage сообщения вместо системных тостов (D-23: SystemUIToast может не отрисоваться)
      */
     @JvmStatic
     fun loginWithUpdate(
@@ -45,7 +45,8 @@ object AuthSession {
         password: String,
         fallbackName: String,
         onSuccess: UserHelperCallback,
-        onError: Runnable
+        onError: Runnable,
+        onMessage: (String) -> Unit = {}
     ) {
         val uid = Objects.requireNonNull(fbu).uid
         val repos = DataRepos<UserHelper>(UserHelper::class.java)
@@ -55,7 +56,7 @@ object AuthSession {
             } else {
                 if (task.exception?.cause is RuntimeException) {
                     // No actual user record in any repository!
-                    Toast.makeText(context, R.string.msg_user_data_renewed, Toast.LENGTH_LONG).show()
+                    onMessage(context.getString(R.string.msg_user_data_renewed))
                     val userHelper = UserHelper(
                         fbu.uid, fbu.email, fallbackName, password,
                         Utils.getDevId(), Utils.generateUak(), fbu.isEmailVerified
@@ -70,7 +71,7 @@ object AuthSession {
                     )
                     repos.create(userHelper).addOnCompleteListener { onSuccess.onComplete(userHelper) }
                 } else {
-                    Toast.makeText(context, R.string.err_unknown, Toast.LENGTH_SHORT).show()
+                    onMessage(context.getString(R.string.err_unknown))
                     onError.run()
                 }
             }
@@ -84,7 +85,8 @@ object AuthSession {
         fbUser: FirebaseUser,
         name: String,
         email: String,
-        password: String
+        password: String,
+        onMessage: (String) -> Unit = {}
     ): UserHelper {
         val resMessage = arrayOf(name + " " + context.getString(R.string.msg_user_signed_up))
         fbUser.sendEmailVerification().addOnCompleteListener { task ->
@@ -99,7 +101,7 @@ object AuthSession {
             Utils.getDevId(), Utils.generateUak(), false
         )
         DataRepos<UserHelper>(UserHelper::class.java).create(userHelper)
-        Toast.makeText(context, resMessage[0], Toast.LENGTH_SHORT).show()
+        onMessage(resMessage[0])
 
         // registration record
         DataRepos<AdminNote>(AdminNote::class.java).create(

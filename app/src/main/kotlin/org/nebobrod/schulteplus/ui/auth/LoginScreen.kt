@@ -2,7 +2,6 @@ package org.nebobrod.schulteplus.ui.auth
 
 import android.app.Activity
 import android.util.Patterns
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -56,7 +55,8 @@ fun LoginScreen(
     initialName: String,
     initialPassword: String,
     onGoToSignup: (email: String, name: String, password: String) -> Unit,
-    onMain: (UserHelper?) -> Unit
+    onMain: (UserHelper?) -> Unit,
+    onMessage: (text: String) -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -89,9 +89,9 @@ fun LoginScreen(
                 busy = false
                 if (ok && fbUser != null) {
                     AuthSession.loginWithUpdate(context as Activity, fbUser, "google_sign_in", "new",
-                        { onMain(it) }, {})
+                        { onMain(it) }, {}, onMessage = onMessage)
                 } else {
-                    Toast.makeText(context, R.string.msg_user_login_failed, Toast.LENGTH_LONG).show()
+                    onMessage(context.getString(R.string.msg_user_login_failed))
                 }
             }
         }
@@ -102,11 +102,11 @@ fun LoginScreen(
         // демо: настоящий аккаунт support@attplus.in — лок полей и вход (паритет lockForDemo)
         if ("support@attplus.in".equals(email, ignoreCase = true)) demoLocked = true
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(context, R.string.msg_username_wrong, Toast.LENGTH_LONG).show()
+            onMessage(context.getString(R.string.msg_username_wrong))
             return
         }
         if (!Const.PASSWORD_REG_EXP.toRegex().matches(password)) {
-            Toast.makeText(context, R.string.msg_password_rules, Toast.LENGTH_LONG).show()
+            onMessage(context.getString(R.string.msg_password_rules))
             return
         }
         scope.launch {
@@ -117,10 +117,10 @@ fun LoginScreen(
                 val fbUser = FirebaseAuth.getInstance().currentUser
                 if (fbUser != null) {
                     AuthSession.loginWithUpdate(context as Activity, fbUser, password, "new",
-                        { onMain(it) }, {})
+                        { onMain(it) }, {}, onMessage = onMessage)
                 }
             } else {
-                Toast.makeText(context, R.string.msg_user_login_failed, Toast.LENGTH_LONG).show()
+                onMessage(context.getString(R.string.msg_user_login_failed))
             }
         }
     }

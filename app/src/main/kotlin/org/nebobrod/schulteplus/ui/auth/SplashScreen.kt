@@ -114,7 +114,7 @@ fun SplashScreen(onLogin: () -> Unit, onMain: (UserHelper?) -> Unit) {
             }
             SplashViewModel.CheckType.TIME ->
                 if (result.result == SplashViewModel.CheckResult.WARN) {
-                    Toast.makeText(context, R.string.msg_tests_failed, Toast.LENGTH_LONG).show()
+                    queue = queue + (context.getString(R.string.msg_tests_failed) to null)
                     delay(1000)
                     showQueue { navigate(userHelperState == null) }
                 }

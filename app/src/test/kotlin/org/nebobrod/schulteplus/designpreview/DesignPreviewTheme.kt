@@ -34,6 +34,8 @@ object PreviewPalette {
     val onErrorLight = Color(0xFFFFFFFF)
     val errorContainerLight = Color(0x66ED7575)   // light_grey_D_red, полупрозрачный
     val onErrorContainerLight = Color(0xFF111111)
+    val affordableBadgeBgLight = Color(0x994CAF50)   // бейдж цены слайда 2 (правка 4.2): цена ≤ кредита, зелёный
+    val affordableBadgeFgLight = Color(0xFF1B5E20)
 
     // Тёмная схема (согласована с палитрой, не дефолтная)
     val primaryDark = Color(0xFF89C8FF)           // light_grey_D_blue
@@ -54,6 +56,8 @@ object PreviewPalette {
     val onErrorDark = Color(0xFF111111)
     val errorContainerDark = Color(0x66623232)    // light_grey_2_red, полупрозрачный
     val onErrorContainerDark = Color(0xFFED7575)
+    val affordableBadgeBgDark = Color(0x8C2E7D32) // бейдж цены слайда 2 (правка 4.2): цена ≤ кредита, зелёный
+    val affordableBadgeFgDark = Color(0xFFA5D6A7)
 }
 
 /** Тема превью: светлая и тёмная схемы для всех макетов. */

@@ -31,37 +31,52 @@ import org.nebobrod.schulteplus.R
  * до входа (глобальный битфлаг ONBOARDING_SHOWN). Внизу — точки-индикаторы и
  * основная кнопка.
  *
- * Слайд 2 — пространства из res/raw/ex_types.json (Schulte, Basics, Spheres).
- * Цены в псикойнах отложены (design.md §7) → показано состояние доступа:
- * Schulte и Basics открыты (бейдж «Доступно», варианты Schulte «Числа 3×3» /
- * «Буквы 3×3» / «Биты 4×4»), Spheres заблокирована («Зарегистрируйтесь»).
- * Слайд 3 — выгоды регистрации: все упражнения доступны, псикойны копятся.
+ * Слайд 2 (правка 4.2) — 5 карточек с ценами: варианты Schulte «Числа 3×3» /
+ * «Буквы 3×3» / «Биты 4×4» по 4 псикойна, Basics — 50, Spheres — 100. Карточки
+ * нейтральные (серые полупрозрачные); цвет доступности — у бейджа цены: зелёный
+ * (цена ≤ кредита) или красный (дороже). Под заголовком — бейдж кредита
+ * с монетой. Слайд 3 — выгоды регистрации: все упражнения доступны, псикойны копятся.
  */
 data class PreviewExerciseSpace(
     val id: String,
     val name: String,
     val description: String,
-    val locked: Boolean = false,
-    val options: List<String> = emptyList()
+    val price: Int
 )
+
+/** Кредит нового пользователя на слайде 2; карточка доступна при price <= CREDIT. */
+private const val CREDIT = 10
 
 private val previewSpaces = listOf(
     PreviewExerciseSpace(
-        id = "gcb_space_schulte",
-        name = "Schulte",
+        id = "gcb_sch_num",
+        name = "Числа 3×3",
         description = "Number grids for focus and peripheral vision",
-        options = listOf("Числа 3×3", "Буквы 3×3", "Биты 4×4")
+        price = 4
+    ),
+    PreviewExerciseSpace(
+        id = "gcb_sch_letters",
+        name = "Буквы 3×3",
+        description = "Number grids for focus and peripheral vision",
+        price = 4
+    ),
+    PreviewExerciseSpace(
+        id = "gcb_sch_bits",
+        name = "Биты 4×4",
+        description = "Number grids for focus and peripheral vision",
+        price = 4
     ),
     PreviewExerciseSpace(
         id = "gcb_space_basics",
         name = "Basics",
-        description = "Illusions and perception training"
+        description = "Illusions and perception training",
+        price = 50
     ),
     PreviewExerciseSpace(
         id = "gcb_space_sssr",
         name = "Spheres",
         description = "Quick-reaction selection tasks",
-        locked = true
+        price = 100
     )
 )
 
@@ -83,7 +98,7 @@ fun OnboardingDesign(slide: Int, dark: Boolean) {
                 Spacer(Modifier.height(14.dp))
                 when (slide) {
                     1 -> Slide1()
-                    2 -> Slide2()
+                    2 -> Slide2(dark)
                     else -> Slide3()
                 }
             }
@@ -119,9 +134,9 @@ private fun Slide1() {
     }
 }
 
-/** Слайд 2 «Выбор упражнения»: карточки пространств с ценой в монетах + «Начать». */
+/** Слайд 2 «Выбор упражнения»: бейдж кредита, 5 карточек с бейджами цен + «Начать» (правка 4.2). */
 @Composable
-private fun Slide2() {
+private fun Slide2(dark: Boolean) {
     Column(Modifier.fillMaxWidth()) {
         Text(
             "Choose your first exercise",
@@ -130,6 +145,9 @@ private fun Slide2() {
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.height(6.dp))
+        // правка 4.1: бейдж кредита — сразу после строки заголовка, слева
+        CreditBadge()
+        Spacer(Modifier.height(8.dp))
         Text(
             "Every space unlocks more exercises as you train.",
             style = MaterialTheme.typography.bodyMedium,
@@ -140,10 +158,10 @@ private fun Slide2() {
             ExerciseCard(
                 title = space.name,
                 description = space.description,
-                locked = space.locked,
-                selected = !space.locked && i == 0,
-                options = space.options,
-                selectedOption = 0
+                price = space.price,
+                affordable = space.price <= CREDIT,
+                dark = dark,
+                selected = i == 0
             )
             Spacer(Modifier.height(10.dp))
         }

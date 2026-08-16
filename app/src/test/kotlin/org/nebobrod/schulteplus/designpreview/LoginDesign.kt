@@ -64,24 +64,25 @@ fun LoginDesign(dark: Boolean) {
                     modifier = Modifier.align(Alignment.Start)
                 )
                 Spacer(Modifier.height(20.dp))
-                AuthField(
-                    label = "Email address",
-                    value = "user@example.com",
-                    isError = true,
-                    supportingText = "Invalid email address",
-                    keyboardType = KeyboardType.Email,
-                    modifier = Modifier.align(Alignment.Start)
-                )
+                // правка 3.1: все поля — в одной карточке с полупрозрачной подложкой
+                FieldsCard {
+                    AuthField(
+                        label = "Email address",
+                        value = "user@example.com",
+                        isError = true,
+                        supportingText = "Invalid email address",
+                        keyboardType = KeyboardType.Email
+                    )
+                    AuthField(
+                        label = "Password",
+                        value = "secret123",
+                        keyboardType = KeyboardType.Password,
+                        visualTransformation = if (passwordShown) androidx.compose.ui.text.input.VisualTransformation.None
+                        else PasswordVisualTransformation(),
+                        trailing = { PasswordTrailing(passwordShown) { passwordShown = !passwordShown } }
+                    )
+                }
                 Spacer(Modifier.height(4.dp))
-                AuthField(
-                    label = "Password",
-                    value = "secret123",
-                    keyboardType = KeyboardType.Password,
-                    visualTransformation = if (passwordShown) androidx.compose.ui.text.input.VisualTransformation.None
-                    else PasswordVisualTransformation(),
-                    trailing = { PasswordTrailing(passwordShown) { passwordShown = !passwordShown } },
-                    modifier = Modifier.align(Alignment.Start)
-                )
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     TextButton(onClick = {}) { Text("Forgot password?") }
                 }

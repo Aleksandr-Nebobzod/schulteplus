@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +29,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -93,7 +95,7 @@ fun SchulteLogo(boxSize: Dp, background: Color, grid: Color, modifier: Modifier 
 }
 
 /** Поле ввода Auth (design.md §3.2): label, isError + supportingText, trailing (show/hide).
- *  Подложка — полупрозрачная (surfaceContainer), чтобы фон-картинка просвечивала. */
+ *  Фон поля — ПРОЗРАЧНЫЙ (правка 3.1): подложку даёт карточка FieldsCard, а не поле. */
 @Composable
 fun AuthField(
     label: String,
@@ -105,7 +107,6 @@ fun AuthField(
     trailing: @Composable (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
-    val overlay = MaterialTheme.colorScheme.surfaceContainer
     OutlinedTextField(
         value = value,
         onValueChange = {},
@@ -117,12 +118,68 @@ fun AuthField(
         visualTransformation = visualTransformation,
         trailingIcon = trailing,
         colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = overlay,
-            unfocusedContainerColor = overlay,
-            errorContainerColor = overlay
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            errorContainerColor = Color.Transparent
         ),
         modifier = modifier.fillMaxWidth()
     )
+}
+
+/**
+ * Карточка полей ввода (правка 3.1): ВСЕ поля одного экрана — на одной
+ * полупрозрачной подложке (surfaceContainer: светлая — светло-серая, тёмная —
+ * тёмно-серая). Сами поля прозрачные; кнопки и чекбокс-блок — вне карточки.
+ */
+@Composable
+fun FieldsCard(
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(16.dp))
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) { content() }
+}
+
+/** Монета-пиктограмма (правка 4.1): простой круг с золотым радиальным градиентом. */
+@Composable
+fun CoinIcon(size: Dp, modifier: Modifier = Modifier) {
+    val brush = Brush.radialGradient(
+        colors = listOf(Color(0xFFFFF3C4), Color(0xFFFFC107), Color(0xFFB8860B))
+    )
+    Box(
+        modifier
+            .size(size)
+            .background(brush, CircleShape)
+            .border(1.dp, Color(0xFF8B6914), CircleShape)
+    )
+}
+
+/** Бейдж кредита на слайде 2 онбординга (правка 4.1): монета + текст (дословно от заказчика). */
+@Composable
+fun CreditBadge(modifier: Modifier = Modifier) {
+    Box(
+        modifier
+            .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(50))
+            .padding(horizontal = 12.dp, vertical = 6.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            CoinIcon(16.dp)
+            Text(
+                "10 псимонет — ваш кредит",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
 }
 
 /** Показ/скрытие пароля (show/hide). */
@@ -199,59 +256,73 @@ fun OnboardingDots(count: Int, selected: Int, modifier: Modifier = Modifier) {
     }
 }
 
-/** Бейдж состояния доступа на карточке упражнения (цены псикойнов отложены — D-19, design.md §7). */
+/**
+ * Бейдж цены на карточке упражнения слайда 2 (правка 4.2): монета + цена.
+ * Зелёный — цена ≤ кредита, красный (errorContainer) — цена > кредита.
+ * Текст дословно: «4 монеты», «50 монет», «100 монет» (не «psycoin»).
+ */
 @Composable
-fun AccessBadge(text: String, locked: Boolean = false, modifier: Modifier = Modifier) {
-    val bg = if (locked) MaterialTheme.colorScheme.errorContainer
-    else MaterialTheme.colorScheme.surfaceContainerHigh
-    val fg = if (locked) MaterialTheme.colorScheme.onErrorContainer
-    else MaterialTheme.colorScheme.onSurface
+fun PriceBadge(price: Int, affordable: Boolean, dark: Boolean, modifier: Modifier = Modifier) {
+    val bg = if (affordable) {
+        if (dark) PreviewPalette.affordableBadgeBgDark else PreviewPalette.affordableBadgeBgLight
+    } else MaterialTheme.colorScheme.errorContainer
+    val fg = if (affordable) {
+        if (dark) PreviewPalette.affordableBadgeFgDark else PreviewPalette.affordableBadgeFgLight
+    } else MaterialTheme.colorScheme.onErrorContainer
     Box(
         modifier
             .background(bg, RoundedCornerShape(50))
             .padding(horizontal = 10.dp, vertical = 4.dp)
     ) {
-        Text(
-            text,
-            style = MaterialTheme.typography.labelMedium,
-            color = fg,
-            fontWeight = FontWeight.SemiBold
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            CoinIcon(14.dp)
+            Text(
+                priceText(price),
+                style = MaterialTheme.typography.labelMedium,
+                color = fg,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
     }
 }
 
+/** Русская форма слова «монета» по числу: 1 монета, 4 монеты, 50 монет. */
+private fun priceText(price: Int): String {
+    val mod10 = price % 10
+    val mod100 = price % 100
+    val form = when {
+        mod10 == 1 && mod100 != 11 -> "монета"
+        mod10 in 2..4 && mod100 !in 12..14 -> "монеты"
+        else -> "монет"
+    }
+    return "$price $form"
+}
+
 /**
- * Карточка упражнения для слайда 2 онбординга. Полупрозрачная подложка
- * (surfaceContainer); locked=true — «серенькая» заблокированная (сниженная
- * контрастность) с пометкой «Зарегистрируйтесь»; options — строки-варианты
- * внутри карточки (Schulte), одна выбрана.
+ * Карточка упражнения для слайда 2 онбординга (правка 4.2). Карточка нейтральная
+ * (полупрозрачная подложка surfaceContainer; selected — плотнее + рамка primary);
+ * цвет доступности — у бейджа цены: зелёный (цена ≤ кредита) / красный (дороже).
+ * Радиокнопка выбора — только у доступных.
  */
 @Composable
 fun ExerciseCard(
     title: String,
     description: String,
-    locked: Boolean = false,
+    price: Int,
+    affordable: Boolean,
+    dark: Boolean,
     selected: Boolean = false,
-    options: List<String> = emptyList(),
-    selectedOption: Int = 0,
     modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(14.dp)
-    val bg = when {
-        locked -> MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.55f)
-        selected -> MaterialTheme.colorScheme.surfaceContainerHigh
-        else -> MaterialTheme.colorScheme.surfaceContainer
-    }
-    val borderColor = when {
-        locked -> MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)
-        selected -> MaterialTheme.colorScheme.primary
-        else -> MaterialTheme.colorScheme.outlineVariant
-    }
+    val bg = if (selected) MaterialTheme.colorScheme.surfaceContainerHigh
+    else MaterialTheme.colorScheme.surfaceContainer
+    val borderColor = if (selected) MaterialTheme.colorScheme.primary
+    else MaterialTheme.colorScheme.outlineVariant
     val borderWidth = if (selected) 2.dp else 1.dp
-    val titleColor = if (locked) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-    else MaterialTheme.colorScheme.onSurface
-    val descColor = if (locked) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f)
-    else MaterialTheme.colorScheme.onSurfaceVariant
 
     Row(
         modifier
@@ -262,39 +333,15 @@ fun ExerciseCard(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(Modifier.weight(1f)) {
-            Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = titleColor)
+            Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface)
             Spacer(Modifier.height(2.dp))
-            Text(description, style = MaterialTheme.typography.bodySmall, color = descColor)
-            if (options.isNotEmpty() && !locked) {
-                Spacer(Modifier.height(8.dp))
-                options.forEachIndexed { i, option ->
-                    val on = i == selectedOption
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 3.dp)) {
-                        Box(
-                            Modifier.size(14.dp).border(
-                                1.5.dp,
-                                if (on) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-                                CircleShape
-                            ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if (on) {
-                                Box(Modifier.size(8.dp).background(MaterialTheme.colorScheme.primary, CircleShape))
-                            }
-                        }
-                        Spacer(Modifier.width(8.dp))
-                        Text(
-                            option,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                }
-            }
+            Text(description, style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(8.dp))
-            AccessBadge(if (locked) "Зарегистрируйтесь" else "Доступно", locked = locked)
+            PriceBadge(price = price, affordable = affordable, dark = dark)
         }
-        if (!locked) {
+        if (affordable) {
             Box(
                 Modifier.size(20.dp).border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
                 contentAlignment = Alignment.Center

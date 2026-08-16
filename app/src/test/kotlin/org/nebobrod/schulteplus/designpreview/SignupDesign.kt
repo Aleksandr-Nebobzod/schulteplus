@@ -68,28 +68,26 @@ fun SignupDesign(dark: Boolean) {
                     modifier = Modifier.align(Alignment.Start)
                 )
                 Spacer(Modifier.height(20.dp))
-                AuthField(
-                    label = "Username (pseudonym)",
-                    value = "Vasya",
-                    modifier = Modifier.align(Alignment.Start)
-                )
-                Spacer(Modifier.height(4.dp))
-                AuthField(
-                    label = "Email address",
-                    value = "vasya@example.com",
-                    keyboardType = KeyboardType.Email,
-                    modifier = Modifier.align(Alignment.Start)
-                )
-                Spacer(Modifier.height(4.dp))
-                AuthField(
-                    label = "Schulte-plus password",
-                    value = "secret123",
-                    keyboardType = KeyboardType.Password,
-                    visualTransformation = if (passwordShown) androidx.compose.ui.text.input.VisualTransformation.None
-                    else PasswordVisualTransformation(),
-                    trailing = { PasswordTrailing(passwordShown) { passwordShown = !passwordShown } },
-                    modifier = Modifier.align(Alignment.Start)
-                )
+                // правка 3.1: все поля — в одной карточке с полупрозрачной подложкой
+                FieldsCard {
+                    AuthField(
+                        label = "Username (pseudonym)",
+                        value = "Vasya"
+                    )
+                    AuthField(
+                        label = "Email address",
+                        value = "vasya@example.com",
+                        keyboardType = KeyboardType.Email
+                    )
+                    AuthField(
+                        label = "Schulte-plus password",
+                        value = "secret123",
+                        keyboardType = KeyboardType.Password,
+                        visualTransformation = if (passwordShown) androidx.compose.ui.text.input.VisualTransformation.None
+                        else PasswordVisualTransformation(),
+                        trailing = { PasswordTrailing(passwordShown) { passwordShown = !passwordShown } }
+                    )
+                }
                 Spacer(Modifier.height(12.dp))
                 // согласие: один чекбокс + одно пояснение со ссылками, на полупрозрачной подложке
                 val linkColor = MaterialTheme.colorScheme.primary

@@ -137,7 +137,7 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-firestore:25.0.0'
 //    implementation 'com.google.firebase:firebase-database:20.3.1'
-    implementation 'com.google.firebase:firebase-auth:16.0.3' // 23.0.0 gives error 240805
+    implementation 'com.google.firebase:firebase-auth:20.0.3' // v119 фактически работал на 20.0.3 (транзитив firebase-ui-auth, highest-wins); 16.0.3 ссылается на удалённый в common 21 класс (NoClassDefFoundError); 23.0.0 — error 240805
     implementation 'com.j256.ormlite:ormlite-android:6.1'
 
     // Compose (B2: авторизация на Compose; XML-экраны не трогаем)

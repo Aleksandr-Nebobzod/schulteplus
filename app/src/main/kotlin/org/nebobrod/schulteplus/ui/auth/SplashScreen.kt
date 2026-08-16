@@ -1,17 +1,12 @@
 package org.nebobrod.schulteplus.ui.auth
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,12 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
@@ -93,23 +86,4 @@ private suspend fun checkUserSession(): UserHelper? {
     return FirebaseAuthService.awaitResult(
         DataOrmRepo<UserHelper>(UserHelper::class.java).read("" + Utils.intStringHash(user.uid))
     )
-}
-
-/** Логотип-сетка 4×4 на плашке (порт из макета SplashDesign; в Inc 2 — в AuthComponents). */
-@Composable
-private fun SchulteLogo(boxSize: Dp, background: Color, grid: Color, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.size(boxSize).background(background, RoundedCornerShape(boxSize / 5)),
-        contentAlignment = Alignment.Center
-    ) {
-        Canvas(Modifier.fillMaxWidth().padding(boxSize / 7)) {
-            val n = 4
-            val stroke = size.width / 42
-            for (i in 1 until n) {
-                val f = i.toFloat() / n
-                drawLine(grid, Offset(0f, size.height * f), Offset(size.width, size.height * f), strokeWidth = stroke)
-                drawLine(grid, Offset(size.width * f, 0f), Offset(size.width * f, size.height), strokeWidth = stroke)
-            }
-        }
-    }
 }

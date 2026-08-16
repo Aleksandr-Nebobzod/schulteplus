@@ -48,6 +48,7 @@
 	<string name="lbl_no">No</string>
 	<string name="txt_one_more_q">Train one more time?</string>
 	<string name="lbl_show_password">Show password</string>
+	<string name="lbl_show">Show</string>
 	<string name="txt_settings">There are prestart settings of Schulte tables training should be improved</string>
 	<string name="txt_news">Here is the news list coming soon.\n Brief info: https://handwiki.org/wiki/Schulte_table </string>
 	<string name="txt_notification_desc">Notifications should be here</string>
@@ -339,6 +340,15 @@
 	<string name="txt_no_data">There is nothing to show here now</string>
 	<string name="lbl_rating_letter">R</string>
 	<string name="lbl_google_log_in">Log in with Google</string>
+	<string name="ob_credit_badge">%1$d psycoins — your credit</string>
+	<string name="signup_consent_suffix">.</string>
+	<string name="signup_consent_terms">Terms of Service</string>
+	<string name="signup_consent_and"> and </string>
+	<string name="signup_consent_privacy">Privacy Policy</string>
+	<string name="signup_consent_prefix">I agree to the </string>
+	<string name="lbl_hide">Hide</string>
+	<string name="lbl_or">or</string>
+	<string name="lbl_forgot_password">Forgot password?</string>
 	<string name="lbl_email_log_in">Log in with email</string>
 	<string name="title_choice">Choice</string>
 	<string name="txt_choice_description">Chose additional training space</string>
@@ -370,4 +380,8 @@
 	<string name="msg_no_psycoins">No psycoins enough. Earn more with exercises you opened</string>
 	<string name="msg_psycoins_invested">Congatulations! It\'s a valuable investment.</string>
 
+	<plurals name="ob_price_coin">
+		<item quantity="one">coin</item>
+		<item quantity="other">coins</item>
+	</plurals>
 </resources>

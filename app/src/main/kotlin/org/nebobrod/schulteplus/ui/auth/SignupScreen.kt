@@ -4,8 +4,9 @@ import android.app.Activity
 import android.util.Patterns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,12 +15,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,8 +33,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -47,9 +54,9 @@ import org.nebobrod.schulteplus.common.Const
 import org.nebobrod.schulteplus.data.UserHelper
 
 /**
- * Регистрация на Compose (B2): имя/email/пароль + согласие, Google
- * (GoogleSignInClient вместо firebase-ui-auth), переход в Login,
- * continue-unregistered → демо-префилл.
+ * Регистрация (B2 + SP-03 Inc 2): имя/email/пароль в одной карточке (FieldsCard),
+ * инлайн-ошибки, чекбокс согласия с одним пояснением и ссылками (политика/соглашение),
+ * Google, переход в Login, continue-unregistered → демо-префилл. Фон — bg_login_03.
  */
 @Composable
 fun SignupScreen(
@@ -65,8 +72,12 @@ fun SignupScreen(
     var name by rememberSaveable { mutableStateOf(initialName) }
     var email by rememberSaveable { mutableStateOf(initialEmail) }
     var password by rememberSaveable { mutableStateOf(initialPassword) }
+    var showPassword by rememberSaveable { mutableStateOf(false) }
     var agreed by rememberSaveable { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
+    var nameError by remember { mutableStateOf(false) }
+    var emailError by remember { mutableStateOf(false) }
+    var passwordError by remember { mutableStateOf(false) }
 
     val googleSignInClient = remember {
         val clientId = context.getString(
@@ -107,18 +118,10 @@ fun SignupScreen(
             onMessage(context.getString(R.string.hint_signup_agreed_desc))
             return
         }
-        if (!Const.NAME_REG_EXP.toRegex().matches(name)) {
-            onMessage(context.getString(R.string.msg_username_wrong))
-            return
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            onMessage(context.getString(R.string.msg_username_wrong))
-            return
-        }
-        if (!Const.PASSWORD_REG_EXP.toRegex().matches(password)) {
-            onMessage(context.getString(R.string.msg_password_rules))
-            return
-        }
+        nameError = !Const.NAME_REG_EXP.toRegex().matches(name)
+        emailError = !Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        passwordError = !Const.PASSWORD_REG_EXP.toRegex().matches(password)
+        if (nameError || emailError || passwordError) return
         scope.launch {
             busy = true
             val ok = FirebaseAuthService.signUpEmail(email, password, name)
@@ -136,80 +139,116 @@ fun SignupScreen(
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize().imePadding().padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(context.getString(R.string.title_signup), style = MaterialTheme.typography.headlineMedium)
-        Spacer(Modifier.height(24.dp))
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            enabled = !busy,
-            label = { Text(context.getString(R.string.hint_login)) },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(12.dp))
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            enabled = !busy,
-            label = { Text(context.getString(R.string.hint_email)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(12.dp))
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            enabled = !busy,
-            label = { Text(context.getString(R.string.hint_pass)) },
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(8.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = agreed, onCheckedChange = { agreed = it }, enabled = !busy)
-            Text(
-                context.getString(R.string.hint_signup_agreed_desc),
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.clickable {
-                    Utils.displayHtmlAlertDialog(context, R.string.str_about_user_agreement_html_source)
-                }
-            )
-        }
-        Spacer(Modifier.height(8.dp))
-        Button(onClick = { submit() }, enabled = !busy, modifier = Modifier.fillMaxWidth()) {
-            Text(context.getString(R.string.lbl_go_on))
-        }
-        Spacer(Modifier.height(12.dp))
-        Button(
-            onClick = { googleLauncher.launch(googleSignInClient.signInIntent) },
-            enabled = !busy,
-            modifier = Modifier.fillMaxWidth()
+    Box(Modifier.fillMaxSize()) {
+        ScreenBackground()
+        Column(
+            Modifier
+                .fillMaxSize()
+                .systemBarsPadding()
+                .imePadding()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(context.getString(R.string.lbl_google_log_in))
-        }
-        Spacer(Modifier.height(16.dp))
-        Text(
-            context.getString(R.string.str_signup_go_off),
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.clickable { onGoToLogin(email, name, password) }
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            context.getString(R.string.lbl_continue_unregistered),
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.clickable { onGoToLogin("support@attplus.in", "", "support") }
-        )
-        if (busy) {
+            Spacer(Modifier.height(32.dp))
+            AppIcon(size = 56.dp)
+            Spacer(Modifier.height(14.dp))
+            Text(
+                context.getString(R.string.title_signup),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.align(Alignment.Start)
+            )
+            Spacer(Modifier.height(20.dp))
+            // правка 3.1: все поля — в одной карточке с полупрозрачной подложкой
+            FieldsCard {
+                AuthField(
+                    label = context.getString(R.string.hint_login),
+                    value = name,
+                    onValueChange = { name = it },
+                    enabled = !busy,
+                    isError = nameError,
+                    supportingText = if (nameError) context.getString(R.string.msg_username_wrong) else null,
+                )
+                AuthField(
+                    label = context.getString(R.string.hint_email),
+                    value = email,
+                    onValueChange = { email = it },
+                    enabled = !busy,
+                    isError = emailError,
+                    supportingText = if (emailError) context.getString(R.string.msg_email_pattern) else null,
+                    keyboardType = KeyboardType.Email,
+                )
+                AuthField(
+                    label = context.getString(R.string.hint_pass),
+                    value = password,
+                    onValueChange = { password = it },
+                    enabled = !busy,
+                    isError = passwordError,
+                    supportingText = if (passwordError) context.getString(R.string.msg_password_rules) else null,
+                    keyboardType = KeyboardType.Password,
+                    visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailing = {
+                        PasswordTrailing(shown = showPassword,
+                            show = context.getString(R.string.lbl_show),
+                            hide = context.getString(R.string.lbl_hide)) { showPassword = !showPassword }
+                    }
+                )
+            }
+            Spacer(Modifier.height(12.dp))
+            // согласие: один чекбокс + одно пояснение со ссылками (политика/соглашение)
+            val linkColor = MaterialTheme.colorScheme.primary
+            val consentText = buildAnnotatedString {
+                append(context.getString(R.string.signup_consent_prefix))
+                withStyle(SpanStyle(color = linkColor, fontWeight = FontWeight.Medium)) {
+                    append(context.getString(R.string.signup_consent_privacy))
+                }
+                append(context.getString(R.string.signup_consent_and))
+                withStyle(SpanStyle(color = linkColor, fontWeight = FontWeight.Medium)) {
+                    append(context.getString(R.string.signup_consent_terms))
+                }
+                append(context.getString(R.string.signup_consent_suffix))
+            }
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(12.dp))
+                    .padding(horizontal = 12.dp, vertical = 4.dp)
+            ) {
+                Row(verticalAlignment = Alignment.Top) {
+                    Checkbox(checked = agreed, onCheckedChange = { agreed = it }, enabled = !busy)
+                    Column(Modifier.padding(top = 10.dp)) {
+                        Text(
+                            consentText,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.clickable {
+                                Utils.displayHtmlAlertDialog(context, R.string.str_about_user_agreement_html_source)
+                            }
+                        )
+                    }
+                }
+            }
             Spacer(Modifier.height(16.dp))
-            CircularProgressIndicator()
+            AuthButton(text = context.getString(R.string.lbl_go_on), busy = busy) { submit() }
+            Spacer(Modifier.height(14.dp))
+            GoogleButton(
+                text = context.getString(R.string.lbl_google_log_in),
+                onClick = { googleLauncher.launch(googleSignInClient.signInIntent) }
+            )
+            Spacer(Modifier.height(20.dp))
+            BottomLink(context.getString(R.string.str_signup_go_off)) { onGoToLogin(email, name, password) }
+            Spacer(Modifier.height(10.dp))
+            Text(
+                context.getString(R.string.lbl_continue_unregistered),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .clickable { onGoToLogin("support@attplus.in", "", "support") }
+            )
+            Spacer(Modifier.height(28.dp))
         }
     }
 }

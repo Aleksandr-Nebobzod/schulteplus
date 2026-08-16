@@ -53,7 +53,7 @@
 		<activity
 			android:name=".ui.AuthActivity"
 			android:exported="true"
-			android:theme="@style/Theme.SchultePlus.FullscreenStart"
+			android:theme="@style/Theme.SchultePlus.Start"
 			android:windowSoftInputMode="adjustResize"
 			tools:ignore="LockedOrientationActivity">
 			<intent-filter>

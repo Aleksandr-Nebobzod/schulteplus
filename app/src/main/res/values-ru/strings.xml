@@ -31,6 +31,7 @@
 	<string name="lbl_no">Нет</string>
 	<string name="txt_one_more_q">Ещё тренировка?</string>
 	<string name="lbl_show_password">Показывать пароль</string>
+	<string name="lbl_show">Показать</string>
 	<string name="txt_settings">Настройки \nдля упражнений по таблицам Шульте со временем \n<b>будут обогащены</b> </string>
 	<string name="txt_news">Будущая \nстраница новостей и полезных закрепов. \nА пока ссылка с основаниями для разработки: \n"https://ru.wikipedia.org/wiki/Таблица_Шульте" </string>
 	<string name="txt_notification_desc">Уведомления должны быть тут</string>
@@ -317,6 +318,15 @@
 	<string name="txt_no_data">Даже и нечего показать тут так-то</string>
 	<string name="lbl_rating_letter">Р</string>
 	<string name="lbl_google_log_in">Вход с гугл-аккаунтом</string>
+	<string name="ob_credit_badge">%1$d псимонет — ваш кредит</string>
+	<string name="signup_consent_suffix">.</string>
+	<string name="signup_consent_terms">Условиями обслуживания</string>
+	<string name="signup_consent_and"> и </string>
+	<string name="signup_consent_privacy">Политикой конфиденциальности</string>
+	<string name="signup_consent_prefix">Я соглашаюсь с </string>
+	<string name="lbl_hide">Скрыть</string>
+	<string name="lbl_or">или</string>
+	<string name="lbl_forgot_password">Забыли пароль?</string>
 	<string name="lbl_email_log_in">Вход с емайл аккаунтом</string>
 	<string name="title_choice">Выбор</string>
 	<string name="txt_choice_description">Выбрать дополнительное пространство упражнений</string>
@@ -347,4 +357,10 @@
 	<string name="str_test_html_source">file:///android_asset/ru/test/</string>
 	<string name="msg_no_psycoins">Недостаточно пси-монет. Добудьте их, исследуя доступные тренировочные залы.</string>
 	<string name="msg_psycoins_invested">Поздравления! Это значимая инвестиция.</string>
+	<plurals name="ob_price_coin">
+		<item quantity="one">монета</item>
+		<item quantity="few">монеты</item>
+		<item quantity="many">монет</item>
+		<item quantity="other">монет</item>
+	</plurals>
 </resources>

@@ -87,6 +87,14 @@
 		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
 	</style>
 	
+	<style name="Theme.SchultePlus.Start" parent="Theme.SchultePlus">
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowActionBar">false</item>
+		<item name="android:windowBackground">@drawable/bg_login_03</item>
+
+		<item name="android:windowAnimationStyle">@style/Theme.SchultePlus.WindowTransition</item>
+	</style>
+
 	<style name="Theme.SchultePlus.Login" parent="Theme.SchultePlus.Fullscreen">
 		<item name="android:windowBackground">@drawable/bg_login02</item>
 		<!--	<style name="Theme.SchultePlus.Login" parent="Theme.AppCompat.DayNight.NoActionBar">-->

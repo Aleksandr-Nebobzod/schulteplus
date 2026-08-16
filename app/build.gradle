@@ -7,6 +7,8 @@ plugins {
     id 'com.google.android.gms.oss-licenses-plugin'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.plugin.compose'
+    // Roborazzi: JVM-рендер Compose-превью (SP-03) — версия в корневом build.gradle
+    id 'io.github.takahirom.roborazzi'
 }
 
 //configurations.all {
@@ -100,6 +102,12 @@ android {
         resValues true
         compose true
     }
+    testOptions {
+        unitTests {
+            // Robolectric (Roborazzi): ресурсы и R-класс доступны в unit-тестах
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -163,6 +171,16 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     /*https://mvnrepository.com/artifact/org.mockito/mockito-core*/
 //    testImplementation 'org.mockito:mockito-core:4.0.0'
+
+    // Roborazzi + Robolectric: JVM-рендер Compose-превью в PNG (SP-03 дизайн-макеты, app/src/test/kotlin/.../designpreview)
+    // Рендер: ./gradlew recordRoborazziDebug → PNG в temp/design-preview/ (путь задан в StartScreensPreviewTest)
+    testImplementation platform('androidx.compose:compose-bom:2026.06.01')
+    testImplementation 'androidx.compose.ui:ui-test-junit4'
+    testImplementation 'androidx.test:core:1.6.1'
+    testImplementation "io.github.takahirom.roborazzi:roborazzi:1.72.0"
+    testImplementation "io.github.takahirom.roborazzi:roborazzi-junit-rule:1.72.0"
+    testImplementation "io.github.takahirom.roborazzi:roborazzi-compose:1.72.0"
+    testImplementation 'org.robolectric:robolectric:4.16.1'
 
     // Instrument test section
     androidTestImplementation 'androidx.test:rules:1.5.0'

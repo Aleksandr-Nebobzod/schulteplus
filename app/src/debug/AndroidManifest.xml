@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug-only overlay манифеста (мержится только в debug-вариант, в release не попадает).
+  Нужен для unit-тестов Robolectric (Roborazzi-превью SP-03): createComposeRule()
+  запускает androidx.activity.ComponentActivity, которого нет в рабочем манифесте
+  (лаунчер — AuthActivity). Без декларации Robolectric падает
+  "Unable to resolve activity for Intent ... ComponentActivity".
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity
+            android:name="androidx.activity.ComponentActivity"
+            android:exported="false" />
+    </application>
+
+</manifest>

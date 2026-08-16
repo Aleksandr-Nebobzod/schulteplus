@@ -91,6 +91,7 @@ replay_pid*
 
 # Dependencies (auto-generated)
 dependencies.txt
+depenencies.txt  # typo name, keep ignored
 dep.txt
 
 # VS Code

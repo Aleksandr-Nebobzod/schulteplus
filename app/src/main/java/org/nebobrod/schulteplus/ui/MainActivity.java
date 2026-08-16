@@ -19,6 +19,7 @@ import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.Log;
+import org.nebobrod.schulteplus.common.StartupChecks;
 import org.nebobrod.schulteplus.data.ExType;
 import org.nebobrod.schulteplus.databinding.ActivityMainBinding;
 import org.nebobrod.schulteplus.data.UserHelper;
@@ -181,6 +182,9 @@ public class MainActivity extends AppCompatActivity {
 			});
 
 		}
+
+		// Фоновые проверки (SP-03 Inc 1, D-17): версия AdminNote + сеть — бывший сплэш
+		StartupChecks.run(this);
 
 		// Init Toolbar (only for Day-mode)
 /*		if (getSupportActionBar() != null) {

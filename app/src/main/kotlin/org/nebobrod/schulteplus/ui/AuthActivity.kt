@@ -58,8 +58,10 @@ class AuthActivity : ComponentActivity() {
                 Box(Modifier.fillMaxSize()) {
                     when (Screen.valueOf(screen)) {
                         Screen.SPLASH -> SplashScreen(
-                            onLogin = { screen = Screen.LOGIN.name },
-                            onMain = goMain
+                            onSession = { user ->
+                                if (user != null) goMain(user)
+                                else screen = Screen.LOGIN.name
+                            }
                         )
                         Screen.LOGIN -> LoginScreen(
                             initialEmail = email,

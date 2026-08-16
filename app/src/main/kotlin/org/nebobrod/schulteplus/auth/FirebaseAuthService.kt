@@ -39,6 +39,14 @@ object FirebaseAuthService : AuthService {
         fbAuth.signOut()
     }
 
+    /** Generic Task API (без отмены) → suspend T?; null при неуспехе (сплэш, B2.1). */
+    internal suspend fun <T> awaitResult(task: Task<T>): T? =
+        suspendCancellableCoroutine { cont ->
+            task.addOnCompleteListener { t ->
+                if (cont.isActive) cont.resume(if (t.isSuccessful) t.result else null)
+            }
+        }
+
     /** Task API (без отмены) → suspend Boolean; результат только по завершении. */
     private suspend fun awaitTask(taskProvider: () -> Task<*>): Boolean =
         suspendCancellableCoroutine { cont ->

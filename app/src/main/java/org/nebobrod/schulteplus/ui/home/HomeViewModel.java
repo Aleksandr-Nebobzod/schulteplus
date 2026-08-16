@@ -31,7 +31,6 @@ import org.nebobrod.schulteplus.data.AdminNote;
 import org.nebobrod.schulteplus.data.DataOrmRepo;
 import org.nebobrod.schulteplus.data.DataRepos;
 import org.nebobrod.schulteplus.data.DataRepository;
-import org.nebobrod.schulteplus.ui.SplashViewModel;
 
 import java.util.List;
 

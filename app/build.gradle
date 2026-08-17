@@ -139,9 +139,9 @@ dependencies {
 //    implementation 'com.github.Innovattic:range-seek-bar:v1.0.8'
     implementation 'com.google.code.gson:gson:2.14.0'
     implementation("com.google.firebase:firebase-crashlytics:19.0.3")
-    implementation("com.google.firebase:firebase-analytics:22.0.2") {
-        exclude group: 'com.google.android.gms', module: 'play-services-measurement-api'
-    }
+    implementation("com.google.firebase:firebase-analytics:22.0.2")
+    // NB: FirebaseAnalytics-класс живёт в play-services-measurement-api (транзитив firebase-analytics);
+    // exclude был снят в SP-03 Inc 3 — без него класс недоступен (аналитика не собиралась)
 
     implementation 'com.google.firebase:firebase-firestore:25.0.0'
 //    implementation 'com.google.firebase:firebase-database:20.3.1'

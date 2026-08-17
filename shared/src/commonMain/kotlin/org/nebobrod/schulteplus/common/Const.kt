@@ -106,6 +106,8 @@ interface Const {
 		const val KEY_PRF_ONLINE = "prf_online"
 		const val KEY_PRF_SHOW_INTRO = "prf_show_intro"
 		const val KEY_PRF_SHOWN_INTROS = "prf_shown_intros"
+	const val GLOBAL_PREFS_NAME = "prf_global"
+	const val KEY_ONBOARDING_SHOWN = "prf_onboarding_shown"
 
 		const val KEY_PRF_PROBABILITIES = "prf_cat_prob"
 		const val KEY_PRF_PROB_ENABLED = "prf_prob_enabled"

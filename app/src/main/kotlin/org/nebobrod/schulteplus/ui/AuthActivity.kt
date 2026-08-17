@@ -22,8 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import kotlinx.coroutines.launch
+import org.nebobrod.schulteplus.analytics.Analytics
 import org.nebobrod.schulteplus.data.UserHelper
 import org.nebobrod.schulteplus.ui.auth.LoginScreen
+import org.nebobrod.schulteplus.ui.auth.OnboardingPrefs
+import org.nebobrod.schulteplus.ui.auth.OnboardingScreen
 import org.nebobrod.schulteplus.ui.auth.SignupScreen
 import org.nebobrod.schulteplus.ui.auth.SplashScreen
 import org.nebobrod.schulteplus.ui.theme.SchultePlusTheme
@@ -37,7 +40,7 @@ import org.nebobrod.schulteplus.auth.AuthSession
  */
 class AuthActivity : ComponentActivity() {
 
-    private enum class Screen { SPLASH, LOGIN, SIGNUP }
+    private enum class Screen { SPLASH, ONBOARDING, LOGIN, SIGNUP }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +82,21 @@ class AuthActivity : ComponentActivity() {
                         Screen.SPLASH -> SplashScreen(
                             onSession = { user ->
                                 if (user != null) goMain(user)
-                                else screen = Screen.LOGIN.name
+                                else screen = if (OnboardingPrefs.isShown(this@AuthActivity)) Screen.LOGIN.name
+                                else Screen.ONBOARDING.name
+                            }
+                        )
+                        Screen.ONBOARDING -> OnboardingScreen(
+                            onSignup = {
+                                OnboardingPrefs.markShown(this@AuthActivity)
+                                Analytics.onboardingDone(this@AuthActivity, "signup")
+                                screen = Screen.SIGNUP.name
+                            },
+                            onContinueWithoutRegistration = {
+                                OnboardingPrefs.markShown(this@AuthActivity)
+                                Analytics.onboardingDone(this@AuthActivity, "demo")
+                                Analytics.demoEntered(this@AuthActivity)
+                                goMain(null)
                             }
                         )
                         Screen.LOGIN -> LoginScreen(

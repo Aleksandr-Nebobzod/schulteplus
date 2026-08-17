@@ -380,6 +380,27 @@
 	<string name="msg_no_psycoins">No psycoins enough. Earn more with exercises you opened</string>
 	<string name="msg_psycoins_invested">Congatulations! It\'s a valuable investment.</string>
 
+	<string name="ob_slide1_body">Train your attention, peripheral vision and reaction speed.\nA few minutes a day keep your mind sharp.</string>
+	<string name="ob_slide2_title">Choose your first exercise</string>
+	<string name="ob_slide2_subtitle">Every space unlocks more exercises as you train.</string>
+	<string name="ob_card_num_title">Numbers 3×3</string>
+	<string name="ob_card_num_desc">Number grids for focus and peripheral vision</string>
+	<string name="ob_card_letters_title">Letters 3×3</string>
+	<string name="ob_card_letters_desc">Letter grids for focus and peripheral vision</string>
+	<string name="ob_card_bits_title">Bits 4×4</string>
+	<string name="ob_card_bits_desc">Bit grids for focus and peripheral vision</string>
+	<string name="ob_card_basics_title">Basics</string>
+	<string name="ob_card_basics_desc">Illusions and perception training</string>
+	<string name="ob_card_spheres_title">Spheres</string>
+	<string name="ob_card_spheres_desc">Quick-reaction selection tasks</string>
+	<string name="ob_next">Next</string>
+	<string name="ob_start">Start</string>
+	<string name="ob_slide3_title">Keep your progress</string>
+	<string name="ob_slide3_body">Create an account to sync your stats across devices\nand see your achievements.</string>
+	<string name="ob_benefit_1">All exercises are available</string>
+	<string name="ob_benefit_2">Psycoins accumulate with every session</string>
+	<string name="ob_signup">Sign up</string>
+	<string name="ob_continue_without_registration">Continue without registration</string>
 	<plurals name="ob_price_coin">
 		<item quantity="one">coin</item>
 		<item quantity="other">coins</item>

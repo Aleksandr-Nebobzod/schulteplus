@@ -28,6 +28,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import org.nebobrod.schulteplus.R
 import org.nebobrod.schulteplus.Utils
+import org.nebobrod.schulteplus.analytics.Analytics
 import org.nebobrod.schulteplus.auth.FirebaseAuthService
 import org.nebobrod.schulteplus.data.DataOrmRepo
 import org.nebobrod.schulteplus.data.UserHelper
@@ -43,6 +44,7 @@ fun SplashScreen(onSession: (UserHelper?) -> Unit) {
     var navigated by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
+        Analytics.authSplashShown(context)
         val minDelay = async { delay(600) }
         val user = async(Dispatchers.IO) { checkUserSession() }
         minDelay.await()

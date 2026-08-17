@@ -48,8 +48,10 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import org.nebobrod.schulteplus.R
 import org.nebobrod.schulteplus.Utils
+import org.nebobrod.schulteplus.analytics.Analytics
 import org.nebobrod.schulteplus.auth.AuthSession
 import org.nebobrod.schulteplus.auth.FirebaseAuthService
+import org.nebobrod.schulteplus.common.AppNetwork
 import org.nebobrod.schulteplus.common.Const
 import org.nebobrod.schulteplus.data.UserHelper
 
@@ -95,16 +97,24 @@ fun SignupScreen(
         }
         val idToken = account?.idToken
         if (idToken != null) {
+            // Inc 6: без сети вход невозможен — сообщение, форма остаётся доступной
+            if (!AppNetwork.isConnected(context)) {
+                onMessage(context.getString(R.string.msg_user_network_failed))
+                return@rememberLauncherForActivityResult
+            }
+            Analytics.authSignupStarted(context, "google")
             scope.launch {
                 busy = true
                 val ok = FirebaseAuthService.signInWithGoogleIdToken(idToken)
                 val fbUser = FirebaseAuth.getInstance().currentUser
                 busy = false
                 if (ok && fbUser != null) {
+                    Analytics.authSignupSuccess(context, "google")
                     val fallbackName = fbUser.displayName ?: "new"
                     AuthSession.loginWithUpdate(context as Activity, fbUser, "google_sign_in", fallbackName,
                         { onMain(it) }, {}, onMessage = onMessage)
                 } else {
+                    Analytics.authSignupFailure(context, "google")
                     onMessage(context.getString(R.string.msg_user_signed_up_failed))
                 }
             }
@@ -122,6 +132,12 @@ fun SignupScreen(
         emailError = !Patterns.EMAIL_ADDRESS.matcher(email).matches()
         passwordError = !Const.PASSWORD_REG_EXP.toRegex().matches(password)
         if (nameError || emailError || passwordError) return
+        // Inc 6: без сети регистрация невозможна — сообщение, форма остаётся доступной
+        if (!AppNetwork.isConnected(context)) {
+            onMessage(context.getString(R.string.msg_user_network_failed))
+            return
+        }
+        Analytics.authSignupStarted(context, "email")
         scope.launch {
             busy = true
             val ok = FirebaseAuthService.signUpEmail(email, password, name)
@@ -129,11 +145,13 @@ fun SignupScreen(
             if (ok) {
                 val fbUser = FirebaseAuth.getInstance().currentUser
                 if (fbUser != null) {
+                    Analytics.authSignupSuccess(context, "email")
                     val userHelper = AuthSession.createUserHelper(
                         context as Activity, fbUser, name, email, password, onMessage = onMessage)
                     onMain(userHelper)
                 }
             } else {
+                Analytics.authSignupFailure(context, "email")
                 onMessage(context.getString(R.string.msg_user_signed_up_failed))
             }
         }

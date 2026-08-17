@@ -44,8 +44,10 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import org.nebobrod.schulteplus.R
+import org.nebobrod.schulteplus.analytics.Analytics
 import org.nebobrod.schulteplus.auth.AuthSession
 import org.nebobrod.schulteplus.auth.FirebaseAuthService
+import org.nebobrod.schulteplus.common.AppNetwork
 import org.nebobrod.schulteplus.common.Const
 import org.nebobrod.schulteplus.data.UserHelper
 
@@ -95,15 +97,23 @@ fun LoginScreen(
         }
         val idToken = account?.idToken
         if (idToken != null) {
+            // Inc 6: без сети вход невозможен — сообщение, форма остаётся доступной
+            if (!AppNetwork.isConnected(context)) {
+                onMessage(context.getString(R.string.msg_user_network_failed))
+                return@rememberLauncherForActivityResult
+            }
+            Analytics.authLoginStarted(context, "google")
             scope.launch {
                 busy = true
                 val ok = FirebaseAuthService.signInWithGoogleIdToken(idToken)
                 val fbUser = FirebaseAuth.getInstance().currentUser
                 busy = false
                 if (ok && fbUser != null) {
+                    Analytics.authLoginSuccess(context, "google")
                     AuthSession.loginWithUpdate(context as Activity, fbUser, "google_sign_in", "new",
                         { onMain(it) }, {}, onMessage = onMessage)
                 } else {
+                    Analytics.authLoginFailure(context, "google")
                     onMessage(context.getString(R.string.msg_user_login_failed))
                 }
             }
@@ -113,10 +123,19 @@ fun LoginScreen(
     fun submit() {
         if (demoLocked || busy) return
         // демо: настоящий аккаунт support@attplus.in — лок полей и вход (паритет lockForDemo)
-        if ("support@attplus.in".equals(email, ignoreCase = true)) demoLocked = true
+        if ("support@attplus.in".equals(email, ignoreCase = true)) {
+            demoLocked = true
+            Analytics.demoEntered(context)
+        }
         emailError = !Patterns.EMAIL_ADDRESS.matcher(email).matches()
         passwordError = !Const.PASSWORD_REG_EXP.toRegex().matches(password)
         if (emailError || passwordError) return
+        // Inc 6: без сети вход невозможен — сообщение, форма остаётся доступной
+        if (!AppNetwork.isConnected(context)) {
+            onMessage(context.getString(R.string.msg_user_network_failed))
+            return
+        }
+        Analytics.authLoginStarted(context, "email")
         scope.launch {
             busy = true
             val ok = FirebaseAuthService.signInEmail(email, password)
@@ -124,6 +143,7 @@ fun LoginScreen(
             if (ok) {
                 val fbUser = FirebaseAuth.getInstance().currentUser
                 if (fbUser != null) {
+                    Analytics.authLoginSuccess(context, "email")
                     // B2.1: почта не подтверждена — snackbar с resend; ждём выбора до входа
                     if (!fbUser.isEmailVerified) {
                         onMessageAction(
@@ -131,6 +151,7 @@ fun LoginScreen(
                             context.getString(R.string.lbl_resend_verification_email)
                         ) {
                             scope.launch {
+                                Analytics.authResendRequested(context)
                                 val resent = FirebaseAuthService.resendVerificationEmail()
                                 onMessage(context.getString(if (resent) R.string.msg_user_verif_sent
                                     else R.string.msg_user_verif_not_sent))
@@ -141,6 +162,7 @@ fun LoginScreen(
                         { onMain(it) }, {}, onMessage = onMessage)
                 }
             } else {
+                Analytics.authLoginFailure(context, "email")
                 onMessage(context.getString(R.string.msg_user_login_failed))
             }
         }
@@ -254,11 +276,14 @@ fun LoginScreen(
                     onClick = {
                         resetError = !Patterns.EMAIL_ADDRESS.matcher(resetEmail).matches()
                         if (resetError) return@TextButton
+                        Analytics.authResetRequested(context)
                         scope.launch {
                             resetBusy = true
                             val ok = FirebaseAuthService.sendPasswordResetEmail(resetEmail)
                             resetBusy = false
                             showResetDialog = false
+                            if (ok) Analytics.authResetSuccess(context)
+                            else Analytics.authResetFailure(context)
                             onMessage(context.getString(if (ok) R.string.msg_password_reset_email_sent
                                 else R.string.msg_password_reset_email_failed))
                         }

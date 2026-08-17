@@ -20,4 +20,10 @@ interface AuthService {
     suspend fun signInWithGoogleIdToken(idToken: String): Boolean
 
     suspend fun signOut()
+
+    /** Отправить на email письмо сброса пароля (B2.1). */
+    suspend fun sendPasswordResetEmail(email: String): Boolean
+
+    /** Переотправить письмо верификации текущему пользователю; false без сессии (B2.1). */
+    suspend fun resendVerificationEmail(): Boolean
 }

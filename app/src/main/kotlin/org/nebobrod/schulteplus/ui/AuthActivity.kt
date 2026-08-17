@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -74,6 +76,16 @@ class AuthActivity : ComponentActivity() {
                 val showText: (String) -> Unit = { text ->
                     scope.launch { snackbarHostState.showSnackbar(text) }
                 }
+                // B2.1 (Inc 4): snackbar с действием (resend верификации). suspend — вызывающий
+                // экран может дождаться выбора пользователя до навигации.
+                val showTextAction: suspend (String, String, () -> Unit) -> Unit = { text, actionLabel, onAction ->
+                    val result = snackbarHostState.showSnackbar(
+                        message = text,
+                        actionLabel = actionLabel,
+                        duration = SnackbarDuration.Long
+                    )
+                    if (result == SnackbarResult.ActionPerformed) onAction()
+                }
 
                 val goMain: (UserHelper?) -> Unit = { user -> AuthSession.runMainActivity(this, user) }
 
@@ -108,7 +120,8 @@ class AuthActivity : ComponentActivity() {
                                 screen = Screen.SIGNUP.name
                             },
                             onMain = goMain,
-                            onMessage = showText
+                            onMessage = showText,
+                            onMessageAction = showTextAction
                         )
                         Screen.SIGNUP -> SignupScreen(
                             initialEmail = email,

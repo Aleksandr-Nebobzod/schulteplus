@@ -167,7 +167,7 @@
 	<string name="msg_user_verif_sent">Verification instructions email sent.</string>
 	<string name="msg_user_verif_not_sent">Verification instructions email can\'t be sent.</string>
 	<string name="lbl_reset_password"><u>Reset your password</u></string>
-	<string name="lbl_resend_verification_email"><u>Resend verification email</u></string>
+	<string name="lbl_resend_verification_email">Resend verification email</string>
 	<string name="lbl_continue_anonymously">Continue anonymously (not recommend)</string>
 	<string name="lbl_continue_unregistered"><u>Continue unregistered (not recommend)</u></string>
 	<string name="str_confirmation_caution">You might be asked to confirm your email address</string>
@@ -244,6 +244,7 @@
 	<string name="msg_delete_account_success">Account data has been removed. Your exercise data are labeled with a dummy name: </string>
 	<string name="msg_delete_account_failed">Cannot remove account</string>
 	<string name="msg_password_reset_email_sent">Password Reset Email Sent!</string>
+	<string name="msg_password_reset_email_failed">Password reset email couldn\'t be sent.</string>
 	<string name="lbl_squared">Squared</string>
 	<string name="msg_proceed_to_password_reentry">You\'ll be signed off and asked to reenter your password. Proceed?</string>
 	<string name="lbl_about_oss">Open source notices</string>
@@ -349,6 +350,7 @@
 	<string name="lbl_hide">Hide</string>
 	<string name="lbl_or">or</string>
 	<string name="lbl_forgot_password">Forgot password?</string>
+	<string name="msg_reset_password_body">Enter your email address and we\'ll send you a link to reset your password.</string>
 	<string name="lbl_email_log_in">Log in with email</string>
 	<string name="title_choice">Choice</string>
 	<string name="txt_choice_description">Chose additional training space</string>

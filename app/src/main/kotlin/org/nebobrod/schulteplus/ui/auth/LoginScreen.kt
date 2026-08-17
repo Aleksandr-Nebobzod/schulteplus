@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -48,9 +50,9 @@ import org.nebobrod.schulteplus.common.Const
 import org.nebobrod.schulteplus.data.UserHelper
 
 /**
- * Вход (B2 + SP-03 Inc 2): email/пароль в одной карточке (FieldsCard), инлайн-ошибки,
- * show/hide, «Забыли пароль?» (логика — Inc 4), Google, демо-лок support@attplus.in,
- * переход в Signup. Фон — bg_login_03.
+ * Вход (B2 + SP-03 Inc 2/4): email/пароль в одной карточке (FieldsCard), инлайн-ошибки,
+ * show/hide, «Забыли пароль?» → диалог сброса (B2.1), snackbar «подтвердите почту»
+ * с resend для непроверенных аккаунтов, Google, демо-лок support@attplus.in, переход в Signup.
  */
 @Composable
 fun LoginScreen(
@@ -59,7 +61,8 @@ fun LoginScreen(
     initialPassword: String,
     onGoToSignup: (email: String, name: String, password: String) -> Unit,
     onMain: (UserHelper?) -> Unit,
-    onMessage: (text: String) -> Unit
+    onMessage: (text: String) -> Unit,
+    onMessageAction: suspend (text: String, actionLabel: String, onAction: () -> Unit) -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -70,6 +73,11 @@ fun LoginScreen(
     var demoLocked by remember { mutableStateOf(false) }
     var emailError by remember { mutableStateOf(false) }
     var passwordError by remember { mutableStateOf(false) }
+    // B2.1: диалог сброса пароля
+    var showResetDialog by rememberSaveable { mutableStateOf(false) }
+    var resetEmail by rememberSaveable { mutableStateOf("") }
+    var resetError by remember { mutableStateOf(false) }
+    var resetBusy by remember { mutableStateOf(false) }
 
     val googleSignInClient = remember {
         val clientId = context.getString(
@@ -116,6 +124,19 @@ fun LoginScreen(
             if (ok) {
                 val fbUser = FirebaseAuth.getInstance().currentUser
                 if (fbUser != null) {
+                    // B2.1: почта не подтверждена — snackbar с resend; ждём выбора до входа
+                    if (!fbUser.isEmailVerified) {
+                        onMessageAction(
+                            context.getString(R.string.msg_user_unverified),
+                            context.getString(R.string.lbl_resend_verification_email)
+                        ) {
+                            scope.launch {
+                                val resent = FirebaseAuthService.resendVerificationEmail()
+                                onMessage(context.getString(if (resent) R.string.msg_user_verif_sent
+                                    else R.string.msg_user_verif_not_sent))
+                            }
+                        }
+                    }
                     AuthSession.loginWithUpdate(context as Activity, fbUser, password, "new",
                         { onMain(it) }, {}, onMessage = onMessage)
                 }
@@ -176,7 +197,13 @@ fun LoginScreen(
             }
             Spacer(Modifier.height(4.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = { /* Inc 4: диалог сброса пароля */ }, enabled = !busy) {
+                TextButton(
+                    onClick = {
+                        resetEmail = email
+                        showResetDialog = true
+                    },
+                    enabled = !busy
+                ) {
                     Text(context.getString(R.string.lbl_forgot_password))
                 }
             }
@@ -193,5 +220,56 @@ fun LoginScreen(
             BottomLink(context.getString(R.string.str_login_go_off)) { onGoToSignup(email, initialName, password) }
             Spacer(Modifier.height(28.dp))
         }
+    }
+
+    // B2.1: диалог сброса пароля — email → sendPasswordResetEmail → snackbar результата
+    if (showResetDialog) {
+        AlertDialog(
+            onDismissRequest = { if (!resetBusy) showResetDialog = false },
+            title = { Text(context.getString(R.string.lbl_forgot_password)) },
+            text = {
+                Column {
+                    Text(
+                        context.getString(R.string.msg_reset_password_body),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = resetEmail,
+                        onValueChange = { resetEmail = it },
+                        label = { Text(context.getString(R.string.hint_email)) },
+                        enabled = !resetBusy,
+                        isError = resetError,
+                        supportingText = if (resetError) {
+                            { Text(context.getString(R.string.msg_email_pattern)) }
+                        } else null,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    enabled = !resetBusy,
+                    onClick = {
+                        resetError = !Patterns.EMAIL_ADDRESS.matcher(resetEmail).matches()
+                        if (resetError) return@TextButton
+                        scope.launch {
+                            resetBusy = true
+                            val ok = FirebaseAuthService.sendPasswordResetEmail(resetEmail)
+                            resetBusy = false
+                            showResetDialog = false
+                            onMessage(context.getString(if (ok) R.string.msg_password_reset_email_sent
+                                else R.string.msg_password_reset_email_failed))
+                        }
+                    }
+                ) { Text(context.getString(R.string.lbl_ok)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showResetDialog = false }, enabled = !resetBusy) {
+                    Text(context.getString(R.string.lbl_cancel))
+                }
+            }
+        )
     }
 }

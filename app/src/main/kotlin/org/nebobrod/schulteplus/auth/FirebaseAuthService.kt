@@ -39,6 +39,14 @@ object FirebaseAuthService : AuthService {
         fbAuth.signOut()
     }
 
+    override suspend fun sendPasswordResetEmail(email: String): Boolean =
+        awaitTask { fbAuth.sendPasswordResetEmail(email) }
+
+    override suspend fun resendVerificationEmail(): Boolean {
+        val user = fbAuth.currentUser ?: return false
+        return awaitTask { user.sendEmailVerification() }
+    }
+
     /** Generic Task API (без отмены) → suspend T?; null при неуспехе (сплэш, B2.1). */
     internal suspend fun <T> awaitResult(task: Task<T>): T? =
         suspendCancellableCoroutine { cont ->

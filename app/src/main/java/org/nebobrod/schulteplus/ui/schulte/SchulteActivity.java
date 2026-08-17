@@ -26,7 +26,6 @@ import org.nebobrod.schulteplus.ui.ExResultArrayAdapter;
 import static org.nebobrod.schulteplus.Utils.*;
 import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_COLOR_BLUE;
 import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_COLOR_RED;
-import static org.nebobrod.schulteplus.common.Const.SHOWN_06_SCHULTE_SPACE;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -42,7 +41,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
@@ -54,8 +52,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetSequence;
 
 import java.util.Objects;
 
@@ -212,31 +208,8 @@ public class SchulteActivity extends AppCompatActivity {
 			Objects.requireNonNull(getSupportActionBar()).hide();
 		}
 
-		// Onboarding intro
-		if (ExerciseRunner.isShowIntro() &&
-				(0 == (ExerciseRunner.getShownIntros() & SHOWN_06_SCHULTE_SPACE))) {
-			new TapTargetSequence(this)
-					.targets(
-							TapTarget.forBounds(new Rect(200, 100, 200, 100), getString(R.string.hint_schulte_space_title), getString(R.string.hint_schulte_space_desc))
-									.outerCircleAlpha(0.9f)
-									.outerCircleColor(R.color.black)
-									.textColor(R.color.light_grey_A)
-									.targetRadius(200)
-									.transparentTarget(true)
-									.cancelable(true)
-					)
-					.listener(new TapTargetSequence.Listener() {
-						@Override
-						public void onSequenceFinish() {
-							ExerciseRunner.updateShownIntros(SHOWN_06_SCHULTE_SPACE);
-						}
-						@Override
-						public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) { }
-						@Override
-						public void onSequenceCanceled(TapTarget lastTarget) { }
-					}).start();
-		}
 	}
+
 
 	@Override
 	public void onConfigurationChanged(@NonNull Configuration newConfig) {

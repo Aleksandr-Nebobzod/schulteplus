@@ -56,8 +56,6 @@ public class ExerciseRunner {
 	public static String uak = "";
 	public static String userName = "";
 	public static String userEmail = "";
-	public static boolean showIntro = true; 	// flag on-boarding is necessary TapTargetView
-	public static int shownIntros = 0; 			// flag set for on-boarding TapTargetView
 	public static int psycoins = 0; 			// achieved point (in ExResult)
 	public static int seconds = 0; 				// achieved seconds
 	public static int hours = 0; 				// achieved hours
@@ -155,8 +153,6 @@ public class ExerciseRunner {
 			// Application parameters
 			online = sharedPreferences.getBoolean(KEY_PRF_ONLINE, true);
 			sharedData = sharedPreferences.getBoolean(KEY_PRF_SHARED_DATA, true);
-			showIntro = sharedPreferences.getBoolean(KEY_PRF_SHOW_INTRO, true);
-			shownIntros = sharedPreferences.getInt(KEY_PRF_SHOWN_INTROS, 0);
 
 			// Exercise
 			exTypeId = sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, KEY_PRF_EX_S1);
@@ -230,8 +226,6 @@ public class ExerciseRunner {
 		editor.putString(	KEY_USER_NAME, userName);
 		editor.putString(	KEY_USER_EMAIL, userEmail);
 		editor.putBoolean(	KEY_PRF_ONLINE, online);
-		editor.putInt(		KEY_PRF_SHOWN_INTROS, shownIntros);
-		editor.putBoolean(	KEY_PRF_SHOW_INTRO, showIntro);
 		editor.putInt(		KEY_PSYCOINS, psycoins);
 		editor.putInt(		KEY_SECONDS, seconds);
 		editor.putInt(		KEY_HOURS, hours);
@@ -553,15 +547,12 @@ public class ExerciseRunner {
 				"\nxSize=" + xSize +
 				"\nySize=" + ySize +
 				"\nHints=" + (hinted ?"On":"Off") +
-				"\nshowIntro=" + (showIntro ?"Yes":"No") +
-				"\nshownIntros=" + shownIntros +
 				"\ntsUpdated=" + timeStamp + "\ntsUpdatedDateTime=" + timeStampFormattedLocal(timeStamp) +
 				"\nsharedPreferences=" +
 					"\n\texType = " + sharedPreferences.getString(KEY_TYPE_OF_EXERCISE, "gcb_schulte_1_sequence<") +
 					"\n\txSize = " + String.valueOf( sharedPreferences.getInt(KEY_X_SIZE, 5)) +
 					"\n\tySize = " + String.valueOf( sharedPreferences.getInt(KEY_Y_SIZE, 5)) +
 					"\n\thinted = " + String.valueOf( sharedPreferences.getBoolean(KEY_PRF_HINTED, true)) +
-					"\n\tshownIntros = " + String.valueOf( sharedPreferences.getInt(KEY_PRF_SHOWN_INTROS, 0)) +
 				"\n}";
 	}
 
@@ -622,27 +613,6 @@ public class ExerciseRunner {
 	}
 	public static void setCurrentLevel(int currentLevel) {
 		ExerciseRunner.currentLevel = currentLevel;
-	}
-
-	public static boolean isShowIntro() {
-		return showIntro;
-	}
-	public static void setShowIntro(boolean showIntro) {
-		ExerciseRunner.showIntro = showIntro;
-	}
-
-	public static int getShownIntros() {
-		return shownIntros;
-	}
-	public static void setShownIntros(int shownIntros) {
-		ExerciseRunner.shownIntros = shownIntros;
-	}
-	public static void updateShownIntros(int shownIntroBit) {
-		ExerciseRunner.shownIntros |= shownIntroBit;
-		if (shownIntros == SHOWN_ALL) {
-			showIntro = false;
-		}
-		savePreferences();
 	}
 
 	public static boolean isSharedData() {

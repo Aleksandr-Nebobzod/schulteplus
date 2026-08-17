@@ -9,7 +9,6 @@
 package org.nebobrod.schulteplus.ui.basics;
 
 import static org.nebobrod.schulteplus.Utils.getRes;
-import static org.nebobrod.schulteplus.common.Const.SHOWN_05_BASE_SPACE;
 
 import android.annotation.SuppressLint;
 
@@ -38,8 +37,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetSequence;
 
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.common.STable;
@@ -52,7 +49,6 @@ import org.nebobrod.schulteplus.common.ResourceSymbolTemplate;
 import org.nebobrod.schulteplus.ui.ExResultArrayAdapter;
 import org.nebobrod.schulteplus.databinding.ActivityBasicsBinding; // TODO: 01.10.2023 figure it out!
 import org.nebobrod.schulteplus.R;
-import org.nebobrod.schulteplus.ui.TapTargetViewWr;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -414,24 +410,6 @@ public class BasicsActivity extends AppCompatActivity {
 	protected void onResume() {
 		super.onResume();
 
-		// Onboarding intro
-		if (ExerciseRunner.isShowIntro() &&
-				(0 == (ExerciseRunner.getShownIntros() & SHOWN_05_BASE_SPACE))) {
-			new TapTargetSequence(this)
-					.targets(
-							new TapTargetViewWr(this, mControlsView, getString(R.string.hint_base_space_title), getString(R.string.hint_base_space_desc)).getTapTarget()
-					)
-					.listener(new TapTargetSequence.Listener() {
-						@Override
-						public void onSequenceFinish() {
-							ExerciseRunner.updateShownIntros(SHOWN_05_BASE_SPACE);
-						}
-						@Override
-						public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) { }
-						@Override
-						public void onSequenceCanceled(TapTarget lastTarget) { }
-					}).start();
-		}
 	}
 
 	private void toggle() {

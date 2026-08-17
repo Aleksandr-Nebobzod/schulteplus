@@ -13,7 +13,6 @@ import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.Utils.getTopRightCornerRect;
 import static org.nebobrod.schulteplus.Utils.overlayBadgedIcon;
 import static org.nebobrod.schulteplus.Utils.showSnackBarConfirmation;
-import static org.nebobrod.schulteplus.common.Const.SHOWN_00_MAIN;
 
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
@@ -27,8 +26,6 @@ import org.nebobrod.schulteplus.ui.basics.BasicsActivity;
 import org.nebobrod.schulteplus.ui.schulte.SchulteActivity;
 import org.nebobrod.schulteplus.ui.sssr.SssrActivity;
 
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -352,45 +349,6 @@ public class MainActivity extends AppCompatActivity {
 								AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build());
 					}
 				});
-
-		// Onboarding hints
-		if (ExerciseRunner.isShowIntro() &&
-				(0 == (ExerciseRunner.getShownIntros() & SHOWN_00_MAIN))) {
-			new TapTargetSequence(this)
-					.targets(
-							new TapTargetViewWr(this, fabLaunch, getString(R.string.hint_main_fab_title), getString(R.string.hint_main_fab_desc)).getTapTarget(),
-							//new TapTargetViewWr(this, findViewById(R.id.navigation_basics), getString(R.string.hint_main_basics_title), getString(R.string.hint_main_basics_desc)).getTapTarget(),
-							//new TapTargetViewWr(this, findViewById(R.id.navigation_schulte), getString(R.string.hint_main_schulte_title), getString(R.string.hint_main_schulte_desc)).getTapTarget(),
-							//new TapTargetViewWr(this, findViewById(R.id.navigation_dashboard), getString(R.string.hint_main_dashboard_title), getString(R.string.hint_main_dashboard_desc)).getTapTarget(),
-							//new TapTargetViewWr(this, findViewById(R.id.navigation_home), getString(R.string.hint_main_home_title), getString(R.string.hint_main_home_desc)).getTapTarget(),
-
-							TapTarget.forBounds(getTopRightCornerRect(this), getString(R.string.hint_main_settings_title), getString(R.string.hint_main_settings_desc))
-									.outerCircleAlpha(0.9f)
-									.outerCircleColor(R.color.purple_700)
-									.textColor(R.color.light_grey_D_yellow)
-									.targetRadius(150)
-									.transparentTarget(true)
-					)
-					.listener(new TapTargetSequence.Listener() {
-						// This listener will tell us when interesting(tm) events happen in regards
-						// to the sequence
-						@Override
-						public void onSequenceFinish() {
-							//Toast.makeText(MainActivity.this, "onSequenceFinish", Toast.LENGTH_SHORT).show();
-							ExerciseRunner.updateShownIntros(SHOWN_00_MAIN);
-						}
-
-						@Override
-						public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
-							//Toast.makeText(MainActivity.this, "onSequenceStep", Toast.LENGTH_SHORT).show();
-						}
-
-						@Override
-						public void onSequenceCanceled(TapTarget lastTarget) {
-							//Toast.makeText(MainActivity.this, "onSequenceCanceled", Toast.LENGTH_SHORT).show();
-						}
-					}).start();
-		}
 	}
 
 	@Override

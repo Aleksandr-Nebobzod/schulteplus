@@ -10,7 +10,6 @@ package org.nebobrod.schulteplus.ui.dashboard;
 
 import static org.nebobrod.schulteplus.Utils.getAppContext;
 import static org.nebobrod.schulteplus.Utils.getRes;
-import static org.nebobrod.schulteplus.common.Const.SHOWN_03_STATA;
 import static org.nebobrod.schulteplus.common.Const.TIMESTAMP_FIELD_NAME;
 
 import android.content.ClipData;
@@ -35,8 +34,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetSequence;
 
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.Utils;
@@ -47,7 +44,6 @@ import org.nebobrod.schulteplus.data.AchievementArrayAdapter;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.ui.ExResultArrayAdapter;
 import org.nebobrod.schulteplus.databinding.FragmentDashboard02ExresultBinding;
-import org.nebobrod.schulteplus.ui.TapTargetViewWr;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -279,28 +275,6 @@ public class DashboardFragment02ExResult extends Fragment {
 				exResultAdapter.notifyDataSetChanged();
 			}
 		});
-
-
-		// Onboarding intro
-		if (ExerciseRunner.isShowIntro() &&
-				(0 == (ExerciseRunner.getShownIntros() & SHOWN_03_STATA))) {
-			new TapTargetSequence(requireActivity())
-					.targets(
-							new TapTargetViewWr(this, elvChart, getString(R.string.hint_stata_dashboard_title), getString(R.string.hint_stata_dashboard_desc)).getTapTarget(),
-							new TapTargetViewWr(this, spDashboard, getString(R.string.hint_stata_dashboard_spinner_title), getString(R.string.hint_stata_dashboard_spinner_desc)).getTapTarget(),
-							new TapTargetViewWr(this, rgSource, getString(R.string.hint_stata_source_title), getString(R.string.hint_stata_source_desc)).getTapTarget()
-					)
-					.listener(new TapTargetSequence.Listener() {
-						@Override
-						public void onSequenceFinish() {
-							ExerciseRunner.updateShownIntros(SHOWN_03_STATA);
-						}
-						@Override
-						public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) { }
-						@Override
-						public void onSequenceCanceled(TapTarget lastTarget) { }
-					}).start();
-		}
 	}
 
 	@Override

@@ -119,24 +119,6 @@ public class HomeFragment extends Fragment {
 		});
 
 
-		// Onboarding intro
-/*		if (ExerciseRunner.isShowIntro() &&
-				(0 == (ExerciseRunner.getShownIntros() & SHOWN_04_NEWS))) {
-			new TapTargetSequence(requireActivity())
-					.targets(
-							new TapTargetViewWr(this, view, getString(R.string.hint_stata_source_title), getString(R.string.hint_stata_source_desc)).getTapTarget()
-					)
-					.listener(new TapTargetSequence.Listener() {
-						@Override
-						public void onSequenceFinish() {
-							ExerciseRunner.updateShownIntros(SHOWN_04_NEWS);
-						}
-						@Override
-						public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) { }
-						@Override
-						public void onSequenceCanceled(TapTarget lastTarget) { }
-					}).start();
-		}*/
 	}
 
 	private void loadMessages(List<AdminNote> list) {

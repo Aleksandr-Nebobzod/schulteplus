@@ -13,7 +13,6 @@ import static org.nebobrod.schulteplus.common.Const.*;
 import static org.nebobrod.schulteplus.Utils.getRes;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,9 +27,6 @@ import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
-
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetSequence;
 
 import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
@@ -89,41 +85,6 @@ public class BasicSettings extends PreferenceFragmentCompat {
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-
-		/** Onboarding intro */
-		if (ExerciseRunner.isShowIntro() &&
-				(0 == (ExerciseRunner.getShownIntros() & SHOWN_01_BASE))) {
-			new TapTargetSequence(requireActivity())
-					.targets(
-//							new TapTargetViewWr(this, view, getString(R.string.hint_base_settings_title), getString(R.string.hint_base_settings_title)).getTapTarget()
-							TapTarget.forBounds(new Rect(200, 100, 200, 100), getString(R.string.hint_base_settings_title), getString(R.string.hint_base_settings_desc))
-									.outerCircleAlpha(0.9f)
-									.outerCircleColor(R.color.purple_700)
-									.textColor(R.color.light_grey_A_yellow)
-									.targetRadius(150)
-									.transparentTarget(true)
-									.cancelable(true)
-					)
-					.listener(new TapTargetSequence.Listener() {
-						// This listener will tell us when interesting(tm) events happen in regards
-						// to the sequence
-						@Override
-						public void onSequenceFinish() {
-							//Toast.makeText(MainActivity.this, "onSequenceFinish", Toast.LENGTH_SHORT).show();
-							ExerciseRunner.updateShownIntros(SHOWN_01_BASE);
-						}
-
-						@Override
-						public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
-							//Toast.makeText(MainActivity.this, "onSequenceStep", Toast.LENGTH_SHORT).show();
-						}
-
-						@Override
-						public void onSequenceCanceled(TapTarget lastTarget) {
-							//Toast.makeText(MainActivity.this, "onSequenceCanceled", Toast.LENGTH_SHORT).show();
-						}
-					}).start();
-		}
 	}
 
 	@Override

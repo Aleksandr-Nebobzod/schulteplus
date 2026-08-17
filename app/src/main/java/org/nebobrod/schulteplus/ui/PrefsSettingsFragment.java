@@ -12,8 +12,6 @@ import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.common.Const.KEY_HOURS;
 import static org.nebobrod.schulteplus.common.Const.KEY_PRF_CURRENT_LEVEL;
 import static org.nebobrod.schulteplus.common.Const.KEY_PRF_LEVEL;
-import static org.nebobrod.schulteplus.common.Const.KEY_PRF_SHOWN_INTROS;
-import static org.nebobrod.schulteplus.common.Const.KEY_PRF_SHOW_INTRO;
 import static org.nebobrod.schulteplus.common.Const.KEY_SECONDS;
 import static org.nebobrod.schulteplus.common.Const.KEY_USER_EMAIL;
 import static org.nebobrod.schulteplus.common.Const.KEY_USER_NAME;
@@ -71,17 +69,6 @@ public class PrefsSettingsFragment extends PreferenceFragmentCompat implements S
 			return false;
 		}
 		switch (preference.getKey()) {
-			case "prf_show_intro":
-				if (((SwitchPreference)preference).isChecked()) {
-					((SwitchPreference)preference).setChecked(true);
-					ExerciseRunner.setShowIntro(true);
-					ExerciseRunner.setShownIntros(0);
-					ExerciseRunner.savePreferences();
-				}
-				return false; // makes not necessary of break;
-			// -- this FALSE is really important to prevent self-circled job
-
-
 			case "prf_user_logoff":
 				FirebaseAuth.getInstance().signOut();
 				getActivity().finishAndRemoveTask();
@@ -166,8 +153,6 @@ public class PrefsSettingsFragment extends PreferenceFragmentCompat implements S
 			case KEY_SECONDS:
 			case KEY_HOURS:
 			case KEY_PRF_LEVEL:
-			case KEY_PRF_SHOWN_INTROS:
-				Log.d(TAG, "updatePreference: int value: " + ((EditTextPreference) getPreferenceScreen().findPreference(KEY_PRF_SHOWN_INTROS)).getText());
 				preference.setSummary("" + sharedPrefs.getInt(key, 0));
 
 				// Update Seekbar range
@@ -182,11 +167,6 @@ public class PrefsSettingsFragment extends PreferenceFragmentCompat implements S
 				}
 				sbPrfCurrentLevel.setMax(currentLevel);
 				sbPrfCurrentLevel.setTitle(R.string.prf_current_level_title );
-				break;
-
-			// boolean values assignment
-			case KEY_PRF_SHOW_INTRO:
-				((SwitchPreference)preference).setChecked((sharedPrefs.getBoolean(key, true)));
 				break;
 
 			// String values assignment

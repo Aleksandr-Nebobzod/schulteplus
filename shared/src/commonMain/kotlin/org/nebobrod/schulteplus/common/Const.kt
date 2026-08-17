@@ -31,16 +31,6 @@ interface Const {
 
 		const val ANIM_STEP_MILLIS = 200L
 
-		// set of Showing Intro
-		const val SHOWN_00_MAIN = 0b1 shl 0
-		const val SHOWN_01_BASE = 0b1 shl 1
-		const val SHOWN_02_SCHULTE = 0b1 shl 2
-		const val SHOWN_03_STATA = 0b1 shl 3
-		const val SHOWN_04_NEWS = 0b1 shl 4
-		const val SHOWN_05_BASE_SPACE = 0b1 shl 5
-		const val SHOWN_06_SCHULTE_SPACE = 0b1 shl 6
-		const val SHOWN_ALL = 0b1101111 // no news yet
-
 		// set of exercise related constants
 		const val SEQ1_SINGLE: Byte = 1
 		const val SEQ2_DOUBLE: Byte = 2
@@ -104,8 +94,6 @@ interface Const {
 		const val KEY_PRF_HAPTIC = "prf_vibration"
 		const val KEY_PRF_SOUND = "prf_sound"
 		const val KEY_PRF_ONLINE = "prf_online"
-		const val KEY_PRF_SHOW_INTRO = "prf_show_intro"
-		const val KEY_PRF_SHOWN_INTROS = "prf_shown_intros"
 	const val GLOBAL_PREFS_NAME = "prf_global"
 	const val KEY_ONBOARDING_SHOWN = "prf_onboarding_shown"
 

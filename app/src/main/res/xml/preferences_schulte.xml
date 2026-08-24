@@ -59,7 +59,7 @@
 			</PreferenceCategory>
 		</PreferenceCategory>
 		
-		<SeekBarPreference app:key="prf_font_scale" app:title="@string/lbl_font_scale" app:defaultValue="0" app:min="-1" android:max="1" app:persistent="true" app:showSeekBarValue="false"/>
+		<SeekBarPreference app:key="prf_font_scale" app:title="@string/lbl_font_scale" app:summary="@string/lbl_font_scale_sum" app:defaultValue="0" app:min="-1" android:max="1" app:persistent="true" app:showSeekBarValue="false"/>
 		<PreferenceCategory app:key="prf_empty_row2" app:title="" app:persistent="false" app:summary=" "/>
 		<PreferenceCategory app:key="prf_empty_row" app:title="👍" android:summary="_" app:persistent="false"/>
 	

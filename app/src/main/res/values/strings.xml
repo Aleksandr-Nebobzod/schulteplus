@@ -189,6 +189,7 @@
 	<string name="lbl_prob_disabled">Uniform distribution</string>
 	<string name="msg_signin_anonymously_credentials">" -- your dummy email and Password -- your password (change it asap)"</string>
 	<string name="lbl_font_scale">Font scale</string>
+	<string name="lbl_font_scale_sum">−1: normal · 0: max · 1: stretch</string>
 <!--	probabilities are duplicated in arrays-->
 	<string name="lbl_legend">Legend</string>
 	<string name="lbl_prob00">Impossibly</string>

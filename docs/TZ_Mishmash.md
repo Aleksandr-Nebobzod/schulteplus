@@ -246,3 +246,4 @@ exercise.isCorrectTurn(tile - 1);        // тап плитки = тап её ч
 | 2026-08-24 | TP-13/TP-14 исправлены (см. п.10, этап 7): case `KEY_PRF_EX_S4` в `GridAdapter.setCellView`; `throbTile()` по всем ячейкам плитки в `SchulteActivity` |
 | 2026-08-24 | TP-15/TP-16 исправлены: число плитки рисует `PavedCellDrawable` (canvas.scale по bbox, `PavingMap.tileBounds`); вспышка плитки целиком — `flashTile` (заливка + refresh) |
 | 2026-08-24 | TP-17/TP-18 исправлены: `setSelector(null)` в paved + ресурс `mishmash_pink` #E91E63 (ошибка — розовая плитка); пульс плитки целиком (ScaleAnimation, pivot = центр плитки, +10/−10% за 0.5 с) |
+| 2026-08-24 | TP-19: анимация границы плитки (setBorderColor), символ не перекрывается. Реализованы три режима кегля (`prf_font_scale`): −1 маленький, 0 максимальный (longestSymbol), 1 плитка (stretch) — классика и Мешанина |

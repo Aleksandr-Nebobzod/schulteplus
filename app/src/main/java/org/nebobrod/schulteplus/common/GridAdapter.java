@@ -21,8 +21,11 @@ import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_LETTER_LATIN
 import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_NUMBER_ROME;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,14 +104,24 @@ public class GridAdapter extends BaseAdapter {
 		itemHeight = ((GridView) parent).getHeight() / rows;
 
 		if (isSquared) {
-			itemHeight = itemWidth = Math.min(itemHeight, itemWidth);
+			// з2: квадрат = min(ширина колонки, высота экрана/строк) — все плитки в поле зрения;
+			// columnWidth грида задаёт SchulteActivity.post() (в getView при NO_STRETCH
+			// getColumnWidth()=0 до явной установки — см. initArea)
+			int side = Math.min(itemWidth, itemHeight);
+			if (side > 0) {
+				itemWidth = itemHeight = side;
+			}
 		}
 
 //			 Log.d(TAG, "itemHeight: " + itemHeight);
 //			 view.setLayoutParams(new GridView.LayoutParams(new ViewGroup.LayoutParams(itemHeight, itemHeight)));
 		view.setLayoutParams(new GridView.LayoutParams(new ViewGroup.LayoutParams(itemWidth, itemHeight)));
 		view.setTextColor(getRes().getColor(R.color.light_grey_2, getRes().newTheme()));
-		view.setTextSize((Math.min(itemWidth, itemHeight) / (-1.3F * textScale + 5)));
+		// Кегль классики по режиму (в paved-режиме текст рисует drawable — setTextSize не влияет);
+		// явно в px: setTextSize(float) трактует значение как sp и раздувает кегль на плотных экранах
+		if (pavingMap == null) {
+			view.setTextSize(TypedValue.COMPLEX_UNIT_PX, calcTextSize(itemWidth, itemHeight));
+		}
 
 
 //		 TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 22, 36, 1, TypedValue.COMPLEX_UNIT_DIP);
@@ -119,6 +132,44 @@ public class GridAdapter extends BaseAdapter {
 //		 Log.d(TAG, "itemHeight: " + view.getHeight() + " and TextSize: " + view.getTextSize());
 
 		return view;
+	}
+
+	/**
+	 * Кегль классической ячейки по режиму (prf_font_scale):
+	 * -1 — маленький: символ ½ длины и ½ ширины ячейки;
+	 * 0 — максимальный: единый кегль по самому длинному символу последовательности;
+	 * 1 — плитка: растяжка на ячейку (StretchTextDrawable), кегль не используется.
+	 */
+	private int calcTextSize(int itemWidth, int itemHeight) {
+		int minSide = Math.min(itemWidth, itemHeight);
+		switch (textScale) {
+			case -1:
+				return minSide / 2;
+			case 0: {
+				Paint paint = new Paint();
+				paint.setTextSize(100);
+				float longestW = paint.measureText(longestSymbol());
+				if (longestW > 0) {
+					// з3: −10% — визуально слишком тесно при точном вписывании
+					return (int) (Math.min(minSide, minSide * 100 / longestW) * 0.9f);
+				}
+				return (int) (minSide * 0.9f);
+			}
+			default:
+				return minSide / 2;	// 1 (плитка): текст рисует StretchTextDrawable
+		}
+	}
+
+	/** Самый длинный текстовый символ последовательности (для режима «максимальный») */
+	private String longestSymbol() {
+		String longest = "";
+		for (SCell cell : mExercise.getArea()) {
+			String text = cell.getText();
+			if (text != null && text.length() > longest.length()) {
+				longest = text;
+			}
+		}
+		return longest;
 	}
 
 	/**
@@ -207,14 +258,21 @@ public class GridAdapter extends BaseAdapter {
 					pavingMap.isOuterSide(row, col, 3),	// North
 					pavingMap.isOuterSide(row, col, 0),	// East
 					pavingMap.isOuterSide(row, col, 1));// South
-			// TP-15: одно число на плитку рисует drawable (TextView пустой)
+			// TP-15: одно число на плитку рисует drawable (TextView пустой); режим кегля — textScale
 			paved.setNumber(strValue, view.getCurrentTextColor(),
-					pavingMap.tileBounds(pavingMap.tileAt(row, col)), row, col);
+					pavingMap.tileBounds(pavingMap.tileAt(row, col)), row, col, textScale);
 			view.setBackground(paved);
 			view.setText("");
 		} else {
 			img.setColorFilter(color, PorterDuff.Mode.DST_ATOP);
-			view.setBackground(img);
+			if (textScale == 1 && !strValue.isEmpty()) {
+				// кегль «плитка»: растяжка символа на всю ячейку (искажение пропорций)
+				view.setText("");
+				view.setBackground(new LayerDrawable(new Drawable[] {img,
+						new StretchTextDrawable(strValue, view.getCurrentTextColor())}));
+			} else {
+				view.setBackground(img);
+			}
 		}
 
 		return view;

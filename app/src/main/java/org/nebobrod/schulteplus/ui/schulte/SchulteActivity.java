@@ -315,6 +315,26 @@ public class SchulteActivity extends AppCompatActivity {
 		mAdapter = new GridAdapter(this, exercise, ExerciseRunner.isSquared(), ExerciseRunner.getPrefTextScale());
 		if (isPaved) mAdapter.setPavingMap(pavingMap);
 		mGrid.setAdapter(mAdapter);
+		if (ExerciseRunner.isSquared()) {
+			// з2: NO_STRETCH — колонки строго по columnWidth, без растягивания зазоров
+			// (spacingWidth по умолчанию при полях 2×9 давал «разъезжание» столбцов);
+			// columnWidth задаётся в post(): в getView размеры ещё нулевые, а при NO_STRETCH
+			// GridView сам columnWidth не вычисляет (getColumnWidth()=0 → белый экран)
+			mGrid.setStretchMode(GridView.NO_STRETCH);
+			mGrid.post(() -> {
+				int numColumns = mGrid.getNumColumns();
+				int rows = mGrid.getCount() / numColumns;
+				int side = Math.min(mGrid.getWidth() / numColumns, mGrid.getHeight() / rows);
+				if (side > 0) {
+					mGrid.setColumnWidth(side);
+					// центрирование колонок: горизонтальные паддинги = остаток ширины пополам
+					// (равноудобно для правшей и левшей)
+					int hPad = Math.max(0, (mGrid.getWidth() - side * numColumns) / 2);
+					mGrid.setPadding(hPad, 0, hPad, 0);
+					mAdapter.notifyDataSetChanged();
+				}
+			});
+		}
 		mGrid.setLongClickable(true);
 
 		if (ExerciseRunner.isCountDown()) {

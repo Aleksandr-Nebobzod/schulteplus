@@ -38,6 +38,7 @@ public class PavedCellDrawable extends Drawable {
 	private int numberColor = Color.TRANSPARENT;
 	private int minRow, minCol, maxRow, maxCol;	// bounds плитки в ячейках
 	private int row, col;						// ячейка, которой принадлежит drawable
+	private int mode;							// -1 маленький, 0 максимальный, 1 плитка (stretch)
 
 	public PavedCellDrawable(@ColorInt int borderColor, float borderWidth) {
 		this.borderWidth = borderWidth;
@@ -60,12 +61,14 @@ public class PavedCellDrawable extends Drawable {
 	}
 
 	/**
-	 * Число плитки (TP-15): рисуется по центру плитки, масштаб — вписывание
-	 * в площадь плитки (растяжение по вертикали/горизонтали, пропорции теряются).
+	 * Число плитки (TP-15): рисуется по центру плитки. Режимы масштаба:
+	 * -1 — маленький: символ 1:1 с ячейкой (единый кегль для всех плиток);
+	 * 0 — максимальный: вписать в плитку без искажения (во что упрётся);
+	 * 1 — плитка: растяжка по площади плитки (искажение пропорций).
 	 * @param tileBounds [minRow, minCol, maxRow, maxCol] — границы плитки в ячейках
 	 * @param row, col — координаты ячейки, которой принадлежит drawable
 	 */
-	public void setNumber(String text, @ColorInt int color, int[] tileBounds, int row, int col) {
+	public void setNumber(String text, @ColorInt int color, int[] tileBounds, int row, int col, int mode) {
 		this.numberText = text;
 		this.numberColor = color;
 		this.minRow = tileBounds[0];
@@ -74,6 +77,7 @@ public class PavedCellDrawable extends Drawable {
 		this.maxCol = tileBounds[3];
 		this.row = row;
 		this.col = col;
+		this.mode = mode;
 		invalidateSelf();
 	}
 
@@ -99,7 +103,18 @@ public class PavedCellDrawable extends Drawable {
 			float cy = (minRow + maxRow + 1) / 2f * h - row * h;
 			canvas.save();
 			canvas.translate(cx, cy);
-			canvas.scale(tileW / textW, tileH / textH);
+			switch (mode) {
+				case -1:	// норма: символ 1:1 с ячейкой по меньшей стороне (з1: не-квадратные ячейки)
+					float small = Math.min(w, h) / textH;
+					canvas.scale(small, small);
+					break;
+				case 0:		// максимальный: вписать в плитку без искажения (во что упрётся)
+					float fit = Math.min(tileW / textW, tileH / textH);
+					canvas.scale(fit, fit);
+					break;
+				default:	// 1 плитка: растяжка по площади плитки (искажение пропорций)
+					canvas.scale(tileW / textW, tileH / textH);
+			}
 			canvas.drawText(numberText, -textW / 2, -(fm.ascent + fm.descent) / 2, numberPaint);
 			canvas.restore();
 		}

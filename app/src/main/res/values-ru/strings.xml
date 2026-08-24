@@ -171,6 +171,7 @@
 	<string name="lbl_prob_disabled">Равномерное распределение</string>
 	<string name="msg_signin_anonymously_credentials"> -- ваш липовый емайл, а Password -- ваш действующий пароль (желательно поменять)</string>
 	<string name="lbl_font_scale">Размер шрифта</string>
+	<string name="lbl_font_scale_sum">−1: норма · 0: макс · 1: искажён</string>
 	<string name="lbl_legend">Легенда</string>
 	<string name="lbl_prob00">Невозможно</string>
 	<string name="lbl_prob25">Маловероятно</string>

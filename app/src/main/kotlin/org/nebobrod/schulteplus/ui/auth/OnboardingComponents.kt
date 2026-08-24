@@ -48,27 +48,22 @@ fun CoinIcon(size: Dp, modifier: Modifier = Modifier) {
     )
 }
 
-/** Бейдж кредита на слайде 2: монета + «%d псимонет — ваш кредит» (строка). */
+/** Бейдж кошелька на слайде 2: монета + «%d псимонет — ваш кошелёк» (SP03-10; без подложки — SP03-08). */
 @Composable
 fun CreditBadge(credit: Int, modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    Box(
-        modifier
-            .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(50))
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+    Row(
+        modifier.padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            CoinIcon(16.dp)
-            Text(
-                context.getString(R.string.ob_credit_badge, credit),
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
+        CoinIcon(16.dp)
+        Text(
+            context.getString(R.string.ob_credit_badge, credit),
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }
 
@@ -113,8 +108,8 @@ fun PriceBadge(price: Int, affordable: Boolean, modifier: Modifier = Modifier) {
 }
 
 /**
- * Карточка упражнения (слайд 2). Карточка нейтральная (полупрозрачная подложка;
- * selected — плотнее + рамка primary); цвет доступности — у бейджа цены.
+ * Карточка упражнения (слайд 2). SP03-08: собственная подложка убрана (общая на
+ * экране); состояние selected — рамка primary; цвет доступности — у бейджа цены.
  * Радиокнопка выбора — только у доступных.
  */
 @Composable
@@ -128,8 +123,6 @@ fun ExerciseCard(
     modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(14.dp)
-    val bg = if (selected) MaterialTheme.colorScheme.surfaceContainerHigh
-    else MaterialTheme.colorScheme.surfaceContainer
     val borderColor = if (selected) MaterialTheme.colorScheme.primary
     else MaterialTheme.colorScheme.outlineVariant
     val borderWidth = if (selected) 2.dp else 1.dp
@@ -138,7 +131,6 @@ fun ExerciseCard(
         modifier
             .fillMaxWidth()
             .clickable(enabled = affordable, onClick = onClick)
-            .background(bg, shape)
             .border(borderWidth, borderColor, shape)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically

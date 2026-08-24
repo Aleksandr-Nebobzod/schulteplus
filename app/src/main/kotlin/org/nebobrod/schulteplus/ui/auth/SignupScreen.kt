@@ -58,7 +58,7 @@ import org.nebobrod.schulteplus.data.UserHelper
 /**
  * Регистрация (B2 + SP-03 Inc 2): имя/email/пароль в одной карточке (FieldsCard),
  * инлайн-ошибки, чекбокс согласия с одним пояснением и ссылками (политика/соглашение),
- * Google, переход в Login, continue-unregistered → демо-префилл. Фон — bg_login_03.
+ * Google, переход в Login, continue-unregistered → онбординг (SP03-02). Фон — bg_login_03.
  */
 @Composable
 fun SignupScreen(
@@ -66,6 +66,7 @@ fun SignupScreen(
     initialName: String,
     initialPassword: String,
     onGoToLogin: (email: String, name: String, password: String) -> Unit,
+    onGoToOnboarding: () -> Unit,
     onMain: (UserHelper?) -> Unit,
     onMessage: (text: String) -> Unit
 ) {
@@ -179,93 +180,94 @@ fun SignupScreen(
                 modifier = Modifier.align(Alignment.Start)
             )
             Spacer(Modifier.height(20.dp))
-            // правка 3.1: все поля — в одной карточке с полупрозрачной подложкой
-            FieldsCard {
-                AuthField(
-                    label = context.getString(R.string.hint_login),
-                    value = name,
-                    onValueChange = { name = it },
-                    enabled = !busy,
-                    isError = nameError,
-                    supportingText = if (nameError) context.getString(R.string.msg_username_wrong) else null,
-                )
-                AuthField(
-                    label = context.getString(R.string.hint_email),
-                    value = email,
-                    onValueChange = { email = it },
-                    enabled = !busy,
-                    isError = emailError,
-                    supportingText = if (emailError) context.getString(R.string.msg_email_pattern) else null,
-                    keyboardType = KeyboardType.Email,
-                )
-                AuthField(
-                    label = context.getString(R.string.hint_pass),
-                    value = password,
-                    onValueChange = { password = it },
-                    enabled = !busy,
-                    isError = passwordError,
-                    supportingText = if (passwordError) context.getString(R.string.msg_password_rules) else null,
-                    keyboardType = KeyboardType.Password,
-                    visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailing = {
-                        PasswordTrailing(shown = showPassword,
-                            show = context.getString(R.string.lbl_show),
-                            hide = context.getString(R.string.lbl_hide)) { showPassword = !showPassword }
-                    }
-                )
-            }
-            Spacer(Modifier.height(12.dp))
-            // согласие: один чекбокс + одно пояснение со ссылками (политика/соглашение)
-            val linkColor = MaterialTheme.colorScheme.primary
-            val consentText = buildAnnotatedString {
-                append(context.getString(R.string.signup_consent_prefix))
-                withStyle(SpanStyle(color = linkColor, fontWeight = FontWeight.Medium)) {
-                    append(context.getString(R.string.signup_consent_privacy))
-                }
-                append(context.getString(R.string.signup_consent_and))
-                withStyle(SpanStyle(color = linkColor, fontWeight = FontWeight.Medium)) {
-                    append(context.getString(R.string.signup_consent_terms))
-                }
-                append(context.getString(R.string.signup_consent_suffix))
-            }
+            // SP03-08: одна общая полупрозрачная подложка (все элементы, кроме заголовка)
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(12.dp))
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
+                    .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(16.dp))
+                    .padding(horizontal = 12.dp, vertical = 16.dp)
             ) {
-                Row(verticalAlignment = Alignment.Top) {
-                    Checkbox(checked = agreed, onCheckedChange = { agreed = it }, enabled = !busy)
-                    Column(Modifier.padding(top = 10.dp)) {
-                        Text(
-                            consentText,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.clickable {
-                                Utils.displayHtmlAlertDialog(context, R.string.str_about_user_agreement_html_source)
+                Column(Modifier.fillMaxWidth()) {
+                    FieldsCard {
+                        AuthField(
+                            label = context.getString(R.string.hint_login),
+                            value = name,
+                            onValueChange = { name = it },
+                            enabled = !busy,
+                            isError = nameError,
+                            supportingText = if (nameError) context.getString(R.string.msg_username_wrong) else null,
+                        )
+                        AuthField(
+                            label = context.getString(R.string.hint_email),
+                            value = email,
+                            onValueChange = { email = it },
+                            enabled = !busy,
+                            isError = emailError,
+                            supportingText = if (emailError) context.getString(R.string.msg_email_pattern) else null,
+                            keyboardType = KeyboardType.Email,
+                        )
+                        AuthField(
+                            label = context.getString(R.string.hint_pass),
+                            value = password,
+                            onValueChange = { password = it },
+                            enabled = !busy,
+                            isError = passwordError,
+                            supportingText = if (passwordError) context.getString(R.string.msg_password_rules) else null,
+                            keyboardType = KeyboardType.Password,
+                            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                            trailing = {
+                                PasswordTrailing(shown = showPassword,
+                                    show = context.getString(R.string.lbl_show),
+                                    hide = context.getString(R.string.lbl_hide)) { showPassword = !showPassword }
                             }
                         )
                     }
+                    // согласие: один чекбокс + одно пояснение со ссылками (политика/соглашение)
+                    val linkColor = MaterialTheme.colorScheme.primary
+                    val consentText = buildAnnotatedString {
+                        append(context.getString(R.string.signup_consent_prefix))
+                        withStyle(SpanStyle(color = linkColor, fontWeight = FontWeight.Medium)) {
+                            append(context.getString(R.string.signup_consent_privacy))
+                        }
+                        append(context.getString(R.string.signup_consent_and))
+                        withStyle(SpanStyle(color = linkColor, fontWeight = FontWeight.Medium)) {
+                            append(context.getString(R.string.signup_consent_terms))
+                        }
+                        append(context.getString(R.string.signup_consent_suffix))
+                    }
+                    Row(verticalAlignment = Alignment.Top) {
+                        Checkbox(checked = agreed, onCheckedChange = { agreed = it }, enabled = !busy)
+                        Column(Modifier.padding(top = 10.dp)) {
+                            Text(
+                                consentText,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.clickable {
+                                    Utils.displayHtmlAlertDialog(context, R.string.str_about_user_agreement_html_source)
+                                }
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    AuthButton(text = context.getString(R.string.lbl_go_on), busy = busy) { submit() }
+                    Spacer(Modifier.height(14.dp))
+                    GoogleButton(
+                        text = context.getString(R.string.lbl_google_log_in),
+                        onClick = { googleLauncher.launch(googleSignInClient.signInIntent) }
+                    )
+                    Spacer(Modifier.height(20.dp))
+                    BottomLink(context.getString(R.string.str_signup_go_off)) { onGoToLogin(email, name, password) }
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        context.getString(R.string.lbl_continue_unregistered),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .clickable { onGoToOnboarding() }
+                    )
                 }
             }
-            Spacer(Modifier.height(16.dp))
-            AuthButton(text = context.getString(R.string.lbl_go_on), busy = busy) { submit() }
-            Spacer(Modifier.height(14.dp))
-            GoogleButton(
-                text = context.getString(R.string.lbl_google_log_in),
-                onClick = { googleLauncher.launch(googleSignInClient.signInIntent) }
-            )
-            Spacer(Modifier.height(20.dp))
-            BottomLink(context.getString(R.string.str_signup_go_off)) { onGoToLogin(email, name, password) }
-            Spacer(Modifier.height(10.dp))
-            Text(
-                context.getString(R.string.lbl_continue_unregistered),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .padding(4.dp)
-                    .clickable { onGoToLogin("support@attplus.in", "", "support") }
-            )
             Spacer(Modifier.height(28.dp))
         }
     }

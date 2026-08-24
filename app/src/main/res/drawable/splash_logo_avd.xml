@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- D-29: анимированный логотип системной заставки (windowSplashScreenAnimatedIcon) -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/splash_logo">
+    <target
+        android:name="logo_body"
+        android:animation="@animator/splash_logo_fade" />
+    <target
+        android:name="logo_top"
+        android:animation="@animator/splash_logo_fade" />
+</animated-vector>

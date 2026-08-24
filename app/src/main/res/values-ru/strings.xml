@@ -148,7 +148,6 @@
 	<string name="msg_user_unverified">привет! Ваша регистрация успешно инициирована. Пожалуйста, проверьте эл.почту, сообщение с инструкцией по верификации учётной записи в Шульте плюс.</string>
 	<string name="msg_user_verif_sent">Сообщение с инструкцией для подтверждения выслано на адрес эл.почты.</string>
 	<string name="msg_user_verif_not_sent">Сообщение для подтверждения отправить на адрес эл.почты не удалось.</string>
-	<string name="lbl_reset_password"><u>Сбросить ваш пароль</u></string>
 	<string name="lbl_resend_verification_email">Повторить сообщение для подтверждения</string>
 	<string name="lbl_continue_anonymously">Продолжить с анонимной регистрацией</string>
 	<string name="lbl_continue_unregistered"><u>Продолжить без регистрации</u></string>
@@ -156,6 +155,7 @@
 	<string name="lbl_tv_alternative_reg"><u>Альтернативная регистрация</u></string>
 	<string name="msg_username_exists">Это имя пользователя занято</string>
 	<string name="msg_user_network_failed">Ошибка доступа к сети. Вы тем не менее можете войти без регистрации.</string>
+	<string name="msg_anon_exercises_restricted">Другие тренировки доступны участникам сообщества. Зарегистрироваться?</string>
 	<string name="msg_signin_anonymously_success">SignIn Anonymously:success</string>
 	<string name="msg_signin_anonymously_failure">Signin anonymously failed</string>
 	<string name="msg_username_rules">должно быть 4–15 строчных латинских букв или арабских цифр</string>
@@ -286,7 +286,7 @@
 	<string name="txt_no_data">Даже и нечего показать тут так-то</string>
 	<string name="lbl_rating_letter">Р</string>
 	<string name="lbl_google_log_in">Вход с гугл-аккаунтом</string>
-	<string name="ob_credit_badge">%1$d псимонет — ваш кредит</string>
+	<string name="ob_credit_badge">%1$d псимонет — ваш кошелёк</string>
 	<string name="signup_consent_suffix">.</string>
 	<string name="signup_consent_terms">Условиями обслуживания</string>
 	<string name="signup_consent_and"> и </string>
@@ -343,14 +343,16 @@
 	<string name="ob_start">Начать</string>
 	<string name="ob_slide3_title">Сохраняйте прогресс</string>
 	<string name="ob_slide3_body">Создайте аккаунт, чтобы синхронизировать статистику между устройствами\nи видеть достижения.</string>
+	<string name="ob_slide3_anon_name">Вы играете как %1$s</string>
+	<string name="ob_start_countdown">Старт… %1$d</string>
 	<string name="ob_benefit_1">Все упражнения доступны</string>
 	<string name="ob_benefit_2">Псикойны копятся с каждой тренировкой</string>
 	<string name="ob_signup">Зарегистрироваться</string>
 	<string name="ob_continue_without_registration">Продолжить без регистрации</string>
 	<plurals name="ob_price_coin">
-		<item quantity="one">монета</item>
-		<item quantity="few">монеты</item>
-		<item quantity="many">монет</item>
-		<item quantity="other">монет</item>
+		<item quantity="one">%1$d псимонета</item>
+		<item quantity="few">%1$d псимонеты</item>
+		<item quantity="many">%1$d псимонет</item>
+		<item quantity="other">%1$d псимонет</item>
 	</plurals>
 </resources>

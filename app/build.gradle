@@ -127,6 +127,7 @@ dependencies {
 
     implementation 'androidx.activity:activity:1.13.0' // for ActivityResultLauncher for Google Auth
     implementation 'androidx.fragment:fragment:1.8.9'
+    implementation 'androidx.core:core-splashscreen:1.2.0' // системная заставка (SP03-04, D-29); 1.1.0-rc01+ — windowSplashScreenBrandingImage
 
     // provides google sign-up and log-in (googleid был мёртвым кодом — удалён в B2)
     implementation 'com.google.android.gms:play-services-auth:19.0.0'   // 16.0.0 → краш Google-входа (SignInHubActivity наследует android.support.v4.app.FragmentActivity, отсутствующий в APK; фикс 16.08.2026); «240805» — дата 2024-08-05, текст ошибки не задокументирован (см. D-22)

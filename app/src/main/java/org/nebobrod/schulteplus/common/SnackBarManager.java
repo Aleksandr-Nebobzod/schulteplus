@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
 
 /** Organizes snack bar queue, store them until {@link SnackBarManager#isPostponed} becomes true -- shows in chain and run finishing listener*/
 public class SnackBarManager {
-	private static final String TAG = "SplashViewModel";
+	private static final String TAG = "SnackBarManager";
 
 	private Queue<MessageItem> messageQueue = new LinkedList<>();
 	private boolean isPostponed = false;

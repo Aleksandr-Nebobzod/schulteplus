@@ -14,7 +14,7 @@ import java.util.Locale
 
 /**
  * Фоновые проверки после входа в Main (D-17): версия приложения по AdminNote и сеть.
- * Порт checkApp/checkNetwork из SplashViewModel (удалён в SP-03 Inc 1); стартовый
+ * Порт бывших checkApp/checkNetwork (SP-03 Inc 1); стартовый
  * сплэш больше их не ждёт.
  */
 object StartupChecks {

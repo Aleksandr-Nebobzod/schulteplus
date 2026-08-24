@@ -104,4 +104,4 @@ temp/
 *.tmp
 
 # Push to repo anyway:
-!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.jar.claude/worktrees/

@@ -12,6 +12,9 @@ import org.nebobrod.schulteplus.Utils;
 import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.common.ExerciseRunner;
 import org.nebobrod.schulteplus.common.GridAdapter;
+import org.nebobrod.schulteplus.common.PavedCellDrawable;
+import org.nebobrod.schulteplus.common.PavingMap;
+import org.nebobrod.schulteplus.common.TilePaving;
 import org.nebobrod.schulteplus.R;
 import org.nebobrod.schulteplus.common.SCell;
 import org.nebobrod.schulteplus.common.STable;
@@ -24,6 +27,7 @@ import org.nebobrod.schulteplus.common.ResourceSymbolTemplate;
 import org.nebobrod.schulteplus.ui.ExResultArrayAdapter;
 
 import static org.nebobrod.schulteplus.Utils.*;
+import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S4;
 import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_COLOR_BLUE;
 import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_COLOR_RED;
 
@@ -41,10 +45,14 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
 import android.widget.Chronometer;
 import android.widget.GridView;
@@ -60,6 +68,9 @@ public class SchulteActivity extends AppCompatActivity {
 	private GridView mGrid;
 	private STable exercise;
 	private GridAdapter mAdapter;
+	/** Paved-режим «Мешанины»: маппер ячеек 10×10 ↔ плиток 1..25 (null — классика) */
+	private PavingMap pavingMap;
+	private boolean isPaved;
 	private ExerciseRunner runner;
 	private ExToolbar exToolbar;
 
@@ -152,11 +163,15 @@ public class SchulteActivity extends AppCompatActivity {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
 				int expected = exercise.getExpectedPosition();
-				View hintView = adapterView.getChildAt(expected);
-
-				setViewZOrder((ViewGroup) adapterView, hintView, true);
-//				animThrob(hintView, Color.valueOf(getColor(R.color.light_grey_A_green)));
-				animThrob(hintView, null);
+				if (isPaved) {
+					// TP-16: вспышка всей ожидаемой плитки
+					flashTile(adapterView, expected + 1, getColor(R.color.light_grey_A_green));
+				} else {
+					View hintView = adapterView.getChildAt(expected);
+					setViewZOrder((ViewGroup) adapterView, hintView, true);
+//					animThrob(hintView, Color.valueOf(getColor(R.color.light_grey_A_green)));
+					animThrob(hintView, null);
+				}
 				return true;
 			}
 		});
@@ -166,10 +181,12 @@ public class SchulteActivity extends AppCompatActivity {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 				feedbacks (view, feedbackHaptic, feedbackSound);
-				SCell currentCell = exercise.getArea().get(position);
+				// paved: a tap on any cell of a tile is a tap on the tile's number
+				int turnPosition = isPaved ? pavingMap.tileAt(position) - 1 : position;
+				SCell currentCell = exercise.getArea().get(turnPosition);
 				//Toast.makeText(SchulteActivity02.this, position+"_" + currentCell.getValue(), Toast.LENGTH_SHORT).show();
 //				if (position==1) Utils.showSnackBar(SchulteActivity02.this, position +"");
-				if (exercise.isCorrectTurn(position)) {
+				if (exercise.isCorrectTurn(turnPosition)) {
 					if (exercise.checkIsFinished()) {
 						resultLiveData.setValue(exercise.calculateResults());
 						ExerciseRunner.setExResult(Objects.requireNonNull(resultLiveData.getValue()));
@@ -189,11 +206,17 @@ public class SchulteActivity extends AppCompatActivity {
 						exToolbar.refresh(exercise);
 					}
 				// Display an error
-				} else if (ExerciseRunner.isHinted()) {
+				} else if (ExerciseRunner.isHinted() || isPaved) {
+					// TP-17: в «Мешанине» ошибка подсвечивается всегда (и при hints = off)
 					exToolbar.plusMistake();
 					exToolbar.refresh(exercise);
-					setViewZOrder((ViewGroup) adapterView, view, true);
-					animThrob(view, Color.valueOf(getColor(R.color.light_grey_A_red)));
+					if (isPaved) {
+						// TP-17: вспышка всей плитки ошибочного тапа — розовым
+						flashTile(adapterView, pavingMap.tileAt(position), getColor(R.color.mishmash_pink));
+					} else {
+						setViewZOrder((ViewGroup) adapterView, view, true);
+						animThrob(view, Color.valueOf(getColor(R.color.light_grey_A_red)));
+					}
 				}
 				Log.d(TAG, "onItemClick: " + exercise.journal.get(exercise.journal.size() - 1));
 			}
@@ -231,6 +254,41 @@ public class SchulteActivity extends AppCompatActivity {
 	}
 
 	/**
+	 * Paved-режим: вспышка всей плитки (TP-16/17/18/19 — пользователь работает с плиткой, не с ячейками).
+	 * TP-19: подсвечивается ГРАНИЦА плитки (символ остаётся видимым) + пульс плитки целиком
+	 * (pivot — центр плитки); штатные рамки возвращает refresh адаптера.
+	 */
+	private void flashTile(AdapterView<?> adapterView, int tileNum, int borderColor) {
+		int[] bounds = pavingMap.tileBounds(tileNum);
+		for (int cell : pavingMap.cellsOfTile(tileNum)) {
+			View cellView = adapterView.getChildAt(cell);
+			if (cellView != null) {
+				Drawable bg = cellView.getBackground();
+				if (bg instanceof PavedCellDrawable) {
+					((PavedCellDrawable) bg).setBorderColor(borderColor);
+				}
+				// TP-18: +10% → −10% за 300 мс (150+150), pivot — центр плитки (пульс как единая фигура)
+				float cellW = cellView.getWidth();
+				float cellH = cellView.getHeight();
+				if (cellW > 0 && cellH > 0) {
+					float pivotX = (bounds[1] + bounds[3] + 1) / 2f * cellW - (cell % 10) * cellW;
+					float pivotY = (bounds[0] + bounds[2] + 1) / 2f * cellH - (cell / 10) * cellH;
+					AnimationSet pulse = new AnimationSet(true);
+					ScaleAnimation grow = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, pivotX, pivotY);
+					grow.setDuration(150);
+					ScaleAnimation shrink = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, pivotX, pivotY);
+					shrink.setDuration(150);
+					shrink.setStartOffset(150);
+					pulse.addAnimation(grow);
+					pulse.addAnimation(shrink);
+					cellView.startAnimation(pulse);
+				}
+			}
+		}
+		adapterView.postDelayed(() -> mAdapter.notifyDataSetChanged(), 400);
+	}
+
+	/**
 	 * On start preparations
 	 */
 	private void initArea() {
@@ -242,9 +300,20 @@ public class SchulteActivity extends AppCompatActivity {
 		exToolbar = new ExToolbar(findViewById(R.id.tb_custom));
 
 		// Prepare exercise field
-		mGrid.setNumColumns(exercise.getX());
+		isPaved = KEY_PRF_EX_S4.equals(exercise.getAppContext().getExTypeId());
+		if (isPaved) {
+			// «Мешанина»: физическое поле 10×10 плиток (ТЗ docs/TZ_Mishmash.md)
+			pavingMap = new PavingMap(new TilePaving(exercise.getSeed()).build());
+			mGrid.setNumColumns(10);
+			// TP-17: без серого системного selector'а (setSelector(null) — NPE в AbsListView)
+			mGrid.setSelector(new ColorDrawable(Color.TRANSPARENT));
+		} else {
+			pavingMap = null;
+			mGrid.setNumColumns(exercise.getX());
+		}
 		mGrid.setEnabled(true);
 		mAdapter = new GridAdapter(this, exercise, ExerciseRunner.isSquared(), ExerciseRunner.getPrefTextScale());
+		if (isPaved) mAdapter.setPavingMap(pavingMap);
 		mGrid.setAdapter(mAdapter);
 		mGrid.setLongClickable(true);
 

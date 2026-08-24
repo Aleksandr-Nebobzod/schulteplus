@@ -1,12 +1,12 @@
 # Project Index: Schulte Plus
 
-*Generated: 2026-07-26* | *84 source files · ~58K tokens → 3K index (95% reduction)*
+*Generated: 2026-08-23* | *98 source files: 78 Java (app), 14 Kotlin (app), 6 Kotlin (shared KMP)*
 
 ## Project Structure
 
 ```
 schulteplus/
-├── app/                                  # Main Android module
+├── app/                                  # Main Android module (Java + Kotlin)
 │   ├── build.gradle                      # App-level build config (dependencies, SDK versions)
 │   ├── proguard-rules.pro                # ProGuard rules
 │   └── src/
@@ -14,105 +14,110 @@ schulteplus/
 │       │   ├── AndroidManifest.xml       # App manifest (activities, permissions, themes)
 │       │   ├── assets/                   # HTML help pages, RSS, sitemap
 │       │   ├── res/                      # Resources (layouts, drawables, values, navigation, raw)
-│       │   └── java/org/nebobrod/schulteplus/
-│       │       ├── Utils.java            # Application class + static utility hub (1543 lines)
-│       │       ├── common/               # Core exercise engine
-│       │       ├── data/                 # Data layer (ORMLite + Firebase)
-│       │       └── ui/                   # Activities, fragments, view models, adapters
-│       ├── test/                         # Unit tests (JVM)
+│       │   ├── java/org/nebobrod/schulteplus/   # Java: core engine, data layer, View-based UI
+│       │   └── kotlin/org/nebobrod/schulteplus/ # Kotlin: auth (Compose), analytics
+│       ├── test/                         # Unit tests (JVM, JUnit 4)
 │       └── androidTest/                  # Instrumentation tests (device/emulator)
-├── gradle/                               # Gradle wrapper
+├── shared/                               # Kotlin Multiplatform module (commonMain)
+│   └── src/commonMain/kotlin/org/nebobrod/schulteplus/  # Const, AppContext, AuthService, ...
+├── docs/                                 # ТЗ и планы (см. раздел Documentation)
 ├── lib/                                  # Library module (build config only)
-├── build.gradle                          # Root build config (plugins, repos)
+├── gradle/                               # Gradle wrapper
+├── build.gradle                          # Root build config (Kotlin 2.2.21, MPP/Compose plugins)
 ├── settings.gradle                       # Project settings (rootProject.name = "Schulte Plus")
 ├── gradle.properties                     # JVM args, AndroidX, R8 settings
-└── CLAUDE.md                             # Dev guidance for Claude Code
+├── CLAUDE.md                             # Dev guidance for Claude Code
+├── README.md / README_RU.md              # Project overview (EN/RU)
+└── PROJECT_INDEX.md                      # This file
 ```
+
+## Migration Status (Java → Kotlin)
+
+Миграция активна (ветка `feature/kotlin2`): auth/analytics уже на Kotlin+Compose, ядро упражнений (`common/`, `data/`) пока Java, общие константы/модели переезжают в `shared/commonMain` (KMP). Новый доменный код пишется сразу на Kotlin в `shared` (см. `docs/TZ_Mishmash.md`).
 
 ## Entry Points
 
 | Entry | Path | Purpose |
 |---|---|---|
 | App class | `Utils.java` (extends `Application`) | Global context, static utilities, crash logging |
-| Launcher | `SplashActivity` | Auth check → auto-login or `LoginActivity`/`SignupActivity` |
-| Main hub | `MainActivity` | Bottom nav (Dashboard/Home/Schulte/More) + FAB exercise launcher |
-| Exercise activities | `SchulteActivity`, `BasicsActivity`, `SssrActivity` | Fullscreen exercise sessions |
+| Launcher | `ui/AuthActivity.kt` (+ `ui/auth/` Compose) | Splash/Login/Signup/Onboarding на Compose (заменили `SplashActivity`/`LoginActivity`/`SignupActivity`) |
+| Main hub | `MainActivity.java` | Bottom nav (Dashboard/Home/Schulte/More) + FAB exercise launcher |
+| Exercise activities | `ui/schulte/SchulteActivity`, `ui/basics/BasicsActivity`, `ui/sssr/SssrActivity` | Fullscreen exercise sessions |
 | Settings | `PrefsPopupFragment`, `PrefsSettingsFragment`, `PrefsChoiceFragment` | User preferences |
 | Invest/Unlock | `InvestActivity` | Quiz/purchase to unlock exercises with psycoins |
 
 ## Core Modules
 
-### Common (`common/`) — Exercise Engine
+### Shared KMP (`shared/commonMain`) — общие модели и сервисы (Kotlin)
 
-| File | Lines | Role |
-|---|---|---|
-| `Const.java` | ~165 | Interface: ALL preference keys, exercise IDs, achievement flags, bitmask intros |
-| `ExerciseRunner.java` | ~670 | Singleton: user state, preferences CRUD, exercise lifecycle (`start`/`complete`/`clear`), stat accumulation |
-| `STable.java` | ~530 | Schulte Table: grid of `SCell`, probability distribution via `camelSurface()`, shuffle, turn journal, result calc |
-| `Exercise.java` | ~90 | Abstract base for all exercise types, parameterized on `ExResult` |
-| `SCell.java` | ~60 | Single cell: value, text, color, coordinates |
-| `GridAdapter.java` | ~100 | Adapter: renders `STable` cells into a `GridView` with squared/rectangular modes |
-| `Turn.java` | ~80 | Data class: one turn record (timestamp, position, correctness, time delta) |
-| `AppExecutors.java` | ~40 | Thread pool executors for network and disk I/O |
-| `NetworkConnectivity.java` | ~40 | Internet connectivity checker |
-| `Log.java` | ~20 | Log wrapper around `android.util.Log` |
-| `Tile*Paving.java` (4 files) | ~120 | Tile arrangement algorithms (branch, fill, pick, squash) |
+| File | Role |
+|---|---|
+| `Const.kt` | ALL preference keys, exercise IDs (`KEY_PRF_*`), achievement flags, intro bitflags — единый источник (Java-версия удалена) |
+| `AppContext.kt` | Абстракция контекста приложения для KMP |
+| `AuthService.kt` | Сервис авторизации (contract для KMP, реализация в app: `FirebaseAuthService`) |
+| `ExerciseStats.kt` | Статистика упражнения (числа для ExResult) |
+| `Validatable.kt` | Интерфейс валидации результатов |
+| `Shared.kt` | Точка входа модуля |
 
-### Data (`data/`) — Dual Local+Cloud Persistence
+### Common (`common/`) — Exercise Engine (Java)
 
-| File | Lines | Role |
-|---|---|---|
-| `DataRepository.java` | ~115 | Interface: CRUD + `WhereCond` enum (EQ/GE/LE) for query conditions |
-| `DataRepos.java` | ~390 | Facade: writes to ORMLite then Firestore; reads resolve conflicts by timestamp |
-| `DataOrmRepo.java` | ~300 | Local SQLite via ORMLite (create, read, update, delete, batch load, list queries) |
-| `DataFirestoreRepo.java` | ~312 | Cloud Firestore (same CRUD interface, `getListByField` with compound conditions) |
-| `DatabaseHelper.java` | ~260 | ORMLite helper: creates/upgrades local DB tables (Achievement, ExResult, Turn, UserHelper, AdminNote) |
-| `ExResult.java` | ~505 | Core data class: id, uak, uid, name, timestamp, exType, numValue, turns, RMSD, psycoins, emotion/energy levels |
-| `ExResultSchulte.java` | ~25 | Extends ExResult with Schulte-specific fields (turns, turnsMissed, average, rmsd) |
-| `ExResultBasics.java` | ~25 | Extends ExResult with Basics-specific fields |
-| `ExResultSssr.java` | ~25 | Extends ExResult with SSSR-specific fields (lng01-lng03, flo01-flo03) |
-| `ExType.java` | ~303 | Exercise type metadata loaded from `res/raw/ex_types.json`; tracks unlock requirements |
-| `Achievement.java` | ~80 | Achievement records (ex type, record value, date) |
-| `UserHelper.java` | ~100 | User profile: uid, uak, name, email, psycoins, seconds, hours, level |
-| `Turn.java` | ~80 | Turn journal entry |
-| `AdminNote.java` | ~40 | Admin messages from server |
-| `Identifiable.java` | ~15 | Interface for entities with `getEntityKey()` and `getTimeStamp()` |
-| `fbservices/` (7 files) | ~600 | Firebase helpers: Achievements sync, UserDbPreferences, ConditionEntry, FirestoreRepo |
+| File | Role |
+|---|---|
+| `Exercise.java` | Abstract base for all exercise types, parameterized on `ExResult` |
+| `ExerciseRunner.java` | Singleton: user state, preferences CRUD, exercise lifecycle (`start`/`complete`/`clear`), stat accumulation |
+| `ExerciseServices.java` | Сервисный мост домена (шаблоны символов, saver/writer) |
+| `STable.java` | Schulte Table: grid of `SCell`, probability distribution via `camelSurface()`, shuffle, turn journal, result calc |
+| `SCell.java` | Single cell: value, text, color, coordinates |
+| `GridAdapter.java` | Adapter: renders `STable` cells into a `GridView` (кандидат на paved-режим «Мешанины») |
+| `SymbolTemplate.java`, `ResourceSymbolTemplate.java` | Шаблоны символов (числа/буквы/цвета) |
+| `ResultSaver.java`, `TurnWriter.java` | Персистенция результата и ходов (имплементации в `data/`) |
+| `Tile*Paving.java` (4) | Tile arrangement algorithms (branch, fill, pick, squash) — «Мешанина»: рефакторинг squash в `shared/TilePaving.kt` |
+| `AppExecutors.java`, `NetworkConnectivity.java`, `Log.java`, `SnackBarManager.java` | Утилиты (потоки, сеть, лог, snackbar) |
+
+### Data (`data/`) — Dual Local+Cloud Persistence (Java)
+
+| File | Role |
+|---|---|
+| `DataRepository.java` | Interface: CRUD + `WhereCond` enum (EQ/GE/LE) for query conditions |
+| `DataRepos.java` | Facade: writes to ORMLite then Firestore; reads resolve conflicts by timestamp |
+| `DataOrmRepo.java` | Local SQLite via ORMLite |
+| `DataFirestoreRepo.java` | Cloud Firestore (в `fbservices/`) |
+| `DatabaseHelper.java`, `DatabaseConfigUtil.java` | ORMLite helper: create/upgrade local DB (Achievement, ExResult, Turn, UserHelper, AdminNote) |
+| `ExResult.java` (+ `ExResultSchulte/Basics/Sssr`) | Core result hierarchy |
+| `ExType.java` | Exercise type metadata from `res/raw/ex_types.json`; unlock requirements |
+| `DefaultResultSaver.java`, `DefaultTurnWriter.java` | Реализации saver/writer для ORMLite+Firestore |
+| `Achievement.java`, `AchievementArrayAdapter.java`, `UserHelper.java`, `Turn.java`, `AdminNote.java`, `Identifiable.java` | Сущности и адаптеры |
+| `z_DataRepository.java` | (z_-файл — не используется в основном потоке) |
 
 ### UI (`ui/`) — Activities, Fragments, View Models
 
-| File | Lines | Role |
-|---|---|---|
-| `MainActivity.java` | ~390 | Central hub: nav setup, FAB exercise dispatch, in-app update check, onboarding |
-| `SplashActivity.java` | ~60 | Launch screen: check auth → route to Login or Main |
-| `LoginActivity.java` | ~200 | Email/password + Google sign-in |
-| `SignupActivity.java` | ~120 | User registration |
-| `SchulteActivity.java` | ~345 | Fullscreen Schulte table exercise with toolbar, grid, feedback dialog |
-| `BasicsActivity.java` | ~200 | Basics visualization exercises |
-| `SssrActivity.java` | ~300 | SSSR exercises |
-| `InvestActivity.java` | ~200 | Unlock exercises (quiz/purchase) |
-| `DashboardFragment.java` | ~100 | ViewPager container: State → Achievements → Results tabs |
-| `DashboardFragment00State.java` | ~80 | User stats summary tab |
-| `DashboardFragment01Achievements.java` | ~100 | Achievements list tab |
-| `DashboardFragment02ExResult.java` | ~120 | Exercise results history tab |
-| `DashboardPagerAdapter.java` | ~50 | ViewPager adapter for dashboard |
-| `DashboardViewModel.java` | ~60 | Dashboard data holder |
-| `HomeFragment.java` | ~80 | News/notifications feed |
-| `HomeViewModel.java` | ~40 | News data holder |
-| `NotificationsFragment.java` | ~60 | System notifications |
-| `SchulteSettings.java` | ~200 | Schulte exercise configuration |
-| `BasicSettings.java` | ~150 | Basics exercise configuration |
-| `SssrSettings.java` | ~150 | SSSR exercise configuration |
-| `SssrViewModel.java` | ~80 | SSSR data holder |
-| `PrefsPopupFragment.java` | ~60 | Quick settings popup |
-| `PrefsSettingsFragment.java` | ~100 | Full preferences screen |
-| `PrefsChoiceFragment.java` | ~120 | Exercise space selection |
-| `PrefsAboutFragment.java` | ~60 | About screen |
-| `ExResultArrayAdapter.java` | ~200 | List adapter for exercise results + feedback dialog |
-| `ExResultCardViewAdapter.java` | ~150 | CardView adapter for results |
-| `RichEditorDialogFragment.java` | ~80 | Rich text note editor |
-| `SpCalendarView.java` | ~100 | Custom calendar heatmap using MPAndroidChart |
-| `TapTargetViewWr.java` | ~30 | Wrapper for onboarding tap targets |
+Java (View-система):
+- `MainActivity.java` — центральный хаб (nav, FAB, in-app update)
+- `ui/schulte/SchulteActivity`, `ui/basics/BasicsActivity`, `ui/sssr/SssrActivity` — игровые экраны
+- `ui/schulte/SchulteSettings`, `ui/basics/BasicSettings`, `ui/sssr/SssrSettings` — настройки упражнений
+- Подпапки: `dashboard/`, `home/`, `notifications/`, `schulteparents/`, `basics/`, `sssr/`
+- `InvestActivity`, `Prefs*Fragment`, `ExResult*Adapter`, `SpCalendarView`, `RichEditorDialogFragment`, `KeyValueView`, `z_AlertDialogFragment`
+
+Kotlin (Compose):
+- `ui/AuthActivity.kt` — хост auth-экранов
+- `ui/auth/`: `SplashScreen.kt`, `LoginScreen.kt`, `SignupScreen.kt`, `OnboardingScreen.kt`, `AuthComponents.kt`, `OnboardingPrefs.kt`
+- `ui/theme/Theme.kt` — Material-тема
+- `auth/AuthSession.kt`, `auth/FirebaseAuthService.kt` — сессия и реализация AuthService
+- `analytics/Analytics.kt`, `common/AppNetwork.kt`, `common/StartupChecks.kt`
+
+## Documentation (docs/)
+
+| File | Purpose |
+|---|---|
+| `TZ_Mishmash.md` | ТЗ упражнения «Мешанина» (S4): замощение 10×10 плитками, Kotlin в shared, Java UI |
+| `TZ_StartScreens_Redesign.md` | ТЗ редизайна стартовых экранов (SP-03, Compose) |
+| `API36_upgrade_plan.md` | План обновления до Android 16 (API 36) |
+| `ARCHITECTURE.md` | Архитектура приложения (C4/mermaid) |
+| `BACKLOG.md` | Бэклог задач |
+| `Decisions.md` | Реестр архитектурных решений |
+| `MODULAR_TRANSITION.md` | План модульного перехода (KMP) |
+| `Research_Addon_Platforms.md` (+ `-.md`) | Исследование аддон-платформ |
+| `pdca/` | Циклы PDCA |
 
 ## Resource Highlights
 
@@ -134,45 +139,41 @@ res/
 
 | Test type | Location | Files | Framework |
 |---|---|---|---|
-| Unit tests | `app/src/test/` | 3 files | JUnit 4.13 |
-| Instrumentation | `app/src/androidTest/` | 7 files | AndroidJUnitRunner, Espresso 3.5, Mockito 4.0 |
+| Unit tests | `app/src/test/` | 3 (AnyTest, ExampleUnitTest, TilePavingTest) | JUnit 4.13 |
+| Instrumentation | `app/src/androidTest/` | `data/`, `ui/`, ExampleInstrumentedTest | AndroidJUnitRunner, Espresso, Mockito |
 
 Key test targets:
-- `DataOrmRepoTest` — local database CRUD operations
-- `DataFirestoreRepositoryTest` — Firestore operations (requires emulator/device)
-- `AchievementsFbDataTest` — Firebase achievements sync
-- `LoginActivityTest` — Login UI flow
-- `TilePavingTest` — Tile arrangement algorithm unit test
+- `TilePavingTest` — сейчас гоняет `TileSquashPaving.main()`; по `docs/TZ_Mishmash.md` заменяется на `shared/commonTest/TilePavingTest.kt` (полнота замощения, детерминизм, инварианты PavingMap)
+- `DataOrmRepoTest`, `DataFirestoreRepositoryTest` — persistence (второй требует устройство/эмулятор)
 
 ## Configuration Files
 
 | File | Purpose |
 |---|---|
-| `build.gradle` (root) | Plugins: Firebase Crashlytics 2.9.9, Google Services 4.4.0, Kotlin 1.9.0, AGP 7.4.2 |
-| `app/build.gradle` | SDK versions, 30+ dependencies, build types (debug/release), Firestore root path per variant |
-| `gradle.properties` | JVM 2048m, parallel builds, AndroidX, R8 full mode disabled, config cache |
+| `build.gradle` (root) | Kotlin 2.2.21 (android + multiplatform + compose plugins), Firebase/GMS classpath |
+| `shared/build.gradle` | KMP-плагин + `com.android.kotlin.multiplatform.library`; coroutines 1.10.2 |
+| `app/build.gradle` | SDK versions, dependencies, build types, Firestore root path per variant |
+| `gradle.properties` | JVM args, parallel builds, AndroidX, R8, config cache |
 | `settings.gradle` | Repo config (Google, Maven Central, JitPack), module includes |
 | `app/proguard-rules.pro` | Release obfuscation rules |
-| `ormlite_config.txt` | Pre-generated ORMLite config for faster startup |
 
 ## Key Dependencies
 
-| Dependency | Version | Purpose |
+> Версии обновлялись в ходе миграции (фикс `a115930` — upgrade play-services); актуальный список — `app/build.gradle`.
+
+| Dependency | Version (на 26.07) | Purpose |
 |---|---|---|
+| Kotlin | 2.2.21 (актуально) | Язык: app + shared (MPP, Compose) |
+| Compose / kotlinx-coroutines | 1.10.2 (shared) | UI-редизайн (SP-03), конкурентность |
 | Firebase Firestore | 25.0.0 | Cloud database |
 | Firebase Auth | 16.0.3 | Authentication |
 | Firebase Crashlytics | 19.0.3 | Crash reporting |
 | Firebase Analytics | 22.0.2 | Usage analytics |
-| Firebase UI Auth | 7.2.0 | Auth UI components |
 | ORMLite Android | 6.1 | Local SQLite ORM |
-| Google Play Services Auth | 16.0.0 | Google sign-in |
+| Google Play Services Auth | 16.0.0 → поднята | Google sign-in |
 | Navigation Component | 2.7.7 | Fragment navigation |
 | MPAndroidChart | 3.1.0 | Charts (calendar heatmap) |
-| Calendar View (kizitonwose) | 2.0.0 | Calendar UI |
 | Glide | 4.11.0 | Image loading (GIF in Basics) |
-| TapTargetView | 1.13.3 | Onboarding tutorial overlays |
-| RichEditor | 2.0.0 | Rich text editing |
-| Play App Update | 2.1.0 | In-app update prompts |
 | Gson | 2.10.1 | JSON parsing |
 
 ## Build Types
@@ -181,8 +182,6 @@ Key test targets:
 |---|---|---|---|
 | `debug` | `spdbs/dev/` | true | disabled |
 | `release` | `spdbs/test/` | false | enabled |
-
-Output APK: `Schulte Plus_{versionCode}_{versionName}.apk` (e.g., `Schulte Plus_116_Entada.apk`)
 
 ## Exercise Spaces by ID Prefix
 

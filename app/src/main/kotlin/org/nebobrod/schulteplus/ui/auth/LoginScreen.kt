@@ -4,6 +4,7 @@ import android.app.Activity
 import android.util.Patterns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -37,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -56,6 +59,7 @@ import org.nebobrod.schulteplus.data.UserHelper
  * show/hide, «Забыли пароль?» → диалог сброса (B2.1), snackbar «подтвердите почту»
  * с resend для непроверенных аккаунтов, Google, демо-лок support@attplus.in, переход в Signup.
  */
+// @Preview
 @Composable
 fun LoginScreen(
     initialEmail: String,
@@ -190,56 +194,63 @@ fun LoginScreen(
                 modifier = Modifier.align(Alignment.Start)
             )
             Spacer(Modifier.height(20.dp))
-            // правка 3.1: все поля — в одной карточке с полупрозрачной подложкой
-            FieldsCard {
-                AuthField(
-                    label = context.getString(R.string.hint_email),
-                    value = email,
-                    onValueChange = { email = it },
-                    enabled = !demoLocked && !busy,
-                    isError = emailError,
-                    supportingText = if (emailError) context.getString(R.string.msg_email_pattern) else null,
-                    keyboardType = KeyboardType.Email,
-                )
-                AuthField(
-                    label = context.getString(R.string.hint_pass),
-                    value = password,
-                    onValueChange = { password = it },
-                    enabled = !demoLocked && !busy,
-                    isError = passwordError,
-                    supportingText = if (passwordError) context.getString(R.string.msg_password_rules) else null,
-                    keyboardType = KeyboardType.Password,
-                    visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailing = {
-                        PasswordTrailing(shown = showPassword,
-                            show = context.getString(R.string.lbl_show),
-                            hide = context.getString(R.string.lbl_hide)) { showPassword = !showPassword }
+            // SP03-08: одна общая полупрозрачная подложка (все элементы, кроме заголовка)
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(16.dp))
+                    .padding(horizontal = 12.dp, vertical = 16.dp)
+            ) {
+                Column(Modifier.fillMaxWidth()) {
+                    FieldsCard {
+                        AuthField(
+                            label = context.getString(R.string.hint_email),
+                            value = email,
+                            onValueChange = { email = it },
+                            enabled = !demoLocked && !busy,
+                            isError = emailError,
+                            supportingText = if (emailError) context.getString(R.string.msg_email_pattern) else null,
+                            keyboardType = KeyboardType.Email,
+                        )
+                        AuthField(
+                            label = context.getString(R.string.hint_pass),
+                            value = password,
+                            onValueChange = { password = it },
+                            enabled = !demoLocked && !busy,
+                            isError = passwordError,
+                            supportingText = if (passwordError) context.getString(R.string.msg_password_rules) else null,
+                            keyboardType = KeyboardType.Password,
+                            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                            trailing = {
+                                PasswordTrailing(shown = showPassword,
+                                    show = context.getString(R.string.lbl_show),
+                                    hide = context.getString(R.string.lbl_hide)) { showPassword = !showPassword }
+                            }
+                        )
                     }
-                )
-            }
-            Spacer(Modifier.height(4.dp))
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(
-                    onClick = {
-                        resetEmail = email
-                        showResetDialog = true
-                    },
-                    enabled = !busy
-                ) {
-                    Text(context.getString(R.string.lbl_forgot_password))
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                        TextButton(
+                            onClick = {
+                                resetEmail = email
+                                showResetDialog = true
+                            },
+                            enabled = !busy
+                        ) {
+                            Text(context.getString(R.string.lbl_forgot_password))
+                        }
+                    }
+                    AuthButton(text = context.getString(R.string.lbl_go_on), busy = busy) { submit() }
+                    Spacer(Modifier.height(16.dp))
+                    OrDivider(context.getString(R.string.lbl_or))
+                    Spacer(Modifier.height(16.dp))
+                    GoogleButton(
+                        text = context.getString(R.string.lbl_google_log_in),
+                        onClick = { googleLauncher.launch(googleSignInClient.signInIntent) }
+                    )
+                    Spacer(Modifier.height(20.dp))
+                    BottomLink(context.getString(R.string.str_login_go_off)) { onGoToSignup(email, initialName, password) }
                 }
             }
-            Spacer(Modifier.height(4.dp))
-            AuthButton(text = context.getString(R.string.lbl_go_on), busy = busy) { submit() }
-            Spacer(Modifier.height(16.dp))
-            OrDivider(context.getString(R.string.lbl_or))
-            Spacer(Modifier.height(16.dp))
-            GoogleButton(
-                text = context.getString(R.string.lbl_google_log_in),
-                onClick = { googleLauncher.launch(googleSignInClient.signInIntent) }
-            )
-            Spacer(Modifier.height(24.dp))
-            BottomLink(context.getString(R.string.str_login_go_off)) { onGoToSignup(email, initialName, password) }
             Spacer(Modifier.height(28.dp))
         }
     }

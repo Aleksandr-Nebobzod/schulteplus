@@ -10,6 +10,7 @@ package org.nebobrod.schulteplus.common;
 
 import static org.nebobrod.schulteplus.Utils.getRes;
 import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S1;
+import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S4;
 import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S2;
 import static org.nebobrod.schulteplus.common.Const.KEY_PRF_EX_S3;
 import static org.nebobrod.schulteplus.common.Const.KEY_SYMBOL_TYPE_COLOR_BLUE;
@@ -42,6 +43,12 @@ public class GridAdapter extends BaseAdapter {
 	private Context mContext;
 	private STable mExercise;
 	private boolean isSquared;
+	/** Paved-режим «Мешанины»: null — классический вывод; иначе — маппер ячеек ↔ плиток */
+	private PavingMap pavingMap = null;
+
+	public void setPavingMap(PavingMap pavingMap) {
+		this.pavingMap = pavingMap;
+	}
 
 	public GridAdapter(Context context, STable exercise, boolean isSquared, int textScale) {
 		this.mContext = context;
@@ -53,6 +60,9 @@ public class GridAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
+		if (pavingMap != null) {
+			return 100;	// paved: physical field 10x10
+		}
 		return mExercise.getX() * mExercise.getY();
 	}
 
@@ -116,7 +126,14 @@ public class GridAdapter extends BaseAdapter {
 	 * mono, two-colored sequences, four-colored sequences
 	 */
 	private TextView setCellView (TextView view, int position) {
-		SCell cell = mExercise.getArea().get(position);
+		SCell cell;
+		if (pavingMap != null) {
+			// paved: physical cell belongs to its tile (see PavingMap)
+			int tile = pavingMap.tileAt(position / 10, position % 10);
+			cell = mExercise.getArea().get(tile - 1);
+		} else {
+			cell = mExercise.getArea().get(position);
+		}
 		int value = cell.getValue();
 		String strValue = "";
 		@ColorInt int color;
@@ -126,6 +143,7 @@ public class GridAdapter extends BaseAdapter {
 
 		switch (mExercise.getAppContext().getExTypeId()){
 			case KEY_PRF_EX_S1:
+			case KEY_PRF_EX_S4:	// «Мешанина»: знаки по общей настройке (TP-13)
 				switch (mExercise.getAppContext().getSymbolType()) {
 					case KEY_SYMBOL_TYPE_NUMBER_ROME:
 					case KEY_SYMBOL_TYPE_LETTER_LATIN:
@@ -179,8 +197,25 @@ public class GridAdapter extends BaseAdapter {
 			default:
 		}
 		view.setText(strValue);
-		img.setColorFilter(color, PorterDuff.Mode.DST_ATOP);
-		view.setBackground(img);
+		if (pavingMap != null) {
+			float borderWidth = 2 * view.getResources().getDisplayMetrics().density;
+			PavedCellDrawable paved = new PavedCellDrawable(color, borderWidth);
+			int row = position / 10;
+			int col = position % 10;
+			paved.setSides(
+					pavingMap.isOuterSide(row, col, 2),	// West
+					pavingMap.isOuterSide(row, col, 3),	// North
+					pavingMap.isOuterSide(row, col, 0),	// East
+					pavingMap.isOuterSide(row, col, 1));// South
+			// TP-15: одно число на плитку рисует drawable (TextView пустой)
+			paved.setNumber(strValue, view.getCurrentTextColor(),
+					pavingMap.tileBounds(pavingMap.tileAt(row, col)), row, col);
+			view.setBackground(paved);
+			view.setText("");
+		} else {
+			img.setColorFilter(color, PorterDuff.Mode.DST_ATOP);
+			view.setBackground(img);
+		}
 
 		return view;
 	}

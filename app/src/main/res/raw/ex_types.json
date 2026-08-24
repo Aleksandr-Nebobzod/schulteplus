@@ -107,10 +107,10 @@
   "gcb_schulte_4_mishmash": {
     "parentId": "gcb_space_schulte",
     "nameEn": "Mishmash",
-    "status": 0,
+    "status": 2,
     "price": 0,
     "certRequired": false,
-    "coming_soon": true,
+    "coming_soon": false,
     "achieveConditions": {
       "purchased": {
         "field": "specialMark = 'purchased' AND recordValue = '10'",

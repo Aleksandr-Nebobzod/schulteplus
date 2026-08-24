@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -44,7 +46,7 @@ import org.nebobrod.schulteplus.R
 
 /**
  * Компоненты стартовых экранов (SP-03): порт утверждённых макетов
- * (designpreview → app-код). Фон экранов — bg_login_03; контролы — на
+ * (из макетов дизайна SP-03). Фон экранов — bg_login_03; контролы — на
  * полупрозрачной подложке colorScheme.surfaceContainer; кнопки — без прозрачности.
  */
 
@@ -139,10 +141,10 @@ fun FieldsCard(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
+    // SP03-08: собственная подложка убрана — поля лежат на общей подложке экрана
     Column(
         modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(16.dp))
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) { content() }
@@ -159,11 +161,12 @@ fun PasswordTrailing(shown: Boolean, show: String, hide: String, onToggle: () ->
 fun AuthButton(
     text: String,
     busy: Boolean = false,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     val spinnerColor = MaterialTheme.colorScheme.onPrimary
-    Button(onClick = onClick, enabled = !busy, modifier = modifier.fillMaxWidth()) {
+    Button(onClick = onClick, enabled = enabled && !busy, modifier = modifier.fillMaxWidth()) {
         if (busy) {
             Box(Modifier.size(16.dp)) {
                 Canvas(Modifier.fillMaxWidth()) {
@@ -193,7 +196,7 @@ fun GoogleLogo(size: Dp = 22.dp, modifier: Modifier = Modifier) {
     }
 }
 
-/** Кнопка «Log in with Google»: белая плашка + брендированный логотип (без прозрачности). */
+/** Кнопка «Log in with Google»: брендированный логотип (SP03-08: без подложки). */
 @Composable
 fun GoogleButton(text: String, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     OutlinedButton(onClick = onClick, modifier = modifier.fillMaxWidth()) {
@@ -220,7 +223,7 @@ fun OrDivider(text: String = "or", modifier: Modifier = Modifier) {
     }
 }
 
-/** Нижняя текстовая ссылка-переход (login ↔ signup). */
+/** Нижняя текстовая ссылка-переход (login ↔ signup); подложка — общая на экране (SP03-08). */
 @Composable
 fun BottomLink(text: String, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Text(
@@ -228,6 +231,6 @@ fun BottomLink(text: String, modifier: Modifier = Modifier, onClick: () -> Unit 
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.primary,
         fontWeight = FontWeight.Medium,
-        modifier = modifier
+        modifier = modifier.clickable(onClick = onClick)
     )
 }

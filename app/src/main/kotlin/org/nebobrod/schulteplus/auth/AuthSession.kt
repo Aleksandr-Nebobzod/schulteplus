@@ -24,9 +24,11 @@ object AuthSession {
 
     /** Переход в MainActivity с UserHelper (null — демо-режим). */
     @JvmStatic
-    fun runMainActivity(context: Activity, user: UserHelper?) {
+    fun runMainActivity(context: Activity, user: UserHelper?, startExercise: String? = null) {
         val intent = Intent(context, MainActivity::class.java)
         intent.putExtra("user", user)
+        // SP03-06/D-30: автостарт выбранной на онбординге тренировки
+        if (startExercise != null) intent.putExtra("start_exercise", startExercise)
         context.startActivity(intent)
         context.finish()
     }

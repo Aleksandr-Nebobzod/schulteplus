@@ -72,6 +72,7 @@
 	<color name="light_grey_A_purple">#A181CD</color>
 	<color name="light_grey_D">#DDDDDD</color>
 	<color name="light_grey_D_red">#ED7575</color>
+	<color name="mishmash_pink">#E91E63</color>	<!-- «Мешанина»: вспышка ошибочного тапа (TP-17) -->
 	<color name="light_grey_D_orange">#E4A55D</color>
 	<color name="light_grey_D_yellow">#E3E370</color>
 	<color name="light_grey_D_green">#7CDF7C</color>

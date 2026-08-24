@@ -166,7 +166,6 @@
 	<string name="msg_user_unverified">hi! Your registration has been successfully started. Please, check your email instructions to verify your Schulte plus account.</string>
 	<string name="msg_user_verif_sent">Verification instructions email sent.</string>
 	<string name="msg_user_verif_not_sent">Verification instructions email can\'t be sent.</string>
-	<string name="lbl_reset_password"><u>Reset your password</u></string>
 	<string name="lbl_resend_verification_email">Resend verification email</string>
 	<string name="lbl_continue_anonymously">Continue anonymously (not recommend)</string>
 	<string name="lbl_continue_unregistered"><u>Continue unregistered (not recommend)</u></string>
@@ -174,6 +173,7 @@
 	<string name="lbl_tv_alternative_reg"><u>Alternative registration way</u></string>
 	<string name="msg_username_exists">This username is busy</string>
 	<string name="msg_user_network_failed">Network access failed. You still able to login temporarily without registration.</string>
+	<string name="msg_anon_exercises_restricted">Other trainings are available to community members. Register?</string>
 	<string name="msg_signin_anonymously_success">SignIn Anonymously:success</string>
 	<string name="msg_signin_anonymously_failure">Signin anonymously failed</string>
 	<string name="msg_username_rules">should have 4–15 small Latin letters or Arabic digits</string>
@@ -308,7 +308,7 @@
 	<string name="txt_no_data">There is nothing to show here now</string>
 	<string name="lbl_rating_letter">R</string>
 	<string name="lbl_google_log_in">Log in with Google</string>
-	<string name="ob_credit_badge">%1$d psycoins — your credit</string>
+	<string name="ob_credit_badge">%1$d psycoins — your wallet</string>
 	<string name="signup_consent_suffix">.</string>
 	<string name="signup_consent_terms">Terms of Service</string>
 	<string name="signup_consent_and"> and </string>
@@ -366,12 +366,14 @@
 	<string name="ob_start">Start</string>
 	<string name="ob_slide3_title">Keep your progress</string>
 	<string name="ob_slide3_body">Create an account to sync your stats across devices\nand see your achievements.</string>
+	<string name="ob_slide3_anon_name">You play as %1$s</string>
+	<string name="ob_start_countdown">Start… %1$d</string>
 	<string name="ob_benefit_1">All exercises are available</string>
 	<string name="ob_benefit_2">Psycoins accumulate with every session</string>
 	<string name="ob_signup">Sign up</string>
 	<string name="ob_continue_without_registration">Continue without registration</string>
 	<plurals name="ob_price_coin">
-		<item quantity="one">coin</item>
-		<item quantity="other">coins</item>
+		<item quantity="one">%1$d psycoin</item>
+		<item quantity="other">%1$d psycoins</item>
 	</plurals>
 </resources>

@@ -46,6 +46,7 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -507,6 +508,29 @@ public final class Utils extends Application {
 		View snackbarView = snackbar.getView();
 		TextView tv= (TextView) snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
 		tv.setMaxLines(7);
+
+		// SP03-18-3: снек-бар — не диалог (одна кнопка действия, Material). INDEFINITE не исчезает
+		// сам — закрываем тапом мимо: перехват на decorView видит ВСЕ тапы (в отличие от rootView,
+		// где клики по контенту экрана съедают дочерние вью); тап вне границ снек-бара → dismiss
+		View decorView = activity.getWindow().getDecorView();
+		decorView.setOnTouchListener((view, event) -> {
+			if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+				View sbView = snackbar.getView();
+				int[] loc = new int[2];
+				sbView.getLocationOnScreen(loc);
+				Rect sbRect = new Rect(loc[0], loc[1], loc[0] + sbView.getWidth(), loc[1] + sbView.getHeight());
+				if (!sbRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+					snackbar.dismiss();
+				}
+			}
+			return false; // событие не съедаем — доходит до контента
+		});
+		snackbar.addCallback(new Snackbar.Callback() {
+			@Override
+			public void onDismissed(Snackbar transientBottomBar, int event) {
+				decorView.setOnTouchListener(null);
+			}
+		});
 
 		// Show
 		snackbar.show();

@@ -96,6 +96,9 @@ interface Const {
 		const val KEY_PRF_ONLINE = "prf_online"
 	const val GLOBAL_PREFS_NAME = "prf_global"
 	const val KEY_ONBOARDING_SHOWN = "prf_onboarding_shown"
+	const val KEY_ONBOARDING_ANON_UID = "prf_onboarding_anon_uid" // временный идентификатор анонима (SP03-06/D-30)
+	const val KEY_ONBOARDING_ANON_NAME = "prf_onboarding_anon_name" // случайное имя из four_letters_nouns
+	const val KEY_ANON_PURCHASED = "prf_anon_purchased" // купленные упражнения анонима (SP03-11)
 
 		const val KEY_PRF_PROBABILITIES = "prf_cat_prob"
 		const val KEY_PRF_PROB_ENABLED = "prf_prob_enabled"

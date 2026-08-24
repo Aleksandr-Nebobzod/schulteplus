@@ -46,6 +46,7 @@ import org.nebobrod.schulteplus.common.Log;
 import org.nebobrod.schulteplus.data.Achievement;
 import org.nebobrod.schulteplus.data.ExResult;
 import org.nebobrod.schulteplus.data.fbservices.DataFirestoreRepo;
+import org.nebobrod.schulteplus.ui.auth.OnboardingPrefs;
 
 import java.util.Objects;
 
@@ -70,6 +71,11 @@ public class PrefsSettingsFragment extends PreferenceFragmentCompat implements S
 		}
 		switch (preference.getKey()) {
 			case "prf_user_logoff":
+				// SP03-17: аноним (вход «без регистрации») — сессия одноразовая:
+				// prefs (кошелёк/покупки/настройки) и идентичность сбрасываются, как в Firebase
+				if (ExerciseRunner.getUserHelper().getEmail().isEmpty()) {
+					OnboardingPrefs.INSTANCE.clearAnon(requireContext());
+				}
 				FirebaseAuth.getInstance().signOut();
 				getActivity().finishAndRemoveTask();
 				getActivity().finish();

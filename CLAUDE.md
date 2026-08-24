@@ -2,24 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Documentation Conventions
-
-- Every text document (`.md` — docs, plans, READMEs) must end with a **"Лог изменений"** (Change Log) section at the bottom, **newest entry on top**. Each entry: date + brief description of what changed.
-- Plans and analysis go to `/docs` as Markdown with Mermaid diagrams where useful.
-
-## Commit Message Convention
-
-- Commit messages use a **type prefix** (Conventional Commits): `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, `test:`, `build:`, `perf:`, `style:`, `ci:`. Example: `docs: add A5 changelog entry`.
-- For docs/plan changes use `docs:`; new features `feat:`; bug fixes `fix:`.
-- Multi-line messages: short summary line, then a body with details.
-
-## Shared Module FQN Rule (KMP)
-
-Kotlin classes in `shared/` must **not** have the same FQN as Java classes in `app/`
-(e.g. `org.nebobrod.schulteplus.common.*`). A duplicate-FQN collision caused a runtime
-`LinkageError` (lib dex loaded before project dex — see commit `2d4535e`). Port a class
-to Kotlin in `shared/` only in the same step its Java original is deleted.
-
 ## Build & Test Commands
 
 ```bash
@@ -49,9 +31,10 @@ to Kotlin in `shared/` only in the same step its Java original is deleted.
 
 **Schulte Plus** is an Android cognitive training app (package `org.nebobrod.schulteplus`). It offers multiple "exercise spaces" — Schulte tables, Basics (visual illusions), and SSSR — each with configurable difficulty, symbol types, and probabilistic cell distribution. The app tracks user stats, awards "psycoins," and syncs data between a local SQLite database and Firebase Firestore.
 
-- Target: minSdk 26, compileSdk 34, targetSdk 35
-- Language: Java (Kotlin is a build dependency only, not used in app code)
-- AGP 7.4.2, Gradle 7.x, Kotlin 1.8.0
+- Target: minSdk 26, compileSdk 37, targetSdk 36
+- Language: Java (core engine, data layer) + Kotlin (auth UI on Compose, shared KMP module)
+- AGP 8.13.2, Gradle 8.13, Kotlin 2.2.21
+- `shared/` — Kotlin Multiplatform module (`commonMain`): `Const`, `AppContext`, `AuthService`, `ExerciseStats`, `Validatable`; new domain code goes here (see `docs/TZ_Mishmash.md`)
 - `Utils` extends `Application` — serves as both the Application class and a static utility hub (context, time formatting, UUID generation, animations, dialogs)
 
 ## Architecture: Exercise Lifecycle
@@ -75,7 +58,7 @@ Every data write goes to **both** local and cloud storage:
 
 | Class | Role |
 |---|---|
-| `Const` | Interface with ALL preference keys (`KEY_PRF_*`), exercise-type IDs (`gcb_sch_*`, `gcb_bas_*`, `gcb_sss_*`), achievement flags, intro bitflags |
+| `Const` | Kotlin object in `shared/commonMain`: ALL preference keys (`KEY_PRF_*`), exercise-type IDs (`gcb_sch_*`, `gcb_bas_*`, `gcb_sss_*`), achievement flags, intro bitflags |
 | `ExerciseRunner` | Singleton: user state, preferences, exercise lifecycle (`start`/`complete`/`clear`), stat accumulation |
 | `STable` | Schulte table: grid of `SCell` objects, probability distribution (`camelSurface`), shuffle, turn journal, result calculation |
 | `ExResult` | Core data class stored in `exresult` table; polymorphic fields cover Schulte (turns, average, RMSD), Basics, and SSSR results |
@@ -87,7 +70,7 @@ Every data write goes to **both** local and cloud storage:
 
 ## Navigation & UI Flow
 
-- **`SplashActivity`** → auto-login or **`LoginActivity`**/**`SignupActivity`** → **`MainActivity`**
+- **`AuthActivity`** (Kotlin/Compose: `ui/auth/` — Splash, Login, Signup, Onboarding) → **`MainActivity`**
 - `MainActivity` uses Android Navigation Component with bottom nav:
   - **Dashboard** (`DashboardFragment`) — ViewPager of: user state, achievements, exercise results
   - **Home** (`HomeFragment`) — news/admin notes
@@ -107,7 +90,7 @@ Each space has its own `Settings` fragment and `Activity`. The "Play" FAB in `Ma
 
 ## Firebase/Auth
 
-- Firebase Authentication (email/password + Google Sign-In via `play-services-auth` 16.0.0)
+- Firebase Authentication (email/password + Google Sign-In via `play-services-auth` 19.0.0)
 - Firestore root path set via `resValue` per build type
 - Crashlytics disabled in debug builds (`ENABLE_CRASHLYTICS` build config field)
 - Demo user: hardcoded default UID `AvtKMUW82OhFJnmRN97cTjmG8cs2` (signed out on activity stop)
@@ -120,10 +103,6 @@ User preferences are stored in `SharedPreferences` keyed by Firebase UID. `Prefe
 
 Schulte tables support multiple symbol types: numbers, Roman numerals, Latin/Cyrillic/Devanagari letters, and interpolated color gradients (red/blue). Defined in `Const.KEY_SYMBOL_TYPE_*` and configured in `res/values/arrays.xml`.
 
-## Лог изменений
+## Design Norms
 
-| Дата | Изменение |
-|---|---|
-| 2026-08-16 | Добавлена секция **Shared Module FQN Rule (KMP)**: Kotlin-классы в `shared/` не должны дублировать FQN Java-классов app (урок краха LinkageError, фикс 2d4535e) |
-| 2026-08-03 | Добавлена секция **Commit Message Convention**: префиксы коммитов (`feat:`, `docs:`, `fix:` и т.п.) |
-
+If requirements begin to contradict widely accepted or Google/Material design norms, warn explicitly (point out the contradiction) before implementing, and suggest the conventional pattern. Applies to UI/UX decisions: Material guidelines, Android platform conventions.

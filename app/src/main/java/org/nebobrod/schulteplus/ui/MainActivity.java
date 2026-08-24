@@ -142,6 +142,13 @@ public class MainActivity extends AppCompatActivity {
 		// if no user at all
 		runner = ( null != userHelper ? ExerciseRunner.getInstance(userHelper) : ExerciseRunner.getInstance());
 
+		// SP03-06/D-30: автостарт выбранной на онбординге тренировки (аноним уже оплатил)
+		String startExercise = getIntent().getStringExtra("start_exercise");
+		if (startExercise != null && !startExercise.isEmpty()) {
+			ExerciseRunner.loadPreference();
+			launchExercise(startExercise, false);
+		}
+
 		// Check the updates
 		{
 			PackageManager packageManager = this.getPackageManager();
@@ -217,6 +224,8 @@ public class MainActivity extends AppCompatActivity {
 		//mainActionBar.openOptionsMenu(); */ // -- ActionBar methods tested.
 
 		navView = findViewById(R.id.nav_view);
+		// SP03-18: аноним (вход «без регистрации») — пункты активны, но выбор других
+		// упражнений перехватывается тостом (навигация — см. setupWithNavController ниже)
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
 		appBarConfiguration = new AppBarConfiguration.Builder(
@@ -229,7 +238,23 @@ public class MainActivity extends AppCompatActivity {
 				.build();
 		navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
 		NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-		NavigationUI.setupWithNavController(binding.navView, navController);
+		// SP03-18: аноним — собственный listener вместо setupWithNavController (перехват до навигации):
+		// «Schulte»/«Choice» открывают выбор других упражнений — только зарегистрированные участники
+		if (ExerciseRunner.getUserHelper().getEmail().isEmpty()) {
+			navView.setSelectedItemId(R.id.navigation_dashboard);
+			navView.setOnItemSelectedListener(item -> {
+				if (item.getItemId() == R.id.navigation_schulte || item.getItemId() == R.id.navigation_plus) {
+					// SP03-18: конфигурируемый снек-бар (до 7 строк, INDEFINITE) + [Да] → регистрация;
+					// тап мимо снек-бара закрывает (Utils.showSnackBarConfirmation)
+					Utils.showSnackBarConfirmation(this, getString(R.string.msg_anon_exercises_restricted),
+							v -> startActivity(new Intent(this, AuthActivity.class).putExtra("start_screen", "signup")));
+					return false;
+				}
+				return NavigationUI.onNavDestinationSelected(item, navController);
+			});
+		} else {
+			NavigationUI.setupWithNavController(binding.navView, navController);
+		}
 
 		// In Progress Badge for Home (News) menu item
 		MenuItem menuItem = navView.getMenu().findItem(R.id.navigation_home);
@@ -298,40 +323,44 @@ public class MainActivity extends AppCompatActivity {
 		});
 		// Run the exercise
 		fabLaunch.setOnClickListener(view -> {
-			Class activity = null;
 			ExerciseRunner.loadPreference();
-			String exTypeId = runner.getExTypeId();
-			// done: 21.09.2023 here we need to choose Activity by switch: (ExerciseRunner.getTypeOfExercise())
+			launchExercise(runner.getExTypeId(), true);
+		});
+	}
 
-			// Check prerequisites achieved
+	/** Запуск активности упражнения по exTypeId (как FAB); checkAchievements — путь покупки. */
+	private void launchExercise(String exTypeId, boolean checkAchievements) {
+		Class activity = null;
+
+		// Check prerequisites achieved
+		if (checkAchievements) {
 			ExType exType = runner.getExTypes().get(exTypeId);
 			if (!exType.isAllAchieved()) {
 				Utils.runInvestActivity(this, exTypeId);
 				return;
 			}
+		}
 
-			// Prerequisites are ready
-			switch (exTypeId.substring(0,7)){
-				case "gcb_bas":
-					activity = BasicsActivity.class;
-					break;
-				case "gcb_sch":
-					activity = SchulteActivity.class;
-					break;
-				case "gcb_sss":
-					activity = SssrActivity.class;
-					break;
-				default: Toast.makeText(MainActivity.this, TAG+ getResources().getString(R.string.err_unknown), Toast.LENGTH_SHORT).show();
-			}
+		// Prerequisites are ready (done: 21.09.2023 here we need to choose Activity by switch)
+		switch (exTypeId.substring(0, 7)) {
+			case "gcb_bas":
+				activity = BasicsActivity.class;
+				break;
+			case "gcb_sch":
+				activity = SchulteActivity.class;
+				break;
+			case "gcb_sss":
+				activity = SssrActivity.class;
+				break;
+			default: Toast.makeText(MainActivity.this, TAG + getResources().getString(R.string.err_unknown), Toast.LENGTH_SHORT).show();
+		}
 
-			//intent.putExtra(KEY_RUNNER, ExerciseRunner.getTypeOfExercise()); // actually it's not necessary since we got Singleton for ExerciseRunner
-			if (null != activity) {
-				Intent intent = new Intent(MainActivity.this, activity);
-				startActivity(intent);
-			} else {
-				Toast.makeText(MainActivity.this, TAG+ getResources().getString(R.string.err_unknown), Toast.LENGTH_LONG).show();
-			}
-		});
+		if (null != activity) {
+			Intent intent = new Intent(MainActivity.this, activity);
+			startActivity(intent);
+		} else {
+			Toast.makeText(MainActivity.this, TAG + getResources().getString(R.string.err_unknown), Toast.LENGTH_LONG).show();
+		}
 	}
 
 	@Override
